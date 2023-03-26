@@ -6,20 +6,17 @@ const GlobalStyles = createGlobalStyle`
   html {
     scroll-behavior: smooth;
   }
-  
-  h1 {
-    font-family: 'Lexend', Tahoma, Geneva, Verdana, sans-serif;
-  }
 
-  body, button {
+  body {
     background-color: ${ VARIATIONS.structure.bg };
     color: ${ VARIATIONS.structure.textLowContrast };
+    font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
   }
 
   input {
     font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
     color: ${ VARIATIONS.structure.textHighContrast };
-
   }
 
   :root {

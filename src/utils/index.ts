@@ -1,6 +1,7 @@
 import { md } from 'node-forge';
 
 import { getUserCookie, setUserCookie } from './cookies';
+import createUserPayload from './user';
 
 const generateHash = (value: string) => {
   const hash = md.sha256.create();
@@ -17,6 +18,7 @@ const getRandomInt = (size: number): number => {
 };
 
 export {
+  createUserPayload,
   generateHash,
   getUserCookie,
   getRandomInt,
