@@ -47,6 +47,13 @@
         "object-curly-spacing": [
             "error",
             "always"
+        ],
+        "no-trailing-spaces": [
+            "error",
+            {
+                "skipBlankLines": false,
+                "ignoreComments": false
+            }
         ]
     }
 }
