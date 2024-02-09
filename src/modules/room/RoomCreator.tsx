@@ -1,6 +1,6 @@
 import React from 'react';
 
-import getRandomInt from '../../utils';
+import { getRandomInt } from '../../utils';
 import { adjectives, animals } from './dictionaries';
 
 const generateRoomName = (): string => {

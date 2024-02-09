@@ -35,7 +35,7 @@ const StyledInput = styled.input`
 `;
 
 const NameInput = (props: Props) => {
-  return <StyledInput autoComplete='off' {...props} />;
+  return <StyledInput data-1pignore="true" autoComplete='off' {...props} />;
 };
 
 export default NameInput;

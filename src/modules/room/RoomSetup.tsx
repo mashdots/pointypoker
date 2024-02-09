@@ -24,7 +24,6 @@ const RoomSetup = () => {
     isUserSet: !!state.user,
   }));
 
-
   useEffect(() => {
     clearTimeout(timeout);
     if (!isUserSet) {
@@ -42,7 +41,7 @@ const RoomSetup = () => {
     }
   }, [ isUserSet ]);
 
-  return <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup'>hey {userName}</Wrapper>;
+  return <Wrapper isOpen={isOpen} isVisible={isVisible} id='room-setup'>hey {userName.toLowerCase()}</Wrapper>;
 };
 
 export default RoomSetup;

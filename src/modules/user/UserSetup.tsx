@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { createUserPayload, setUserCookie } from '../../utils';
-import useStore from '../../utils/store';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './NameInput';
+import { User } from '../../types';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
 
@@ -23,25 +23,29 @@ const CookieNotice = styled.p`
 
 let timeout: ReturnType<typeof setTimeout>;
 
-const UserSetup = () => {
-  const [ isVisible, setIsVisible ] = useState(false);
-  const [ isOpen, setIsOpen ] = useState(false);
+type Props = {
+  user: User | null;
+  handleSetUser: (payload: User) => void;
+}
+
+const UserSetup = ({ user, handleSetUser }: Props) => {
+  const isUserSet = !!user;
+  const [ isVisible, setIsVisible ] = useState(!isUserSet);
+  const [ isInitiallyOpen, setIsInitiallyOpen ] = useState(!isUserSet);
+  const [ isOpen, setIsOpen ] = useState(!isUserSet);
   const [name, setName] = useState<string>('');
-  const { setUser, isUserSet } = useStore((state) => ({
-    setUser: state.setUser,
-    isUserSet: !!state.user,
-  }));
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const payload = createUserPayload(name);
-    setUser(payload);
     setUserCookie(payload);
+    handleSetUser(payload);
   };
 
   useEffect(() => {
     clearTimeout(timeout);
+
     if (isUserSet) {
       setIsVisible(false);
 
@@ -49,6 +53,7 @@ const UserSetup = () => {
         setIsOpen(false);
       }, 300);
     } else {
+      setIsInitiallyOpen(true);
       setIsOpen(true);
 
       timeout = setTimeout(() => {
@@ -57,10 +62,14 @@ const UserSetup = () => {
     }
   }, [ isUserSet ]);
 
+  if (!isInitiallyOpen) {
+    return null;
+  }
+
   return (
     <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup'>
       <h1>what do we call you?</h1>
-      <CookieNotice>this is stored in a cookie so we won&apos;t ask you every time.</CookieNotice>
+      <CookieNotice>this is stored in a cookie so we won&apos;t ask you every time</CookieNotice>
       <form onSubmit={handleSubmit} autoComplete='off'>
         <NameInput
           id='name'
