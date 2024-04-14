@@ -60,6 +60,11 @@ const UserSetup = ({ user, handleSetUser }: Props) => {
         setIsVisible(true);
       }, 100);
     }
+
+    return () => {
+      setName('');
+      clearTimeout(timeout);
+    };
   }, [ isUserSet ]);
 
   if (!isInitiallyOpen) {

@@ -1,47 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
+import Button from '../../components/common/button';
+import { generateRoomName } from '../../utils';
 import useStore from '../../utils/store';
 
-type WrapperProps = { isVisible: boolean, isOpen: boolean }
-
-const Wrapper = styled.div<WrapperProps>`
-  transition: opacity 300ms;
-
-  ${ ({ isOpen, isVisible }) => css`
-    display: ${ isOpen ? 'inherit' : 'none' };
-    opacity: ${ isVisible ? 100 : 0 }%;
-  `};
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
-let timeout: ReturnType<typeof setTimeout>;
-
 const RoomSetup = () => {
-  const [ isVisible, setIsVisible ] = useState(false);
-  const [ isOpen, setIsOpen ] = useState(false);
+  const setRoom = useStore((state) => state.setRoom);
 
-  const { userName, isUserSet } = useStore((state) => ({
-    userName: state.user?.name || '',
-    isUserSet: !!state.user,
-  }));
+  const getRoomName = () => {
+    const roomName = generateRoomName();
 
-  useEffect(() => {
-    clearTimeout(timeout);
-    if (!isUserSet) {
-      setIsVisible(false);
+    setRoom(roomName);
+  };
 
-      timeout = setTimeout(() => {
-        setIsOpen(false);
-      }, 300);
-    } else {
-      setIsOpen(true);
-
-      timeout = setTimeout(() => {
-        setIsVisible(true);
-      }, 100);
-    }
-  }, [ isUserSet ]);
-
-  return <Wrapper isOpen={isOpen} isVisible={isVisible} id='room-setup'>hey {userName.toLowerCase()}</Wrapper>;
+  return (
+    <>
+      <h1>what do you want to do?</h1>
+      <ButtonContainer>
+        <Button margin='right' variation='info' width='half' onClick={getRoomName}>start a session</Button>
+        <Button margin='left' variation='info' width='half'>join a session</Button>
+      </ButtonContainer>
+    </>
+  );
 };
 
 export default RoomSetup;

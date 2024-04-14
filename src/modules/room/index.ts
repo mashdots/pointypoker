@@ -1,6 +1,5 @@
-import RoomSetup from './RoomSetup';
-
+import Room from './room';
 
 export {
-  RoomSetup,
+  Room,
 };

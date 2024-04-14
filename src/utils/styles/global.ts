@@ -14,7 +14,7 @@ const GlobalStyles = createGlobalStyle`
     font-size: 16px;
   }
 
-  input {
+  h1, input, button {
     font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
     color: ${ VARIATIONS.structure.textHighContrast };
   }

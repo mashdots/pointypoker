@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import './App.css';
-import Logo from './components/logo';
-import { RoomSetup } from './modules/room';
+import { Room } from './modules/room';
 import { UserSetup } from './modules/user';
 import { getUserCookie } from './utils';
 import useStore from './utils/store';
 import { GlobalStyles } from './utils/styles';
 import { User } from './types';
+import Header from './components/header';
 
 const AppContainer = styled.div`
   display: flex;
@@ -16,15 +16,6 @@ const AppContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   height: 100vh; /* Set container height to fill the viewport */
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const Spacer = styled.div`
-  flex-grow: 1;
 `;
 
 const Wrapper = styled.div`
@@ -46,14 +37,10 @@ const App = (): JSX.Element => {
   return (
     <AppContainer>
       <GlobalStyles />
-      <Header>
-        <Spacer />
-        <Logo />
-        <CurrentUser />
-      </Header>
+      <Header />
       <Wrapper>
         <UserSetup user={user} handleSetUser={(payload: User) => setUser(payload)} />
-        <RoomSetup />
+        <Room />
       </Wrapper>
     </AppContainer>
   );

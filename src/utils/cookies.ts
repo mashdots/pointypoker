@@ -13,10 +13,15 @@ const getUserCookie = () => {
 
 const setUserCookie = (user: User) => {
   const encryptedID = Buffer.from(JSON.stringify(user)).toString('base64');
-  cookies.set(USER_COOKIE, encryptedID, { expires: new Date('2100/01/01') });
+  cookies.set(USER_COOKIE, encryptedID, { expires: new Date('2100/01/01'), sameSite: 'lax' });
+};
+
+const clearUserCookie = () => {
+  cookies.remove(USER_COOKIE);
 };
 
 export {
   getUserCookie,
   setUserCookie,
+  clearUserCookie,
 };

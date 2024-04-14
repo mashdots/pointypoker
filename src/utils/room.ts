@@ -1,18 +1,18 @@
-import { adjectives, animals } from './dictionaries';
-
-const getRandomInt = (size: number): number => {
-  const min = Math.ceil(0);
-  const max = Math.floor(size);
-
-  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-};
+import { getRandomInt } from '../utils';
+import { adjectives, animals, plants, vehicles } from './dictionaries';
 
 const generateRoomName = (): string => {
-  const adjective = adjectives[ getRandomInt(adjectives.length - 1) ];
-  const animal = animals[ getRandomInt(animals.length - 1) ];
+  const nouns = [
+    animals,
+    plants,
+    vehicles,
+  ];
 
-  console.log('hit');
-  return `${ adjective }-${ animal }`;
+  const nounCategory = nouns[ getRandomInt(nouns.length - 1) ];
+  const adjective = adjectives[ getRandomInt(adjectives.length - 1) ];
+  const noun = nounCategory[ getRandomInt(nounCategory.length - 1) ];
+
+  return `${ adjective }-${ noun }`;
 };
 
 export default generateRoomName;
