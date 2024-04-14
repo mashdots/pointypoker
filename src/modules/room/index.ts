@@ -1,5 +1,5 @@
-import Room from './room';
+import RoomController from './roomController';
 
 export {
-  Room,
+  RoomController,
 };

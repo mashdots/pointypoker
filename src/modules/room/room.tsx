@@ -1,55 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
-
-import useStore from '../../utils/store';
-import RoomSetup from './roomSetup';
-
-type WrapperProps = { isVisible: boolean, isOpen: boolean }
-
-const Wrapper = styled.div<WrapperProps>`
-  transition: opacity 300ms;
-
-  ${ ({ isOpen, isVisible }) => css`
-    display: ${ isOpen ? 'inherit' : 'none' };
-    opacity: ${ isVisible ? 100 : 0 }%;
-  `};
-`;
-
-let timeout: ReturnType<typeof setTimeout>;
+import React, { useState } from 'react';
 
 const Room = () => {
-  const [ isVisible, setIsVisible ] = useState(false);
-  const [ isOpen, setIsOpen ] = useState(false);
-  const { isUserSet, roomName } = useStore((state) => ({
-    isUserSet: !!state.user,
-    roomName: state.room,
-  }));
+  const [description, setDescription] = useState('');
+  const [pointing, setPointing] = useState('');
 
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
+  };
 
-  useEffect(() => {
-    clearTimeout(timeout);
-    if (!isUserSet) {
-      setIsVisible(false);
-
-      timeout = setTimeout(() => {
-        setIsOpen(false);
-      }, 300);
-    } else {
-      setIsOpen(true);
-
-      timeout = setTimeout(() => {
-        setIsVisible(true);
-      }, 100);
-    }
-  }, [ isUserSet ]);
-
+  const handlePointing = (points: string) => {
+    setPointing(points);
+  };
 
   return (
-    <Wrapper isOpen={isOpen} isVisible={isVisible} id='room'>
-      {!roomName ? <RoomSetup /> : <h1>{roomName}</h1>}
-    </Wrapper>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <section>
+        <input type="text" value={description} onChange={handleDescriptionChange} placeholder="Describe what is being pointed" />
+      </section>
+      <section>
+        <button onClick={() => handlePointing('1')}>1</button>
+        <button onClick={() => handlePointing('2')}>2</button>
+        <button onClick={() => handlePointing('3')}>3</button>
+        <button onClick={() => handlePointing('4')}>4</button>
+        <button onClick={() => handlePointing('5')}>5</button>
+        <button onClick={() => handlePointing('6')}>6</button>
+        <button onClick={() => handlePointing('7')}>7</button>
+        <button onClick={() => handlePointing('8')}>8</button>
+        <button onClick={() => handlePointing('9')}>9</button>
+        <button onClick={() => handlePointing('10')}>10</button>
+        <button onClick={() => handlePointing('11')}>11</button>
+        <button onClick={() => handlePointing('12')}>12</button>
+        <button onClick={() => handlePointing('13')}>13</button>
+        <button onClick={() => handlePointing('?')}>?</button>
+      </section>
+    </div>
   );
-
 };
 
 export default Room;

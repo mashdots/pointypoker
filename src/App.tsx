@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import './App.css';
-import { Room } from './modules/room';
+import { RoomController } from './modules/room';
 import { UserSetup } from './modules/user';
 import { getUserCookie } from './utils';
 import useStore from './utils/store';
@@ -40,7 +40,7 @@ const App = (): JSX.Element => {
       <Header />
       <Wrapper>
         <UserSetup user={user} handleSetUser={(payload: User) => setUser(payload)} />
-        <Room />
+        <RoomController />
       </Wrapper>
     </AppContainer>
   );
