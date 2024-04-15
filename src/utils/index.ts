@@ -1,15 +1,6 @@
-import { md } from 'node-forge';
-
 import { getUserCookie, setUserCookie } from './cookies';
 import createUserPayload from './user';
 import generateRoomName from './room';
-
-const generateHash = (value: string) => {
-  const hash = md.sha256.create();
-  hash.update(value);
-
-  return hash.digest().toHex();
-};
 
 const getRandomInt = (size: number): number => {
   const min = Math.ceil(0);
@@ -21,7 +12,6 @@ const getRandomInt = (size: number): number => {
 
 export {
   createUserPayload,
-  generateHash,
   generateRoomName,
   getRandomInt,
   getUserCookie,

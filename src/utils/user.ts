@@ -1,10 +1,9 @@
-import { generateHash } from '.';
+import { v4 as uuid } from 'uuid';
 
 const createUserPayload = (name: string) => {
-  const uniqueNameId = `${ name }-${ Date.now() }`;
   const userPayload = {
     name,
-    id: generateHash(uniqueNameId),
+    id: uuid(),
   };
 
   return userPayload;

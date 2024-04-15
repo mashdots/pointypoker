@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import useStore from '../../utils/store';
 import { clearUserCookie } from '../../utils/cookies';
+import { signOut } from '../../services/firebase/auth';
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -18,13 +19,18 @@ const UserControl = () => {
   const clearUser = useStore((state) => state.clearUser);
   const clearRoom = useStore((state) => state.clearRoom);
 
-  const handleClearUser = () => {
-    clearUser();
-    clearRoom();
-    clearUserCookie();
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      clearUser();
+      clearRoom();
+      clearUserCookie();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  return <Wrapper onClick={handleClearUser}>{user?.name}</Wrapper>;
+  return <Wrapper onClick={handleSignOut}>{user?.name}</Wrapper>;
 };
 
 export default UserControl;

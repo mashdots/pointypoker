@@ -5,6 +5,8 @@ import { createUserPayload, setUserCookie } from '../../utils';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './NameInput';
 import { User } from '../../types';
+import { createUser } from '../../services/firebase';
+import { signIn } from '../../services/firebase/auth';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
 
@@ -39,8 +41,16 @@ const UserSetup = ({ user, handleSetUser }: Props) => {
     e.preventDefault();
 
     const payload = createUserPayload(name);
-    setUserCookie(payload);
-    handleSetUser(payload);
+    createUser(payload, async () => {
+      try {
+        const anonUser = await signIn();
+        payload.id = anonUser.userId!;
+        setUserCookie(payload);
+        handleSetUser(payload);
+      } catch (e) {
+        console.error(e);
+      }
+    });
   };
 
   useEffect(() => {
@@ -71,6 +81,7 @@ const UserSetup = ({ user, handleSetUser }: Props) => {
     return null;
   }
 
+  // TODO: Create cookie notice for header so we can disclose everything
   return (
     <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup'>
       <h1>what do we call you?</h1>
