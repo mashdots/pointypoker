@@ -7,17 +7,21 @@ type Participant = User & {
   joinedAt: number;
 }
 
+type Vote = {
+  participantId: string;
+  vote: string | number;
+}
+
 type Issue = {
   name?: string;
   id: string;
-  votes: {
-    [ key: string ]: number
-  };
+  shouldShowVotes: boolean;
+  votes: Array<Vote>;
+  createdAt: number;
 }
 
 type Room = {
   name: string;
-  id: string;
   participants: Array<Participant>;
   issues: Array<Issue>;
 }

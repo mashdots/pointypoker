@@ -5,6 +5,7 @@ import {
   Firestore,
   getDocs,
   getFirestore,
+  onSnapshot,
   query,
   setDoc,
   where,
@@ -155,17 +156,47 @@ const createRoom = async (
     const db = getDataClient();
 
     if (db) {
-      await setDoc(doc(db, PossibleFirebaseCollections.ROOMS, data.id), data);
+      await setDoc(doc(db, PossibleFirebaseCollections.ROOMS, data.name), data);
       result.data = data;
     } else {
       throw new Error('Failed to get data client.');
     }
   } catch (error) {
     result.error = true;
-    result.message = `There was a problem creating ${ data.id } in the ${ PossibleFirebaseCollections.USERS} collection`;
+    result.message = `There was a problem creating ${ data.name } in the ${ PossibleFirebaseCollections.ROOMS} collection`;
   }
 
   callback(result);
+};
+
+const watchRoom = (roomName: string, callback: (arg: ResultType) => void) => {
+  const result: ResultType = {
+    data: [],
+    error: false,
+    message: null,
+  };
+
+  try {
+    const db = getDataClient();
+    const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, roomName);
+
+    const unsubscribe = onSnapshot(roomRef, (doc) => {
+      if (doc.exists()) {
+        result.data = doc.data();
+        callback(result);
+      } else {
+        result.error = true;
+        result.message = `The room ${roomName} does not exist.`;
+        callback(result);
+      }
+    });
+
+    return unsubscribe;
+  } catch (error) {
+    result.error = true;
+    result.message = `There was a problem watching ${roomName} in the ${ PossibleFirebaseCollections.ROOMS} collection`;
+    callback(result);
+  }
 };
 
 
@@ -174,4 +205,5 @@ export {
   createUser,
   getAllDocsFromCollection,
   getSpecifiedDocsFromCollection,
+  watchRoom,
 };

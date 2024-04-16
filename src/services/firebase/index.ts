@@ -6,6 +6,7 @@ import {
   getAllDocsFromCollection,
   getSpecifiedDocsFromCollection,
   ResultType,
+  watchRoom,
 } from './data';
 
 let app: FirebaseApp;
@@ -36,6 +37,7 @@ export {
   createUser,
   getAllDocsFromCollection,
   getSpecifiedDocsFromCollection,
+  watchRoom,
 };
 
 export type {
