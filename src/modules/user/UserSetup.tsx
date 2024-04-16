@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { createUserPayload, setUserCookie } from '../../utils';
+import { createUserPayload, getUserCookie, setUserCookie } from '../../utils';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './NameInput';
-import { User } from '../../types';
 import { createUser } from '../../services/firebase';
 import { signIn } from '../../services/firebase/auth';
+import useStore from '../../utils/store';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
 
@@ -25,32 +25,40 @@ const CookieNotice = styled.p`
 
 let timeout: ReturnType<typeof setTimeout>;
 
-type Props = {
-  user: User | null;
-  handleSetUser: (payload: User) => void;
-}
-
-const UserSetup = ({ user, handleSetUser }: Props) => {
+const UserSetup = () => {
+  const { setUser, user } = useStore(({ setUser, user }) => ({
+    setUser,
+    user,
+  }));
+  const userCookie = getUserCookie();
   const isUserSet = !!user;
   const [ isVisible, setIsVisible ] = useState(!isUserSet);
   const [ isInitiallyOpen, setIsInitiallyOpen ] = useState(!isUserSet);
   const [ isOpen, setIsOpen ] = useState(!isUserSet);
-  const [name, setName] = useState<string>('');
+  const [ name, setName ] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (userCookie && !user) {
+      setUser(userCookie);
+    }
+  }, [ user ]);
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const payload = createUserPayload(name);
-    createUser(payload, async () => {
-      try {
-        const anonUser = await signIn();
-        payload.id = anonUser.userId!;
+    try {
+      const anonUser = await signIn();
+      console.log('anonUser', anonUser);
+      payload.id = anonUser.userId!;
+      createUser(payload, async () => {
         setUserCookie(payload);
-        handleSetUser(payload);
-      } catch (e) {
-        console.error(e);
-      }
-    });
+        setUser(payload);
+      });
+    } catch (error) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {

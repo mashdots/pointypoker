@@ -4,6 +4,7 @@ const createUserPayload = (name: string) => {
   const userPayload = {
     name,
     id: uuid(),
+    created: new Date().toISOString(),
   };
 
   return userPayload;

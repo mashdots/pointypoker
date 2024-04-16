@@ -46,6 +46,7 @@ const signIn = async (): Promise<ResultResponse> => {
     result.userId = user.uid;
   } catch (e) {
     result.error = e as string;
+    throw result.error;
   }
 
   return result;
