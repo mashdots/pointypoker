@@ -11,12 +11,11 @@ const Wrapper = styled.div`
   padding-right: 1rem;
 `;
 
-
 const RoomControl = () => {
   const room = useStore((state) => state.room);
   const clearRoom = useStore((state) => state.clearRoom);
 
-  return <Wrapper onClick={clearRoom}>{room?.name}</Wrapper>;
+  return <Wrapper onClick={clearRoom}>{room}</Wrapper>;
 };
 
 export default RoomControl;
