@@ -157,7 +157,7 @@ const createRoom = async (
 
     if (db) {
       await setDoc(doc(db, PossibleFirebaseCollections.ROOMS, data.name), data);
-      result.data = data;
+      result.data = data as Room;
     } else {
       throw new Error('Failed to get data client.');
     }

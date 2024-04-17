@@ -23,7 +23,7 @@ const RoomSetup = () => {
   const user = useStore((state) => state.user);
   const setRoom = useStore((state) => state.setRoom);
 
-  const getRoomName = () => {
+  const handleCreateRoom = async () => {
     if (!user) {
       return;
     }
@@ -43,9 +43,9 @@ const RoomSetup = () => {
       issues: [],
     };
 
-    createRoom(room, (result) => {
+    await createRoom(room, (result) => {
       if (!result.error) {
-        setRoom(result.data as Room);
+        setRoom((result.data as Room).name);
       } else {
         console.error(result);
       }
@@ -56,7 +56,7 @@ const RoomSetup = () => {
     <>
       <h1>what do you want to do?</h1>
       <ButtonContainer>
-        <Button margin='right' variation='info' width='half' onClick={getRoomName}>start a session</Button>
+        <Button margin='right' variation='info' width='half' onClick={handleCreateRoom}>start a session</Button>
         <Button margin='left' variation='info' width='half'>join a session</Button>
       </ButtonContainer>
     </>

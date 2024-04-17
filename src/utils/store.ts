@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
-import { Room, User } from '../types';
+import { User } from '../types';
 
 type Store = {
   user: User | null;
   setUser: (arg: User) => void;
   clearUser: () => void;
-  room: Room | null;
-  setRoom: (arg: Room) => void;
+  room: string | null;
+  setRoom: (arg: string) => void;
   clearRoom: () => void;
 }
 

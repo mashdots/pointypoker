@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import useStore from '../../utils/store';
 import { watchRoom } from '../../services/firebase';
+import { Room as RoomType } from '../../types';
 
 /**
  * TO DOs:
@@ -25,6 +26,7 @@ import { watchRoom } from '../../services/firebase';
 const Room = () => {
   const [currentDescription, setCurrentDescription] = useState('');
   const [pointing, setPointing] = useState('');
+  const [roomData, setRoomData] = useState<RoomType | null>(null);
   const { currentRoom } = useStore((state) => ({
     currentRoom: state.room,
   }));
@@ -40,8 +42,12 @@ const Room = () => {
 
   useEffect(() => {
     if (currentRoom) {
-      subscribedRoomRef.current = watchRoom(currentRoom.name, (result) => {
-        console.log(result);
+      subscribedRoomRef.current = watchRoom(currentRoom, (result) => {
+        if (!result.error) {
+          setRoomData(result.data as RoomType);
+        } else {
+          console.error(result);
+        }
       });
     }
 
