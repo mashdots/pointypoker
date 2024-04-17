@@ -1,10 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from 'react-router-dom';
+
 import './index.css';
+import Root from './routes/root';
+import RoomController from './modules/room/roomController';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    children: [
+      {
+        path: '',
+        element: <RoomController />,
+      },
+    ],
+  },
+]);
+
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>,
 );

@@ -1,4 +1,4 @@
-import UserSetup from './UserSetup';
+import UserSetup from './userSetup';
 
 export {
   UserSetup,
