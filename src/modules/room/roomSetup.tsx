@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+
 import Button from '../../components/common/button';
 import { generateRoomName } from '../../utils';
 import useStore from '../../utils/store';
 import { Participant, Room } from '../../types';
 import { createRoom } from '../../services/firebase';
+import withUserSetup from '../user/userSetup';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -19,9 +22,10 @@ const ButtonContainer = styled.div`
  * 4. When the page loads, check the URL for a room name. If it exists, attempt to join that room. If it doesn't exist, show the room setup form with a message saying the room doesn't exist.
  */
 
-const RoomSetup = () => {
+const RoomSetup = withUserSetup(() => {
   const user = useStore((state) => state.user);
   const setRoom = useStore((state) => state.setRoom);
+  const navigate = useNavigate();
 
   const handleCreateRoom = async () => {
     if (!user) {
@@ -45,7 +49,9 @@ const RoomSetup = () => {
 
     await createRoom(room, (result) => {
       if (!result.error) {
-        setRoom((result.data as Room).name);
+        const resolvedRoomName = (result.data as Room).name;
+        setRoom(resolvedRoomName);
+        navigate(`/${ resolvedRoomName}`);
       } else {
         console.error(result);
       }
@@ -61,6 +67,6 @@ const RoomSetup = () => {
       </ButtonContainer>
     </>
   );
-};
+});
 
 export default RoomSetup;

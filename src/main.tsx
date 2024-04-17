@@ -7,7 +7,7 @@ import {
 
 import './index.css';
 import Root from './routes/root';
-import RoomController from './modules/room/roomController';
+import { Room, RoomSetup } from './modules/room';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +16,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <RoomController />,
+        element: <RoomSetup />,
+      },
+      {
+        path: '/:roomName',
+        element: <Room />,
       },
     ],
   },

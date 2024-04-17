@@ -32,9 +32,8 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
       user,
     }));
     const userCookie = getUserCookie();
-    const isUserSet = !!user;
-    const [ isVisible, setIsVisible ] = useState(!isUserSet);
-    const [ isOpen, setIsOpen ] = useState(!isUserSet);
+    const [ isVisible, setIsVisible ] = useState(!user);
+    const [ isOpen, setIsOpen ] = useState(!user);
     const [ name, setName ] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -63,7 +62,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
     useEffect(() => {
       clearTimeout(timeout);
 
-      if (isUserSet) {
+      if (user) {
         setIsVisible(false);
 
         timeout = setTimeout(() => {
@@ -81,7 +80,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
         setName('');
         clearTimeout(timeout);
       };
-    }, [ isUserSet ]);
+    }, [ user ]);
 
     // TODO: Create cookie notice for header so we can disclose everything
     if (!user) {
@@ -99,7 +98,11 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
         </Wrapper>
       );
     } else {
-      return <WrappedComponent />;
+      return (
+        <Wrapper isOpen={!isOpen} isVisible={!isVisible} id='user-setup'>
+          <WrappedComponent />
+        </Wrapper>
+      );
     }
   };
 

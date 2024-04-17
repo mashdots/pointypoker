@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import useStore from '../../utils/store';
 import { watchRoom } from '../../services/firebase';
 import { Room as RoomType } from '../../types';
+import withUserSetup from '../user/userSetup';
 
 /**
  * TO DOs:
@@ -23,7 +24,7 @@ import { Room as RoomType } from '../../types';
  * 15. Differentiate between inactivity and leaving.
  */
 
-const Room = () => {
+const Room = withUserSetup(() => {
   const [currentDescription, setCurrentDescription] = useState('');
   const [pointing, setPointing] = useState('');
   const [roomData, setRoomData] = useState<RoomType | null>(null);
@@ -78,6 +79,6 @@ const Room = () => {
       </section>
     </div>
   );
-};
+});
 
 export default Room;
