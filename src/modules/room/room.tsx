@@ -57,6 +57,11 @@ const Room = withUserSetup(() => {
     };
   }, [currentRoom]);
 
+  useEffect(() => {
+    if (currentRoom) {
+      document.title = `Yapp.io - ${currentRoom}`;
+    }
+  }, []);
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
