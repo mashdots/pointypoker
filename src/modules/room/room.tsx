@@ -7,7 +7,8 @@ import withUserSetup from '../user/userSetup';
 
 /**
  * TO DOs:
- * 1. Set URL path to new room name. Update title.
+ * 1. When the page loads, check the URL for a room name. If it exists, attempt to join that room. If it doesn't exist, show the room setup form with a message saying the room doesn't exist.
+ * 3. If the user joins the room and was a former participant, update their joinedAt time, and set inactive to false, and reset consecutiveMisses to 0.
  * 2. Create local issue that is also pushed to the database after 3 seconds of no changes.
  * 3. Add "show votes" button that reveals all votes.
  * 4. Add "new issue" button that creates a new issue and pushes it to the database. When a new issue is created, all votes are reset.

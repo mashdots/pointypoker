@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 `;
 
 const Logo = () => {
-  return <Wrapper>yappy</Wrapper>;
+  return <Wrapper>pointy poker</Wrapper>;
 };
 
 export default Logo;

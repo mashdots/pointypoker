@@ -22,6 +22,7 @@ type Issue = {
 
 type Room = {
   name: string;
+  createdAt: number;
   participants: Array<Participant>;
   issues: Array<Issue>;
 }

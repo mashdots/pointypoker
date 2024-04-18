@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 
 import Button from '../../components/common/button';
 import { generateRoomName } from '../../utils';
@@ -13,14 +14,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-
-/**
- * TO DOs:
- * 1. Create form for joining a room
- * 2. If the user joins the room, create an object with the necessary data.
- * 3. If the user joins the room and was a former participant, update their joinedAt time, and set inactive to false, and reset consecutiveMisses to 0.
-* 4. When the page loads, check the URL for a room name. If it exists, attempt to join that room. If it doesn't exist, show the room setup form with a message saying the room doesn't exist.
- */
 
 const RoomSetup = withUserSetup(() => {
   const user = useStore((state) => state.user);
@@ -41,10 +34,18 @@ const RoomSetup = withUserSetup(() => {
       inactive: false,
       joinedAt: Date.now(),
     };
+    const initialIssue = {
+      name: '',
+      id: uuid(),
+      shouldShowVotes: false,
+      votes: [],
+      createdAt: Date.now(),
+    };
     const room: Room = {
       name: roomName,
+      createdAt: Date.now(),
       participants: [ self ],
-      issues: [],
+      issues: [ initialIssue ],
     };
 
     await createRoom(room, (result) => {
@@ -64,10 +65,10 @@ const RoomSetup = withUserSetup(() => {
 
   return (
     <>
-      <h1>what do you want to do?</h1>
+      <h1>ready to start?</h1>
       <ButtonContainer>
-        <Button margin='right' variation='info' width='half' onClick={handleCreateRoom}>start a session</Button>
-        <Button margin='left' variation='info' width='half'>join a session</Button>
+        <Button margin='center' variation='info' width='full' onClick={handleCreateRoom}>start a session</Button>
+        {/* <Button margin='left' variation='info' width='half'>join a session</Button> */}
       </ButtonContainer>
     </>
   );
