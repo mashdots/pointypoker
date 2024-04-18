@@ -6,6 +6,7 @@ import {
   getAllDocsFromCollection,
   getSpecifiedDocsFromCollection,
   ResultType,
+  updateRoom,
   watchRoom,
 } from './data';
 
@@ -37,6 +38,7 @@ export {
   createUser,
   getAllDocsFromCollection,
   getSpecifiedDocsFromCollection,
+  updateRoom,
   watchRoom,
 };
 

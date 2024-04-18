@@ -15,6 +15,10 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
+/**
+ * TO DOs:
+ * 1. If a user is navigated here because a room didn't exist, show a message that the room doesn't exist.
+ */
 const RoomSetup = withUserSetup(() => {
   const user = useStore((state) => state.user);
   const setRoom = useStore((state) => state.setRoom);
@@ -60,7 +64,7 @@ const RoomSetup = withUserSetup(() => {
   };
 
   useEffect(() => {
-    document.title = 'Yapp.io';
+    document.title = 'pointy poker';
   }, []);
 
   return (

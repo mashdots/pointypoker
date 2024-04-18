@@ -85,7 +85,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
     // TODO: Create cookie notice for header so we can disclose everything
     if (!user) {
       return (
-        <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup'>
+        <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup-show'>
           <h1>what do we call you?</h1>
           <CookieNotice>this is stored in a cookie so we won&apos;t ask you every time</CookieNotice>
           <form onSubmit={handleSubmit} autoComplete='off'>
@@ -99,7 +99,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
       );
     } else {
       return (
-        <Wrapper isOpen={!isOpen} isVisible={!isVisible} id='user-setup'>
+        <Wrapper isOpen={!isOpen} isVisible={!isVisible} id='user-setup-hide'>
           <WrappedComponent />
         </Wrapper>
       );

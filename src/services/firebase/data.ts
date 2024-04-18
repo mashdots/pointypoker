@@ -199,11 +199,33 @@ const watchRoom = (roomName: string, callback: (arg: ResultType) => void) => {
   }
 };
 
+const updateRoom = async (
+  room: string,
+  property: string,
+  data: any,
+): Promise<void> => {
+
+  try {
+    const db = getDataClient();
+
+    if (db) {
+      const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
+
+      await setDoc(roomRef, {
+        [ property ]: data,
+      }, { merge: true });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
 export {
   createRoom,
   createUser,
   getAllDocsFromCollection,
   getSpecifiedDocsFromCollection,
+  updateRoom,
   watchRoom,
 };
