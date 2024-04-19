@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 import styled from 'styled-components';
@@ -64,7 +64,30 @@ const Room = withUserSetup(() => {
   const roomFromPath = window.location.pathname.slice(1);
 
   // Issue Setup
-  const [currentIssue, setCurrentIssue] = useState<Issue | null>(null);
+  const currentIssue = useMemo(() =>
+    roomData?.issues
+      ? Object.values(roomData?.issues).sort((a, b) => b?.createdAt - a?.createdAt)[0]
+      : null, [ roomData ]);
+
+
+  const handleUpdateLatestIssue = useCallback((field: string, value: any, callback?: () => void) => {
+    if (roomData && user && currentIssue) {
+      let roomObjPath = 'issues';
+      let resolvedValue = value;
+      roomObjPath += `.${currentIssue.id}.${field}`;
+
+      if (field === 'votes') {
+        resolvedValue = {
+          participantId: user.id,
+          vote: value,
+        };
+
+        roomObjPath += `.${user.id}`;
+      }
+
+      updateRoom(roomData.name, roomObjPath, resolvedValue, callback);
+    }
+  }, [ roomData ]);
 
   // If a room is in the URL or in the store, attempt to join it, otherwise redirect home
   useEffect(() => {
@@ -119,7 +142,7 @@ const Room = withUserSetup(() => {
 
   return (
     <Wrapper>
-      <TitleInput updatedIssueTitle='' handleUpdate={() => {}} />
+      <TitleInput updatedIssueTitle={currentIssue?.name || ''} handleUpdate={handleUpdateLatestIssue} />
       <h2>Participants</h2>
       <table>
         <thead>

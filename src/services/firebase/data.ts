@@ -8,6 +8,7 @@ import {
   onSnapshot,
   query,
   setDoc,
+  updateDoc,
   where,
   // writeBatch,
 } from 'firebase/firestore';
@@ -205,6 +206,7 @@ const updateRoom = async (
   room: string,
   property: string,
   data: any,
+  callback?: () => void,
 ): Promise<void> => {
 
   try {
@@ -213,13 +215,21 @@ const updateRoom = async (
     if (db) {
       const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
 
-      await setDoc(roomRef, {
-        [ property ]: data,
-      }, { merge: true });
+      if (property.includes('.')) {
+        await updateDoc(roomRef, {
+          [ property ]: data,
+        });
+      } else {
+        await setDoc(roomRef, {
+          [ property ]: data,
+        }, { merge: true });
+      }
     }
   } catch (error) {
     console.error(error);
   }
+
+  callback?.();
 };
 
 /** Issue Management */

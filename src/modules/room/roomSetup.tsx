@@ -57,7 +57,9 @@ const RoomSetup = withUserSetup(() => {
       name: roomName,
       createdAt: Date.now(),
       participants: [ self ],
-      issues: [ initialIssue ],
+      issues: {
+        [initialIssue.id]: initialIssue,
+      },
     };
 
     await createRoom(room, (result) => {

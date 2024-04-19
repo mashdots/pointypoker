@@ -13,6 +13,7 @@ type Vote = {
 }
 
 type Issue = {
+  [key: string]: any;
   name?: string;
   id: string;
   shouldShowVotes: boolean;
@@ -26,7 +27,9 @@ type Room = {
   name: string;
   createdAt: number;
   participants: Array<Participant>;
-  issues: Array<Issue>;
+  issues: {
+    [key: string]: Issue;
+  };
 }
 
 export type {

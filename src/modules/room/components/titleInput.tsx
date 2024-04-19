@@ -5,7 +5,7 @@ import { VARIATIONS } from '../../../utils/styles';
 
 type Props = {
   updatedIssueTitle: string;
-  handleUpdate: (title: string) => void;
+  handleUpdate: (field: string, value: string) => void;
 }
 
 const StyledInput = styled.input`
@@ -48,10 +48,10 @@ const TitleInput = ({
     if (updatedIssueTitle !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        console.log('Updating title in database', value);
+        handleUpdate('name', value);
       }, 1000);
     }
-  }, [ value, updatedIssueTitle ]);
+  }, [ value ]);
 
   useEffect(() => {
     setValue(updatedIssueTitle);
