@@ -8,7 +8,7 @@ import { updateRoom, watchRoom } from '../../services/firebase';
 import { Issue, Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { VARIATIONS } from '../../utils/styles';
-import { TitleInput } from './components';
+import { TitleInput, VoteButtons } from './components';
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,7 +25,6 @@ const Wrapper = styled.div`
  * === Issues ===
  * 1. Add "new issue" button that creates a new issue and pushes it to the database. When a new issue is created, all votes are reset. The previous issue name appears in a separate section with the average vote
  * 2. If the name of the issue is changed _after_ votes have been cast, go through the new issue cycle
- * 3. When typing a new issue name, propagate updates after 3 seconds of inactivity.
  * 4. Whenever a new issue is created, start a timer that stops whenever the votes are shown
  *
  * === Pointing ===
@@ -143,6 +142,7 @@ const Room = withUserSetup(() => {
   return (
     <Wrapper>
       <TitleInput updatedIssueTitle={currentIssue?.name || ''} handleUpdate={handleUpdateLatestIssue} />
+      <VoteButtons />
       <h2>Participants</h2>
       <table>
         <thead>
