@@ -15,8 +15,11 @@ const Container = styled.div`
 `;
 
 const ChildrenWrapper = styled.div`
-  margin-top: auto;
-  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 `;
 
 /**

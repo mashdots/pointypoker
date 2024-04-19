@@ -10,6 +10,14 @@ import { Participant, Room } from '../../types';
 import { createRoom } from '../../services/firebase';
 import withUserSetup from '../user/userSetup';
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -42,7 +50,7 @@ const RoomSetup = withUserSetup(() => {
       name: '',
       id: uuid(),
       shouldShowVotes: false,
-      votes: [],
+      votes: {},
       createdAt: Date.now(),
     };
     const room: Room = {
@@ -68,13 +76,13 @@ const RoomSetup = withUserSetup(() => {
   }, []);
 
   return (
-    <>
+    <Wrapper>
       <h1>ready to start?</h1>
       <ButtonContainer>
         <Button margin='center' variation='info' width='full' onClick={handleCreateRoom}>start a session</Button>
         {/* <Button margin='left' variation='info' width='half'>join a session</Button> */}
       </ButtonContainer>
-    </>
+    </Wrapper>
   );
 });
 

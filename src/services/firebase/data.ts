@@ -142,6 +142,8 @@ const createUser = async (
   callback(result);
 };
 
+/** Room Management */
+
 const createRoom = async (
   data: Room,
   callback: (arg: ResultType) => void,
@@ -220,6 +222,7 @@ const updateRoom = async (
   }
 };
 
+/** Issue Management */
 
 export {
   createRoom,

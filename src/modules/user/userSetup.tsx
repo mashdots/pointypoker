@@ -12,6 +12,9 @@ type WrapperProps = { isVisible: boolean, isOpen: boolean }
 
 const Wrapper = styled.div<WrapperProps>`
   transition: opacity 300ms;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   ${ ({ isOpen, isVisible }) => css`
     display: ${ isOpen ? 'inherit' : 'none' };

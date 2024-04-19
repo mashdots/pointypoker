@@ -1,11 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
+import styled from 'styled-components';
 
 import useStore from '../../utils/store';
 import { updateRoom, watchRoom } from '../../services/firebase';
-import { Participant, Room as RoomType } from '../../types';
+import { Issue, Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
+import { VARIATIONS } from '../../utils/styles';
+import { TitleInput } from './components';
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+`;
 
 /**
  * TO DOs:
@@ -39,11 +51,11 @@ import withUserSetup from '../user/userSetup';
  */
 
 const Room = withUserSetup(() => {
-  const [currentDescription, setCurrentDescription] = useState('');
-  const [pointing, setPointing] = useState('');
+  // Room Setup
   const [roomData, setRoomData] = useState<RoomType | null>(null);
-  const { currentRoom, user } = useStore(({ room, user }) => ({
+  const { currentRoom, setRoom, user } = useStore(({ room, setRoom, user }) => ({
     currentRoom: room,
+    setRoom,
     user,
   }));
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
@@ -51,21 +63,21 @@ const Room = withUserSetup(() => {
 
   const roomFromPath = window.location.pathname.slice(1);
 
-  const handleCurrentDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentDescription(e.target.value);
-  };
-
-  const handlePointing = (points: string) => {
-    setPointing(points);
-  };
+  // Issue Setup
+  const [currentIssue, setCurrentIssue] = useState<Issue | null>(null);
 
   // If a room is in the URL or in the store, attempt to join it, otherwise redirect home
   useEffect(() => {
-    if (currentRoom || roomFromPath) {
+    if ((currentRoom || roomFromPath) && !roomData ) {
       const roomToJoin = currentRoom || roomFromPath;
       subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
         if (!result.error) {
           setRoomData(result.data as RoomType);
+
+          // If we got the room name from the URL, set it in the store
+          if (!currentRoom) {
+            setRoom((result.data as RoomType).name);
+          }
         } else {
           navigate('/');
           console.error(result);
@@ -100,16 +112,14 @@ const Room = withUserSetup(() => {
 
   // When a room loads, update the page title
   useEffect(() => {
-    if (currentRoom) {
-      document.title = `pointy poker - ${currentRoom}`;
+    if (roomData) {
+      document.title = `pointy poker - ${ roomData.name}`;
     }
   }, []);
 
   return (
-    <div>
-      <h1>{roomData?.name}</h1>
-      <input type="text" value={currentDescription} onChange={handleCurrentDescriptionChange} />
-      <button onClick={() => handlePointing(currentDescription)}>Point</button>
+    <Wrapper>
+      <TitleInput updatedIssueTitle='' handleUpdate={() => {}} />
       <h2>Participants</h2>
       <table>
         <thead>
@@ -137,7 +147,7 @@ const Room = withUserSetup(() => {
           </li>
         ))}
       </ul> */}
-    </div>
+    </Wrapper>
   );
 });
 

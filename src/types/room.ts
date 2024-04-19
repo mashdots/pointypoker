@@ -16,7 +16,9 @@ type Issue = {
   name?: string;
   id: string;
   shouldShowVotes: boolean;
-  votes: Array<Vote>;
+  votes: {
+    [key: string]: Vote;
+  };
   createdAt: number;
 }
 
