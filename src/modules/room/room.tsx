@@ -8,7 +8,9 @@ import { updateRoom, watchRoom } from '../../services/firebase';
 import { Issue, Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { VARIATIONS } from '../../utils/styles';
-import { TitleInput, VoteButtons } from './components';
+import { TitleInput, VoteButtons, VoteDisplay } from './components';
+import { Vote } from '../../types/room';
+import { VoteDisplayProps } from './components/voteDisplay';
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,12 +30,11 @@ const Wrapper = styled.div`
  * 4. Whenever a new issue is created, start a timer that stops whenever the votes are shown
  *
  * === Pointing ===
- * 1. Create and style the pointing interface
+ * 1. Style the pointing interface
  * 2. Add "show votes" button that reveals all votes.
- * 3. Whenever a participant votes, update their vote in the database. Hash the vote value so it can't be seen by others. Visually hide until Issue's "show votes" button is clicked.
- * 4. Auto-show votes when everyone has voted. When votes are auto-shown, unhash the votes and write them to the database.
- * 5. Whenever votes are forced to be shown, anyone who hasn't voted will have consecutiveMisses incremented by 1. If consecutiveMisses is 3, set inactive to true. Have the UI reflect this.
- * 6. If a user votes, it resets their consecutiveMisses to 0.
+ * 3. Auto-show votes when everyone has voted. When votes are auto-shown, unhash the votes and write them to the database.
+ * 4. Whenever votes are forced to be shown, anyone who hasn't voted will have consecutiveMisses incremented by 1. If consecutiveMisses is 3, set inactive to true. Have the UI reflect this.
+ * 5. If a user votes, it resets their consecutiveMisses to 0.
  *
  * === Participant Section ===
  * 1. List all participants and their votes in order of joinedAt
@@ -68,6 +69,17 @@ const Room = withUserSetup(() => {
       ? Object.values(roomData?.issues).sort((a, b) => b?.createdAt - a?.createdAt)[0]
       : null, [ roomData ]);
 
+  const voteData = useMemo(() => {
+    const { participants } = roomData || { participants: [] };
+    const { votes }: { votes: {[ key: string ]: Vote} } = currentIssue || { votes: {} };
+
+    return participants
+      .sort((a, b) => a.joinedAt - b.joinedAt)
+      .map(({ name, id }): VoteDisplayProps => ({
+        name: name,
+        vote: votes[ id ] ?? '',
+      }));
+  }, [ roomData?.participants, currentIssue?.votes ]);
 
   const handleUpdateLatestIssue = useCallback((field: string, value: any, callback?: () => void) => {
     if (roomData && user && currentIssue) {
@@ -142,26 +154,8 @@ const Room = withUserSetup(() => {
   return (
     <Wrapper>
       <TitleInput updatedIssueTitle={currentIssue?.name || ''} handleUpdate={handleUpdateLatestIssue} />
-      <VoteButtons />
-      <h2>Participants</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Vote</th>
-          </tr>
-        </thead>
-        <tbody>
-          {roomData?.participants.map((participant) => (
-            <tr key={participant.id}>
-              <td>{participant.name}</td>
-              <td>{participant.vote}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <h2>Results</h2>
-      <p>Average: {roomData?.average}</p>
+      <VoteButtons handleVote={handleUpdateLatestIssue} />
+      <VoteDisplay voteData={voteData} shouldShowVotes={false} />
       <p>Breakdown</p>
       {/* <ul>
         {roomData?.breakdown.map((breakdown) => (

@@ -47,10 +47,8 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
         const anonUser = await signIn();
         console.log('anonUser', anonUser);
         payload.id = anonUser.userId!;
-        createUser(payload, async () => {
-          setUserCookie(payload);
-          setUser(payload);
-        });
+        setUserCookie(payload);
+        setUser(payload);
       } catch (error) {
         console.error(e);
       }

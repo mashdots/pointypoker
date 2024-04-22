@@ -7,10 +7,7 @@ type Participant = User & {
   joinedAt: number;
 }
 
-type Vote = {
-  participantId: string;
-  vote: string | number;
-}
+type Vote = string | number;
 
 type Issue = {
   [key: string]: any;
@@ -36,4 +33,5 @@ export type {
   Participant,
   Issue,
   Room,
+  Vote,
 };

@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import useStore from '../../../utils/store';
+import { Vote } from '../../../types/room';
 
+
+type Props = {
+  handleVote: (field: string, value: Vote) => void;
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -10,16 +16,30 @@ const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-const VoteButtons = () => {
+const VoteButtons = ({ handleVote }: Props) => {
+  const user = useStore((state) => state.user);
+
+  const voteOptions = [1, 2, 3, 5, 8, '?', '∞'];
+
+  const generateVoteButtons = (voteOptions: Array<number | string>) => {
+    return voteOptions.map((option) => (
+      <button
+        key={option}
+        onClick={(e) => {
+          e.preventDefault();
+          if (user) {
+            handleVote(`votes.${user.id}`, option);
+          }
+        }}
+      >
+        {option}
+      </button>
+    ));
+  };
+
   return (
     <Wrapper>
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>5</button>
-      <button>8</button>
-      <button>?</button>
-      <button>∞</button>
+      {generateVoteButtons(voteOptions)}
     </Wrapper>
   );
 };
