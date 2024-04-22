@@ -8,7 +8,19 @@ type Props = {
   handleUpdate: (field: string, value: string) => void;
 }
 
-const StyledInput = styled.input`
+type InputProps = {
+  isLoading: boolean;
+}
+
+/**
+ * TO DO:
+ * - Add a loading indication with success and failure states
+ * - When the input has updated for other participants, animate to indicate an update
+ * - When not focused, make the border the shadowy-expanded type
+ * - When focused, bring it into an outline
+ */
+
+const StyledInput = styled.input<InputProps>`
   background-color: ${ VARIATIONS.structure.bg };
   color: ${ VARIATIONS.structure.textLowContrast };
 
@@ -43,6 +55,7 @@ const TitleInput = ({
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [ value, setValue ] = useState(updatedIssueTitle);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (updatedIssueTitle !== value) {
@@ -61,7 +74,9 @@ const TitleInput = ({
     <StyledInput
       ref={inputRef}
       type='text'
+      placeholder='ticket number or title'
       value={value}
+      isLoading={isLoading}
       onChange={(e) => setValue(e.target.value)}
     />
   );

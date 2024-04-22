@@ -27,8 +27,9 @@ const ChildrenWrapper = styled.div`
  * Settings page -
  *   1. Allow users to change their name.
  *   2. Light mode
- *   3. Allow users to clear local data.
- *   4. allow users to see statistics about their participation, including sessions voted, if they typically vote above or below the trend, etc.
+ *   3. Color themes
+ *   4. Allow users to clear local data.
+ *   5. allow users to see statistics about their participation, including sessions voted, if they typically vote above or below the trend, etc.
  *
  * Site -
  *  1. Add a favicon

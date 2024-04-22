@@ -11,6 +11,17 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
+/**
+ * TO DOS:
+ * 1. Align header to left and show room name next to it
+ * 2. Add a settings button to the right
+ * 3. Make a settings panel that gives the options:
+ *   - Change name
+ *   - Dark or light mode
+ *   - Change pointing scale
+ *   - Delete personal data
+ */
+
 const Header = () => (
   <Wrapper>
     <UserControl />
