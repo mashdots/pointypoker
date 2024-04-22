@@ -8,7 +8,7 @@ type Props = {
   children: string;
   isDisabled?: boolean;
   margin?: 'left' | 'right' | 'center';
-  onClick?: () => void;
+  onClick?: (arg: any | undefined) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   variation: keyof VariationTypes;
   width?: 'quarter' | 'third' | 'half' | 'full' | number;

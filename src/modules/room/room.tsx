@@ -2,15 +2,17 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 import styled from 'styled-components';
+import { v4 as uuid } from 'uuid';
 
 import useStore from '../../utils/store';
-import { updateRoom, watchRoom } from '../../services/firebase';
+import { addIssue, updateRoom, watchRoom } from '../../services/firebase';
 import { Issue, Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { VARIATIONS } from '../../utils/styles';
 import { TitleInput, VoteButtons, VoteDisplay } from './components';
 import { Vote } from '../../types/room';
 import { VoteDisplayProps } from './components/voteDisplay';
+import Button from '../../components/common/button';
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,18 +25,16 @@ const Wrapper = styled.div`
 
 /**
  * TO DOs:
+ * 1. Simplify and abstract the logic in this component
  *
  * === Issues ===
- * 1. Add "new issue" button that creates a new issue and pushes it to the database. When a new issue is created, all votes are reset. The previous issue name appears in a separate section with the average vote
- * 2. If the name of the issue is changed _after_ votes have been cast, go through the new issue cycle
- * 4. Whenever a new issue is created, start a timer that stops whenever the votes are shown
+ * 1. The previous issue name appears in a separate section with the average vote
+ * 2. Whenever a new issue is created, start a timer that stops whenever the votes are shown
  *
  * === Pointing ===
  * 1. Style the pointing interface
- * 2. Add "show votes" button that reveals all votes.
- * 3. Auto-show votes when everyone has voted. When votes are auto-shown, unhash the votes and write them to the database.
- * 4. Whenever votes are forced to be shown, anyone who hasn't voted will have consecutiveMisses incremented by 1. If consecutiveMisses is 3, set inactive to true. Have the UI reflect this.
- * 5. If a user votes, it resets their consecutiveMisses to 0.
+ * 2. Whenever votes are forced to be shown, anyone who hasn't voted will have consecutiveMisses incremented by 1. If consecutiveMisses is 3, set inactive to true. Have the UI reflect this.
+ * 3. If a user votes, it resets their consecutiveMisses to 0.
  *
  * === Participant Section ===
  * 1. List all participants and their votes in order of joinedAt
@@ -77,12 +77,20 @@ const Room = withUserSetup(() => {
       .sort((a, b) => a.joinedAt - b.joinedAt)
       .map(({ name, id }): VoteDisplayProps => ({
         name: name,
-        vote: votes[ id ] ?? '',
+        vote: votes ? votes[ id ] : '',
       }));
+  }, [ roomData?.participants, currentIssue?.votes ]);
+
+  const areAllVotesCast = useMemo(() => {
+    const { participants } = roomData || { participants: [] };
+    const { votes }: { votes: {[ key: string ]: Vote} } = currentIssue || { votes: {} };
+
+    return participants.every(({ id }) => votes[ id ]);
   }, [ roomData?.participants, currentIssue?.votes ]);
 
   const handleUpdateLatestIssue = useCallback((field: string, value: any, callback?: () => void) => {
     if (roomData && user && currentIssue) {
+      console.log('latest issue', currentIssue);
       let roomObjPath = 'issues';
       let resolvedValue = value;
       roomObjPath += `.${currentIssue.id}.${field}`;
@@ -97,6 +105,22 @@ const Room = withUserSetup(() => {
       }
 
       updateRoom(roomData.name, roomObjPath, resolvedValue, callback);
+    }
+  }, [ roomData ]);
+
+  const handleCreateIssue = useCallback((newIssueName?: string) => {
+    if (roomData && user) {
+      const newIssue: Issue = {
+        name: newIssueName || '',
+        id: uuid(),
+        shouldShowVotes: false,
+        votes: {},
+        createdAt: Date.now(),
+      };
+
+      console.log('new issue', newIssue);
+      console.log('newIssueName', newIssueName);
+      updateRoom(roomData.name, `issues.${newIssue.id}`, newIssue);
     }
   }, [ roomData ]);
 
@@ -153,9 +177,25 @@ const Room = withUserSetup(() => {
 
   return (
     <Wrapper>
-      <TitleInput updatedIssueTitle={currentIssue?.name || ''} handleUpdate={handleUpdateLatestIssue} />
+      <TitleInput
+        updatedIssueTitle={currentIssue?.name || ''}
+        handleUpdate={handleUpdateLatestIssue}
+        createIssue={handleCreateIssue}
+        allVotesCast={areAllVotesCast}
+      />
+      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+        <Button margin='left' variation='info' width='half' onClick={() => handleCreateIssue()}>new issue</Button>
+        <Button
+          margin='right'
+          variation='info'
+          width='half'
+          onClick={() => handleUpdateLatestIssue('shouldShowVotes', true)}
+        >
+          show votes
+        </Button>
+      </div>
       <VoteButtons handleVote={handleUpdateLatestIssue} />
-      <VoteDisplay voteData={voteData} shouldShowVotes={false} />
+      <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentIssue?.shouldShowVotes || areAllVotesCast} />
       <p>Breakdown</p>
       {/* <ul>
         {roomData?.breakdown.map((breakdown) => (

@@ -1,6 +1,7 @@
 import { FirebaseApp, initializeApp } from 'firebase/app';
 
 import {
+  addIssue,
   createRoom,
   createUser,
   getAllDocsFromCollection,
@@ -34,6 +35,7 @@ const getApp = (): FirebaseApp => {
 export default getApp;
 
 export {
+  addIssue,
   createRoom,
   createUser,
   getAllDocsFromCollection,

@@ -6,6 +6,8 @@ import { VARIATIONS } from '../../../utils/styles';
 type Props = {
   updatedIssueTitle: string;
   handleUpdate: (field: string, value: string) => void;
+  createIssue: (newIssueName: string | undefined) => void;
+  allVotesCast: boolean;
 }
 
 type InputProps = {
@@ -52,6 +54,8 @@ let timeout: NodeJS.Timeout;
 const TitleInput = ({
   updatedIssueTitle,
   handleUpdate,
+  createIssue,
+  allVotesCast,
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [ value, setValue ] = useState(updatedIssueTitle);
@@ -61,7 +65,11 @@ const TitleInput = ({
     if (updatedIssueTitle !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        handleUpdate('name', value);
+        if (allVotesCast) {
+          createIssue(value);
+        } else {
+          handleUpdate('name', value);
+        }
       }, 1000);
     }
   }, [ value ]);

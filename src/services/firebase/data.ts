@@ -1,4 +1,5 @@
 import {
+  arrayUnion,
   collection,
   doc,
   DocumentData,
@@ -234,7 +235,41 @@ const updateRoom = async (
 
 /** Issue Management */
 
+const addIssue = async (
+  room: string,
+  data: Issue,
+  callback?: (arg: ResultType) => void,
+): Promise<void> => {
+  const result: ResultType = {
+    data: [],
+    error: false,
+    message: null,
+  };
+
+  try {
+    const db = getDataClient();
+
+    if (db) {
+      const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
+
+      await updateDoc(roomRef, {
+        issues: arrayUnion(data),
+      });
+
+      result.data = data as Issue;
+    } else {
+      throw new Error('Failed to get data client.');
+    }
+  } catch (error) {
+    result.error = true;
+    result.message = `There was a problem adding an issue to ${ room } in the ${ PossibleFirebaseCollections.ROOMS} collection`;
+  }
+
+  callback?.(result);
+};
+
 export {
+  addIssue,
   createRoom,
   createUser,
   getAllDocsFromCollection,
