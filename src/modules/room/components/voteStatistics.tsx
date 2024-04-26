@@ -1,7 +1,7 @@
 import React from 'react';
 
-const VoteBreakdown = () => {
+const VoteStatistics = () => {
   return <div>Vote Breakdown</div>;
 };
 
-export default VoteBreakdown;
+export default VoteStatistics;

@@ -28,7 +28,7 @@ const ButtonContainer = styled.div`
  * 1. If a user is navigated here because a room didn't exist, show a message that the room doesn't exist.
  */
 const RoomSetup = withUserSetup(() => {
-  const user = useStore((state) => state.user);
+  const { room, user } = useStore((state) => ({ user: state.user, room: state.room }));
   const setRoom = useStore((state) => state.setRoom);
   const navigate = useNavigate();
 
@@ -76,6 +76,13 @@ const RoomSetup = withUserSetup(() => {
   useEffect(() => {
     document.title = 'pointy poker';
   }, []);
+
+  // TEMP: Remove after development of room
+  useEffect(() => {
+    if (room) {
+      navigate(`/${ room }`);
+    }
+  }, [ room ]);
 
   return (
     <Wrapper>

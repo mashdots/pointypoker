@@ -27,12 +27,12 @@ const StyledInput = styled.input<InputProps>`
   color: ${ VARIATIONS.structure.textLowContrast };
 
   border: none;
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 64px;
-  text-align: center;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-top: 2rem;
+  text-align: left;
   font-size: 2rem;
-  width: 80%;
+  width: 100%;
 
   outline-offset: -4px;
   outline-width: 4px;

@@ -21,6 +21,21 @@ const Wrapper = styled.div`
   height: 100%;
   width: 100%;
   align-items: center;
+  padding: 1rem;
+`;
+
+const VoteDataWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  align-items: flex-start;
+`;
+
+const VoteParticipationWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  align-items: flex-start;
 `;
 
 /**
@@ -88,10 +103,8 @@ const Room = withUserSetup(() => {
 
   const handleUpdateLatestIssue = useCallback((field: string, value: any, callback?: () => void) => {
     if (roomData && user && currentIssue) {
-      console.log('latest issue', currentIssue);
-      let roomObjPath = 'issues';
+      let roomObjPath = `issues.${ currentIssue.id }.${ field}`;
       let resolvedValue = value;
-      roomObjPath += `.${currentIssue.id}.${field}`;
 
       if (field === 'votes') {
         resolvedValue = {
@@ -116,8 +129,6 @@ const Room = withUserSetup(() => {
         createdAt: Date.now(),
       };
 
-      console.log('new issue', newIssue);
-      console.log('newIssueName', newIssueName);
       updateRoom(roomData.name, `issues.${newIssue.id}`, newIssue);
     }
   }, [ roomData ]);
@@ -178,7 +189,7 @@ const Room = withUserSetup(() => {
         createIssue={handleCreateIssue}
         allVotesCast={areAllVotesCast}
       />
-      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+      <VoteDataWrapper>
         <Button margin='left' variation='info' width='half' onClick={() => handleCreateIssue()}>new issue</Button>
         <Button
           margin='right'
@@ -188,17 +199,11 @@ const Room = withUserSetup(() => {
         >
           show votes
         </Button>
-      </div>
-      <VoteButtons handleVote={handleUpdateLatestIssue} />
-      <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentIssue?.shouldShowVotes || areAllVotesCast} />
-      <p>Breakdown</p>
-      {/* <ul>
-        {roomData?.breakdown.map((breakdown) => (
-          <li key={breakdown.points}>
-            {breakdown.points}: {breakdown.count}
-          </li>
-        ))}
-      </ul> */}
+        <VoteParticipationWrapper>
+          <VoteButtons handleVote={handleUpdateLatestIssue} />
+          <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentIssue?.shouldShowVotes || areAllVotesCast} />
+        </VoteParticipationWrapper>
+      </VoteDataWrapper>
     </Wrapper>
   );
 });

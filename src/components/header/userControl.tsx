@@ -9,7 +9,6 @@ const Wrapper = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding-right: 1rem;
 `;
 
 const UserControl = () => {

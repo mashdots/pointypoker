@@ -14,7 +14,7 @@ const StyledInput = styled.input`
   color: ${VARIATIONS.structure.textLowContrast};
 
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 16px;
   text-align: center;
   font-size: 24px;

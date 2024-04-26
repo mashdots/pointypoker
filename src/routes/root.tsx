@@ -10,14 +10,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
   height: 100vh; /* Set container height to fill the viewport */
 `;
 
 const ChildrenWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   height: 100%;
   width: 100%;
 `;

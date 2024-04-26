@@ -1,6 +1,6 @@
 import TitleInput from './titleInput';
-import VoteBreakdown from './voteBreakdown';
+import VoteStatistics from './voteStatistics';
 import VoteButtons from './voteButtons';
 import VoteDisplay from './voteDisplay';
 
-export { TitleInput, VoteBreakdown, VoteButtons, VoteDisplay };
+export { TitleInput, VoteStatistics, VoteButtons, VoteDisplay };
