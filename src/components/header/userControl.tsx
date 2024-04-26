@@ -8,10 +8,8 @@ import { signOut } from '../../services/firebase/auth';
 const Wrapper = styled.div`
   cursor: pointer;
   display: flex;
-  flex: 1;
   align-items: center;
-  justify-content: flex-start;
-  padding-left: 1rem;
+  padding-right: 1rem;
 `;
 
 const UserControl = () => {

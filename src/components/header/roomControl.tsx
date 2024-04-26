@@ -7,10 +7,9 @@ import useStore from '../../utils/store';
 const Wrapper = styled.div`
   cursor: pointer;
   display: flex;
-  flex: 1;
   align-items: center;
-  justify-content: flex-end;
-  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
 `;
 
 const RoomControl = () => {
@@ -23,7 +22,11 @@ const RoomControl = () => {
     clearRoom();
   };
 
-  return <Wrapper onClick={handleExitRoom}>{room}</Wrapper>;
+  if (room) {
+    return <Wrapper onClick={handleExitRoom}>| {room}</Wrapper>;
+  } else {
+    return null;
+  }
 };
 
 export default RoomControl;

@@ -37,8 +37,6 @@ const Wrapper = styled.div`
  * 3. If a user votes, it resets their consecutiveMisses to 0.
  *
  * === Participant Section ===
- * 1. List all participants and their votes in order of joinedAt
- * 2. If the user joins the room and was a former participant, update their joinedAt time, and set inactive to false, and reset consecutiveMisses to 0.
  * 3. If the user is inactive, then their lack of vote will not be counted towards the total votes needed to show votes, and won't affect the average score calculation.
  * 4. If the user leaves the room, or if the user closes the window or navigates to another website, set their inactive to true.
  * 5. Differentiate between inactivity and leaving.
@@ -150,28 +148,25 @@ const Room = withUserSetup(() => {
     };
   }, [ currentRoom, roomFromPath ]);
 
-  // If someone joins the room, add them as a participant
-  useEffect(() => {
-    if (roomData && user && !roomData.participants.find((participant) => participant.id === user.id)) {
-      const selfAsParticipant: Participant = {
-        id: user.id,
-        name: user.name,
-        consecutiveMisses: 0,
-        inactive: false,
-        isHost: false,
-        joinedAt: Date.now(),
-      };
-
-      const updatedRoomData = cloneDeep(roomData);
-      updatedRoomData.participants.push(selfAsParticipant);
-      updateRoom(roomData.name, 'participants', updatedRoomData.participants);
-    }
-  }, [ roomData ]);
-
   // When a room loads, update the page title
   useEffect(() => {
     if (roomData) {
       document.title = `pointy poker - ${ roomData.name}`;
+
+      if (user && !roomData.participants.find((participant) => participant.id === user.id)) {
+        const selfAsParticipant: Participant = {
+          id: user.id,
+          name: user.name,
+          consecutiveMisses: 0,
+          inactive: false,
+          isHost: false,
+          joinedAt: Date.now(),
+        };
+
+        const updatedRoomData = cloneDeep(roomData);
+        updatedRoomData.participants.push(selfAsParticipant);
+        updateRoom(roomData.name, 'participants', updatedRoomData.participants);
+      }
     }
   }, []);
 
