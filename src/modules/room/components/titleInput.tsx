@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { VARIATIONS } from '../../../utils/styles';
 
 type Props = {
-  updatedIssueTitle: string;
+  updatedTicketTitle: string;
   handleUpdate: (field: string, value: string) => void;
-  createIssue: (newIssueName: string | undefined) => void;
+  createTicket: (newTicketName: string | undefined) => void;
   allVotesCast: boolean;
 }
 
@@ -52,21 +52,21 @@ const StyledInput = styled.input<InputProps>`
 let timeout: NodeJS.Timeout;
 
 const TitleInput = ({
-  updatedIssueTitle,
+  updatedTicketTitle,
   handleUpdate,
-  createIssue,
+  createTicket,
   allVotesCast,
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [ value, setValue ] = useState(updatedIssueTitle);
+  const [ value, setValue ] = useState(updatedTicketTitle);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (updatedIssueTitle !== value) {
+    if (updatedTicketTitle !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         if (allVotesCast) {
-          createIssue(value);
+          createTicket(value);
         } else {
           handleUpdate('name', value);
         }
@@ -75,8 +75,8 @@ const TitleInput = ({
   }, [ value ]);
 
   useEffect(() => {
-    setValue(updatedIssueTitle);
-  }, [ updatedIssueTitle ]);
+    setValue(updatedTicketTitle);
+  }, [ updatedTicketTitle ]);
 
   return (
     <StyledInput

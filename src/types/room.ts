@@ -9,7 +9,7 @@ type Participant = User & {
 
 type Vote = string | number;
 
-type Issue = {
+type Ticket = {
   [key: string]: any;
   name?: string;
   id: string;
@@ -24,14 +24,14 @@ type Room = {
   name: string;
   createdAt: number;
   participants: Array<Participant>;
-  issues: {
-    [key: string]: Issue;
+  tickets: {
+    [key: string]: Ticket;
   };
 }
 
 export type {
   Participant,
-  Issue,
+  Ticket,
   Room,
   Vote,
 };

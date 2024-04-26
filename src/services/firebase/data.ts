@@ -15,10 +15,10 @@ import {
 } from 'firebase/firestore';
 
 import getApp from '.';
-import { Issue, Participant, Room, User } from '../../types';
+import { Ticket, Participant, Room, User } from '../../types';
 import { PossibleFirebaseCollections } from './constants';
 
-type PossibleFirebaseTypes = Room | Participant | Issue
+type PossibleFirebaseTypes = Room | Participant | Ticket
 
 export interface ResultType {
   data: DocumentData | Array<PossibleFirebaseTypes> | PossibleFirebaseTypes;
@@ -233,11 +233,11 @@ const updateRoom = async (
   callback?.();
 };
 
-/** Issue Management */
+/** Ticket Management */
 
-const addIssue = async (
+const addTicket = async (
   room: string,
-  data: Issue,
+  data: Ticket,
   callback?: (arg: ResultType) => void,
 ): Promise<void> => {
   const result: ResultType = {
@@ -253,23 +253,23 @@ const addIssue = async (
       const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
 
       await updateDoc(roomRef, {
-        issues: arrayUnion(data),
+        tickets: arrayUnion(data),
       });
 
-      result.data = data as Issue;
+      result.data = data as Ticket;
     } else {
       throw new Error('Failed to get data client.');
     }
   } catch (error) {
     result.error = true;
-    result.message = `There was a problem adding an issue to ${ room } in the ${ PossibleFirebaseCollections.ROOMS} collection`;
+    result.message = `There was a problem adding an ticket to ${ room } in the ${ PossibleFirebaseCollections.ROOMS} collection`;
   }
 
   callback?.(result);
 };
 
 export {
-  addIssue,
+  addTicket,
   createRoom,
   createUser,
   getAllDocsFromCollection,

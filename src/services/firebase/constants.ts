@@ -1,7 +1,7 @@
 enum PossibleFirebaseCollections {
   USERS = 'users',
   ROOMS = 'rooms',
-  ISSUES = 'issues',
+  TICKETS = 'tickets',
 }
 
 export { PossibleFirebaseCollections };

@@ -46,7 +46,7 @@ const RoomSetup = withUserSetup(() => {
       inactive: false,
       joinedAt: Date.now(),
     };
-    const initialIssue = {
+    const initialTicket = {
       name: '',
       id: uuid(),
       shouldShowVotes: false,
@@ -57,8 +57,8 @@ const RoomSetup = withUserSetup(() => {
       name: roomName,
       createdAt: Date.now(),
       participants: [ self ],
-      issues: {
-        [initialIssue.id]: initialIssue,
+      tickets: {
+        [initialTicket.id]: initialTicket,
       },
     };
 

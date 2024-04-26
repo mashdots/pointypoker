@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 
 import useStore from '../../utils/store';
-import { addIssue, updateRoom, watchRoom } from '../../services/firebase';
-import { Issue, Participant, Room as RoomType } from '../../types';
+import { addTicket, updateRoom, watchRoom } from '../../services/firebase';
+import { Ticket, Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { VARIATIONS } from '../../utils/styles';
 import { TitleInput, VoteButtons, VoteDisplay } from './components';
@@ -42,9 +42,9 @@ const VoteParticipationWrapper = styled.div`
  * TO DOs:
  * 1. Simplify and abstract the logic in this component
  *
- * === Issues ===
- * 1. The previous issue name appears in a separate section with the average vote
- * 2. Whenever a new issue is created, start a timer that stops whenever the votes are shown
+ * === Tickets ===
+ * 1. The previous ticket name appears in a separate section with the average vote
+ * 2. Whenever a new ticket is created, start a timer that stops whenever the votes are shown
  *
  * === Pointing ===
  * 1. Style the pointing interface
@@ -59,8 +59,8 @@ const VoteParticipationWrapper = styled.div`
  * === Final Results Section ===
  * 1. When there is consensus, show a message that there is consensus. See if you can show confetti
  *
- * === Completed Issues section ===
- * 1. Show all issues that have been completed, including the average vote.
+ * === Completed Tickets section ===
+ * 1. Show all tickets that have been completed, including the average vote.
  */
 
 const Room = withUserSetup(() => {
@@ -76,15 +76,15 @@ const Room = withUserSetup(() => {
 
   const roomFromPath = window.location.pathname.slice(1);
 
-  // Issue Setup
-  const currentIssue = useMemo(() =>
-    roomData?.issues
-      ? Object.values(roomData?.issues).sort((a, b) => b?.createdAt - a?.createdAt)[0]
+  // Ticket Setup
+  const currentTicket = useMemo(() =>
+    roomData?.tickets
+      ? Object.values(roomData?.tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
       : null, [ roomData ]);
 
   const voteData = useMemo(() => {
     const { participants } = roomData || { participants: [] };
-    const { votes }: { votes: {[ key: string ]: Vote} } = currentIssue || { votes: {} };
+    const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
 
     return participants
       .sort((a, b) => a.joinedAt - b.joinedAt)
@@ -92,18 +92,18 @@ const Room = withUserSetup(() => {
         name: name,
         vote: votes ? votes[ id ] : '',
       }));
-  }, [ roomData?.participants, currentIssue?.votes ]);
+  }, [ roomData?.participants, currentTicket?.votes ]);
 
   const areAllVotesCast = useMemo(() => {
     const { participants } = roomData || { participants: [] };
-    const { votes }: { votes: {[ key: string ]: Vote} } = currentIssue || { votes: {} };
+    const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
 
     return participants.every(({ id }) => votes[ id ]);
-  }, [ roomData?.participants, currentIssue?.votes ]);
+  }, [ roomData?.participants, currentTicket?.votes ]);
 
-  const handleUpdateLatestIssue = useCallback((field: string, value: any, callback?: () => void) => {
-    if (roomData && user && currentIssue) {
-      let roomObjPath = `issues.${ currentIssue.id }.${ field}`;
+  const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
+    if (roomData && user && currentTicket) {
+      let roomObjPath = `tickets.${ currentTicket.id }.${ field}`;
       let resolvedValue = value;
 
       if (field === 'votes') {
@@ -119,17 +119,17 @@ const Room = withUserSetup(() => {
     }
   }, [ roomData ]);
 
-  const handleCreateIssue = useCallback((newIssueName?: string) => {
+  const handleCreateTicket = useCallback((newTicketName?: string) => {
     if (roomData && user) {
-      const newIssue: Issue = {
-        name: newIssueName || '',
+      const newTicket: Ticket = {
+        name: newTicketName || '',
         id: uuid(),
         shouldShowVotes: false,
         votes: {},
         createdAt: Date.now(),
       };
 
-      updateRoom(roomData.name, `issues.${newIssue.id}`, newIssue);
+      updateRoom(roomData.name, `tickets.${newTicket.id}`, newTicket);
     }
   }, [ roomData ]);
 
@@ -184,24 +184,24 @@ const Room = withUserSetup(() => {
   return (
     <Wrapper>
       <TitleInput
-        updatedIssueTitle={currentIssue?.name || ''}
-        handleUpdate={handleUpdateLatestIssue}
-        createIssue={handleCreateIssue}
+        updatedTicketTitle={currentTicket?.name || ''}
+        handleUpdate={handleUpdateLatestTicket}
+        createTicket={handleCreateTicket}
         allVotesCast={areAllVotesCast}
       />
       <VoteDataWrapper>
-        <Button margin='left' variation='info' width='half' onClick={() => handleCreateIssue()}>new issue</Button>
+        <Button margin='left' variation='info' width='half' onClick={() => handleCreateTicket()}>next ticket</Button>
         <Button
           margin='right'
           variation='info'
           width='half'
-          onClick={() => handleUpdateLatestIssue('shouldShowVotes', true)}
+          onClick={() => handleUpdateLatestTicket('shouldShowVotes', true)}
         >
           show votes
         </Button>
         <VoteParticipationWrapper>
-          <VoteButtons handleVote={handleUpdateLatestIssue} />
-          <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentIssue?.shouldShowVotes || areAllVotesCast} />
+          <VoteButtons handleVote={handleUpdateLatestTicket} />
+          <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentTicket?.shouldShowVotes || areAllVotesCast} />
         </VoteParticipationWrapper>
       </VoteDataWrapper>
     </Wrapper>

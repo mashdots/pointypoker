@@ -1,6 +1,9 @@
 import React from 'react';
 
-const VoteStatistics = () => {
+const VoteStatistics = ({
+  createTicket,
+  updateTicket,
+}) => {
   return <div>Vote Breakdown</div>;
 };
 
