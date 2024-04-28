@@ -2,13 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../utils/styles';
+import { useTickets } from '../hooks';
 
-type Props = {
-  updatedTicketTitle: string;
-  handleUpdate: (field: string, value: string) => void;
-  createTicket: (newTicketName: string | undefined) => void;
-  allVotesCast: boolean;
-}
 
 type InputProps = {
   isLoading: boolean;
@@ -51,33 +46,28 @@ const StyledInput = styled.input<InputProps>`
 
 let timeout: NodeJS.Timeout;
 
-const TitleInput = ({
-  updatedTicketTitle,
-  handleUpdate,
-  createTicket,
-  allVotesCast,
-}: Props) => {
+const TitleInput = () => {
+  const { areAllVotesCast, currentTicket, handleCreateTicket, handleUpdateLatestTicket } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [ value, setValue ] = useState(updatedTicketTitle);
+  const [ value, setValue ] = useState(currentTicket?.name);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (updatedTicketTitle !== value) {
+    if (value && currentTicket?.name !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        console.log('UPdating value', value, allVotesCast);
-        if (allVotesCast) {
-          createTicket(value);
+        if (areAllVotesCast) {
+          handleCreateTicket(value);
         } else {
-          handleUpdate('name', value);
+          handleUpdateLatestTicket('name', value);
         }
       }, 1000);
     }
   }, [ value ]);
 
   useEffect(() => {
-    setValue(updatedTicketTitle);
-  }, [ updatedTicketTitle ]);
+    setValue(currentTicket?.name);
+  }, [ currentTicket?.name ]);
 
   return (
     <StyledInput

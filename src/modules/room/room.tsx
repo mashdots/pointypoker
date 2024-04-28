@@ -153,10 +153,7 @@ const Room = withUserSetup(() => {
   return (
     <Wrapper>
       <TitleInput
-        updatedTicketTitle={currentTicket?.name || ''}
         handleUpdate={handleUpdateLatestTicket}
-        createTicket={handleCreateTicket}
-        allVotesCast={areAllVotesCast}
       />
       <VoteDataWrapper>
         <VoteParticipationWrapper>
