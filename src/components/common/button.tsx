@@ -12,6 +12,7 @@ type Props = {
   type?: 'button' | 'submit' | 'reset' | undefined;
   variation: keyof VariationTypes;
   width?: 'quarter' | 'third' | 'half' | 'full' | number;
+  textSize?: 'small' | 'medium' | 'large';
 }
 
 type WrapperProps = {
@@ -21,6 +22,7 @@ type WrapperProps = {
   configuredWidth: string;
   configuredColor: keyof VariationTypes;
   isDisabled?: boolean;
+  textSize: number;
 }
 
 const StyledButton = styled.button<WrapperProps>`
@@ -31,13 +33,15 @@ const StyledButton = styled.button<WrapperProps>`
   padding: 16px 32px;
 
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
 
-  outline-offset: -4px;
-  outline-width: 4px;
+  outline-offset: -2px;
+  outline-width: 2px;
   outline-style: solid;
 
-  font-size: 24px;
+  ${({ textSize }) => css`
+    font-size: ${textSize}rem;
+  `}
 
   transition: 
     background-color 300ms,
@@ -69,18 +73,34 @@ const Button = ({
   onClick,
   variation,
   width,
+  textSize = 'medium',
 }: Props) => {
   const marginValues = getMargin(margin);
   const widthValue = getWidth(width);
   let activeBackgroundColor: keyof VariationProperties = 'bgElementActive';
   let activeTextColor: keyof VariationProperties = 'textHighContrast';
   let colorProfile: keyof VariationTypes = VARIATIONS[ variation ] ? variation : 'primary';
+  let buttonFontSize: number;
+
+  switch (textSize) {
+  case 'small':
+    buttonFontSize = 1;
+    break;
+  case 'large':
+    buttonFontSize = 3;
+    break;
+  case 'medium':
+  default:
+    buttonFontSize = 2;
+  }
 
   if (isDisabled) {
     activeBackgroundColor = 'bgElement';
     activeTextColor = 'textLowContrast';
     colorProfile = 'structure';
   }
+
+
 
   return (
     <StyledButton
@@ -91,6 +111,7 @@ const Button = ({
       configuredWidth={widthValue}
       isDisabled={isDisabled}
       onClick={onClick}
+      textSize={buttonFontSize}
     >
       {children}
     </StyledButton>
