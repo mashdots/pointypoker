@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Ticket, Vote } from '../../../types';
+import { Ticket } from '../../../types';
 import { VoteDisplayProps } from '../components/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';

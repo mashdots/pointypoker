@@ -74,7 +74,7 @@ const TitleInput = () => {
       ref={inputRef}
       type='text'
       placeholder='ticket number or title'
-      value={value}
+      value={value ?? ''}
       isLoading={isLoading}
       onChange={(e) => setValue(e.target.value)}
     />

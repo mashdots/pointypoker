@@ -2,11 +2,8 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import Button from '../../../components/common/button';
-import useStore from '../../../utils/store';
-import { VoteDisplayProps } from './voteDisplay';
 import { VARIATIONS } from '../../../utils/styles';
 import { useTickets } from '../hooks';
-import { Room } from '../../../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -64,7 +61,10 @@ const VoteStatistics = () => {
         return acc + vote;
       }, 0,
     );
-    return total / (voteData.length - stringVotes);
+
+    const average = total / (voteData.length - stringVotes);
+
+    return Object.is(average, NaN) ? 'Oops!' : average;
   }, [voteData]);
 
   // const pointSuggestion = useMemo(() => {
@@ -78,6 +78,7 @@ const VoteStatistics = () => {
    * 3. Point with the most votes
    * 4. Point distribution
    * 5. Breakdown of points
+   * 6. Support for string votes like T Shirt sizes
    */
 
 

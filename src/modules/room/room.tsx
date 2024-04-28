@@ -1,17 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { v4 as uuid } from 'uuid';
 
 import useStore from '../../utils/store';
 import { updateRoom, watchRoom } from '../../services/firebase';
-import { Ticket, Participant, Room as RoomType } from '../../types';
+import { Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { TitleInput, VoteButtons, VoteDisplay, VoteStatistics } from './components';
-import { Vote } from '../../types';
-import { VoteDisplayProps } from './components/voteDisplay';
 
 const Wrapper = styled.div`
   display: flex;
@@ -68,13 +65,11 @@ const VoteParticipationWrapper = styled.div`
  */
 
 const Room = withUserSetup(() => {
-  const user = useStore(({ user }) => user);
   const navigate = useNavigate();
-
-  // Room Setup
-  const { roomData, setRoom } = useStore(({ room, setRoom }) => ({
+  const { roomData, setRoom, user } = useStore(({ room, setRoom, user }) => ({
     roomData: room,
     setRoom,
+    user,
   }));
   const roomFromPath = window.location.pathname.slice(1);
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
@@ -102,7 +97,6 @@ const Room = withUserSetup(() => {
     };
   }, [ roomData, roomFromPath ]);
 
-  // When a room loads, update the page title
   useEffect(() => {
     if (roomData) {
       document.title = `pointy poker - ${ roomData.name}`;
