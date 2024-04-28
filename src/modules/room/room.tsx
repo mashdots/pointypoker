@@ -1,18 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 
 import useStore from '../../utils/store';
-import { addTicket, updateRoom, watchRoom } from '../../services/firebase';
-import { Ticket, Participant, Room as RoomType } from '../../types';
+import { updateRoom } from '../../services/firebase';
+import { Ticket, Participant } from '../../types';
 import withUserSetup from '../user/userSetup';
-import { VARIATIONS } from '../../utils/styles';
-import { TitleInput, VoteButtons, VoteDisplay } from './components';
-import { Vote } from '../../types/room';
+import { TitleInput, VoteButtons, VoteDisplay, VoteStatistics } from './components';
+import { Vote } from '../../types';
 import { VoteDisplayProps } from './components/voteDisplay';
-import Button from '../../components/common/button';
+import useRoom from './hooks/room';
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,6 +24,8 @@ const Wrapper = styled.div`
 
 const VoteDataWrapper = styled.div`
   display: flex;
+  width: 100%;
+  margin-top: 1rem;
   flex-direction: row;
   align-self: flex-start;
   align-items: flex-start;
@@ -33,6 +33,8 @@ const VoteDataWrapper = styled.div`
 
 const VoteParticipationWrapper = styled.div`
   display: flex;
+  flex: 2;
+  padding: 0.5rem;
   flex-direction: column;
   align-self: flex-start;
   align-items: flex-start;
@@ -41,6 +43,7 @@ const VoteParticipationWrapper = styled.div`
 /**
  * TO DOs:
  * 1. Simplify and abstract the logic in this component
+ * 2. Add room timer
  *
  * === Tickets ===
  * 1. The previous ticket name appears in a separate section with the average vote
@@ -65,16 +68,8 @@ const VoteParticipationWrapper = styled.div`
 
 const Room = withUserSetup(() => {
   // Room Setup
-  const [roomData, setRoomData] = useState<RoomType | null>(null);
-  const { currentRoom, setRoom, user } = useStore(({ room, setRoom, user }) => ({
-    currentRoom: room,
-    setRoom,
-    user,
-  }));
-  const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
-  const navigate = useNavigate();
-
-  const roomFromPath = window.location.pathname.slice(1);
+  const roomData = useRoom();
+  const user = useStore(({ user }) => user);
 
   // Ticket Setup
   const currentTicket = useMemo(() =>
@@ -133,32 +128,6 @@ const Room = withUserSetup(() => {
     }
   }, [ roomData ]);
 
-  // If a room is in the URL or in the store, attempt to join it, otherwise redirect home
-  useEffect(() => {
-    if ((currentRoom || roomFromPath) && !roomData ) {
-      const roomToJoin = currentRoom || roomFromPath;
-      subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
-        if (!result.error) {
-          setRoomData(result.data as RoomType);
-
-          // If we got the room name from the URL, set it in the store
-          if (!currentRoom) {
-            setRoom((result.data as RoomType).name);
-          }
-        } else {
-          navigate('/');
-          console.error(result);
-        }
-      });
-    } else {
-      navigate('/');
-    }
-
-    return () => {
-      subscribedRoomRef.current?.();
-    };
-  }, [ currentRoom, roomFromPath ]);
-
   // When a room loads, update the page title
   useEffect(() => {
     if (roomData) {
@@ -179,7 +148,7 @@ const Room = withUserSetup(() => {
         updateRoom(roomData.name, 'participants', updatedRoomData.participants);
       }
     }
-  }, []);
+  }, [roomData]);
 
   return (
     <Wrapper>
@@ -190,19 +159,16 @@ const Room = withUserSetup(() => {
         allVotesCast={areAllVotesCast}
       />
       <VoteDataWrapper>
-        <Button margin='left' variation='info' width='half' onClick={() => handleCreateTicket()}>next ticket</Button>
-        <Button
-          margin='right'
-          variation='info'
-          width='half'
-          onClick={() => handleUpdateLatestTicket('shouldShowVotes', true)}
-        >
-          show votes
-        </Button>
         <VoteParticipationWrapper>
           <VoteButtons handleVote={handleUpdateLatestTicket} />
           <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentTicket?.shouldShowVotes || areAllVotesCast} />
         </VoteParticipationWrapper>
+        <VoteStatistics
+          createTicket={handleCreateTicket}
+          updateTicket={handleUpdateLatestTicket}
+          voteData={voteData}
+          shouldShowVotes={currentTicket?.shouldShowVotes || areAllVotesCast}
+        />
       </VoteDataWrapper>
     </Wrapper>
   );

@@ -9,6 +9,8 @@ type Participant = User & {
 
 type Vote = string | number;
 
+type PointOptions = Array<Vote>;
+
 type Ticket = {
   [key: string]: any;
   name?: string;
@@ -24,6 +26,7 @@ type Room = {
   name: string;
   createdAt: number;
   participants: Array<Participant>;
+  pointOptions: PointOptions;
   tickets: {
     [key: string]: Ticket;
   };
@@ -31,7 +34,8 @@ type Room = {
 
 export type {
   Participant,
-  Ticket,
+  PointOptions,
   Room,
+  Ticket,
   Vote,
 };
