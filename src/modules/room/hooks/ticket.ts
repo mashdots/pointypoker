@@ -67,6 +67,8 @@ const useTickets = () => {
     }
   }, [ roomData ]);
 
+
+  console.log('currentTicket', currentTicket);
   return {
     currentTicket,
     voteData,

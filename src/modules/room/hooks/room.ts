@@ -16,7 +16,7 @@ const useRoom = () => {
 
   useEffect(() => {
     if ((currentRoom || roomFromPath) && !roomData) {
-      const roomToJoin = currentRoom || roomFromPath;
+      const roomToJoin = currentRoom?.name || roomFromPath;
 
       subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
         if (!result.error) {
@@ -24,7 +24,7 @@ const useRoom = () => {
 
           // If we got the room name from the URL, set it in the store
           if (!currentRoom) {
-            setRoom((result.data as Room).name);
+            setRoom(result.data as Room);
           }
         } else {
           navigate('/');
@@ -40,6 +40,7 @@ const useRoom = () => {
     };
   }, [ currentRoom, roomFromPath ]);
 
+  console.log('roomData', roomData);
   return roomData;
 };
 

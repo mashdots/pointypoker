@@ -54,7 +54,7 @@ const RoomSetup = withUserSetup(() => {
       votes: {},
       createdAt: Date.now(),
     };
-    const room: Room = {
+    const newRoom: Room = {
       name: roomName,
       createdAt: Date.now(),
       participants: [ self ],
@@ -64,11 +64,11 @@ const RoomSetup = withUserSetup(() => {
       },
     };
 
-    await createRoom(room, (result) => {
+    await createRoom(newRoom, (result) => {
       if (!result.error) {
-        const resolvedRoomName = (result.data as Room).name;
-        setRoom(resolvedRoomName);
-        navigate(`/${ resolvedRoomName}`);
+        const resolvedRoom = result.data as Room;
+        setRoom(resolvedRoom);
+        navigate(`/${ resolvedRoom.name}`);
       } else {
         console.error(result);
       }
@@ -82,7 +82,7 @@ const RoomSetup = withUserSetup(() => {
   // TEMP: Remove after development of room
   useEffect(() => {
     if (room) {
-      navigate(`/${ room }`);
+      navigate(`/${ room.name }`);
     }
   }, [ room ]);
 
@@ -91,7 +91,6 @@ const RoomSetup = withUserSetup(() => {
       <h1>ready to start?</h1>
       <ButtonContainer>
         <Button margin='center' variation='info' width='full' onClick={handleCreateRoom}>start a session</Button>
-        {/* <Button margin='left' variation='info' width='half'>join a session</Button> */}
       </ButtonContainer>
     </Wrapper>
   );

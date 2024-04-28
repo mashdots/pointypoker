@@ -152,9 +152,7 @@ const Room = withUserSetup(() => {
 
   return (
     <Wrapper>
-      <TitleInput
-        handleUpdate={handleUpdateLatestTicket}
-      />
+      <TitleInput />
       <VoteDataWrapper>
         <VoteParticipationWrapper>
           <VoteButtons handleVote={handleUpdateLatestTicket} />

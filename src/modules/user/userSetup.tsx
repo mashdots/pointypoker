@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 import { createUserPayload, getUserCookie, setUserCookie } from '../../utils';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './nameInput';
-import { createUser } from '../../services/firebase';
 import { signIn } from '../../services/firebase/auth';
 import useStore from '../../utils/store';
 
@@ -45,7 +44,6 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
       const payload = createUserPayload(name);
       try {
         const anonUser = await signIn();
-        console.log('anonUser', anonUser);
         payload.id = anonUser.userId!;
         setUserCookie(payload);
         setUser(payload);

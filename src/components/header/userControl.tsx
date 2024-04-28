@@ -12,9 +12,11 @@ const Wrapper = styled.div`
 `;
 
 const UserControl = () => {
-  const user = useStore((state) => state.user);
-  const clearUser = useStore((state) => state.clearUser);
-  const clearRoom = useStore((state) => state.clearRoom);
+  const { user, clearUser, clearRoom } = useStore((state) => ({
+    user: state.user,
+    clearUser: state.clearUser,
+    clearRoom: state.clearRoom,
+  }));
 
   const handleSignOut = async () => {
     try {

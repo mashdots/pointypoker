@@ -22,9 +22,9 @@ let timeout: ReturnType<typeof setTimeout>;
 const RoomController = withUserSetup(() => {
   const [ isVisible, setIsVisible ] = useState(false);
   const [ isOpen, setIsOpen ] = useState(false);
-  const { isUserSet, roomName } = useStore((state) => ({
+  const { isUserSet, room } = useStore((state) => ({
     isUserSet: !!state.user,
-    roomName: state.room,
+    room: state.room,
   }));
 
 
@@ -47,7 +47,7 @@ const RoomController = withUserSetup(() => {
 
   return (
     <Wrapper isOpen={isOpen} isVisible={isVisible} id='room'>
-      {!roomName ? <RoomSetup /> : <Room />}
+      {!room ? <RoomSetup /> : <Room />}
     </Wrapper>
   );
 

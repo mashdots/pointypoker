@@ -13,8 +13,10 @@ const Wrapper = styled.div`
 `;
 
 const RoomControl = () => {
-  const room = useStore((state) => state.room);
-  const clearRoom = useStore((state) => state.clearRoom);
+  const { room, clearRoom } = useStore((state) => ({
+    room: state.room,
+    clearRoom: state.clearRoom,
+  }));
   const navigate = useNavigate();
 
   const handleExitRoom = () => {
@@ -23,7 +25,7 @@ const RoomControl = () => {
   };
 
   if (room) {
-    return <Wrapper onClick={handleExitRoom}>| {room}</Wrapper>;
+    return <Wrapper onClick={handleExitRoom}>| {room.name}</Wrapper>;
   } else {
     return null;
   }
