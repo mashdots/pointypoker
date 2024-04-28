@@ -7,34 +7,43 @@ import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
 
 const useTickets = () => {
-  const { room, user } = useStore(({ user, room }) => ({ user, room }));
+  const {
+    participants = [],
+    roomName,
+    tickets,
+    user,
+  } = useStore(({ user, room }) => (
+    {
+      user,
+      participants: room?.participants,
+      tickets: room?.tickets,
+      roomName: room?.name,
+    }
+  ));
 
   const currentTicket = useMemo(() =>
-    room?.tickets
-      ? Object.values(room?.tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
-      : null, [ room ]);
+    tickets
+      ? Object.values(tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
+      : null,
+  [ tickets ],
+  );
 
-  const voteData = useMemo(() => {
-    const { participants } = room || { participants: [] };
-    const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
+  const voteData = useMemo(() => participants
+    .sort((a, b) => a.joinedAt - b.joinedAt)
+    .map(({ name, id }): VoteDisplayProps => ({
+      name: name,
+      vote: currentTicket?.votes[ id ] ?? '',
+    })),
+  [ participants, currentTicket ],
+  );
 
-    return participants
-      .sort((a, b) => a.joinedAt - b.joinedAt)
-      .map(({ name, id }): VoteDisplayProps => ({
-        name: name,
-        vote: votes ? votes[ id ] : '',
-      }));
-  }, [ room?.participants, currentTicket?.votes ]);
-
-  const areAllVotesCast = useMemo(() => {
-    const { participants } = room || { participants: [] };
-    const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
-
-    return participants.every(({ id }) => votes[ id ]);
-  }, [ room?.participants, currentTicket?.votes ]);
+  const areAllVotesCast = useMemo(
+    () => participants.every(({ id }) => currentTicket?.votes[ id ]),
+    [ participants, currentTicket?.votes ],
+  );
 
   const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
-    if (room && user && currentTicket) {
+    if (roomName && user && currentTicket) {
       let roomObjPath = `tickets.${ currentTicket.id }.${field}`;
       let resolvedValue = value;
 
@@ -47,12 +56,12 @@ const useTickets = () => {
         roomObjPath += `.${user.id}`;
       }
 
-      updateRoom(room.name, roomObjPath, resolvedValue, callback);
+      updateRoom(roomName, roomObjPath, resolvedValue, callback);
     }
-  }, [ room, currentTicket ]);
+  }, [ roomName, currentTicket ]);
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
-    if (room && user) {
+    if (roomName && user) {
       const newTicket: Ticket = {
         name: newTicketName || '',
         id: uuid(),
@@ -61,9 +70,9 @@ const useTickets = () => {
         createdAt: Date.now(),
       };
 
-      updateRoom(room.name, `tickets.${newTicket.id}`, newTicket);
+      updateRoom(roomName, `tickets.${newTicket.id}`, newTicket);
     }
-  }, [ room ]);
+  }, [ roomName ]);
 
   return {
     currentTicket,

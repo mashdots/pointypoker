@@ -18,7 +18,7 @@ import getApp from '.';
 import { Ticket, Participant, Room, User } from '../../types';
 import { PossibleFirebaseCollections } from './constants';
 
-type PossibleFirebaseTypes = Room | Participant | Ticket
+type PossibleFirebaseTypes = Room | Participant | Ticket;
 
 export interface ResultType {
   data: DocumentData | Array<PossibleFirebaseTypes> | PossibleFirebaseTypes;

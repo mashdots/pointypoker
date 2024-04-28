@@ -41,15 +41,16 @@ const StatisticsContainer = styled.div`
 `;
 
 const VoteStatistics = () => {
-  const { tickets } = useStore(({ room }) => room as Room);
   const {
     areAllVotesCast,
+    currentTicket,
     handleCreateTicket,
     voteData,
     handleUpdateLatestTicket,
   } = useTickets();
   const shouldShowVotes = useMemo(
-    () => areAllVotesCast || tickets[ 0 ]?.shouldShowVotes, [ areAllVotesCast, tickets ],
+    () => areAllVotesCast || currentTicket?.shouldShowVotes,
+    [ areAllVotesCast, currentTicket ],
   );
 
   const averagePointValue = useMemo(() => {
