@@ -1,23 +1,21 @@
 import { useCallback, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import useRoom from './room';
 import { Ticket, Vote } from '../../../types';
 import { VoteDisplayProps } from '../components/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
 
 const useTickets = () => {
-  const roomData = useRoom();
-  const user = useStore(({ user }) => user);
+  const { room, user } = useStore(({ user, room }) => ({ user, room }));
 
   const currentTicket = useMemo(() =>
-    roomData?.tickets
-      ? Object.values(roomData?.tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
-      : null, [ roomData ]);
+    room?.tickets
+      ? Object.values(room?.tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
+      : null, [ room ]);
 
   const voteData = useMemo(() => {
-    const { participants } = roomData || { participants: [] };
+    const { participants } = room || { participants: [] };
     const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
 
     return participants
@@ -26,17 +24,17 @@ const useTickets = () => {
         name: name,
         vote: votes ? votes[ id ] : '',
       }));
-  }, [ roomData?.participants, currentTicket?.votes ]);
+  }, [ room?.participants, currentTicket?.votes ]);
 
   const areAllVotesCast = useMemo(() => {
-    const { participants } = roomData || { participants: [] };
+    const { participants } = room || { participants: [] };
     const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
 
     return participants.every(({ id }) => votes[ id ]);
-  }, [ roomData?.participants, currentTicket?.votes ]);
+  }, [ room?.participants, currentTicket?.votes ]);
 
   const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
-    if (roomData && user && currentTicket) {
+    if (room && user && currentTicket) {
       let roomObjPath = `tickets.${ currentTicket.id }.${field}`;
       let resolvedValue = value;
 
@@ -49,12 +47,12 @@ const useTickets = () => {
         roomObjPath += `.${user.id}`;
       }
 
-      updateRoom(roomData.name, roomObjPath, resolvedValue, callback);
+      updateRoom(room.name, roomObjPath, resolvedValue, callback);
     }
-  }, [ roomData ]);
+  }, [ room ]);
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
-    if (roomData && user) {
+    if (room && user) {
       const newTicket: Ticket = {
         name: newTicketName || '',
         id: uuid(),
@@ -63,12 +61,10 @@ const useTickets = () => {
         createdAt: Date.now(),
       };
 
-      updateRoom(roomData.name, `tickets.${newTicket.id}`, newTicket);
+      updateRoom(room.name, `tickets.${newTicket.id}`, newTicket);
     }
-  }, [ roomData ]);
+  }, [ room ]);
 
-
-  console.log('currentTicket', currentTicket);
   return {
     currentTicket,
     voteData,

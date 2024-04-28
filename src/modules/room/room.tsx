@@ -1,16 +1,17 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 
 import useStore from '../../utils/store';
-import { updateRoom } from '../../services/firebase';
-import { Ticket, Participant } from '../../types';
+import { updateRoom, watchRoom } from '../../services/firebase';
+import { Ticket, Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { TitleInput, VoteButtons, VoteDisplay, VoteStatistics } from './components';
 import { Vote } from '../../types';
 import { VoteDisplayProps } from './components/voteDisplay';
-import useRoom from './hooks/room';
 
 const Wrapper = styled.div`
   display: flex;
@@ -67,9 +68,40 @@ const VoteParticipationWrapper = styled.div`
  */
 
 const Room = withUserSetup(() => {
-  // Room Setup
-  const roomData = useRoom();
   const user = useStore(({ user }) => user);
+  const navigate = useNavigate();
+
+  // Room Setup
+  const { roomData, setRoom } = useStore(({ room, setRoom }) => ({
+    roomData: room,
+    setRoom,
+  }));
+  const roomFromPath = window.location.pathname.slice(1);
+  const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
+
+  useEffect(() => {
+    if (roomData || roomFromPath) {
+      const roomToJoin = roomData?.name || roomFromPath;
+
+      subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
+        console.log('subscribe room');
+        if (!result.error) {
+          if (!isEqual(result.data, roomData)) {
+            setRoom(result.data as RoomType);
+          }
+        } else {
+          navigate('/');
+          console.error(result);
+        }
+      });
+    } else {
+      navigate('/');
+    }
+
+    return () => {
+      subscribedRoomRef.current?.();
+    };
+  }, [ roomData, roomFromPath ]);
 
   // Ticket Setup
   const currentTicket = useMemo(() =>

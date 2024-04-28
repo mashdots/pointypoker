@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import useStore from '../../../utils/store';
 import { Vote } from '../../../types';
 import { VARIATIONS } from '../../../utils/styles';
-import { useRoom } from '../hooks';
 
 
 type Props = {
@@ -35,10 +34,12 @@ const VoteButton = styled.button`
 `;
 
 const VoteButtons = ({ handleVote }: Props) => {
-  const user = useStore((state) => state.user);
-  const roomData = useRoom();
+  const { user, room } = useStore((state) => ({
+    user: state.user,
+    room: state.room,
+  }));
 
-  const voteOptions = roomData?.pointOptions || [];
+  const voteOptions = room?.pointOptions || [];
 
   const generateVoteButtons = (voteOptions: Array<number | string>) => {
     return voteOptions.map((option) => (
