@@ -1,3 +1,4 @@
+import { PointingTypes } from '../modules/room/utils';
 import User from './user';
 
 type Participant = User & {
@@ -26,7 +27,7 @@ type Room = {
   name: string;
   createdAt: number;
   participants: Array<Participant>;
-  pointOptions: PointOptions;
+  pointOptions: PointingTypes;
   tickets: {
     [key: string]: Ticket;
   };

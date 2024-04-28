@@ -9,7 +9,7 @@ import useStore from '../../utils/store';
 import { Participant, Room } from '../../types';
 import { createRoom } from '../../services/firebase';
 import withUserSetup from '../user/userSetup';
-import getPointOptions from './utils';
+import getPointOptions, { PointingTypes } from './utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,7 +58,7 @@ const RoomSetup = withUserSetup(() => {
       name: roomName,
       createdAt: Date.now(),
       participants: [ self ],
-      pointOptions: getPointOptions(),
+      pointOptions: PointingTypes.limitedFibonacci,
       tickets: {
         [initialTicket.id]: initialTicket,
       },

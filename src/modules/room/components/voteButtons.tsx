@@ -1,13 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import useStore from '../../../utils/store';
-import { Vote } from '../../../types';
+import { PointOptions } from '../../../types';
 import { VARIATIONS } from '../../../utils/styles';
-
-
-type Props = {
-  handleVote: (field: string, value: Vote) => void;
-}
+import getPointOptions from '../utils';
+import { useTickets } from '../hooks';
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,28 +30,29 @@ const VoteButton = styled.button`
   }
 `;
 
-const VoteButtons = ({ handleVote }: Props) => {
+const VoteButtons = () => {
   const { user, room } = useStore((state) => ({
     user: state.user,
     room: state.room,
   }));
+  const { handleUpdateLatestTicket } = useTickets();
 
-  const voteOptions = room?.pointOptions || [];
+  const voteOptions = getPointOptions(room?.pointOptions);
 
-  const generateVoteButtons = (voteOptions: Array<number | string>) => {
-    return voteOptions.map((option) => (
+  const generateVoteButtons = (voteOptions: PointOptions) => {
+    return voteOptions ? voteOptions.map((option) => (
       <VoteButton
         key={option}
         onClick={(e) => {
           e.preventDefault();
           if (user) {
-            handleVote(`votes.${user.id}`, option);
+            handleUpdateLatestTicket(`votes.${user.id}`, option);
           }
         }}
       >
         {option}
       </VoteButton>
-    ));
+    )) : [];
   };
 
   return (

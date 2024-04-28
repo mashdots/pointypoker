@@ -1,17 +1,12 @@
-import React from 'react';
-import { Vote, User } from '../../../types';
+import React, { useMemo } from 'react';
+import { Vote } from '../../../types';
+import useStore from '../../../utils/store';
+import { useTickets } from '../hooks';
 
 export type VoteDisplayProps = {
   name: string;
   vote: Vote;
 }
-
-type Props = {
-  currentUser: User | null;
-  voteData: VoteDisplayProps[];
-  shouldShowVotes: boolean;
-}
-
 
 /**
  * TO DOs:
@@ -19,10 +14,14 @@ type Props = {
  * 2. Figure out if you want to use hashing
  */
 
-const VoteDisplay = ({ currentUser, voteData = [], shouldShowVotes = false }: Props) => {
+const VoteDisplay = () => {
+  const { user, room } = useStore(({ user, room }) => ({ user, room }));
+  const { areAllVotesCast, voteData } = useTickets();
+  const shouldShowVotes = useMemo(() => areAllVotesCast || room?.tickets[0]?.shouldShowVotes, [areAllVotesCast, room]);
+
   const voteNodes = voteData.map((vote, i) => {
-    const name = vote.name === currentUser?.name ? 'You' : vote.name;
-    const displayVote = shouldShowVotes || vote.name === currentUser?.name;
+    const name = vote.name === user?.name ? 'You' : vote.name;
+    const displayVote = shouldShowVotes || vote.name === user?.name;
 
     return (
       <li key={`${ vote.name }+${ i }`}>

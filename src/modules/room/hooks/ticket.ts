@@ -49,7 +49,7 @@ const useTickets = () => {
 
       updateRoom(room.name, roomObjPath, resolvedValue, callback);
     }
-  }, [ room ]);
+  }, [ room, currentTicket ]);
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
     if (room && user) {

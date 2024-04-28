@@ -5,13 +5,8 @@ import Button from '../../../components/common/button';
 import useStore from '../../../utils/store';
 import { VoteDisplayProps } from './voteDisplay';
 import { VARIATIONS } from '../../../utils/styles';
-
-type Props = {
-  createTicket: () => void;
-  shouldShowVotes: boolean;
-  updateTicket: (field: string, value: boolean) => void;
-  voteData: VoteDisplayProps[];
-}
+import { useTickets } from '../hooks';
+import { Room } from '../../../types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -45,12 +40,18 @@ const StatisticsContainer = styled.div`
   border-top: 2px solid ${ VARIATIONS.structure.border };
 `;
 
-const VoteStatistics = ({
-  createTicket,
-  shouldShowVotes,
-  updateTicket,
-  voteData,
-}: Props) => {
+const VoteStatistics = () => {
+  const { tickets } = useStore(({ room }) => room as Room);
+  const {
+    areAllVotesCast,
+    handleCreateTicket,
+    voteData,
+    handleUpdateLatestTicket,
+  } = useTickets();
+  const shouldShowVotes = useMemo(
+    () => areAllVotesCast || tickets[ 0 ]?.shouldShowVotes, [ areAllVotesCast, tickets ],
+  );
+
   const averagePointValue = useMemo(() => {
     let stringVotes = 0;
     const total = voteData.reduce(
@@ -86,7 +87,7 @@ const VoteStatistics = ({
           margin='right'
           variation='info'
           width='half'
-          onClick={createTicket}
+          onClick={handleCreateTicket}
           textSize='small'
         >
         next ticket
@@ -95,7 +96,7 @@ const VoteStatistics = ({
           margin='left'
           variation='info'
           width='half'
-          onClick={() => updateTicket('shouldShowVotes', true)}
+          onClick={() => handleUpdateLatestTicket('shouldShowVotes', true)}
           textSize='small'
         >
         show votes

@@ -84,7 +84,6 @@ const Room = withUserSetup(() => {
       const roomToJoin = roomData?.name || roomFromPath;
 
       subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
-        console.log('subscribe room');
         if (!result.error) {
           if (!isEqual(result.data, roomData)) {
             setRoom(result.data as RoomType);
@@ -102,63 +101,6 @@ const Room = withUserSetup(() => {
       subscribedRoomRef.current?.();
     };
   }, [ roomData, roomFromPath ]);
-
-  // Ticket Setup
-  const currentTicket = useMemo(() =>
-    roomData?.tickets
-      ? Object.values(roomData?.tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
-      : null, [ roomData ]);
-
-  const voteData = useMemo(() => {
-    const { participants } = roomData || { participants: [] };
-    const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
-
-    return participants
-      .sort((a, b) => a.joinedAt - b.joinedAt)
-      .map(({ name, id }): VoteDisplayProps => ({
-        name: name,
-        vote: votes ? votes[ id ] : '',
-      }));
-  }, [ roomData?.participants, currentTicket?.votes ]);
-
-  const areAllVotesCast = useMemo(() => {
-    const { participants } = roomData || { participants: [] };
-    const { votes }: { votes: {[ key: string ]: Vote} } = currentTicket || { votes: {} };
-
-    return participants.every(({ id }) => votes[ id ]);
-  }, [ roomData?.participants, currentTicket?.votes ]);
-
-  const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
-    if (roomData && user && currentTicket) {
-      let roomObjPath = `tickets.${ currentTicket.id }.${ field}`;
-      let resolvedValue = value;
-
-      if (field === 'votes') {
-        resolvedValue = {
-          participantId: user.id,
-          vote: value,
-        };
-
-        roomObjPath += `.${user.id}`;
-      }
-
-      updateRoom(roomData.name, roomObjPath, resolvedValue, callback);
-    }
-  }, [ roomData ]);
-
-  const handleCreateTicket = useCallback((newTicketName?: string) => {
-    if (roomData && user) {
-      const newTicket: Ticket = {
-        name: newTicketName || '',
-        id: uuid(),
-        shouldShowVotes: false,
-        votes: {},
-        createdAt: Date.now(),
-      };
-
-      updateRoom(roomData.name, `tickets.${newTicket.id}`, newTicket);
-    }
-  }, [ roomData ]);
 
   // When a room loads, update the page title
   useEffect(() => {
@@ -187,15 +129,10 @@ const Room = withUserSetup(() => {
       <TitleInput />
       <VoteDataWrapper>
         <VoteParticipationWrapper>
-          <VoteButtons handleVote={handleUpdateLatestTicket} />
-          <VoteDisplay currentUser={user} voteData={voteData} shouldShowVotes={currentTicket?.shouldShowVotes || areAllVotesCast} />
+          <VoteButtons />
+          <VoteDisplay />
         </VoteParticipationWrapper>
-        <VoteStatistics
-          createTicket={handleCreateTicket}
-          updateTicket={handleUpdateLatestTicket}
-          voteData={voteData}
-          shouldShowVotes={currentTicket?.shouldShowVotes || areAllVotesCast}
-        />
+        <VoteStatistics />
       </VoteDataWrapper>
     </Wrapper>
   );
