@@ -29,21 +29,21 @@ const StyledInput = styled.input<InputProps>`
   border: none;
   border-radius: 16px;
   padding: 1rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
   text-align: left;
-  font-size: 2rem;
+  font-size: 1.5rem;
   width: 100%;
 
-  outline-offset: -4px;
-  outline-width: 4px;
+  outline-offset: -2px;
+  outline-width: 2px;
   outline-color: ${ VARIATIONS.structure.bgElementHover };
   outline-style: solid;
 
   transition: all 300ms;
 
   :focus {
+    filter: drop-shadow(0 0 0.5em ${ VARIATIONS.structure.bgElementActive });
     color: ${ VARIATIONS.structure.textHighContrast };
-    filter: drop-shadow(0 0 2em ${ VARIATIONS.structure.bgElementHover });
     outline-offset: 0px;
     outline-width: 0px;
   }
@@ -65,6 +65,7 @@ const TitleInput = ({
     if (updatedTicketTitle !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
+        console.log('UPdating value', value, allVotesCast);
         if (allVotesCast) {
           createTicket(value);
         } else {

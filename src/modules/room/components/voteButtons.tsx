@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import useStore from '../../../utils/store';
-import { Vote } from '../../../types/room';
+import { Vote } from '../../../types';
+import { VARIATIONS } from '../../../utils/styles';
 
 
 type Props = {
@@ -11,9 +12,25 @@ type Props = {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
-  width: 80%;
+  width: 100%;
   margin-top: 16px;
-  justify-content: space-between;
+  justify-content: space-around;
+`;
+
+const VoteButton = styled.button`
+  padding: 8px 16px;
+  border: none;
+  border-radius: 16px;
+  height: 64px;
+  width: 64px;
+  background-color: ${VARIATIONS.structure.bgElement};
+  cursor: pointer;
+  transition: background-color 300ms;
+
+  font-size: 1.5rem;
+  :hover {
+    background-color: ${VARIATIONS.structure.bgElementHover};
+  }
 `;
 
 const VoteButtons = ({ handleVote }: Props) => {
@@ -23,7 +40,7 @@ const VoteButtons = ({ handleVote }: Props) => {
 
   const generateVoteButtons = (voteOptions: Array<number | string>) => {
     return voteOptions.map((option) => (
-      <button
+      <VoteButton
         key={option}
         onClick={(e) => {
           e.preventDefault();
@@ -33,7 +50,7 @@ const VoteButtons = ({ handleVote }: Props) => {
         }}
       >
         {option}
-      </button>
+      </VoteButton>
     ));
   };
 

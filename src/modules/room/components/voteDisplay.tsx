@@ -1,6 +1,5 @@
 import React from 'react';
-import { Vote } from '../../../types/room';
-import { User } from '../../../types';
+import { Vote, User } from '../../../types';
 
 export type VoteDisplayProps = {
   name: string;
