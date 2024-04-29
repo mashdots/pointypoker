@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { VARIATIONS } from '../../../utils/styles';
 import { useTickets } from '../hooks';
+import ArticleIcon from '../../../assets/icons/article.svg?react';
 
 
 type InputProps = {
@@ -17,40 +18,80 @@ type InputProps = {
  * - When focused, bring it into an outline
  */
 
+const FormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+`;
+
+const Icon = styled(ArticleIcon)<{ isFocused: boolean }>`
+  width: 24px;
+  padding-top: 0.75rem;
+  margin-right: 1rem;
+  transition: all 300ms;
+
+  ${({ isFocused }) => isFocused && css`
+    width: 32px;
+    margin-right: 0.5rem;
+  `}
+`;
+
+const FocusIndicatorContainer = styled.div`
+  width: 100%;
+  height: 2px;
+`;
+
+const FocusIndicator = styled.div<{isFocused: boolean}>`
+  width: 0%;
+  height: 2px;
+  background-color: ${ VARIATIONS.structure.textHighContrast };
+
+  transition: all 300ms;
+
+  ${({ isFocused }) => isFocused && css`
+    width: 100%;
+  `}
+`;
+
 const StyledInput = styled.input<InputProps>`
   background-color: ${ VARIATIONS.structure.bg };
   color: ${ VARIATIONS.structure.textLowContrast };
 
   border: none;
-  border-radius: 16px;
-  padding: 1rem;
   margin-top: 1rem;
   text-align: left;
   font-size: 1.5rem;
   width: 100%;
 
-  outline-offset: -2px;
-  outline-width: 2px;
-  outline-color: ${ VARIATIONS.structure.bgElementHover };
+  outline-offset: 0px;
+  outline-width: 0px;
   outline-style: solid;
+  margin-bottom: 2px;
 
   transition: all 300ms;
 
   :focus {
-    filter: drop-shadow(0 0 0.5em ${ VARIATIONS.structure.bgElementActive });
     color: ${ VARIATIONS.structure.textHighContrast };
-    outline-offset: 0px;
-    outline-width: 0px;
   }
 `;
 
-let timeout: NodeJS.Timeout;
+let timeout: number;
 
 const TitleInput = () => {
   const { areAllVotesCast, currentTicket, handleCreateTicket, handleUpdateLatestTicket } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
   const [ value, setValue ] = useState(currentTicket?.name);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     if (value && currentTicket?.name !== value) {
@@ -70,14 +111,24 @@ const TitleInput = () => {
   }, [ currentTicket?.name ]);
 
   return (
-    <StyledInput
-      ref={inputRef}
-      type='text'
-      placeholder='ticket number or title'
-      value={value ?? ''}
-      isLoading={isLoading}
-      onChange={(e) => setValue(e.target.value)}
-    />
+    <FormWrapper>
+      <InputWrapper>
+        <Icon isFocused={isFocused} />
+        <StyledInput
+          ref={inputRef}
+          type='text'
+          placeholder='ticket number or title'
+          value={value ?? ''}
+          isLoading={isLoading}
+          onChange={(e) => setValue(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+      </InputWrapper>
+      <FocusIndicatorContainer>
+        <FocusIndicator isFocused={isFocused} />
+      </FocusIndicatorContainer>
+    </FormWrapper>
   );
 };
 
