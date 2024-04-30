@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import '../App.css';
 import { GlobalStyles } from '../utils/styles';
 import Header from '../components/header';
+import { MobileProvider } from '../utils/mobile';
 
 const Container = styled.div`
   display: flex;
@@ -35,18 +36,18 @@ const ChildrenWrapper = styled.div`
  *  3. Add a loading spinner / animation
  *  4. Add a footer
  *  5. Add a cookie notice, privacy policy, and terms of service
- *  6. Mobile responsiveness
- *
  */
 
 const Root = (): JSX.Element => (
-  <Container>
-    <GlobalStyles />
-    <Header />
-    <ChildrenWrapper>
-      <Outlet />
-    </ChildrenWrapper>
-  </Container>
+  <MobileProvider>
+    <Container>
+      <GlobalStyles />
+      <Header />
+      <ChildrenWrapper>
+        <Outlet />
+      </ChildrenWrapper>
+    </Container>
+  </MobileProvider>
 );
 
 

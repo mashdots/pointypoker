@@ -11,13 +11,14 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+
   width: 100%;
-
-  color: ${ VARIATIONS.structure.textLowContrast };
-
+  min-width: 0;
+  
   border: none;
   border-radius: 8px;
-
+  
+  color: ${ VARIATIONS.structure.textLowContrast };
   background-color: ${ VARIATIONS.structure.bgElement };
 `;
 

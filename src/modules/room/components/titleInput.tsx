@@ -10,6 +10,10 @@ type InputProps = {
   isLoading: boolean;
 }
 
+type FocusProps = {
+  isFocused: boolean;
+}
+
 /**
  * TO DO:
  * - Add a loading indication with success and failure states
@@ -33,7 +37,7 @@ const InputWrapper = styled.div`
   width: 100%;
 `;
 
-const Icon = styled(ArticleIcon)<{ isFocused: boolean }>`
+const Icon = styled(ArticleIcon)<FocusProps>`
   width: 24px;
   padding-top: 0.75rem;
   margin-right: 1rem;
@@ -42,6 +46,13 @@ const Icon = styled(ArticleIcon)<{ isFocused: boolean }>`
   ${({ isFocused }) => isFocused && css`
     width: 32px;
     margin-right: 0.5rem;
+    > line {
+      stroke: ${ VARIATIONS.structure.textHighContrast };
+    }
+
+    > rect:nth-child(2) {
+      stroke: ${ VARIATIONS.structure.textHighContrast };
+    }
   `}
 `;
 
@@ -50,11 +61,10 @@ const FocusIndicatorContainer = styled.div`
   height: 2px;
 `;
 
-const FocusIndicator = styled.div<{isFocused: boolean}>`
+const FocusIndicator = styled.div<FocusProps>`
   width: 0%;
   height: 2px;
   background-color: ${ VARIATIONS.structure.textHighContrast };
-
   transition: all 300ms;
 
   ${({ isFocused }) => isFocused && css`

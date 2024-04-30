@@ -2,13 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import useStore from '../../utils/store';
 import { updateRoom, watchRoom } from '../../services/firebase';
 import { Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { TitleInput, VoteButtons, VoteDisplay, VoteStatistics } from './components';
+import { useMobile } from '../../utils/mobile';
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,13 +21,17 @@ const Wrapper = styled.div`
   padding: 1rem;
 `;
 
-const VoteDataWrapper = styled.div`
+const VoteDataWrapper = styled.div<{ showNarrow: boolean}>`
   display: flex;
   width: 100%;
   margin-top: 1rem;
-  flex-direction: row;
   align-self: flex-start;
   align-items: flex-start;
+
+  ${({ showNarrow }) => css`
+    flex-direction: ${showNarrow ? 'column' : 'row'};
+    align-items: center;
+  `};
 `;
 
 const VoteParticipationWrapper = styled.div`
@@ -36,6 +41,7 @@ const VoteParticipationWrapper = styled.div`
   flex-direction: column;
   align-self: flex-start;
   align-items: flex-start;
+  min-width: 0;
 `;
 
 /**
@@ -66,6 +72,7 @@ const VoteParticipationWrapper = styled.div`
 
 const Room = withUserSetup(() => {
   const navigate = useNavigate();
+  const { isMobile } = useMobile();
   const { roomData, setRoom, user } = useStore(({ room, setRoom, user }) => ({
     roomData: room,
     setRoom,
@@ -121,7 +128,7 @@ const Room = withUserSetup(() => {
   return (
     <Wrapper>
       <TitleInput />
-      <VoteDataWrapper>
+      <VoteDataWrapper showNarrow={isMobile}>
         <VoteParticipationWrapper>
           <VoteButtons />
           <VoteDisplay />
