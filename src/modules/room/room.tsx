@@ -8,8 +8,9 @@ import useStore from '../../utils/store';
 import { updateRoom, watchRoom } from '../../services/firebase';
 import { Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
-import { TitleInput, VoteButtons, VoteDisplay, VoteStatistics } from './components';
+import { VoteButtons, VoteDisplay, VoteStatistics } from './components';
 import { useMobile } from '../../utils/mobile';
+import { TitleControl } from './components/titleControl';
 
 const Wrapper = styled.div`
   display: flex;
@@ -127,7 +128,7 @@ const Room = withUserSetup(() => {
 
   return (
     <Wrapper>
-      <TitleInput />
+      <TitleControl />
       <VoteDataWrapper showNarrow={isMobile}>
         <VoteParticipationWrapper>
           <VoteButtons />

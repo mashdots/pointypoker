@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { VARIATIONS } from '../../../utils/styles';
-import { useTickets } from '../hooks';
-import ArticleIcon from '../../../assets/icons/article.svg?react';
+import { VARIATIONS } from '../../../../utils/styles';
+import { useTickets } from '../../hooks';
+import ArticleIcon from '../../../../assets/icons/article.svg?react';
 
 
 type InputProps = {
@@ -11,7 +11,7 @@ type InputProps = {
 }
 
 type FocusProps = {
-  isFocused: boolean;
+  isfocused: string | boolean;
 }
 
 /**
@@ -43,7 +43,7 @@ const Icon = styled(ArticleIcon)<FocusProps>`
   margin-right: 1rem;
   transition: all 300ms;
 
-  ${({ isFocused }) => isFocused && css`
+  ${({ isfocused }) => isfocused === 'true' && css`
     width: 32px;
     margin-right: 0.5rem;
     > line {
@@ -67,7 +67,7 @@ const FocusIndicator = styled.div<FocusProps>`
   background-color: ${ VARIATIONS.structure.textHighContrast };
   transition: all 300ms;
 
-  ${({ isFocused }) => isFocused && css`
+  ${({ isfocused }) => isfocused && css`
     width: 100%;
   `}
 `;
@@ -123,7 +123,7 @@ const TitleInput = () => {
   return (
     <FormWrapper>
       <InputWrapper>
-        <Icon isFocused={isFocused} />
+        <Icon isfocused={`${isFocused}`} />
         <StyledInput
           ref={inputRef}
           type='text'
@@ -136,7 +136,7 @@ const TitleInput = () => {
         />
       </InputWrapper>
       <FocusIndicatorContainer>
-        <FocusIndicator isFocused={isFocused} />
+        <FocusIndicator isfocused={isFocused} />
       </FocusIndicatorContainer>
     </FormWrapper>
   );

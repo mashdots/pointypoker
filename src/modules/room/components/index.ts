@@ -1,4 +1,4 @@
-import TitleInput from './titleInput';
+import TitleInput from './titleControl/titleInput';
 import VoteStatistics from './voteStatistics';
 import VoteButtons from './voteButtons';
 import VoteDisplay from './voteDisplay';

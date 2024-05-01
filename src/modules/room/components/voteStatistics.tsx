@@ -41,7 +41,6 @@ const VoteStatistics = () => {
   const {
     areAllVotesCast,
     currentTicket,
-    handleCreateTicket,
     voteData,
     handleUpdateLatestTicket,
   } = useTickets();
@@ -86,18 +85,8 @@ const VoteStatistics = () => {
     <Wrapper>
       <ButtonContainer>
         <Button
-          margin='right'
           variation='info'
-          width='half'
-          onClick={handleCreateTicket}
-          textSize='small'
-        >
-        next ticket
-        </Button>
-        <Button
-          margin='left'
-          variation='info'
-          width='half'
+          width='full'
           onClick={() => handleUpdateLatestTicket('shouldShowVotes', true)}
           textSize='small'
         >

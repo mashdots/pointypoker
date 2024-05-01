@@ -52,7 +52,7 @@ const VoteResultWrapper = styled.div<{animateVote: boolean}>`
   flex: 3;
   flex-direction: row;
   width: 2rem;
-  height: 1rem;
+  /* height: 1rem; */
   border-radius: 0.5rem;
   width: 2rem;
 
@@ -63,7 +63,7 @@ const VoteResultWrapper = styled.div<{animateVote: boolean}>`
   `}
 `;
 
-const VoteResult = styled.div`
+const BlockedVoteResult = styled.div`
   display: flex;
   flex-direction: row;
   width: 4rem;
@@ -87,10 +87,16 @@ const VoteRow = ({ voteData, isEven, showVote }: VoteRowProps) => {
     };
   }, [voteData.vote]);
 
+  let voteResult = null;
+
+  if (voteData.vote) {
+    voteResult = showVote ? voteData.vote : <BlockedVoteResult />;
+  }
+
   return (
     <StyledVoteRow isEven={isEven}>
       <VoteName>{voteData.name}</VoteName>
-      <VoteResultWrapper animateVote={shouldAnimateVote}>{showVote ? voteData.vote : <VoteResult />}</VoteResultWrapper>
+      <VoteResultWrapper animateVote={shouldAnimateVote}>{voteResult}</VoteResultWrapper>
     </StyledVoteRow>
   );
 };
