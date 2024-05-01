@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   align-items: center;
 
   width: 100%;
-  min-width: 0;
   
   border: none;
   border-radius: 8px;

@@ -41,7 +41,7 @@ const VoteParticipationWrapper = styled.div`
   flex-direction: column;
   align-self: flex-start;
   align-items: flex-start;
-  min-width: 0;
+  width: 100%;
 `;
 
 /**
