@@ -43,60 +43,60 @@ const StyledVoteRow = styled.div<{isEven: boolean}>`
 const VoteName = styled.div`
   display: flex;
   flex: 1;
+  justify-content: flex-end;
   font-size: 1rem;
-  margin-left: 2rem;
+  padding-right: 1rem;
 `;
 
-const VoteResultWrapper = styled.div<{animateVote: boolean}>`
+const VoteResultWrapper = styled.div`
   display: flex;
-  flex: 3;
-  flex-direction: row;
-  width: 2rem;
-  /* height: 1rem; */
-  border-radius: 0.5rem;
-  width: 2rem;
-
-  transition: all 200ms ease-in-out;
-
-  ${({ animateVote }) => animateVote && css`
-    margin-bottom: 1rem;
-  `}
+  flex: 1;
+  padding-left: 1rem;
 `;
 
-const BlockedVoteResult = styled.div`
+const BlockedVoteResult = styled.div<{ animateVote: boolean }>`
   display: flex;
   flex-direction: row;
   width: 4rem;
   height: 1rem;
   border-radius: 0.5rem;
   background-color: ${VARIATIONS.structure.solidBg};
+
+  transition: background-color 0.25s ease-in-out;
+
+  ${({ animateVote }) => animateVote && css`
+    background-color: ${VARIATIONS.info.solidBg};
+  `}
 `;
 
 const VoteRow = ({ voteData, isEven, showVote }: VoteRowProps) => {
-  let timeout: number;
   const [shouldAnimateVote, setShouldAnimateVote] = useState(false);
+  const { name, vote } = voteData;
+  let timeout: number;
+  let voteResult = null;
+
+  if (vote) {
+    voteResult = showVote ? vote : <BlockedVoteResult animateVote={shouldAnimateVote} />;
+  }
+
   useEffect(() => {
-    if (voteData.vote) {
+    if (vote) {
       setShouldAnimateVote(true);
+
       timeout = setTimeout(() => {
         setShouldAnimateVote(false);
-      }, 100);
+      }, 250);
     }
+
     return () => {
       clearTimeout(timeout);
     };
-  }, [voteData.vote]);
-
-  let voteResult = null;
-
-  if (voteData.vote) {
-    voteResult = showVote ? voteData.vote : <BlockedVoteResult />;
-  }
+  }, [vote]);
 
   return (
     <StyledVoteRow isEven={isEven}>
-      <VoteName>{voteData.name}</VoteName>
-      <VoteResultWrapper animateVote={shouldAnimateVote}>{voteResult}</VoteResultWrapper>
+      <VoteName>{name}</VoteName>
+      <VoteResultWrapper>{voteResult}</VoteResultWrapper>
     </StyledVoteRow>
   );
 };
@@ -116,7 +116,7 @@ const VoteDisplay = () => {
   );
 
   const voteNodes = voteData.map((vote, i) => {
-    const name = vote.name === user?.name ? 'You' : vote.name;
+    const name = vote.name === user?.name ? 'you' : vote.name;
     const displayVote = shouldShowVotes || (vote.name === user?.name && vote.vote !== undefined);
 
     return (

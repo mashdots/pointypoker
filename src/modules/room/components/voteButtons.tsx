@@ -1,12 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import useStore from '../../../utils/store';
 import { PointOptions } from '../../../types';
 import { VARIATIONS } from '../../../utils/styles';
 import getPointOptions from '../utils';
 import { useTickets } from '../hooks';
 
-const Wrapper = styled.div`
+const ButtonSetWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -14,19 +14,59 @@ const Wrapper = styled.div`
   justify-content: space-around;
 `;
 
-const VoteButton = styled.button`
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const VoteButton = styled.button<{ selected: boolean }>`
   padding: 8px 16px;
   border: none;
   border-radius: 16px;
   height: 64px;
   width: 64px;
-  background-color: ${VARIATIONS.structure.bgElement};
   cursor: pointer;
-  transition: background-color 300ms;
 
+  transition: 
+    outline-color 300ms,
+    outline-offset 300ms,
+    outline-width 300ms,
+    width 300ms,
+    height 300ms,
+    font-size 300ms,
+    background-color 500ms;
+
+  outline-color: ${VARIATIONS.structure.bgElement};
+  outline-offset: 0px;  
+  outline-width: 0px;
+  outline-style: solid;
+  
   font-size: 1.5rem;
+
+  ${({ selected }) => css`
+    background-color: ${selected ? VARIATIONS.success.bgElement : VARIATIONS.structure.bgElement};
+  `}
+
   :hover {
-    background-color: ${VARIATIONS.structure.bgElementHover};
+    outline-color: ${VARIATIONS.structure.textLowContrast};
+    outline-offset: -8px;  
+    outline-width: 2px;
+    ${({ selected }) => css`
+      background-color: ${ selected ? VARIATIONS.success.bgElement : VARIATIONS.structure.bgElementHover };
+    `}
+    font-size: 1.75rem;
+  }
+
+  :active {
+    ${({ selected }) => !selected && css`
+      background-color: ${VARIATIONS.structure.textLowContrast};
+    `}
+
+    color: ${VARIATIONS.structure.bgElement};
+    outline-offset: -16px;  
+    width: 56px;
+    height: 56px;
   }
 `;
 
@@ -35,30 +75,33 @@ const VoteButtons = () => {
     user: state.user,
     room: state.room,
   }));
-  const { handleUpdateLatestTicket } = useTickets();
+  const { handleUpdateLatestTicket, voteData } = useTickets();
+  const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
 
   const voteOptions = getPointOptions(room?.pointOptions);
 
   const generateVoteButtons = (voteOptions: PointOptions) => {
     return voteOptions ? voteOptions.map((option) => (
-      <VoteButton
-        key={option}
-        onClick={(e) => {
-          e.preventDefault();
-          if (user) {
-            handleUpdateLatestTicket(`votes.${user.id}`, option);
-          }
-        }}
-      >
-        {option}
-      </VoteButton>
+      <ButtonWrapper key={option}>
+        <VoteButton
+          selected={myVote === option}
+          onClick={(e) => {
+            e.preventDefault();
+            if (user) {
+              handleUpdateLatestTicket(`votes.${user.id}`, option);
+            }
+          }}
+        >
+          {option}
+        </VoteButton>
+      </ButtonWrapper>
     )) : [];
   };
 
   return (
-    <Wrapper>
+    <ButtonSetWrapper>
       {generateVoteButtons(voteOptions)}
-    </Wrapper>
+    </ButtonSetWrapper>
   );
 };
 
