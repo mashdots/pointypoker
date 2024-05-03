@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
 import { getMargin, getWidth, VARIATIONS } from '../../utils/styles';
 import { VariationProperties, VariationTypes } from '../../utils/styles/colors';
 
 type Props = {
-  children: string;
+  children: any;
   isDisabled?: boolean;
   margin?: 'left' | 'right' | 'center';
   onClick?: (arg: any | undefined) => void;
@@ -13,7 +13,7 @@ type Props = {
   variation: keyof VariationTypes;
   width?: 'quarter' | 'third' | 'half' | 'full' | number;
   textSize?: 'small' | 'medium' | 'large';
-}
+} & HTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = {
   activeBackgroundColor: string;
@@ -29,6 +29,10 @@ const StyledButton = styled.button<WrapperProps>`
   color: ${ VARIATIONS.structure.textLowContrast };
   background-color: ${ VARIATIONS.transparent.bgElement };
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 
   padding: 16px 32px;
 
@@ -74,6 +78,7 @@ const Button = ({
   variation,
   width,
   textSize = 'medium',
+  ...rest
 }: Props) => {
   const marginValues = getMargin(margin);
   const widthValue = getWidth(width);
@@ -112,6 +117,7 @@ const Button = ({
       isDisabled={isDisabled}
       onClick={onClick}
       textSize={buttonFontSize}
+      {...rest}
     >
       {children}
     </StyledButton>
