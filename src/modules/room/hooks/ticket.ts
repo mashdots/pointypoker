@@ -68,6 +68,7 @@ const useTickets = () => {
         shouldShowVotes: false,
         votes: {},
         createdAt: Date.now(),
+        votesShownAt: null,
       };
 
       updateRoom(roomName, `tickets.${newTicket.id}`, newTicket);

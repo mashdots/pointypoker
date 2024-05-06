@@ -9,7 +9,7 @@ import useStore from '../../utils/store';
 import { Participant, Room } from '../../types';
 import { createRoom } from '../../services/firebase';
 import withUserSetup from '../user/userSetup';
-import getPointOptions, { PointingTypes } from './utils';
+import { PointingTypes } from './utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,6 +53,7 @@ const RoomSetup = withUserSetup(() => {
       shouldShowVotes: false,
       votes: {},
       createdAt: Date.now(),
+      votesShownAt: null,
     };
     const newRoom: Room = {
       name: roomName,

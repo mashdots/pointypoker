@@ -21,6 +21,7 @@ type Ticket = {
     [key: string]: Vote;
   };
   createdAt: number;
+  votesShownAt: number | null;
 }
 
 type Room = {
