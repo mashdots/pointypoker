@@ -21,12 +21,12 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Icon = styled(PlusIcon) < { isHovered: boolean}>`
+const Icon = styled(PlusIcon) <{ $isHovered: boolean}>`
   width: 24px;
   margin-right: 0.5rem;
   transition: all 300ms;
 
-  ${({ isHovered }) => isHovered && css`
+  ${({ $isHovered }) => $isHovered && css`
     animation: ${shake} 300ms;
   `}
 `;
@@ -50,7 +50,7 @@ const TitleControl = () => {
         textSize='small'
       >
         <>
-          <Icon isHovered={isHovered} /> next ticket
+          <Icon $isHovered={isHovered} /> next ticket
         </>
       </Button>
     </Wrapper>

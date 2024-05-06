@@ -11,7 +11,7 @@ type InputProps = {
 }
 
 type FocusProps = {
-  isfocused: string | boolean;
+  $isFocused: string | boolean;
 }
 
 /**
@@ -43,7 +43,7 @@ const Icon = styled(ArticleIcon)<FocusProps>`
   margin-right: 1rem;
   transition: all 300ms;
 
-  ${({ isfocused }) => isfocused === 'true' && css`
+  ${({ $isFocused }) => $isFocused && css`
     width: 32px;
     margin-right: 0.5rem;
     > line {
@@ -67,7 +67,7 @@ const FocusIndicator = styled.div<FocusProps>`
   background-color: ${ VARIATIONS.structure.textHighContrast };
   transition: all 300ms;
 
-  ${({ isfocused }) => isfocused && css`
+  ${({ $isFocused }) => $isFocused && css`
     width: 100%;
   `}
 `;
@@ -123,7 +123,7 @@ const TitleInput = () => {
   return (
     <FormWrapper>
       <InputWrapper>
-        <Icon isfocused={`${isFocused}`} />
+        <Icon $isFocused={isFocused} />
         <StyledInput
           ref={inputRef}
           type='text'
@@ -136,7 +136,7 @@ const TitleInput = () => {
         />
       </InputWrapper>
       <FocusIndicatorContainer>
-        <FocusIndicator isfocused={isFocused} />
+        <FocusIndicator $isFocused={isFocused} />
       </FocusIndicatorContainer>
     </FormWrapper>
   );
