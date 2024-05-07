@@ -168,7 +168,7 @@ const VoteStatistics = () => {
       </ContainerRow>
       <RowWithBorder>
         <Cell calcHeight={cellHeight}>
-          <InfoCell value={shouldShowVotes ? pointSuggestion : '?'} label='suggested' />
+          <InfoCell icon="suggest" value={shouldShowVotes ? pointSuggestion : '?'} label='suggested' />
         </Cell>
         <CellWithBorder calcHeight={cellHeight}>
           <InfoCell value={shouldShowVotes ? averagePointValue : '?'} label='average' />
