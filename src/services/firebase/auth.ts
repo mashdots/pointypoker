@@ -26,8 +26,6 @@ const getAuthClient = (): Auth => {
   const app = getApp();
 
   client = getAuth(app);
-  // REMOVE THIS
-  // connectAuthEmulator(client, 'http://localhost:9099');
   return client;
 };
 
@@ -40,10 +38,16 @@ const signIn = async (): Promise<ResultResponse> => {
   try {
     const authClient = getAuthClient();
 
-    await setPersistence(authClient, browserLocalPersistence);
-    const { user } = await signInAnonymously(authClient);
+    setPersistence(authClient, browserLocalPersistence)
+      .then(async () => {
+        const { user } = await signInAnonymously(authClient);
 
-    result.userId = user.uid;
+        result.userId = user.uid;
+      })
+      .catch((e) => {
+        result.error = e as string;
+        throw result.error;
+      });
   } catch (e) {
     result.error = e as string;
     throw result.error;
