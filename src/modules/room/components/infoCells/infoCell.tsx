@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../../utils/styles';
-import SuggestIcon from '../../../../assets/icons/bulb.svg?react';
-import AverageIcon from '../../../../assets/icons/chart.svg?react';
+import SuggestSvg from '../../../../assets/icons/bulb.svg?react';
+import AverageSvg from '../../../../assets/icons/chart.svg?react';
 
 export type InfoCellProps = {
   icon?: string;
@@ -30,7 +30,12 @@ const ContentContainer = styled.div`
   align-items: flex-start;
 `;
 
-const getStyledIcon = (svgIcon: any) => styled(svgIcon)`
+const SuggestIcon = styled(SuggestSvg)`
+  width: 1rem;
+  height: 1rem;
+`;
+
+const AverageIcon = styled(AverageSvg)`
   width: 1rem;
   height: 1rem;
 `;
@@ -45,28 +50,27 @@ const Label = styled.div`
 `;
 
 const getIcon = (label?: string) => {
-  let iconSvg;
+  let Icon;
 
   switch (label) {
   case 'suggest':
-    iconSvg = SuggestIcon;
+    Icon = SuggestIcon;
     break;
   case 'average':
   default:
-    iconSvg = AverageIcon;
+    Icon = AverageIcon;
     break;
   }
 
-  return getStyledIcon(iconSvg);
+  return <Icon />;
 };
 
 const InfoCell = ({ icon, value, label }: InfoCellProps) => {
-  const CellIcon = getIcon(icon);
 
   return (
     <Wrapper>
       <ContentContainer>
-        <CellIcon />
+        {getIcon(icon)}
         <Value>{value}</Value>
         <Label>{label}</Label>
       </ContentContainer>
