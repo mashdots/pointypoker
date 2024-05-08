@@ -58,7 +58,9 @@ const RoomSetup = withUserSetup(() => {
     const newRoom: Room = {
       name: roomName,
       createdAt: Date.now(),
-      participants: [ self ],
+      participants: {
+        [self.id]: self,
+      },
       pointOptions: PointingTypes.limitedFibonacci,
       tickets: {
         [initialTicket.id]: initialTicket,

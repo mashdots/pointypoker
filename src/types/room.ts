@@ -27,7 +27,9 @@ type Ticket = {
 type Room = {
   name: string;
   createdAt: number;
-  participants: Array<Participant>;
+  participants: {
+    [key: string]: Participant;
+  };
   pointOptions: PointingTypes;
   tickets: {
     [key: string]: Ticket;

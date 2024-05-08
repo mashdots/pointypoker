@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { createUserPayload, getUserCookie, setUserCookie } from '../../utils';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './nameInput';
-import { signIn } from '../../services/firebase/auth';
+import { getAuthClient, signIn } from '../../services/firebase/auth';
 import useStore from '../../utils/store';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
@@ -54,6 +54,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
 
     useEffect(() => {
       if (userCookie && !user) {
+        getAuthClient();
         setUser(userCookie);
       }
     }, [ user ]);

@@ -15,7 +15,7 @@ const useTickets = () => {
   } = useStore(({ user, room }) => (
     {
       user,
-      participants: room?.participants,
+      participants: Object.values(room?.participants || {}),
       tickets: room?.tickets,
       roomName: room?.name,
     }

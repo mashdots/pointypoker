@@ -109,7 +109,7 @@ const Room = withUserSetup(() => {
     if (roomData) {
       document.title = `pointy poker - ${ roomData.name}`;
 
-      if (user && !roomData.participants.find((participant) => participant.id === user.id)) {
+      if (user && !Object.values(roomData.participants).find((participant) => participant.id === user.id)) {
         const selfAsParticipant: Participant = {
           id: user.id,
           name: user.name,
@@ -120,7 +120,7 @@ const Room = withUserSetup(() => {
         };
 
         const updatedRoomData = cloneDeep(roomData);
-        updatedRoomData.participants.push(selfAsParticipant);
+        updatedRoomData.participants[selfAsParticipant.id] = selfAsParticipant;
         updateRoom(roomData.name, 'participants', updatedRoomData.participants);
       }
     }
