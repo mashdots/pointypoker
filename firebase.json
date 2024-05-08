@@ -15,5 +15,20 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "emulators": {
+    "auth": {
+      "port": 4002
+    },
+    "firestore": {
+      "port": 4001
+    },
+    "hosting": {
+      "port": 4003
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

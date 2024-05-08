@@ -5,7 +5,7 @@ name: Deploy to Firebase Hosting on merge
 'on':
   push:
     branches-ignore:
-      - *
+      - master
     tags:
       - v*
 jobs:
