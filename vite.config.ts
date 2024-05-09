@@ -4,6 +4,10 @@ import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  assetsInclude: ['**/*.svg'],
+  build: {
+    outDir: 'public',
+  },
   resolve: {
     alias: {
       assets: '/src/assets',
