@@ -38,16 +38,10 @@ const signIn = async (): Promise<ResultResponse> => {
   try {
     const authClient = getAuthClient();
 
-    setPersistence(authClient, browserLocalPersistence)
-      .then(async () => {
-        const { user } = await signInAnonymously(authClient);
+    await setPersistence(authClient, browserLocalPersistence);
+    const { user } = await signInAnonymously(authClient);
 
-        result.userId = user.uid;
-      })
-      .catch((e) => {
-        result.error = e as string;
-        throw result.error;
-      });
+    result.userId = user.uid;
   } catch (e) {
     result.error = e as string;
     throw result.error;
