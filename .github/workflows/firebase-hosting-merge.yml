@@ -4,10 +4,8 @@
 name: Deploy to Firebase Hosting on merge
 'on':
   push:
-    branches-ignore:
-      - master
     tags:
-      - v*
+      - 'v*'
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
