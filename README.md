@@ -49,10 +49,37 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 
 |Task|✅ or Release Version|
 |-|-|
-|Clean up TODOs in files||
+|Complete first deploy|✅|
+|Clean up TODOs in files|✅|
+|Ticket history per room||
+|Tune algorithm for point suggestion||
 |Finalize firestore rules||
 |Correct github actions||
-|Complete first deploy||
+|Polish UI and make more consisten||
+|Add more animations||
+|Dynamic title input that animates for people who didn't update it||
+|Consensus||
+|Point distribution||
+|Modal system||
+|Light Mode||
+|Themes||
+|Settings (TASK)||
+|Clear user's names from old rooms||
+|Clean up room names from before today||
+|Handle consecutive misses||
+|handle users leaving||
+|Show user's pointing trend compared to average||
+|Error handling if the room doesn't exist||
+|Hash possible room names and unhash when generating a room name||
+
+|Settings Tasks|✅ or Release Version|
+|-|-|
+|Personal: Change username||
+|Personal: Dark or light mode||
+|Personal: Change theme||
+|Room: Pointing scale||
+|Room: Auto-show all votes when everyone has voted||
+|Room: Auto-create new ticket when changing the name after everyone votes||
 
 ## Roadmap
 
