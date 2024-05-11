@@ -113,17 +113,6 @@ const VoteStatistics = () => {
   // // Based on the average point value, suggest a point value that is one of the options available
   //   const
 
-
-  /**
-   * TO DOs:
-   * 1. Point suggestion
-   * 3. Point with the most votes
-   * 4. Point distribution
-   * 5. Breakdown of points
-   * 6. Support for string votes like T Shirt sizes
-   */
-
-
   useEffect(() => {
     const wrapperElement = wrapperRef.current;
 

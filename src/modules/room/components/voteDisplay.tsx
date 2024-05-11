@@ -101,12 +101,6 @@ const VoteRow = ({ voteData, isEven, showVote }: VoteRowProps) => {
   );
 };
 
-/**
- * TO DOs:
- * 1. Redesign this into a more visually appealing component, with individual vote cards per person and animations
- * 2. Figure out if you want to use hashing
- */
-
 const VoteDisplay = () => {
   const user = useStore(({ user }) => user);
   const { areAllVotesCast, currentTicket, voteData } = useTickets();

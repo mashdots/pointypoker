@@ -14,14 +14,6 @@ type FocusProps = {
   $isFocused: string | boolean;
 }
 
-/**
- * TO DO:
- * - Add a loading indication with success and failure states
- * - When the input has updated for other participants, animate to indicate an update
- * - When not focused, make the border the shadowy-expanded type
- * - When focused, bring it into an outline
- */
-
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;

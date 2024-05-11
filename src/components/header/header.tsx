@@ -25,16 +25,6 @@ const Section = styled.div<SectionProps>`
   `}
 `;
 
-/**
- * TO DOS:
- * 2. Add a settings button to the right
- * 3. Make a settings panel that gives the options:
- *   - Change name
- *   - Dark or light mode
- *   - Change pointing scale
- *   - Delete personal data
- */
-
 const Header = () => (
   <Wrapper>
     <Section align='left'>

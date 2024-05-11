@@ -45,32 +45,6 @@ const VoteParticipationWrapper = styled.div`
   width: 100%;
 `;
 
-/**
- * TO DOs:
- * 1. Simplify and abstract the logic in this component
- * 2. Add room timer
- *
- * === Tickets ===
- * 1. The previous ticket name appears in a separate section with the average vote
- * 2. Whenever a new ticket is created, start a timer that stops whenever the votes are shown
- *
- * === Pointing ===
- * 1. Style the pointing interface
- * 2. Whenever votes are forced to be shown, anyone who hasn't voted will have consecutiveMisses incremented by 1. If consecutiveMisses is 3, set inactive to true. Have the UI reflect this.
- * 3. If a user votes, it resets their consecutiveMisses to 0.
- *
- * === Participant Section ===
- * 3. If the user is inactive, then their lack of vote will not be counted towards the total votes needed to show votes, and won't affect the average score calculation.
- * 4. If the user leaves the room, or if the user closes the window or navigates to another website, set their inactive to true.
- * 5. Differentiate between inactivity and leaving.
- *
- * === Final Results Section ===
- * 1. When there is consensus, show a message that there is consensus. See if you can show confetti
- *
- * === Completed Tickets section ===
- * 1. Show all tickets that have been completed, including the average vote.
- */
-
 const Room = withUserSetup(() => {
   const navigate = useNavigate();
   const { isMobile } = useMobile();

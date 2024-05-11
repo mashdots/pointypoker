@@ -24,10 +24,6 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-/**
- * TO DOs:
- * 1. If a user is navigated here because a room didn't exist, show a message that the room doesn't exist.
- */
 const RoomSetup = withUserSetup(() => {
   const { room, user } = useStore((state) => ({ user: state.user, room: state.room }));
   const setRoom = useStore((state) => state.setRoom);
