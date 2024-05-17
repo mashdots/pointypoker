@@ -4,10 +4,11 @@ import styled, { css } from 'styled-components';
 import Button from '../../../components/common/button';
 import { VARIATIONS } from '../../../utils/styles';
 import { useTickets } from '../hooks';
+import { calculateAverage, calculateSuggestedPoints } from '../utils';
 import { InfoCell } from './infoCells';
-import useStore from '../../../utils/store';
-import getPointOptions from '../utils';
+import TicketHistory from './ticketHistory';
 import Timer from './timer';
+import { useMobile } from '../../../utils/mobile';
 
 type CellProps = {
   calcHeight: number;
@@ -17,17 +18,24 @@ type ContainerProps = {
   orientation?: 'row' | 'column';
 };
 
-const Wrapper = styled.div`
+type MobileProps = {
+  isMobile: boolean;
+};
+
+const Wrapper = styled.div<MobileProps>`
   display: flex;
   flex: 1;
   flex-direction: column;
-  width: 100%;
-
+  
   border: none;
   border-radius: 8px;
   
   color: ${ VARIATIONS.structure.textLowContrast };
   background-color: ${ VARIATIONS.structure.bgElement };
+  
+  ${({ isMobile }) => css`
+    width: ${isMobile ? 70 : 100}%;
+  `}
 `;
 
 const ContainerRow = styled.div<ContainerProps>`
@@ -68,13 +76,12 @@ const CellWithBorder = styled(Cell)`
 `;
 
 const VoteStatistics = () => {
+  const { isMobile } = useMobile();
   const wrapperRef = useRef(null);
   const [cellHeight, setCellHeight] = useState(0);
-  const room = useStore((state) => state.room);
   const {
     areAllVotesCast,
     currentTicket,
-    voteData,
     handleUpdateLatestTicket,
   } = useTickets();
   const shouldShowVotes = useMemo(
@@ -82,36 +89,28 @@ const VoteStatistics = () => {
     [ areAllVotesCast, currentTicket ],
   );
 
-  const averagePointValue = useMemo(() => {
-    let stringVotes = 0;
-    const total = voteData.reduce(
-      (acc, { vote = 0 }) => {
-        if (typeof vote === 'string') {
-          stringVotes += 1;
-          return acc;
-        }
-        return acc + vote;
-      }, 0,
-    );
+  const averagePointValue = useMemo(
+    () => {
+      if (!currentTicket) {
+        return { average: 0, warning: '', severity: '' };
+      }
 
-    const average = total / (voteData.length - stringVotes);
+      return calculateAverage(currentTicket);
+    },
+    [ currentTicket ],
+  );
 
-    return Object.is(average, NaN) ? 'Oops!' : average;
-  }, [voteData]);
 
-  const pointSuggestion = useMemo(() => {
-    // Based on the average point value, suggest a point value that is one of the options available
-    const pointOptions = getPointOptions(room?.pointOptions);
-    const suggestedPoint = pointOptions.find(
-      (point) => point >= averagePointValue,
-    );
+  const pointSuggestion = useMemo(
+    () => {
+      if (!currentTicket) {
+        return { suggestedPoints: 0, warning: '', severity: '' };
+      }
 
-    return suggestedPoint || averagePointValue;
-  }, [averagePointValue, room]);
+      return calculateSuggestedPoints(currentTicket);
+    },
+    [ currentTicket ]);
 
-  // const pointSuggestion = useMemo(() => {
-  // // Based on the average point value, suggest a point value that is one of the options available
-  //   const
 
   useEffect(() => {
     const wrapperElement = wrapperRef.current;
@@ -138,7 +137,7 @@ const VoteStatistics = () => {
   }, [shouldShowVotes]);
 
   return (
-    <Wrapper ref={wrapperRef}>
+    <Wrapper isMobile={isMobile} ref={wrapperRef}>
       <ContainerRow orientation='column'>
         <TopCellWrapper>
           <Timer startTime={currentTicket?.createdAt || 0} endTime={currentTicket?.votesShownAt} />
@@ -157,11 +156,14 @@ const VoteStatistics = () => {
       </ContainerRow>
       <RowWithBorder>
         <Cell calcHeight={cellHeight}>
-          <InfoCell icon="suggest" value={shouldShowVotes ? pointSuggestion : '?'} label='suggested' />
+          <InfoCell icon="suggest" value={shouldShowVotes ? pointSuggestion.suggestedPoints : '?'} label='suggested' />
         </Cell>
         <CellWithBorder calcHeight={cellHeight}>
-          <InfoCell value={shouldShowVotes ? averagePointValue : '?'} label='average' />
+          <InfoCell value={shouldShowVotes ? averagePointValue.average : '?'} label='average' />
         </CellWithBorder>
+      </RowWithBorder>
+      <RowWithBorder>
+        <TicketHistory />
       </RowWithBorder>
     </Wrapper>
   );

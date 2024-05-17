@@ -10,27 +10,32 @@ type Participant = User & {
 
 type Vote = string | number;
 
-type PointOptions = Array<Vote>;
+type PointOptions = {
+  sequence: Array<Vote>;
+  exclusions: Array<Vote>;
+};
 
 type Ticket = {
   [key: string]: any;
-  name?: string;
+  createdAt: number;
   id: string;
+  name?: string;
+  pointOptions: PointingTypes;
   shouldShowVotes: boolean;
   votes: {
     [key: string]: Vote;
   };
-  createdAt: number;
   votesShownAt: number | null;
+  averagePoints?: number;
+  suggestedPoints?: number;
 }
 
 type Room = {
-  name: string;
   createdAt: number;
+  name: string;
   participants: {
     [key: string]: Participant;
   };
-  pointOptions: PointingTypes;
   tickets: {
     [key: string]: Ticket;
   };

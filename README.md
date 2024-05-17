@@ -51,11 +51,14 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |-|-|
 |Complete first deploy|✅|
 |Clean up TODOs in files|✅|
+|Tune algorithm for point suggestion|✅|
 |Ticket history per room||
-|Tune algorithm for point suggestion||
+|Resolve weird blinking issue||
+|Can we reduce calculations?||
+|Disable "show votes" when votes have been shown||
 |Finalize firestore rules||
 |Correct github actions||
-|Polish UI and make more consisten||
+|Polish UI and make more consistent||
 |Add more animations||
 |Dynamic title input that animates for people who didn't update it||
 |Consensus||
@@ -63,6 +66,7 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Modal system||
 |Light Mode||
 |Themes||
+|Reset cast votes if voting scheme changes||
 |Settings (TASK)||
 |Clear user's names from old rooms||
 |Clean up room names from before today||
@@ -71,6 +75,7 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Show user's pointing trend compared to average||
 |Error handling if the room doesn't exist||
 |Hash possible room names and unhash when generating a room name||
+|Cookie notice||
 
 |Settings Tasks|✅ or Release Version|
 |-|-|

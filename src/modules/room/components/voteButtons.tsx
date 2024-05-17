@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import useStore from '../../../utils/store';
 import { PointOptions } from '../../../types';
 import { VARIATIONS } from '../../../utils/styles';
-import getPointOptions from '../utils';
+import { getPointOptions } from '../utils';
 import { useTickets } from '../hooks';
 
 const ButtonSetWrapper = styled.div`
@@ -71,16 +71,15 @@ const VoteButton = styled.button<{ selected: boolean }>`
 `;
 
 const VoteButtons = () => {
-  const { user, room } = useStore((state) => ({
-    user: state.user,
-    room: state.room,
+  const { user } = useStore(({ user }) => ({
+    user,
   }));
-  const { handleUpdateLatestTicket, voteData } = useTickets();
+  const { currentTicket, handleUpdateLatestTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
 
-  const voteOptions = getPointOptions(room?.pointOptions);
+  const voteOptions = getPointOptions(currentTicket?.pointOptions).sequence;
 
-  const generateVoteButtons = (voteOptions: PointOptions) => {
+  const generateVoteButtons = (voteOptions: PointOptions['sequence']) => {
     return voteOptions ? voteOptions.map((option) => (
       <ButtonWrapper key={option}>
         <VoteButton

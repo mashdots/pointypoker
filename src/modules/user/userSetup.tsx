@@ -13,6 +13,7 @@ const Wrapper = styled.div<WrapperProps>`
   transition: opacity 300ms;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   height: 100%;
 
   ${ ({ isOpen, isVisible }) => css`
@@ -82,7 +83,6 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
       };
     }, [ user ]);
 
-    // TODO: Create cookie notice for header so we can disclose everything
     if (!user) {
       return (
         <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup-show'>

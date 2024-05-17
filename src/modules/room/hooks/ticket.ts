@@ -5,6 +5,7 @@ import { Ticket } from '../../../types';
 import { VoteDisplayProps } from '../components/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
+import { calculateAverage } from '../utils';
 
 const useTickets = () => {
   const {
@@ -16,7 +17,7 @@ const useTickets = () => {
     {
       user,
       participants: Object.values(room?.participants || {}),
-      tickets: room?.tickets,
+      tickets: room?.tickets ?? {},
       roomName: room?.name,
     }
   ));
@@ -61,13 +62,18 @@ const useTickets = () => {
   }, [ roomName, currentTicket ]);
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
-    if (roomName && user) {
+    if (roomName && user && currentTicket) {
+      // Calculate average points of current ticket and write to averagePoints of current ticket
+      const currentAverage = calculateAverage(currentTicket);
+      handleUpdateLatestTicket('averagePoints', currentAverage);
+
       const newTicket: Ticket = {
-        name: newTicketName || '',
+        createdAt: Date.now(),
         id: uuid(),
+        name: newTicketName || '',
+        pointOptions: currentTicket?.pointOptions,
         shouldShowVotes: false,
         votes: {},
-        createdAt: Date.now(),
         votesShownAt: null,
       };
 
@@ -76,11 +82,12 @@ const useTickets = () => {
   }, [ roomName ]);
 
   return {
-    currentTicket,
-    voteData,
     areAllVotesCast,
+    currentTicket,
     handleUpdateLatestTicket,
     handleCreateTicket,
+    // previousTickets,
+    voteData,
   };
 };
 

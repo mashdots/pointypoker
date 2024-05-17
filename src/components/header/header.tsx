@@ -7,6 +7,7 @@ import UserControl from './userControl';
 
 type SectionProps = {
   align: 'left' | 'right';
+  flex: number;
 }
 
 const Wrapper = styled.div`
@@ -18,20 +19,21 @@ const Wrapper = styled.div`
 
 const Section = styled.div<SectionProps>`
   display: flex;
-  flex: 1;
 
-  ${({ align }) => css`
+  ${({ align, flex }) => css`
+    flex: ${flex};
+
     justify-content: ${align === 'left' ? 'flex-start' : 'flex-end'};
   `}
 `;
 
 const Header = () => (
   <Wrapper>
-    <Section align='left'>
+    <Section flex={2} align='left'>
       <Logo />
       <RoomControl />
     </Section>
-    <Section align='right'>
+    <Section flex={1} align='right'>
       <UserControl />
     </Section>
   </Wrapper>

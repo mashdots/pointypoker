@@ -49,6 +49,7 @@ const RoomSetup = withUserSetup(() => {
       shouldShowVotes: false,
       votes: {},
       createdAt: Date.now(),
+      pointOptions: PointingTypes.limitedFibonacci,
       votesShownAt: null,
     };
     const newRoom: Room = {
@@ -57,7 +58,6 @@ const RoomSetup = withUserSetup(() => {
       participants: {
         [self.id]: self,
       },
-      pointOptions: PointingTypes.limitedFibonacci,
       tickets: {
         [initialTicket.id]: initialTicket,
       },
