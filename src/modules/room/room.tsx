@@ -58,8 +58,8 @@ const Room = withUserSetup(() => {
 
   useEffect(() => {
     if (roomData || roomFromPath) {
+      console.log('HIT');
       const roomToJoin = roomData?.name || roomFromPath;
-
       subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
         if (!result.error) {
           if (!isEqual(result.data, roomData)) {
@@ -77,7 +77,7 @@ const Room = withUserSetup(() => {
     return () => {
       subscribedRoomRef.current?.();
     };
-  }, [ roomData, roomFromPath ]);
+  }, []);
 
   useEffect(() => {
     if (roomData) {
