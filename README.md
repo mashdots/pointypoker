@@ -52,9 +52,8 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Complete first deploy|✅|
 |Clean up TODOs in files|✅|
 |Tune algorithm for point suggestion|✅|
+|Resolve weird blinking issue|✅|
 |Ticket history per room||
-|Resolve weird blinking issue||
-|Can we reduce calculations?||
 |Disable "show votes" when votes have been shown||
 |Finalize firestore rules||
 |Correct github actions||
