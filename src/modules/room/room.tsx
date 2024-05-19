@@ -27,11 +27,10 @@ const VoteDataWrapper = styled.div<{ showNarrow: boolean}>`
   width: 100%;
   margin-top: 1rem;
   align-self: flex-start;
-  align-items: flex-start;
 
   ${({ showNarrow }) => css`
     flex-direction: ${showNarrow ? 'column' : 'row'};
-    align-items: center;
+    align-items: ${showNarrow ? 'center' : 'flex-start'};
   `};
 `;
 

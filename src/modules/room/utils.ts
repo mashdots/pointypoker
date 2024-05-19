@@ -47,7 +47,7 @@ const getPointOptions = (type?: string): PointOptions => {
   }
 };
 
-const calculateAverage = (currentTicket: Ticket): AverageResult  => {
+const calculateAverage = (currentTicket?: Ticket): AverageResult  => {
   if (!currentTicket) {
     return { average: 0, warning: '' };
   }
@@ -90,11 +90,11 @@ const calculateAverage = (currentTicket: Ticket): AverageResult  => {
   };
 };
 
-const calculateSuggestedPoints = (currentTicket: Ticket): SuggestedResult => {
-  const { votes: voteData, pointOptions } = currentTicket;
+const calculateSuggestedPoints = (currentTicket?: Ticket): SuggestedResult => {
   if (!currentTicket) {
     return { suggestedPoints: 0, warning: '' };
   }
+  const { votes: voteData, pointOptions } = currentTicket;
   const { sequence, exclusions } = getPointOptions(pointOptions);
 
   const votesArray: Vote[] = [];

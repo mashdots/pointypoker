@@ -105,8 +105,6 @@ const Button = ({
     colorProfile = 'structure';
   }
 
-
-
   return (
     <StyledButton
       activeBackgroundColor={activeBackgroundColor}
@@ -114,6 +112,7 @@ const Button = ({
       configuredColor={colorProfile}
       configuredMargin={marginValues}
       configuredWidth={widthValue}
+      disabled={isDisabled}
       isDisabled={isDisabled}
       onClick={onClick}
       textSize={buttonFontSize}
