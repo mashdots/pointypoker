@@ -50,12 +50,12 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Task|✅ or Release Version|
 |-|-|
 |Complete first deploy|✅|
-|Clean up TODOs in files|✅|
-|Tune algorithm for point suggestion|✅|
-|Resolve weird blinking issue|✅|
-|Disable "show votes" when votes have been shown|✅|
-|Ticket history per room||
-|Correct github actions||
+|Clean up TODOs in files|v1.0.240519|
+|Tune algorithm for point suggestion|v1.0.240519|
+|Resolve weird blinking issue|v1.0.240519|
+|Disable "show votes" when votes have been shown|v1.0.240519|
+|Ticket history per room|v1.0.240519|
+|Correct github actions|✅|
 |Finalize firestore rules||
 |Polish UI and make more consistent||
 |Add more animations||

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../utils/styles';
 import { Ticket } from '../../../types';
+import { getIcon } from './icons';
 
 type Props = {
   previousTickets?: Ticket[];
@@ -20,12 +21,29 @@ const Wrapper = styled.div`
   color: ${VARIATIONS.structure.textLowContrast};
 `;
 
-const TicketCell = styled.div`
+const TicketRow = styled.div<{shouldHighlight?: boolean}>`
   display: flex;
   flex: 1;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+
+  ${({ shouldHighlight }) => shouldHighlight && `
+    background-color: ${VARIATIONS.structure.bgElementActive};
+  `}
+`;
+
+const NameCell = styled.div`
+  display: flex;
+  flex: 2;
+  align-items: center;
+`;
+
+const PointCell = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
 `;
 
 const TicketHistory = ({ previousTickets }: Props) => {
@@ -35,18 +53,26 @@ const TicketHistory = ({ previousTickets }: Props) => {
     name,
     averagePoints,
     suggestedPoints,
-  }) => {
+  }, i) => {
     return (
-      <TicketCell key={id}>
-        <div>{name?.length ? name : '(no title)'}</div>
-        <div>avg: {averagePoints}</div>
-        <div>sugg: {suggestedPoints}</div>
-      </TicketCell>
+      <TicketRow key={id} shouldHighlight={i % 2 === 0}>
+        <NameCell>{name?.length ? name : '(no title)'}</NameCell>
+        <PointCell>{suggestedPoints}</PointCell>
+        <PointCell>{averagePoints}</PointCell>
+      </TicketRow>
     );
   }), [previousTickets],
   );
 
-  return <Wrapper>{ticketRows}</Wrapper>;
+  const header = (
+    <TicketRow>
+      <NameCell>Name</NameCell>
+      <PointCell>{getIcon('suggest')}</PointCell>
+      <PointCell>{getIcon('average')}</PointCell>
+    </TicketRow>
+  );
+
+  return <Wrapper>{header}{ticketRows}</Wrapper>;
 };
 
 export default TicketHistory;

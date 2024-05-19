@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../../utils/styles';
-import SuggestSvg from '../../../../assets/icons/bulb.svg?react';
-import AverageSvg from '../../../../assets/icons/chart.svg?react';
+import { getIcon } from '../icons';
 
 export type InfoCellProps = {
   icon?: string;
@@ -30,16 +29,6 @@ const ContentContainer = styled.div`
   align-items: flex-start;
 `;
 
-const SuggestIcon = styled(SuggestSvg)`
-  width: 1rem;
-  height: 1rem;
-`;
-
-const AverageIcon = styled(AverageSvg)`
-  width: 1rem;
-  height: 1rem;
-`;
-
 const Value = styled.div`
   font-size: 2rem;
   font-weight: bold;
@@ -48,22 +37,6 @@ const Value = styled.div`
 const Label = styled.div`
   font-size: 1rem;
 `;
-
-const getIcon = (label?: string) => {
-  let Icon;
-
-  switch (label) {
-  case 'suggest':
-    Icon = SuggestIcon;
-    break;
-  case 'average':
-  default:
-    Icon = AverageIcon;
-    break;
-  }
-
-  return <Icon />;
-};
 
 const InfoCell = ({ icon, value, label }: InfoCellProps) => {
 
