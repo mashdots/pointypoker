@@ -103,11 +103,7 @@ const VoteRow = ({ voteData, isEven, showVote }: VoteRowProps) => {
 
 const VoteDisplay = () => {
   const user = useStore(({ user }) => user);
-  const { areAllVotesCast, currentTicket, voteData } = useTickets();
-  const shouldShowVotes = useMemo(
-    () => areAllVotesCast || currentTicket?.shouldShowVotes,
-    [areAllVotesCast, currentTicket?.shouldShowVotes],
-  );
+  const { shouldShowVotes, voteData } = useTickets();
 
   const voteNodes = voteData.map((vote, i) => {
     const name = vote.name === user?.name ? 'you' : vote.name;

@@ -209,6 +209,9 @@ const updateRoom = async (
   data: any,
   callback?: () => void,
 ): Promise<void> => {
+  if (!room || !property || !data) {
+    return;
+  }
 
   try {
     const db = getDataClient();

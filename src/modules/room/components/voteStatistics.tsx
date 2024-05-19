@@ -80,37 +80,21 @@ const VoteStatistics = () => {
   const wrapperRef = useRef(null);
   const [cellHeight, setCellHeight] = useState(0);
   const {
-    areAllVotesCast,
     currentTicket,
+    shouldShowVotes,
+    sortedTickets,
     handleUpdateLatestTicket,
   } = useTickets();
-  const shouldShowVotes = useMemo(
-    () => areAllVotesCast || currentTicket?.shouldShowVotes,
-    [ areAllVotesCast, currentTicket ],
-  );
 
   const averagePointValue = useMemo(
-    () => {
-      if (!currentTicket) {
-        return { average: 0, warning: '', severity: '' };
-      }
-
-      return calculateAverage(currentTicket);
-    },
+    () => calculateAverage(currentTicket),
     [ currentTicket ],
   );
 
-
   const pointSuggestion = useMemo(
-    () => {
-      if (!currentTicket) {
-        return { suggestedPoints: 0, warning: '', severity: '' };
-      }
-
-      return calculateSuggestedPoints(currentTicket);
-    },
-    [ currentTicket ]);
-
+    () => calculateSuggestedPoints(currentTicket),
+    [ currentTicket ],
+  );
 
   useEffect(() => {
     const wrapperElement = wrapperRef.current;
@@ -148,6 +132,7 @@ const VoteStatistics = () => {
               handleUpdateLatestTicket('shouldShowVotes', true);
               handleUpdateLatestTicket('votesShownAt', Date.now());
             }}
+            isDisabled={shouldShowVotes}
             textSize='small'
           >
         show votes
@@ -163,7 +148,7 @@ const VoteStatistics = () => {
         </CellWithBorder>
       </RowWithBorder>
       <RowWithBorder>
-        <TicketHistory />
+        <TicketHistory previousTickets={sortedTickets.slice(1)} />
       </RowWithBorder>
     </Wrapper>
   );

@@ -53,10 +53,10 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Clean up TODOs in files|✅|
 |Tune algorithm for point suggestion|✅|
 |Resolve weird blinking issue|✅|
+|Disable "show votes" when votes have been shown|✅|
 |Ticket history per room||
-|Disable "show votes" when votes have been shown||
-|Finalize firestore rules||
 |Correct github actions||
+|Finalize firestore rules||
 |Polish UI and make more consistent||
 |Add more animations||
 |Dynamic title input that animates for people who didn't update it||

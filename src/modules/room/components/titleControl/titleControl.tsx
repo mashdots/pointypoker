@@ -35,6 +35,7 @@ const TitleControl = () => {
   const [isHovered, setIsHovered] = useState(false);
   const {
     handleCreateTicket,
+    shouldShowVotes,
   } = useTickets();
 
   return (
@@ -47,6 +48,7 @@ const TitleControl = () => {
         onClick={() => handleCreateTicket()}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        isDisabled={!shouldShowVotes}
         textSize='small'
       >
         <>

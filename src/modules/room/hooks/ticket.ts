@@ -5,7 +5,7 @@ import { Ticket } from '../../../types';
 import { VoteDisplayProps } from '../components/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
-import { calculateAverage } from '../utils';
+import { calculateAverage, calculateSuggestedPoints } from '../utils';
 
 const useTickets = () => {
   const {
@@ -22,12 +22,12 @@ const useTickets = () => {
     }
   ));
 
-  const currentTicket = useMemo(() =>
-    tickets
-      ? Object.values(tickets).sort((a, b) => b?.createdAt - a?.createdAt)[0]
-      : null,
+  const sortedTickets = useMemo(() =>
+    Object.values(tickets).sort((a, b) => b?.createdAt - a?.createdAt),
   [ tickets ],
   );
+
+  const currentTicket = useMemo(() => sortedTickets[0], [ sortedTickets ]);
 
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
@@ -41,6 +41,11 @@ const useTickets = () => {
   const areAllVotesCast = useMemo(
     () => participants.every(({ id }) => currentTicket?.votes[ id ]),
     [ participants, currentTicket?.votes ],
+  );
+
+  const shouldShowVotes = useMemo(
+    () => areAllVotesCast || currentTicket?.shouldShowVotes,
+    [ areAllVotesCast, currentTicket ],
   );
 
   const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
@@ -63,9 +68,11 @@ const useTickets = () => {
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
     if (roomName && user && currentTicket) {
-      // Calculate average points of current ticket and write to averagePoints of current ticket
-      const currentAverage = calculateAverage(currentTicket);
-      handleUpdateLatestTicket('averagePoints', currentAverage);
+      // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
+      const { average } = calculateAverage(currentTicket);
+      const { suggestedPoints } = calculateSuggestedPoints(currentTicket);
+      handleUpdateLatestTicket('averagePoints', average);
+      handleUpdateLatestTicket('suggestedPoints', suggestedPoints);
 
       const newTicket: Ticket = {
         createdAt: Date.now(),
@@ -79,15 +86,16 @@ const useTickets = () => {
 
       updateRoom(roomName, `tickets.${newTicket.id}`, newTicket);
     }
-  }, [ roomName ]);
+  }, [ roomName, currentTicket ]);
 
   return {
     areAllVotesCast,
     currentTicket,
+    sortedTickets,
+    shouldShowVotes,
+    voteData,
     handleUpdateLatestTicket,
     handleCreateTicket,
-    // previousTickets,
-    voteData,
   };
 };
 
