@@ -1,6 +1,6 @@
-import TitleInput from './titleControl/titleInput';
-import VoteStatistics from './voteStatistics';
+import TitleInput from '../panels/titleControl/titleInput';
+import VoteStatistics from '../panels/voteStatistics';
 import VoteButtons from './voteButtons';
-import VoteDisplay from './voteDisplay';
+import VoteDisplay from '../panels/voteDisplay';
 
 export { TitleInput, VoteStatistics, VoteButtons, VoteDisplay };

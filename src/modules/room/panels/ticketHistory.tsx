@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../utils/styles';
 import { Ticket } from '../../../types';
-import { getIcon } from './icons';
+import { getIcon } from '../components/icons';
 
 type Props = {
   previousTickets?: Ticket[];
@@ -66,7 +66,7 @@ const TicketHistory = ({ previousTickets }: Props) => {
 
   const header = (
     <TicketRow>
-      <NameCell>Name</NameCell>
+      <NameCell>ticket</NameCell>
       <PointCell>{getIcon('suggest')}</PointCell>
       <PointCell>{getIcon('average')}</PointCell>
     </TicketRow>

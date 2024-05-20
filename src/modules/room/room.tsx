@@ -10,7 +10,7 @@ import { Participant, Room as RoomType } from '../../types';
 import withUserSetup from '../user/userSetup';
 import { VoteButtons, VoteDisplay, VoteStatistics } from './components';
 import { useMobile } from '../../utils/mobile';
-import { TitleControl } from './components/titleControl';
+import { TitleControl } from './panels/titleControl';
 
 const Wrapper = styled.div`
   display: flex;

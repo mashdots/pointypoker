@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { Ticket } from '../../../types';
-import { VoteDisplayProps } from '../components/voteDisplay';
+import { VoteDisplayProps } from '../panels/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
 import { calculateAverage, calculateSuggestedPoints } from '../utils';

@@ -7,7 +7,7 @@ import { useTickets } from '../hooks';
 import { calculateAverage, calculateSuggestedPoints } from '../utils';
 import { InfoCell } from './infoCells';
 import TicketHistory from './ticketHistory';
-import Timer from './timer';
+import Timer from '../components/timer';
 import { useMobile } from '../../../utils/mobile';
 
 type CellProps = {
