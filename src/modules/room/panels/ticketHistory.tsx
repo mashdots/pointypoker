@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../utils/styles';
 import { Ticket } from '../../../types';
-import { getIcon } from '../components/icons';
+import { getIcon } from '../../../components/icons';
 
 type Props = {
   previousTickets?: Ticket[];
@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   flex: 1;
   flex-direction: column;
   width: 100%;
+  padding: 1rem 0 0.5rem;
 
   border: none;
   border-radius: 8px;
@@ -23,10 +24,8 @@ const Wrapper = styled.div`
 
 const TicketRow = styled.div<{shouldHighlight?: boolean}>`
   display: flex;
-  flex: 1;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
 
   ${({ shouldHighlight }) => shouldHighlight && `
     background-color: ${VARIATIONS.structure.bgElementActive};

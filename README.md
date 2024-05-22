@@ -56,12 +56,12 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Disable "show votes" when votes have been shown|`v1.0.240519`|
 |Ticket history per room|`v1.0.240519`|
 |Correct github actions|✅|
+|Point distribution|✅|
 |Finalize firestore rules||
 |Polish UI and make more consistent||
 |Add more animations||
 |Dynamic title input that animates for people who didn't update it||
 |Consensus||
-|Point distribution||
 |Modal system||
 |Light Mode||
 |Themes||

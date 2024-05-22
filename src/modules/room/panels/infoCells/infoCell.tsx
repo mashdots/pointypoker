@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { VARIATIONS } from '../../../../utils/styles';
-import { getIcon } from '../../components/icons';
+import { getIcon } from '../../../../components/icons';
 
 export type InfoCellProps = {
   icon?: string;

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import SuggestSvg from '../../../../assets/icons/bulb.svg?react';
-import AverageSvg from '../../../../assets/icons/chart.svg?react';
+import SuggestSvg from '../../assets/icons/bulb.svg?react';
+import AverageSvg from '../../assets/icons/chart.svg?react';
 
 const SuggestIcon = styled(SuggestSvg)`
   width: 1rem;
