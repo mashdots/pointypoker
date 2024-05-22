@@ -37,7 +37,7 @@ const VoteButton = styled.button<{ selected: boolean }>`
     font-size 300ms,
     background-color 500ms;
 
-  outline-color: ${VARIATIONS.structure.bgElement};
+  outline-color: ${VARIATIONS.structure.borderElementHover};
   outline-offset: 0px;  
   outline-width: 0px;
   outline-style: solid;
@@ -45,7 +45,7 @@ const VoteButton = styled.button<{ selected: boolean }>`
   font-size: 1.5rem;
 
   ${({ selected }) => css`
-    background-color: ${selected ? VARIATIONS.success.bgElement : VARIATIONS.structure.bgElement};
+    background-color: ${selected ? VARIATIONS.success.borderElementHover : VARIATIONS.structure.bgElement};
   `}
 
   :hover {
@@ -53,7 +53,7 @@ const VoteButton = styled.button<{ selected: boolean }>`
     outline-offset: -8px;  
     outline-width: 2px;
     ${({ selected }) => css`
-      background-color: ${ selected ? VARIATIONS.success.bgElement : VARIATIONS.structure.bgElementHover };
+      background-color: ${ selected ? VARIATIONS.success.borderElementHover : VARIATIONS.structure.bgElementHover };
     `}
     font-size: 1.75rem;
   }

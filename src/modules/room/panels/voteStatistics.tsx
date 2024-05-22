@@ -9,6 +9,8 @@ import { InfoCell } from './infoCells';
 import TicketHistory from './ticketHistory';
 import Timer from '../components/timer';
 import { useMobile } from '../../../utils/mobile';
+import MultiPanel from './multiPanel';
+import VoteDistribution from './voteDistribution';
 
 type CellProps = {
   calcHeight: number;
@@ -29,6 +31,7 @@ const Wrapper = styled.div<MobileProps>`
   
   border: none;
   border-radius: 8px;
+  overflow: hidden;
   
   color: ${ VARIATIONS.structure.textLowContrast };
   background-color: ${ VARIATIONS.structure.bgElement };
@@ -46,8 +49,13 @@ const ContainerRow = styled.div<ContainerProps>`
     flex-direction: ${orientation || 'row'};
   `}
 `;
-const RowWithBorder = styled(ContainerRow)`
+
+const RowWithBorder = styled(ContainerRow)<{ height?: number}>`
   border-top: 2px solid ${ VARIATIONS.structure.border };
+
+  ${({ height }) => css`
+    height: ${height}px;
+  `}
 `;
 
 const TopCellWrapper = styled.div`
@@ -120,6 +128,15 @@ const VoteStatistics = () => {
     }
   }, [shouldShowVotes]);
 
+  const panels = [
+    { title: 'Distribution', component: <VoteDistribution /> },
+    {
+      title: 'History',
+      component: <TicketHistory previousTickets={sortedTickets} />,
+      shouldScroll: true,
+    },
+  ];
+
   return (
     <Wrapper isMobile={isMobile} ref={wrapperRef}>
       <ContainerRow orientation='column'>
@@ -147,8 +164,8 @@ const VoteStatistics = () => {
           <InfoCell value={shouldShowVotes ? averagePointValue.average : '?'} label='average' />
         </CellWithBorder>
       </RowWithBorder>
-      <RowWithBorder>
-        <TicketHistory previousTickets={sortedTickets.slice(1)} />
+      <RowWithBorder height={cellHeight + 32}>
+        <MultiPanel panels={panels} width={cellHeight*2} />
       </RowWithBorder>
     </Wrapper>
   );

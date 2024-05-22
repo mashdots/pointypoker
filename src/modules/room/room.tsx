@@ -4,13 +4,13 @@ import cloneDeep from 'lodash/cloneDeep';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import useStore from '../../utils/store';
-import { updateRoom, watchRoom } from '../../services/firebase';
+import { VoteButtons } from './components';
+import { TitleControl, VoteDisplay, VoteStatistics } from './panels';
 import { Participant, Room as RoomType } from '../../types';
+import { updateRoom, watchRoom } from '../../services/firebase';
 import withUserSetup from '../user/userSetup';
-import { VoteButtons, VoteDisplay, VoteStatistics } from './components';
 import { useMobile } from '../../utils/mobile';
-import { TitleControl } from './panels/titleControl';
+import useStore from '../../utils/store';
 
 const Wrapper = styled.div`
   display: flex;
