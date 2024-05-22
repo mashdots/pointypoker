@@ -58,6 +58,7 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Correct github actions|✅|
 |Point distribution|`v1.1.240522`|
 |Consensus|`v1.1.240522`|
+|fix consensus bug||
 |Finalize firestore rules||
 |Polish UI and make more consistent||
 |Add more animations||

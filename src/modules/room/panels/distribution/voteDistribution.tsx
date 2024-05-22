@@ -60,17 +60,24 @@ const VoteDistribution = () => {
   const { sequence, exclusions } = getPointOptions(currentTicket?.pointOptions);
 
   const hasConsensus = useMemo(
-    () => shouldShowVotes && voteData.every(({ vote }) => vote === voteData[0].vote),
+    () => (
+      shouldShowVotes
+        && voteData.length > 0
+        && voteData.every(({ vote }) => !!vote && vote === voteData[0].vote)
+    ),
     [voteData],
   );
 
   const voteCounts = useMemo(
-    () => voteData.reduce((acc: { [key: string]: number }, { vote }) => {
-      if (vote) {
-        acc[vote] = acc[vote] ? acc[vote] + 1 : 1;
-      }
-      return acc;
-    }, {}),
+    () => voteData.reduce(
+      (acc: { [key: string]: number }, { vote }) => {
+        if (vote) {
+          acc[vote] = acc[vote] ? acc[vote] + 1 : 1;
+        }
+        return acc;
+      },
+      {},
+    ),
     [voteData],
   );
 

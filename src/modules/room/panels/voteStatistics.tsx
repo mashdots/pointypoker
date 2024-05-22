@@ -132,7 +132,7 @@ const VoteStatistics = () => {
     { title: 'Distribution', component: <VoteDistribution /> },
     {
       title: 'History',
-      component: <TicketHistory previousTickets={sortedTickets} />,
+      component: <TicketHistory previousTickets={sortedTickets.slice(1)} />,
       shouldScroll: true,
     },
   ];
