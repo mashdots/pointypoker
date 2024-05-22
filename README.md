@@ -57,11 +57,11 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Ticket history per room|`v1.0.240519`|
 |Correct github actions|✅|
 |Point distribution|✅|
+|Consensus|✅|
 |Finalize firestore rules||
 |Polish UI and make more consistent||
 |Add more animations||
 |Dynamic title input that animates for people who didn't update it||
-|Consensus||
 |Modal system||
 |Light Mode||
 |Themes||

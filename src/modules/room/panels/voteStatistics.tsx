@@ -10,7 +10,7 @@ import TicketHistory from './ticketHistory';
 import Timer from '../components/timer';
 import { useMobile } from '../../../utils/mobile';
 import MultiPanel from './multiPanel';
-import VoteDistribution from './voteDistribution';
+import { VoteDistribution } from './distribution';
 
 type CellProps = {
   calcHeight: number;

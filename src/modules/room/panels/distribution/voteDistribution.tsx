@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 
 
-import { useTickets } from '../hooks';
-import { getPointOptions } from '../utils';
+import { useTickets } from '../../hooks';
+import { getPointOptions } from '../../utils';
 import styled from 'styled-components';
-import { VARIATIONS } from '../../../utils/styles';
+import { VARIATIONS } from '../../../../utils/styles';
+import Consensus from './consensus';
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,6 +59,11 @@ const VoteDistribution = () => {
   const { currentTicket, shouldShowVotes, voteData } = useTickets();
   const { sequence, exclusions } = getPointOptions(currentTicket?.pointOptions);
 
+  const hasConsensus = useMemo(
+    () => voteData.length > 0 && voteData.every(({ vote }) => vote === voteData[0].vote),
+    [voteData],
+  );
+
   const voteCounts = useMemo(
     () => voteData.reduce((acc: { [key: string]: number }, { vote }) => {
       if (vote) {
@@ -89,7 +95,9 @@ const VoteDistribution = () => {
     [ voteCounts, voteData, shouldShowVotes ],
   );
 
-  return <Wrapper>{voteStats}</Wrapper>;
+  const component = hasConsensus ? <Consensus /> : voteStats;
+
+  return <Wrapper>{component}</Wrapper>;
 };
 
 export default VoteDistribution;
