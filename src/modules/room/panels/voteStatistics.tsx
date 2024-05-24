@@ -141,7 +141,7 @@ const VoteStatistics = () => {
     <Wrapper isMobile={isMobile} ref={wrapperRef}>
       <ContainerRow orientation='column'>
         <TopCellWrapper>
-          <Timer startTime={currentTicket?.createdAt || 0} endTime={currentTicket?.votesShownAt} />
+          <Timer startTime={currentTicket?.timerStartAt} endTime={currentTicket?.votesShownAt} />
           <Button
             variation='info'
             width='full'

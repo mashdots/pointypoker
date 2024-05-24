@@ -102,6 +102,10 @@ const TitleInput = () => {
         if (shouldShowVotes) {
           handleCreateTicket(value);
         } else {
+          if (currentTicket.name?.length === 0) {
+            handleUpdateLatestTicket('timerStartAt', Date.now());
+          }
+
           handleUpdateLatestTicket('name', value);
         }
       }, 1000);

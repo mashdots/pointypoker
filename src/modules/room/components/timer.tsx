@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { DateTime } from 'luxon';
 
 type Props = {
-  startTime: number;
+  startTime?: number;
   endTime?: number | null;
 };
 
@@ -37,15 +37,20 @@ const Timer = ({ startTime, endTime = null }: Props) => {
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      const start = DateTime.fromMillis(startTime);
-      const end = endTime ? DateTime.fromMillis(endTime) : DateTime.now();
+    if (startTime) {
+      clearInterval(intervalRef.current as number);
 
-      const durationObj = end.diff(start).shiftTo('minutes', 'seconds').toObject();
-      const durationString = buildDurationString(durationObj as DurationObject);
+      intervalRef.current = setInterval(() => {
+        const start = DateTime.fromMillis(startTime);
+        const end = endTime ? DateTime.fromMillis(endTime) : DateTime.now();
+        const durationObj = end.diff(start).shiftTo('minutes', 'seconds').toObject();
+        const durationString = buildDurationString(durationObj as DurationObject);
 
-      setTime(durationString);
-    }, 1000);
+        setTime(durationString);
+      }, 1000);
+    } else {
+      setTime('Add a title to start the timer');
+    }
 
     return () => {
       clearInterval(intervalRef.current as number);
