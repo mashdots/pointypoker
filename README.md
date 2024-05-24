@@ -58,8 +58,10 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Correct github actions|✅|
 |Point distribution|`v1.1.240522`|
 |Consensus|`v1.1.240522`|
-|fix consensus bug||
-|Finalize firestore rules||
+|fix consensus bug|`v1.1.240523`|
+|Finalize firestore rules|✅|
+|When selecting the title field, auto-highlight the existing text|✅|
+|Timer starts only after we have a title||
 |Polish UI and make more consistent||
 |Add more animations||
 |Dynamic title input that animates for people who didn't update it||

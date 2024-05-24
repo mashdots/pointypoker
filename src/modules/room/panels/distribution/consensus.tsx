@@ -43,24 +43,25 @@ const AnimatedText = styled.h1<{ isPresented: boolean}>`
   color: transparent;
   animation: ${movement} 8s cubic-bezier(0.77, 0, 0.175, 1) 2s infinite;
 
-  transition: transform 250ms cubic-bezier(.52,.13,.7,.17); 
+  transition: transform 500ms cubic-bezier(1,0,.7,2); 
   
-  transform: scale(${({ isPresented }) => isPresented ? 1 : 0.75});
+  transform: scale(${({ isPresented }) => isPresented ? 1 : 0.5});
 
   @container wrapper (min-width: 300px) {
     font-size: 2em;
   }
 `;
 
-let timeout;
+let timeout: number;
 
 const Consensus = () => {
   const [isPresented, setIsPresented] = useState(false);
 
   useEffect(() => {
+    clearTimeout(timeout);
     timeout = setTimeout(() => {
       setIsPresented(true);
-    }, 500);
+    }, 250);
 
     return () => {
       setIsPresented(false);
