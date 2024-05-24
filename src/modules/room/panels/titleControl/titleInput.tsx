@@ -89,7 +89,7 @@ const StyledInput = styled.input<InputProps>`
 let timeout: number;
 
 const TitleInput = () => {
-  const { areAllVotesCast, currentTicket, handleCreateTicket, handleUpdateLatestTicket } = useTickets();
+  const { currentTicket, handleCreateTicket, handleUpdateLatestTicket, shouldShowVotes } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
   const [ value, setValue ] = useState(currentTicket?.name);
   const [isLoading, setIsLoading] = useState(false);
@@ -99,7 +99,7 @@ const TitleInput = () => {
     if (value && currentTicket?.name !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        if (areAllVotesCast) {
+        if (shouldShowVotes) {
           handleCreateTicket(value);
         } else {
           handleUpdateLatestTicket('name', value);
@@ -123,7 +123,12 @@ const TitleInput = () => {
           value={value ?? ''}
           isLoading={isLoading}
           onChange={(e) => setValue(e.target.value)}
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            if (shouldShowVotes) {
+              inputRef.current?.select();
+            }
+            setIsFocused(true);
+          }}
           onBlur={() => setIsFocused(false)}
         />
       </InputWrapper>
