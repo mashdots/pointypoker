@@ -33,9 +33,12 @@ const TicketRow = styled.div<{shouldHighlight?: boolean}>`
 `;
 
 const NameCell = styled.div`
-  display: flex;
-  flex: 2;
+  flex: 3 ;
   align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
 `;
 
 const PointCell = styled.div`
