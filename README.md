@@ -47,37 +47,7 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 
 ## Task List
 
-|Task|✅ or Release Version|
-|-|-|
-|Complete first deploy|✅|
-|Clean up TODOs in files|`v1.0.240519`|
-|Tune algorithm for point suggestion|`v1.0.240519`|
-|Resolve weird blinking issue|`v1.0.240519`|
-|Disable "show votes" when votes have been shown|`v1.0.240519`|
-|Ticket history per room|`v1.0.240519`|
-|Correct github actions|✅|
-|Point distribution|`v1.1.240522`|
-|Consensus|`v1.1.240522`|
-|fix consensus bug|`v1.1.240523`|
-|Finalize firestore rules|✅|
-|When selecting the title field, auto-highlight the existing text|✅|
-|Timer starts only after we have a title||
-|Polish UI and make more consistent||
-|Add more animations||
-|Dynamic title input that animates for people who didn't update it||
-|Modal system||
-|Light Mode||
-|Themes||
-|Reset cast votes if voting scheme changes||
-|Settings (TASK)||
-|Clear user's names from old rooms||
-|Clean up room names from before today||
-|Handle consecutive misses||
-|handle users leaving||
-|Show user's pointing trend compared to average||
-|Error handling if the room doesn't exist||
-|Hash possible room names and unhash when generating a room name||
-|Cookie notice||
+Below is the remainder of the task list. All the tasks have been migrated into the [GitHub project page](https://github.com/users/mashdots/projects/1).
 
 |Settings Tasks|✅ or Release Version|
 |-|-|
@@ -87,7 +57,3 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 |Room: Pointing scale||
 |Room: Auto-show all votes when everyone has voted||
 |Room: Auto-create new ticket when changing the name after everyone votes||
-
-## Roadmap
-
-- Migrate from Firebase to Supabase or alternative
