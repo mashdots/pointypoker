@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import * as urlLib from 'whatwg-url';
+import { parseURL } from 'whatwg-url';
 
 import { useTickets } from '../../hooks';
 import { VARIATIONS } from '../../../../utils/styles';
 import ArticleIcon from '../../../../assets/icons/article.svg?react';
+import LinkIcon from '../../../../assets/icons/link-out.svg?react';
 
 
 type InputProps = {
@@ -30,7 +31,7 @@ const InputWrapper = styled.div`
   width: 100%;
 `;
 
-const Icon = styled(ArticleIcon)<FocusProps>`
+const TitleIcon = styled(ArticleIcon)<FocusProps>`
   width: 24px;
   padding-top: 0.75rem;
   margin-right: 1rem;
@@ -47,6 +48,18 @@ const Icon = styled(ArticleIcon)<FocusProps>`
       stroke: ${ VARIATIONS.structure.textHighContrast };
     }
   `}
+`;
+
+const TitleLinkIcon = styled(LinkIcon)`
+  width: 24px;
+  padding-top: 0.75rem;
+  margin-right: 1rem;
+  transition: all 300ms;
+
+  :hover {
+    cursor: pointer;
+    width: 32px;
+  }
 `;
 
 const FocusIndicatorContainer = styled.div`
@@ -93,8 +106,14 @@ const TitleInput = () => {
   const { currentTicket, handleCreateTicket, handleUpdateLatestTicket, shouldShowVotes } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState(currentTicket?.name);
-  const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+
+  const parsedUrl = parseURL(value ?? '');
+
+  const icon = parsedUrl
+    ? <TitleLinkIcon onClick={() => window.open(value!)} />
+    : <TitleIcon $isFocused={isFocused} />;
+
 
   useEffect(() => {
     if (value && currentTicket?.name !== value) {
@@ -120,13 +139,12 @@ const TitleInput = () => {
   return (
     <FormWrapper>
       <InputWrapper>
-        <Icon $isFocused={isFocused} />
+        {icon}
         <StyledInput
           ref={inputRef}
           type='text'
           placeholder='ticket number or title'
           value={value ?? ''}
-          isLoading={isLoading}
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => {
             if (shouldShowVotes) {
@@ -135,6 +153,7 @@ const TitleInput = () => {
             setIsFocused(true);
           }}
           onBlur={() => setIsFocused(false)}
+          isLoading={false}
         />
       </InputWrapper>
       <FocusIndicatorContainer>
