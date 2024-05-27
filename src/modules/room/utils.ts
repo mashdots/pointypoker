@@ -1,3 +1,5 @@
+import { URLRecord } from 'whatwg-url';
+
 import { PointOptions, Ticket, Vote } from '../../types';
 
 enum PointingTypes {
@@ -146,9 +148,23 @@ const calculateSuggestedPoints = (currentTicket?: Ticket): SuggestedResult => {
   return result;
 };
 
+const getTicketNumberFromUrl = ({ host, path }: URLRecord): string => {
+  const re = /[a-z]{2,6}-\d{1,6}/i;
+  let parsed;
+
+  if (Array.isArray(path)) {
+    parsed = path.find((p) => re.test(p));
+  } else if (path) {
+    parsed = path.match(re)?.pop();
+  }
+
+  return parsed ?? host?.toString() ?? '';
+};
+
 export {
   calculateAverage,
   calculateSuggestedPoints,
   getPointOptions,
+  getTicketNumberFromUrl,
 };
 export { PointingTypes };

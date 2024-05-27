@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
+import * as urlLib from 'whatwg-url';
 
-import { VARIATIONS } from '../../../../utils/styles';
 import { useTickets } from '../../hooks';
+import { VARIATIONS } from '../../../../utils/styles';
 import ArticleIcon from '../../../../assets/icons/article.svg?react';
 
 
@@ -94,7 +95,7 @@ const TitleInput = () => {
   const [ value, setValue ] = useState(currentTicket?.name);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
+  console.log('url', urlLib.parseURL(value ?? ''));
   useEffect(() => {
     if (value && currentTicket?.name !== value) {
       clearTimeout(timeout);

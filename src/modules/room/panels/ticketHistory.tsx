@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { parseURL } from 'whatwg-url';
 
+import { getTicketNumberFromUrl } from '../utils';
+import { getIcon } from '../../../components/icons';
 import { VARIATIONS } from '../../../utils/styles';
 import { Ticket } from '../../../types';
-import { getIcon } from '../../../components/icons';
 
 type Props = {
   previousTickets?: Ticket[];
@@ -56,9 +59,13 @@ const TicketHistory = ({ previousTickets }: Props) => {
     averagePoints,
     suggestedPoints,
   }, i) => {
+    const parsedUrl = parseURL(name ?? '');
+    const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
+    const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
+
     return (
       <TicketRow key={id} shouldHighlight={i % 2 === 0}>
-        <NameCell>{name?.length ? name : '(no title)'}</NameCell>
+        <NameCell>{nameComponent ?? '(no title)'}</NameCell>
         <PointCell>{suggestedPoints}</PointCell>
         <PointCell>{averagePoints}</PointCell>
       </TicketRow>
