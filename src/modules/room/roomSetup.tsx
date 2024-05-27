@@ -83,7 +83,7 @@ const RoomSetup = withUserSetup(() => {
     if (room) {
       navigate(`/${ room.name }`);
     }
-  }, [ room ]);
+  }, [room]);
 
   return (
     <Wrapper>

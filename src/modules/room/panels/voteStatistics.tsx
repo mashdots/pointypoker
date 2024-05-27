@@ -96,12 +96,12 @@ const VoteStatistics = () => {
 
   const averagePointValue = useMemo(
     () => calculateAverage(currentTicket),
-    [ currentTicket ],
+    [currentTicket],
   );
 
   const pointSuggestion = useMemo(
     () => calculateSuggestedPoints(currentTicket),
-    [ currentTicket ],
+    [currentTicket],
   );
 
   useEffect(() => {

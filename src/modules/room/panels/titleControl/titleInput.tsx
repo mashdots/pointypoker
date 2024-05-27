@@ -92,10 +92,10 @@ let timeout: number;
 const TitleInput = () => {
   const { currentTicket, handleCreateTicket, handleUpdateLatestTicket, shouldShowVotes } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [ value, setValue ] = useState(currentTicket?.name);
+  const [value, setValue] = useState(currentTicket?.name);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  console.log('url', urlLib.parseURL(value ?? ''));
+
   useEffect(() => {
     if (value && currentTicket?.name !== value) {
       clearTimeout(timeout);
@@ -111,11 +111,11 @@ const TitleInput = () => {
         }
       }, 1000);
     }
-  }, [ value ]);
+  }, [value]);
 
   useEffect(() => {
     setValue(currentTicket?.name);
-  }, [ currentTicket?.name ]);
+  }, [currentTicket?.name]);
 
   return (
     <FormWrapper>

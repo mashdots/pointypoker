@@ -221,11 +221,11 @@ const updateRoom = async (
 
       if (property.includes('.')) {
         await updateDoc(roomRef, {
-          [ property ]: data,
+          [property]: data,
         });
       } else {
         await setDoc(roomRef, {
-          [ property ]: data,
+          [property]: data,
         }, { merge: true });
       }
     }

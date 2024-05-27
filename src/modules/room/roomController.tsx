@@ -20,8 +20,8 @@ const Wrapper = styled.div<WrapperProps>`
 let timeout: ReturnType<typeof setTimeout>;
 
 const RoomController = withUserSetup(() => {
-  const [ isVisible, setIsVisible ] = useState(false);
-  const [ isOpen, setIsOpen ] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { isUserSet, room } = useStore((state) => ({
     isUserSet: !!state.user,
     room: state.room,
@@ -43,7 +43,7 @@ const RoomController = withUserSetup(() => {
         setIsVisible(true);
       }, 100);
     }
-  }, [ isUserSet ]);
+  }, [isUserSet]);
 
   return (
     <Wrapper isOpen={isOpen} isVisible={isVisible} id='room'>

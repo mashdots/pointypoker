@@ -33,7 +33,7 @@ const buildDurationString = (duration: DurationObject) => {
 };
 
 const Timer = ({ startTime, endTime = null }: Props) => {
-  const [ time, setTime ] = React.useState('');
+  const [time, setTime] = React.useState('');
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Timer = ({ startTime, endTime = null }: Props) => {
     return () => {
       clearInterval(intervalRef.current as number);
     };
-  }, [ startTime, endTime ]);
+  }, [startTime, endTime]);
 
   return <div>{time}</div>;
 };

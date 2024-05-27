@@ -53,7 +53,7 @@ const StyledButton = styled.button<WrapperProps>`
     transform 200ms;
 
   ${({ activeBackgroundColor, configuredColor, configuredMargin, configuredWidth }) => css`
-    outline-color: ${VARIATIONS[ configuredColor ][ activeBackgroundColor ] };
+    outline-color: ${VARIATIONS[configuredColor][activeBackgroundColor] };
     margin: ${configuredMargin};
     width: ${configuredWidth };
   `}
@@ -84,7 +84,7 @@ const Button = ({
   const widthValue = getWidth(width);
   let activeBackgroundColor: keyof VariationProperties = 'bgElementActive';
   let activeTextColor: keyof VariationProperties = 'textHighContrast';
-  let colorProfile: keyof VariationTypes = VARIATIONS[ variation ] ? variation : 'primary';
+  let colorProfile: keyof VariationTypes = VARIATIONS[variation] ? variation : 'primary';
   let buttonFontSize: number;
 
   switch (textSize) {

@@ -35,9 +35,9 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
       user,
     }));
     const userCookie = getUserCookie();
-    const [ isVisible, setIsVisible ] = useState(!user);
-    const [ isOpen, setIsOpen ] = useState(!user);
-    const [ name, setName ] = useState<string>('');
+    const [isVisible, setIsVisible] = useState(!user);
+    const [isOpen, setIsOpen] = useState(!user);
+    const [name, setName] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -58,7 +58,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
         getAuthClient();
         setUser(userCookie);
       }
-    }, [ user ]);
+    }, [user]);
 
     useEffect(() => {
       clearTimeout(timeout);
@@ -81,7 +81,7 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
         setName('');
         clearTimeout(timeout);
       };
-    }, [ user ]);
+    }, [user]);
 
     if (!user) {
       return (

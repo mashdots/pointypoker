@@ -43,7 +43,7 @@ const getPointOptions = (type?: string): PointOptions => {
   case PointingTypes.limitedFibonacci:
   default:
     return {
-      sequence: [ 1, 2, 3, 5, 8, '?', '∞', '☕'],
+      sequence: [1, 2, 3, 5, 8, '?', '∞', '☕'],
       exclusions: ['?', '∞', '☕'],
     };
   }
@@ -135,7 +135,7 @@ const calculateSuggestedPoints = (currentTicket?: Ticket): SuggestedResult => {
     mark = average - (sequence[roundDown] as number);
   }
 
-  result.suggestedPoints = sequence[ mark >= middle ? roundUp : roundDown ];
+  result.suggestedPoints = sequence[mark >= middle ? roundUp : roundDown];
 
   if (excludedVotes.length >= votesArray.length) {
     result.warning = 'Too many people didn\'t pick a number';

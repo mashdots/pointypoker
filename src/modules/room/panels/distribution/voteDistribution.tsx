@@ -99,7 +99,7 @@ const VoteDistribution = () => {
         </StatContainer>
       );
     }),
-    [ voteCounts, voteData, shouldShowVotes ],
+    [voteCounts, voteData, shouldShowVotes],
   );
 
   const component = hasConsensus ? <Consensus /> : voteStats;

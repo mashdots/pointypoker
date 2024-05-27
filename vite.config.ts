@@ -18,7 +18,7 @@ export default defineConfig({
       utils: '/src/utils',
     },
   },
-  plugins: [ react(), svgr() ],
+  plugins: [react(), svgr()],
 });
 
 /// <reference types="vite-plugin-svgr/client" />

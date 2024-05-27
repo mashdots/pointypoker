@@ -24,28 +24,28 @@ const useTickets = () => {
 
   const sortedTickets = useMemo(() =>
     Object.values(tickets).sort((a, b) => b?.createdAt - a?.createdAt),
-  [ tickets ],
+  [tickets],
   );
 
-  const currentTicket = useMemo(() => sortedTickets[0], [ sortedTickets ]);
+  const currentTicket = useMemo(() => sortedTickets[0], [sortedTickets]);
 
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
     .map(({ name, id }): VoteDisplayProps => ({
       name: name,
-      vote: currentTicket?.votes[ id ] ?? '',
+      vote: currentTicket?.votes[id] ?? '',
     })),
-  [ participants, currentTicket ],
+  [participants, currentTicket],
   );
 
   const areAllVotesCast = useMemo(
-    () => participants.every(({ id }) => currentTicket?.votes[ id ]),
-    [ participants, currentTicket?.votes ],
+    () => participants.every(({ id }) => currentTicket?.votes[id]),
+    [participants, currentTicket?.votes],
   );
 
   const shouldShowVotes = useMemo(
     () => areAllVotesCast || currentTicket?.shouldShowVotes,
-    [ areAllVotesCast, currentTicket ],
+    [areAllVotesCast, currentTicket],
   );
 
   const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
@@ -64,7 +64,7 @@ const useTickets = () => {
 
       updateRoom(roomName, roomObjPath, resolvedValue, callback);
     }
-  }, [ roomName, currentTicket ]);
+  }, [roomName, currentTicket]);
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
     if (roomName && user && currentTicket) {
@@ -86,7 +86,7 @@ const useTickets = () => {
 
       updateRoom(roomName, `tickets.${newTicket.id}`, newTicket);
     }
-  }, [ roomName, currentTicket ]);
+  }, [roomName, currentTicket]);
 
   return {
     areAllVotesCast,
