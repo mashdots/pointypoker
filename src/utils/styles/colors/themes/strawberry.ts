@@ -1,7 +1,7 @@
 import { ThemeReference } from '../colorSystem';
 
 const strawberry: ThemeReference = {
-  primary: 'red',
+  primary: 'crimson',
   greyScale: 'mauve',
   functional: {
     success: 'green',
