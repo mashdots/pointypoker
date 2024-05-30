@@ -1,4 +1,4 @@
-import { THEME_COLORS } from '.';
+import { THEME_COLORS } from './definitions';
 import { ThemeReference } from '../colorSystem';
 
 const blueberry: ThemeReference = {
