@@ -1,13 +1,14 @@
+import { THEME_COLORS } from '.';
 import { ThemeReference } from '../colorSystem';
 
 const blueberry: ThemeReference = {
-  primary: 'indigo',
-  greyScale: 'slate',
+  primary: THEME_COLORS.INDIGO,
+  greyScale: THEME_COLORS.SLATE,
   functional: {
-    success: 'green',
-    warning: 'yellow',
-    error: 'red',
-    info: 'blue',
+    success: THEME_COLORS.GREEN,
+    warning: THEME_COLORS.YELLOW,
+    error: THEME_COLORS.RED,
+    info: THEME_COLORS.BLUE,
   },
 };
 

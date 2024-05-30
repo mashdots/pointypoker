@@ -1,13 +1,14 @@
+import { THEME_COLORS } from '.';
 import { ThemeReference } from '../colorSystem';
 
 const strawberry: ThemeReference = {
-  primary: 'crimson',
-  greyScale: 'mauve',
+  primary: THEME_COLORS.CRIMSON,
+  greyScale: THEME_COLORS.MAUVE,
   functional: {
-    success: 'green',
-    warning: 'yellow',
-    error: 'tomato',
-    info: 'blue',
+    success: THEME_COLORS.GREEN,
+    warning: THEME_COLORS.YELLOW,
+    error: THEME_COLORS.TOMATO,
+    info: THEME_COLORS.BLUE,
   },
 };
 
