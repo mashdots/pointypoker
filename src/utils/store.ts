@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { Room, User } from '../types';
+import { THEMES, THEME_MODES } from './styles/colors/colorSystem';
 
 type Store = {
   user: User | null;
@@ -9,6 +10,10 @@ type Store = {
   room: Room | null;
   setRoom: (arg: Room) => void;
   clearRoom: () => void;
+  theme: THEMES | null;
+  themeMode: THEME_MODES | null;
+  setTheme: (arg: THEMES) => void;
+  setThemeMode: (arg: THEME_MODES) => void;
 }
 
 const useStore = create<Store>((set) => ({
@@ -18,6 +23,10 @@ const useStore = create<Store>((set) => ({
   room: null,
   setRoom: (newRoom) => set(() => ({ room: newRoom })),
   clearRoom: () => set(() => ({ room: null })),
+  theme: null,
+  themeMode: null,
+  setTheme: (newTheme) => set(() => ({ theme: newTheme })),
+  setThemeMode: (newThemeMode) => set(() => ({ themeMode: newThemeMode })),
 }));
 
 export default useStore;

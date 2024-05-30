@@ -1,4 +1,4 @@
-import { VARIATIONS } from './colors';
+import { VARIATIONS } from './colors/legacyColors';
 import GlobalStyles from './global';
 
 /**

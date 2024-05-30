@@ -2,7 +2,8 @@ import React, { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
 import { getMargin, getWidth, VARIATIONS } from '../../utils/styles';
-import { VariationProperties, VariationTypes } from '../../utils/styles/colors';
+import { VariationProperties } from '../../utils/styles/colors';
+import { VariationTypes } from '../../utils/styles/colors/legacyColors';
 
 type Props = {
   children: any;

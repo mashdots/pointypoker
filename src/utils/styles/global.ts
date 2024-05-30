@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-import { VARIATIONS } from './colors';
+import { VARIATIONS } from './colors/legacyColors';
 
 const GlobalStyles = createGlobalStyle`
   html {

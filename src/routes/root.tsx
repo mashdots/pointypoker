@@ -1,11 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { Outlet } from 'react-router-dom';
 
 import '../App.css';
 import { GlobalStyles } from '../utils/styles';
 import Header from '../components/header';
 import { MobileProvider } from '../utils/mobile';
+import useTheme from '../utils/styles/colors';
 
 const Container = styled.div`
   display: flex;
@@ -37,17 +38,23 @@ const ChildrenWrapper = styled.div`
  *  5. Add a cookie notice, privacy policy, and terms of service
  */
 
-const Root = (): JSX.Element => (
-  <MobileProvider>
-    <Container>
-      <GlobalStyles />
-      <Header />
-      <ChildrenWrapper>
-        <Outlet />
-      </ChildrenWrapper>
-    </Container>
-  </MobileProvider>
-);
+const Root = (): JSX.Element => {
+  const { theme } = useTheme();
+
+  return (
+    <ThemeProvider theme={theme}>
+      <MobileProvider>
+        <Container>
+          <GlobalStyles />
+          <Header />
+          <ChildrenWrapper>
+            <Outlet />
+          </ChildrenWrapper>
+        </Container>
+      </MobileProvider>
+    </ThemeProvider>
+  );
+};
 
 
 export default Root;
