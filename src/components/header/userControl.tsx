@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import useStore from '../../utils/store';
 import { Theme } from '../../utils/styles/colors/colorSystem';
 import { useAuth } from '../../modules/user';
 
@@ -13,8 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const UserControl = () => {
-  const user = useStore(({ user }) => (user));
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   const handleSignOut = () => {
     signOut();

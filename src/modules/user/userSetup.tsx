@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { createUserPayload, getCookie, setCookie } from '../../utils';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './nameInput';
-import { getAuthClient, signIn } from '../../services/firebase/auth';
-import useStore from '../../utils/store';
 import { useAuth } from './useAuth';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
@@ -32,8 +29,7 @@ let timeout: ReturnType<typeof setTimeout>;
 
 const withUserSetup = (WrappedComponent: () => JSX.Element) => {
   const UserSetup = () => {
-    const { user } = useStore(({ user }) => ({ user }));
-    const { signIn } = useAuth();
+    const { signIn, user } = useAuth();
     const [isVisible, setIsVisible] = useState(!user);
     const [isOpen, setIsOpen] = useState(!user);
     const [name, setName] = useState<string>('');
