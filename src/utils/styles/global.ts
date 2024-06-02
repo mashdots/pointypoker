@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 
-import { VARIATIONS } from './colors/legacyColors';
+import { Theme } from './colors/colorSystem';
 
 const GlobalStyles = createGlobalStyle`
   html {
@@ -8,15 +8,21 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    background-color: ${ VARIATIONS.structure.bg };
-    color: ${ VARIATIONS.structure.textLowContrast };
-    font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
+    ${({ theme }: { theme: Theme }) => css`
+      background-color: ${ theme.primary.bg };
+      color: ${ theme.primary.textLowContrast };
+    `}
+
+    font-family: 'Nunito Sans', Tahoma, sans-serif;
     font-size: 16px;
   }
 
   h1, input, button {
-    font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
-    color: ${ VARIATIONS.structure.textHighContrast };
+    font-family: 'Nunito Sans', Tahoma, sans-serif;
+
+    ${({ theme }: { theme: Theme }) => css`
+      color: ${ theme.primary.textHighContrast };
+    `}
   }
 
   :root {

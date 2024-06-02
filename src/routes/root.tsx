@@ -18,7 +18,7 @@ const ChildrenWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
+  /* width: 100%; */
 `;
 
 /**
@@ -31,8 +31,7 @@ const ChildrenWrapper = styled.div`
  *   5. allow users to see statistics about their participation, including sessions voted, if they typically vote above or below the trend, etc.
  *
  * Site -
- *  1. Add a favicon
- *  2. Fix animations
+ *  1. Fix animations
  *  3. Add a loading spinner / animation
  *  4. Add a footer
  *  5. Add a cookie notice, privacy policy, and terms of service

@@ -27,7 +27,7 @@ type ActualThemeMode = '' | 'Dark'
 
 const ACTUAL_THEME_MODES = {
   [THEME_MODES.LIGHT]: '',
-  [THEME_MODES.DARK]: THEME_MODES.DARK,
+  [THEME_MODES.DARK]: 'Dark',
 };
 
 type ColorReference = keyof typeof colors;
@@ -53,7 +53,7 @@ export type ThemeReference = {
   }
 };
 
-type Theme = {
+export type Theme = {
   [ key: string ]: ColorAssociation | { [ key: string ]: ColorAssociation };
   primary: ColorAssociation;
   greyScale: ColorAssociation;
@@ -137,8 +137,8 @@ const useTheme = () => {
       }
 
       if (!themeMode) {
-        finalThemeMode = THEME_MODES.LIGHT;
-        setThemeMode(THEME_MODES.LIGHT);
+        finalThemeMode = THEME_MODES.DARK;
+        setThemeMode(THEME_MODES.DARK);
       }
 
       return buildTheme(themes[finalTheme as THEMES], finalThemeMode as THEME_MODES);
