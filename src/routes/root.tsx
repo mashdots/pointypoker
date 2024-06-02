@@ -1,5 +1,5 @@
-import React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import React, { useEffect, useRef, useState } from 'react';
+import styled, { ThemeProvider, css } from 'styled-components';
 import { Outlet } from 'react-router-dom';
 
 import '../App.css';
@@ -14,11 +14,14 @@ const Container = styled.div`
   justify-content: flex-start;
 `;
 
-const ChildrenWrapper = styled.div`
+const ChildrenWrapper = styled.div<{ referenceHeight: number }>`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  /* width: 100%; */
+  justify-content: center;
+
+  ${({ referenceHeight }) => css`
+    height: calc(100vh - ${referenceHeight}px);
+  `}
 `;
 
 /**
@@ -39,14 +42,28 @@ const ChildrenWrapper = styled.div`
 
 const Root = (): JSX.Element => {
   const { theme } = useTheme();
+  const [refHeight, setRefHeight] = useState(0);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * This is all so we don't have to hard-code the header height, so the rest of
+   * the app renders without making the page too long.
+   */
+  useEffect(() => {
+    if (headerRef.current) {
+      setRefHeight(headerRef.current.clientHeight);
+    }
+  }, [headerRef.current]);
 
   return (
     <ThemeProvider theme={theme}>
       <MobileProvider>
         <Container>
           <GlobalStyles />
-          <Header />
-          <ChildrenWrapper>
+          <Header headerRef={headerRef} />
+          <ChildrenWrapper
+            referenceHeight={refHeight}
+          >
             <Outlet />
           </ChildrenWrapper>
         </Container>

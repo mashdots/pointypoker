@@ -14,9 +14,11 @@ const FirstLetter = styled.span`
 `;
 
 const Logo = () => {
-  return <Wrapper>
-    <FirstLetter>p</FirstLetter>ointy <FirstLetter>p</FirstLetter>oker
-  </Wrapper>;
+  return (
+    <Wrapper>
+      <FirstLetter>p</FirstLetter>ointy <FirstLetter>p</FirstLetter>oker
+    </Wrapper>
+  );
 };
 
 export default Logo;
