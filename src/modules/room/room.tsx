@@ -8,7 +8,6 @@ import { VoteButtons } from './components';
 import { TitleControl, VoteDisplay, VoteStatistics } from './panels';
 import { Participant, Room as RoomType } from '../../types';
 import { updateRoom, watchRoom } from '../../services/firebase';
-import withUserSetup from '../user/userSetup';
 import { useMobile } from '../../utils/mobile';
 import useStore from '../../utils/store';
 
@@ -44,7 +43,7 @@ const VoteParticipationWrapper = styled.div`
   width: 100%;
 `;
 
-const Room = withUserSetup(() => {
+const Room = () => {
   const navigate = useNavigate();
   const { isMobile } = useMobile();
   const { roomData, setRoom, user } = useStore(({ room, setRoom, user }) => ({
@@ -110,6 +109,6 @@ const Room = withUserSetup(() => {
       </VoteDataWrapper>
     </Wrapper>
   );
-});
+};
 
 export default Room;

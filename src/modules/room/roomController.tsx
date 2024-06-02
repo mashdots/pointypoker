@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 import useStore from '../../utils/store';
 import RoomSetup from './roomSetup';
 import Room from './room';
-import withUserSetup from '../user/userSetup';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
 
@@ -19,7 +18,7 @@ const Wrapper = styled.div<WrapperProps>`
 
 let timeout: ReturnType<typeof setTimeout>;
 
-const RoomController = withUserSetup(() => {
+const RoomController = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { isUserSet, room } = useStore((state) => ({
@@ -51,6 +50,6 @@ const RoomController = withUserSetup(() => {
     </Wrapper>
   );
 
-});
+};
 
 export default RoomController;

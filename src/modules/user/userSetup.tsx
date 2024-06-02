@@ -1,94 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
-import { VARIATIONS } from '../../utils/styles';
-import NameInput from './nameInput';
 import { useAuth } from './useAuth';
+import { Theme } from '../../utils/styles/colors/colorSystem';
+import { TextInput } from '../../components/common';
 
-type WrapperProps = { isVisible: boolean, isOpen: boolean }
-
-const Wrapper = styled.div<WrapperProps>`
-  transition: opacity 300ms;
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-
-  ${ ({ isOpen, isVisible }) => css`
-    display: ${ isOpen ? 'inherit' : 'none' };
-    opacity: ${ isVisible ? 100 : 0 }%;
-  `};
 `;
 
-const CookieNotice = styled.p`
-  color: ${ VARIATIONS.structure.textLowContrast };
+const Notice = styled.p<{ shouldShow?: boolean}>`
+  color: ${({ theme }: { theme: Theme }) => theme.primary.textLowContrast };
+  transition: opacity 200ms;
+  opacity: ${({ shouldShow = true }) => shouldShow ? 1 : 0};
 `;
 
-let timeout: ReturnType<typeof setTimeout>;
+const UserSetup = () => {
+  const { signIn } = useAuth();
+  const [name, setName] = useState('');
 
-const withUserSetup = (WrappedComponent: () => JSX.Element) => {
-  const UserSetup = () => {
-    const { signIn, user } = useAuth();
-    const [isVisible, setIsVisible] = useState(!user);
-    const [isOpen, setIsOpen] = useState(!user);
-    const [name, setName] = useState<string>('');
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-
-      if (name) {
-        await signIn(name);
-      }
-    };
-
-    useEffect(() => {
-      clearTimeout(timeout);
-
-      if (user) {
-        setIsVisible(false);
-
-        timeout = setTimeout(() => {
-          setIsOpen(false);
-        }, 300);
-      } else {
-        setIsOpen(true);
-
-        timeout = setTimeout(() => {
-          setIsVisible(true);
-        }, 100);
-      }
-
-      return () => {
-        setName('');
-        clearTimeout(timeout);
-      };
-    }, [user]);
-
-    if (!user) {
-      return (
-        <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup-show'>
-          <h1>what do we call you?</h1>
-          <CookieNotice>this is stored in a cookie so we won&apos;t ask you every time</CookieNotice>
-          <form onSubmit={handleSubmit} autoComplete='off'>
-            <NameInput
-              id='name'
-              onChange={({ target }) => setName(target.value)}
-              value={name}
-            />
-          </form>
-        </Wrapper>
-      );
-    } else {
-      return (
-        <Wrapper isOpen={!isOpen} isVisible={!isVisible} id='user-setup-hide'>
-          <WrappedComponent />
-        </Wrapper>
-      );
+    if (name) {
+      await signIn(name);
     }
   };
 
-  return UserSetup;
+  return (
+    <Wrapper id='user-setup-show'>
+      <h1>what do we call you?</h1>
+      <Notice>this is stored in a cookie so we won&apos;t ask you every time</Notice>
+      <form onSubmit={handleSubmit} autoComplete='off'>
+        <TextInput
+          alignment='center'
+          id='name'
+          onChange={({ target }) => setName(target.value)}
+          placeHolder='your name'
+          value={name}
+        />
+      </form>
+      <Notice shouldShow={!!name}>press enter to get started</Notice>
+    </Wrapper>
+  );
+
 };
 
-export default withUserSetup;
+export default UserSetup;

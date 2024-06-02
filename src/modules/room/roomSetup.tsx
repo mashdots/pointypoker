@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
@@ -8,7 +8,6 @@ import { generateRoomName } from '../../utils';
 import useStore from '../../utils/store';
 import { Participant, Room } from '../../types';
 import { createRoom } from '../../services/firebase';
-import withUserSetup from '../user/userSetup';
 import { PointingTypes } from './utils';
 
 const Wrapper = styled.div`
@@ -24,10 +23,14 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const RoomSetup = withUserSetup(() => {
+const RoomSetup = () => {
   const { room, user } = useStore((state) => ({ user: state.user, room: state.room }));
   const setRoom = useStore((state) => state.setRoom);
   const navigate = useNavigate();
+
+  const roomFromPath = useMemo(() => {
+    return window.location.pathname.slice(1);
+  }, [window.location.pathname]);
 
   const handleCreateRoom = async () => {
     if (!user) {
@@ -78,12 +81,9 @@ const RoomSetup = withUserSetup(() => {
     document.title = 'pointy poker';
   }, []);
 
-  // TEMP: Remove after development of room
-  useEffect(() => {
-    if (room) {
-      navigate(`/${ room.name }`);
-    }
-  }, [room]);
+  // useEffect(() => {
+  //   console.log('ROOM FROM PATH', roomFromPath);
+  // }, [ roomFromPath ]);
 
   return (
     <Wrapper>
@@ -93,6 +93,6 @@ const RoomSetup = withUserSetup(() => {
       </ButtonContainer>
     </Wrapper>
   );
-});
+};
 
 export default RoomSetup;
