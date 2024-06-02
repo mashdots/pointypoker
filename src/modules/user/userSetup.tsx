@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { createUserPayload, getUserCookie, setUserCookie } from '../../utils';
+import { createUserPayload, getCookie, setCookie } from '../../utils';
 import { VARIATIONS } from '../../utils/styles';
 import NameInput from './nameInput';
 import { getAuthClient, signIn } from '../../services/firebase/auth';
 import useStore from '../../utils/store';
+import { useAuth } from './useAuth';
 
 type WrapperProps = { isVisible: boolean, isOpen: boolean }
 
@@ -14,6 +15,7 @@ const Wrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   height: 100%;
 
   ${ ({ isOpen, isVisible }) => css`
@@ -30,11 +32,8 @@ let timeout: ReturnType<typeof setTimeout>;
 
 const withUserSetup = (WrappedComponent: () => JSX.Element) => {
   const UserSetup = () => {
-    const { setUser, user } = useStore(({ setUser, user }) => ({
-      setUser,
-      user,
-    }));
-    const userCookie = getUserCookie();
+    const { user } = useStore(({ user }) => ({ user }));
+    const { signIn } = useAuth();
     const [isVisible, setIsVisible] = useState(!user);
     const [isOpen, setIsOpen] = useState(!user);
     const [name, setName] = useState<string>('');
@@ -42,23 +41,10 @@ const withUserSetup = (WrappedComponent: () => JSX.Element) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      const payload = createUserPayload(name);
-      try {
-        const anonUser = await signIn();
-        payload.id = anonUser.userId!;
-        setUserCookie(payload);
-        setUser(payload);
-      } catch (error) {
-        console.error(e);
+      if (name) {
+        await signIn(name);
       }
     };
-
-    useEffect(() => {
-      if (userCookie && !user) {
-        getAuthClient();
-        setUser(userCookie);
-      }
-    }, [user]);
 
     useEffect(() => {
       clearTimeout(timeout);

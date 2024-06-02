@@ -1,4 +1,4 @@
-import { getUserCookie, setUserCookie } from './cookies';
+import { getCookie, setCookie } from './cookies';
 import createUserPayload from './user';
 import generateRoomName from './room';
 
@@ -14,6 +14,6 @@ export {
   createUserPayload,
   generateRoomName,
   getRandomInt,
-  getUserCookie,
-  setUserCookie,
+  getCookie,
+  setCookie,
 };

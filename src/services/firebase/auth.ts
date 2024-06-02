@@ -6,7 +6,6 @@ import {
   setPersistence,
   signInAnonymously,
   signOut as signOutFirebase,
-  // connectAuthEmulator,
 } from 'firebase/auth';
 
 import getApp from '.';

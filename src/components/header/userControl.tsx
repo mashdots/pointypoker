@@ -2,31 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 import useStore from '../../utils/store';
-import { clearUserCookie } from '../../utils/cookies';
-import { signOut } from '../../services/firebase/auth';
+import { Theme } from '../../utils/styles/colors/colorSystem';
+import { useAuth } from '../../modules/user';
 
 const Wrapper = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
+  color: ${({ theme }: { theme: Theme}) => theme.primary.textHighContrast};
 `;
 
 const UserControl = () => {
-  const { user, clearUser, clearRoom } = useStore((state) => ({
-    user: state.user,
-    clearUser: state.clearUser,
-    clearRoom: state.clearRoom,
-  }));
+  const user = useStore(({ user }) => (user));
+  const { signOut } = useAuth();
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      clearUser();
-      clearRoom();
-      clearUserCookie();
-    } catch (e) {
-      console.error(e);
-    }
+  const handleSignOut = () => {
+    signOut();
   };
 
   return <Wrapper onClick={handleSignOut}>{user?.name}</Wrapper>;
