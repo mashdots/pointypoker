@@ -19,6 +19,7 @@ type Props = {
 type InputProps = {
   align: string;
   isLoading: boolean;
+  theme: Theme;
 }
 
 const FormWrapper = styled.div`
@@ -37,43 +38,38 @@ const InputWrapper = styled.div`
 `;
 
 const StyledInput = styled.input<InputProps>`
-  ${({ theme }: { theme: Theme }) => css`
-    background-color: ${ theme.primary.bgElement };
+  ${({ align, theme }) => css`
+    background-color: ${ theme.primary.bgAlt };
+    border-color: ${ theme.primary.border};
     color: ${ theme.primary.textLowContrast };
-    border-bottom-color: ${ theme.primary.textHighContrast};
+    text-align: ${align};
   `}
 
-  border: none;
   padding: 4px;
-  text-align: ${({ align }) => align};
+  margin-bottom: 2px;
   font-size: 1.5rem;
   width: 100%;
 
   /* These prevent the awful highlight around the text input */
   outline-width: 0px;
   outline-style: solid;
-  margin-bottom: 2px;
+  border-width: 2px;
+  border-style: solid;
   border-radius: 8px;
-  border-bottom-style: solid;
-  border-bottom-width: 0px;
 
   transition: all 200ms;
 
   :hover {
-    ${({ theme }: { theme: Theme }) => css`
+    ${({ theme }) => css`
       background-color: ${ theme.primary.bgElementHover };
     `}
   }
   
   :focus {
-    border-bottom-width: 2px;
-    margin-top: -4px;
-    padding-top: 6px;
-    
-    ${({ theme }: { theme: Theme }) => css`
+    ${({ theme }) => css`
       color: ${theme.primary.textHighContrast };
       background-color: ${theme.primary.bgElementActive };
-      outline-color: ${theme.primary.textHighContrast };
+      border-color: ${theme.primary.textHighContrast };
     `}
   }
 `;
