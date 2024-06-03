@@ -25,27 +25,8 @@ function getWidth(value?: string | number): string {
   }
 }
 
-/**
- * Gets a CSS margin string.
- *
- * @param {string} value a word describing where to place the 16px margin
- * @returns {string} the CSS string laying out the margins
- */
-const getMargin = (value?: string) => {
-  switch (value) {
-  case 'left':
-    return '16px auto 16px 16px';
-  case 'right':
-    return '16px 16px 16px auto';
-  case 'center':
-  default:
-    return '16px auto';
-  }
-};
-
 export {
   GlobalStyles,
   VARIATIONS,
-  getMargin,
   getWidth,
 };

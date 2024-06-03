@@ -1,91 +1,79 @@
 import React, { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import { getMargin, getWidth, VARIATIONS } from '../../utils/styles';
-import { VariationProperties } from '../../utils/styles/colors';
-import { VariationTypes } from '../../utils/styles/colors/legacyColors';
+import { Theme } from '../../utils/styles/colors/colorSystem';
+import { getWidth } from '../../utils/styles';
 
 type Props = {
   children: any;
   isDisabled?: boolean;
-  margin?: 'left' | 'right' | 'center';
-  onClick?: (arg: any | undefined) => void;
+  onClick?: (arg?: any) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
-  variation: keyof VariationTypes;
   width?: 'quarter' | 'third' | 'half' | 'full' | number;
   textSize?: 'small' | 'medium' | 'large';
 } & HTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = {
-  activeBackgroundColor: string;
-  activeTextColor: string;
-  configuredMargin?: string;
   configuredWidth: string;
-  configuredColor: keyof VariationTypes;
   isDisabled?: boolean;
   textSize: number;
+  theme: Theme;
 }
 
 const StyledButton = styled.button<WrapperProps>`
-  color: ${ VARIATIONS.structure.textLowContrast };
-  background-color: ${ VARIATIONS.transparent.bgElement };
-  cursor: pointer;
+  ${({ configuredWidth, isDisabled, textSize, theme }) => css`
+    color: ${theme[isDisabled ? 'greyScale' : 'primary'].textLowContrast };
+    background-color: ${theme[isDisabled ? 'greyScale' : 'primary'].bgElement};
+    border-bottom-color: ${theme[isDisabled ? 'greyScale' : 'primary'].border};
+    cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
+    font-size: ${textSize}rem;
+    width: ${configuredWidth};
+  `}
+
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 
-  padding: 16px 32px;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
 
   border: none;
-  border-radius: 16px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-radius: 1rem;
 
-  outline-offset: -2px;
-  outline-width: 2px;
-  outline-style: solid;
-
-  ${({ textSize }) => css`
-    font-size: ${textSize}rem;
-  `}
-
-  transition: 
-    background-color 300ms,
-    color 300ms,
-    transform 200ms;
-
-  ${({ activeBackgroundColor, configuredColor, configuredMargin, configuredWidth }) => css`
-    outline-color: ${VARIATIONS[configuredColor][activeBackgroundColor] };
-    margin: ${configuredMargin};
-    width: ${configuredWidth };
-  `}
+  transition: all 250ms ease-out;
 
   :hover {
-    ${ ({ activeBackgroundColor, activeTextColor, configuredColor }) => css`
-      background-color: ${VARIATIONS[configuredColor][activeBackgroundColor] };
-      color: ${ VARIATIONS[configuredColor][activeTextColor] };
+    border-bottom-width: 4px;
+    margin-top: 14px;
+
+    ${ ({ isDisabled, theme }) => !isDisabled && css`
+      color: ${theme.primary.textHighContrast};
+      background-color: ${ theme.primary.bgElementHover };
     `}
   }
   
   :active {
-    transform: scale(0.95);
+    border-bottom-width: 1px;
+    margin-top: 15px;
+
+    ${ ({ isDisabled, theme }) => !isDisabled && css`
+      background-color: ${ theme.primary.bgElementActive };
+    `}
   }
 `;
 
 const Button = ({
   children,
   isDisabled,
-  margin,
   onClick,
-  variation,
   width,
   textSize = 'medium',
   ...rest
 }: Props) => {
-  const marginValues = getMargin(margin);
   const widthValue = getWidth(width);
-  let activeBackgroundColor: keyof VariationProperties = 'bgElementActive';
-  let activeTextColor: keyof VariationProperties = 'textHighContrast';
-  let colorProfile: keyof VariationTypes = VARIATIONS[variation] ? variation : 'primary';
   let buttonFontSize: number;
 
   switch (textSize) {
@@ -100,18 +88,8 @@ const Button = ({
     buttonFontSize = 2;
   }
 
-  if (isDisabled) {
-    activeBackgroundColor = 'bgElement';
-    activeTextColor = 'textLowContrast';
-    colorProfile = 'structure';
-  }
-
   return (
     <StyledButton
-      activeBackgroundColor={activeBackgroundColor}
-      activeTextColor={activeTextColor}
-      configuredColor={colorProfile}
-      configuredMargin={marginValues}
       configuredWidth={widthValue}
       disabled={isDisabled}
       isDisabled={isDisabled}

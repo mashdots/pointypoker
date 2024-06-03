@@ -5,11 +5,12 @@ import { Theme } from './colors/colorSystem';
 const GlobalStyles = createGlobalStyle`
   html {
     scroll-behavior: smooth;
+    transition: background-color 250ms, color 250ms;
   }
 
   body {
     ${({ theme }: { theme: Theme }) => css`
-      background-color: ${ theme.primary.bg };
+      background-color: ${ theme.greyScale.bg };
       color: ${ theme.primary.textLowContrast };
     `}
 
