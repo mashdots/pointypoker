@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Theme } from '../../utils/styles/colors/colorSystem';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import { useAuth } from '../../modules/user';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<ThemedProps>`
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: ${({ theme }: { theme: Theme}) => theme.primary.textHighContrast};
+  color: ${({ theme }) => theme.primary.textHighContrast};
 `;
 
 const UserControl = () => {

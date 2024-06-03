@@ -89,7 +89,7 @@ const RoomSetup = () => {
     <Wrapper>
       <h1>ready to start?</h1>
       <ButtonContainer>
-        <Button margin='center' variation='info' width='full' onClick={handleCreateRoom}>start a session</Button>
+        <Button width='full' onClick={handleCreateRoom}>start a session</Button>
       </ButtonContainer>
     </Wrapper>
   );

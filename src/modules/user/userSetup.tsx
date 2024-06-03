@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { useAuth } from './useAuth';
-import { Theme } from '../../utils/styles/colors/colorSystem';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import { TextInput } from '../../components/common';
+
+type NoticeProps = ThemedProps & {
+  shouldShow?: boolean;
+};
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,10 +16,13 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Notice = styled.p<{ shouldShow?: boolean}>`
-  color: ${({ theme }: { theme: Theme }) => theme.primary.textLowContrast };
+const Notice = styled.p<NoticeProps>`
   transition: opacity 200ms;
-  opacity: ${({ shouldShow = true }) => shouldShow ? 1 : 0};
+
+  ${({ shouldShow = true, theme }) => css`
+    color: ${theme.primary.textLowContrast};
+    opacity: ${ shouldShow ? 1 : 0};
+  `}
 `;
 
 const UserSetup = () => {

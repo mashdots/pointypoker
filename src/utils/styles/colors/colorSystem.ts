@@ -65,6 +65,10 @@ export type Theme = {
   }
 };
 
+export type ThemedProps = {
+  theme: Theme;
+};
+
 const variationPropertiesList = [
   'bg',
   'bgAlt',

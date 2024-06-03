@@ -1,16 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Theme } from '../../utils/styles/colors/colorSystem';
 
-const Wrapper = styled.div`
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
+
+const Wrapper = styled.div<ThemedProps>`
   cursor: default;
   font-family: 'Lexend', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.5rem;
-  color: ${({ theme }: { theme: Theme }) => theme.primary.textHighContrast};
+  color: ${({ theme }) => theme.primary.textHighContrast};
 `;
 
-const FirstLetter = styled.span`
-  color: ${({ theme }: { theme: Theme }) => theme.primary.textLowContrast};
+const FirstLetter = styled.span<ThemedProps>`
+  color: ${({ theme }) => theme.primary.textLowContrast};
 `;
 
 const Logo = () => {

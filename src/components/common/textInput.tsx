@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Theme } from '../../utils/styles/colors/colorSystem';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 
 type Props = {
   alignment?: 'left' | 'center' | 'right';
@@ -16,10 +16,9 @@ type Props = {
   value: string;
 }
 
-type InputProps = {
+type InputProps = ThemedProps & {
   align: string;
   isLoading: boolean;
-  theme: Theme;
 }
 
 const FormWrapper = styled.div`
@@ -45,7 +44,7 @@ const StyledInput = styled.input<InputProps>`
     text-align: ${align};
   `}
 
-  padding: 4px;
+  padding: 0.5rem 1.75rem;
   margin-bottom: 2px;
   font-size: 1.5rem;
   width: 100%;

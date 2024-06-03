@@ -1,15 +1,15 @@
 import { createGlobalStyle, css } from 'styled-components';
 
-import { Theme } from './colors/colorSystem';
+import { ThemedProps } from './colors/colorSystem';
 
-const GlobalStyles = createGlobalStyle`
+const GlobalStyles = createGlobalStyle<ThemedProps>`
   html {
     scroll-behavior: smooth;
     transition: background-color 250ms, color 250ms;
   }
 
   body {
-    ${({ theme }: { theme: Theme }) => css`
+    ${({ theme }) => css`
       background-color: ${ theme.greyScale.bg };
       color: ${ theme.primary.textLowContrast };
     `}
@@ -21,7 +21,7 @@ const GlobalStyles = createGlobalStyle`
   h1, input, button {
     font-family: 'Nunito Sans', Tahoma, sans-serif;
 
-    ${({ theme }: { theme: Theme }) => css`
+    ${({ theme }) => css`
       color: ${ theme.primary.textHighContrast };
     `}
   }

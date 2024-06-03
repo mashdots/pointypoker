@@ -1,7 +1,7 @@
 import React, { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Theme } from '../../utils/styles/colors/colorSystem';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import { getWidth } from '../../utils/styles';
 
 type Props = {
@@ -13,11 +13,10 @@ type Props = {
   textSize?: 'small' | 'medium' | 'large';
 } & HTMLAttributes<HTMLButtonElement>;
 
-type WrapperProps = {
+type WrapperProps = ThemedProps & {
   configuredWidth: string;
   isDisabled?: boolean;
   textSize: number;
-  theme: Theme;
 }
 
 const StyledButton = styled.button<WrapperProps>`
@@ -35,7 +34,7 @@ const StyledButton = styled.button<WrapperProps>`
   justify-content: center;
   align-items: center;
 
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.75rem;
   margin-top: 1rem;
 
   border: none;
@@ -47,7 +46,7 @@ const StyledButton = styled.button<WrapperProps>`
 
   :hover {
     border-bottom-width: 4px;
-    margin-top: 14px;
+    margin-top: calc(1rem - 2px);
 
     ${ ({ isDisabled, theme }) => !isDisabled && css`
       color: ${theme.primary.textHighContrast};
@@ -57,7 +56,7 @@ const StyledButton = styled.button<WrapperProps>`
   
   :active {
     border-bottom-width: 1px;
-    margin-top: 15px;
+    margin-top: calc(1rem + 1px);
 
     ${ ({ isDisabled, theme }) => !isDisabled && css`
       background-color: ${ theme.primary.bgElementActive };
