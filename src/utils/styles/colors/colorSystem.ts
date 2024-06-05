@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as colors from '@radix-ui/colors';
 
 import { VariationProperties as ColorAssociation } from '.';
@@ -15,9 +15,6 @@ export enum THEMES {
   STRAWBERRY = 'strawberry',
 }
 
-/**
- * Title case makes it easy to reference the dark alternates in colors.
- */
 export enum THEME_MODES {
   DARK = 'dark',
   LIGHT = 'light',
@@ -118,12 +115,14 @@ const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
   };
 };
 
+const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
+
 const useTheme = () => {
   const {
     selectedTheme,
     themeMode,
     setTheme,
-    setThemeMode,
+    setThemeMode: setThemeModeAction,
   } = useStore(
     ({ theme: selectedTheme, themeMode, setTheme, setThemeMode }) => (
       { selectedTheme, themeMode, setTheme, setThemeMode }
@@ -141,14 +140,36 @@ const useTheme = () => {
       }
 
       if (!themeMode) {
-        finalThemeMode = THEME_MODES.DARK;
-        setThemeMode(THEME_MODES.DARK);
+        finalThemeMode = darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+        setThemeModeAction(darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
       }
 
       return buildTheme(themes[finalTheme as THEMES], finalThemeMode as THEME_MODES);
     },
     [selectedTheme, themeMode],
   );
+
+  const setThemeMode = (mode: THEME_MODES) => {
+    setThemeModeAction(mode);
+    darkModePreference.removeEventListener(
+      'change',
+      e => setThemeModeAction(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT),
+    );
+  };
+
+  useEffect(() => {
+    darkModePreference.addEventListener(
+      'change',
+      e => setThemeModeAction(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT),
+    );
+
+    return () => {
+      darkModePreference.removeEventListener(
+        'change',
+        e => setThemeModeAction(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT),
+      );
+    };
+  }, []);
 
   return {
     theme,
