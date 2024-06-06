@@ -39,27 +39,23 @@ type LightColorReference = Exclude<
 type SubColorReference = { [ key: string ]: string };
 
 export type ThemeReference = {
-  [ key: string ]: LightColorReference | { [ key: string ]: LightColorReference };
+  [ key: string ]: LightColorReference;
   primary: LightColorReference;
   greyScale: LightColorReference;
-  functional: {
-    success: LightColorReference;
-    warning: LightColorReference;
-    error: LightColorReference;
-    info: LightColorReference;
-  }
+  success: LightColorReference;
+  warning: LightColorReference;
+  error: LightColorReference;
+  info: LightColorReference;
 };
 
 export type Theme = {
-  [ key: string ]: ColorAssociation | { [ key: string ]: ColorAssociation };
+  [ key: string ]: ColorAssociation;
   primary: ColorAssociation;
   greyScale: ColorAssociation;
-  functional: {
-    success: ColorAssociation;
-    warning: ColorAssociation;
-    error: ColorAssociation;
-    info: ColorAssociation;
-  }
+  success: ColorAssociation;
+  warning: ColorAssociation;
+  error: ColorAssociation;
+  info: ColorAssociation;
 };
 
 export type ThemedProps = {
@@ -96,22 +92,19 @@ const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode
 };
 
 const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
-  const { primary: p, greyScale: g, functional: f } = theme;
   const finalColorMode = ACTUAL_THEME_MODES[mode] as ActualThemeMode;
+  const builtTheme = {} as Theme;
 
-  const primary = buildColorAssociation(p, finalColorMode);
-  const greyScale = buildColorAssociation(g, finalColorMode);
-  const functional = {
-    success: buildColorAssociation(f.success, finalColorMode),
-    warning: buildColorAssociation(f.warning, finalColorMode),
-    error: buildColorAssociation(f.error, finalColorMode),
-    info: buildColorAssociation(f.info, finalColorMode),
-  };
+  for (const key in theme) {
+    if (['primary', 'greyScale', 'success', 'warning', 'error', 'info'].includes(key) && theme[key]) {
+      builtTheme[key] = buildColorAssociation(theme[key] as LightColorReference, finalColorMode);
+    } else {
+      throw new Error(`Invalid theme reference. Check that your theme is properly structured. Invalid key: ${key}`);
+    }
+  }
 
   return {
-    primary,
-    greyScale,
-    functional,
+    ...builtTheme,
   };
 };
 
