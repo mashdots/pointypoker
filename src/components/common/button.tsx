@@ -11,19 +11,21 @@ type Props = {
   type?: 'button' | 'submit' | 'reset' | undefined;
   width?: 'quarter' | 'third' | 'half' | 'full' | number;
   textSize?: 'small' | 'medium' | 'large';
+  variation?: 'primary' | 'success' | 'warning' | 'error' | 'info';
 } & HTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = ThemedProps & {
   configuredWidth: string;
   isDisabled?: boolean;
   textSize: number;
+  variation: 'primary' | 'success' | 'warning' | 'error' | 'info';
 }
 
 const StyledButton = styled.button<WrapperProps>`
-  ${({ configuredWidth, isDisabled, textSize, theme }) => css`
-    color: ${theme[isDisabled ? 'greyScale' : 'primary'].textLowContrast };
-    background-color: ${theme[isDisabled ? 'greyScale' : 'primary'].bgElement};
-    border-bottom-color: ${theme[isDisabled ? 'greyScale' : 'primary'].border};
+  ${({ configuredWidth, isDisabled, textSize, theme, variation }) => css`
+    background-color: ${theme[isDisabled ? 'greyScale' : variation].bgElement};
+    border-bottom-color: ${theme[isDisabled ? 'greyScale' : variation].borderElement} !important;
+    color: ${theme[ isDisabled ? 'greyScale' : variation ].textLowContrast };
     cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
     font-size: ${textSize}rem;
     width: ${configuredWidth};
@@ -48,9 +50,10 @@ const StyledButton = styled.button<WrapperProps>`
     border-bottom-width: 4px;
     margin-top: calc(1rem - 2px);
 
-    ${ ({ isDisabled, theme }) => !isDisabled && css`
-      color: ${theme.primary.textHighContrast};
-      background-color: ${ theme.primary.bgElementHover };
+    ${ ({ isDisabled, theme, variation }) => !isDisabled && css`
+      color: ${theme[variation].textHighContrast};
+      background-color: ${ theme[variation].bgElementHover };
+      border-bottom-color: ${theme[ isDisabled ? 'greyScale' : variation ].borderElementHover} !important;
     `}
   }
   
@@ -58,8 +61,8 @@ const StyledButton = styled.button<WrapperProps>`
     border-bottom-width: 1px;
     margin-top: calc(1rem + 1px);
 
-    ${ ({ isDisabled, theme }) => !isDisabled && css`
-      background-color: ${ theme.primary.bgElementActive };
+    ${ ({ isDisabled, theme, variation }) => !isDisabled && css`
+      background-color: ${ theme[variation].bgElementActive };
     `}
   }
 `;
@@ -70,6 +73,7 @@ const Button = ({
   onClick,
   width,
   textSize = 'medium',
+  variation = 'primary',
   ...rest
 }: Props) => {
   const widthValue = getWidth(width);
@@ -94,6 +98,7 @@ const Button = ({
       isDisabled={isDisabled}
       onClick={onClick}
       textSize={buttonFontSize}
+      variation={variation}
       {...rest}
     >
       {children}

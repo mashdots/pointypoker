@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { getCookie, setCookie } from './cookies';
 import createUserPayload from './user';
 import generateRoomName from './room';
@@ -10,10 +11,23 @@ const getRandomInt = (size: number): number => {
   return (Math.floor(Math.pow(10, 14) * Math.random() * Math.random()) % (max - min + 1)) + min;
 };
 
+
+const usePrevious = <T>(value: T): T | undefined => {
+  const ref = useRef<T>();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [ value ]);
+
+  return ref.current;
+};
+
+
 export {
   createUserPayload,
   generateRoomName,
   getRandomInt,
   getCookie,
   setCookie,
+  usePrevious,
 };

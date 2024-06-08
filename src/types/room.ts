@@ -18,6 +18,7 @@ type PointOptions = {
 type Ticket = {
   [key: string]: any;
   createdAt: number;
+  createdBy: string;
   timerStartAt?: number;
   id: string;
   name?: string;

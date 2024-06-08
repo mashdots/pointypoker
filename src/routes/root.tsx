@@ -1,12 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ContextType, useEffect, useRef, useState } from 'react';
 import styled, { ThemeProvider, css } from 'styled-components';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 
 import '../App.css';
 import { GlobalStyles } from '../utils/styles';
 import Header from '../components/header';
 import { MobileProvider } from '../utils/mobile';
 import useTheme from '../utils/styles/colors';
+import useStore from '../utils/store';
+
+type ContextType = {
+  refHeight: number;
+};
 
 const Container = styled.div`
   display: flex;
@@ -42,6 +47,7 @@ const ChildrenWrapper = styled.div<{ referenceHeight: number }>`
 
 const Root = (): JSX.Element => {
   const { theme } = useTheme();
+  const isRoomOpen = useStore((state) => state.isRoomOpen);
   const [refHeight, setRefHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -59,12 +65,12 @@ const Root = (): JSX.Element => {
     <ThemeProvider theme={theme}>
       <MobileProvider>
         <Container>
-          <GlobalStyles />
+          <GlobalStyles isRoomOpen={isRoomOpen} />
           <Header headerRef={headerRef} />
           <ChildrenWrapper
             referenceHeight={refHeight}
           >
-            <Outlet />
+            <Outlet context={{ refHeight } satisfies ContextType} />
           </ChildrenWrapper>
         </Container>
       </MobileProvider>
@@ -72,5 +78,8 @@ const Root = (): JSX.Element => {
   );
 };
 
+export function useHeaderHeight() {
+  return useOutletContext<ContextType>();
+}
 
 export default Root;

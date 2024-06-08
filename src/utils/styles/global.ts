@@ -2,15 +2,16 @@ import { createGlobalStyle, css } from 'styled-components';
 
 import { ThemedProps } from './colors/colorSystem';
 
-const GlobalStyles = createGlobalStyle<ThemedProps>`
+const GlobalStyles = createGlobalStyle<ThemedProps & { isRoomOpen: boolean }>`
   html {
     scroll-behavior: smooth;
     transition: background-color 250ms, color 250ms;
   }
 
   body {
-    ${({ theme }) => css`
-      background-color: ${ theme.greyScale.bg };
+    transition: background-color 250ms, color 250ms;
+    ${({ isRoomOpen, theme }) => css`
+      background-color: ${ theme.greyScale[isRoomOpen ? 'bg' : 'bgAlt'] };
       color: ${ theme.primary.textLowContrast };
     `}
 

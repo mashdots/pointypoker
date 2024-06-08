@@ -14,6 +14,8 @@ type Store = {
   themeMode: THEME_MODES | null;
   setTheme: (arg: THEMES) => void;
   setThemeMode: (arg: THEME_MODES) => void;
+  isRoomOpen: boolean;
+  setIsRoomOpen: (arg: boolean) => void;
 }
 
 const useStore = create<Store>((set) => ({
@@ -27,6 +29,8 @@ const useStore = create<Store>((set) => ({
   themeMode: null,
   setTheme: (newTheme) => set(() => ({ theme: newTheme })),
   setThemeMode: (newThemeMode) => set(() => ({ themeMode: newThemeMode })),
+  isRoomOpen: false,
+  setIsRoomOpen: (isOpen) => set(() => ({ isRoomOpen: isOpen })),
 }));
 
 export default useStore;

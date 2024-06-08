@@ -150,6 +150,9 @@ const useTheme = () => {
     );
   };
 
+  /**
+   * Connect the theme mode to the user's system preference.
+  */
   useEffect(() => {
     darkModePreference.addEventListener(
       'change',
