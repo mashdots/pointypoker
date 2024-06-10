@@ -3,25 +3,22 @@ import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
 import { useTickets } from '../../hooks';
-import { VARIATIONS } from '../../../../utils/styles';
 import ArticleIcon from '../../../../assets/icons/article.svg?react';
 import LinkIcon from '../../../../assets/icons/link-out.svg?react';
+import { TextInput } from '../../../../components/common';
+import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
 
 
-type InputProps = {
-  isLoading: boolean;
-}
-
-type FocusProps = {
+type FocusProps = ThemedProps & {
   $isFocused: string | boolean;
 }
 
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 1rem;
 `;
 
 const InputWrapper = styled.div`
@@ -32,71 +29,37 @@ const InputWrapper = styled.div`
 `;
 
 const TitleIcon = styled(ArticleIcon)<FocusProps>`
-  width: 24px;
-  padding-top: 0.75rem;
-  margin-right: 1rem;
   transition: all 300ms;
 
-  ${({ $isFocused }) => $isFocused && css`
-    width: 32px;
-    margin-right: 0.5rem;
+  ${({ $isFocused, theme }) => css`
+    margin-right: ${$isFocused ? 0.75 : 1}rem;
+    margin-left: ${$isFocused ? -0.25 : 0}rem;
+    width: ${$isFocused ? 2 : 1.5}rem;
+
     > line {
-      stroke: ${ VARIATIONS.structure.textHighContrast };
+      stroke: ${ theme.primary[$isFocused ? 'textHighContrast' : 'textLowContrast'] };
     }
 
     > rect:nth-child(2) {
-      stroke: ${ VARIATIONS.structure.textHighContrast };
+      stroke: ${ theme.primary[$isFocused ? 'textHighContrast' : 'textLowContrast'] };
     }
   `}
 `;
 
-const TitleLinkIcon = styled(LinkIcon)`
-  width: 24px;
-  padding-top: 0.75rem;
+const TitleLinkIcon = styled(LinkIcon)<ThemedProps>`
+  width: 1.5rem;
   margin-right: 1rem;
   transition: all 300ms;
 
+  > polyline, line, path {
+    stroke: ${({ theme }) => theme.info.textLowContrast};
+  }
+
   :hover {
     cursor: pointer;
-    width: 32px;
-  }
-`;
-
-const FocusIndicatorContainer = styled.div`
-  width: 100%;
-  height: 2px;
-`;
-
-const FocusIndicator = styled.div<FocusProps>`
-  width: 0%;
-  height: 2px;
-  background-color: ${ VARIATIONS.structure.textHighContrast };
-  transition: all 300ms;
-
-  ${({ $isFocused }) => $isFocused && css`
-    width: 100%;
-  `}
-`;
-
-const StyledInput = styled.input<InputProps>`
-  background-color: ${ VARIATIONS.structure.bg };
-  color: ${ VARIATIONS.structure.textLowContrast };
-
-  border: none;
-  margin-top: 1rem;
-  text-align: left;
-  font-size: 1.5rem;
-  width: 100%;
-
-  outline-offset: 0px;
-  outline-width: 0px;
-  outline-style: solid;
-  margin-bottom: 2px;
-
-  transition: all 300ms;
-
-  :focus {
-    color: ${ VARIATIONS.structure.textHighContrast };
+    width: 2rem;
+    margin-right: 0.75rem;
+    margin-left: -0.25rem;
   }
 `;
 
@@ -139,13 +102,12 @@ const TitleInput = () => {
   return (
     <FormWrapper>
       <InputWrapper>
-        {icon}
-        <StyledInput
-          ref={inputRef}
-          type='text'
-          placeholder='ticket number or title'
+        <TextInput
+          inputRef={inputRef}
+          id='ticket-title'
           value={value ?? ''}
           onChange={(e) => setValue(e.target.value)}
+          placeHolder='ticket number or title'
           onFocus={() => {
             if (shouldShowVotes) {
               inputRef.current?.select();
@@ -153,12 +115,9 @@ const TitleInput = () => {
             setIsFocused(true);
           }}
           onBlur={() => setIsFocused(false)}
-          isLoading={false}
+          icon={icon}
         />
       </InputWrapper>
-      <FocusIndicatorContainer>
-        <FocusIndicator $isFocused={isFocused} />
-      </FocusIndicatorContainer>
     </FormWrapper>
   );
 };

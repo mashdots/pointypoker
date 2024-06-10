@@ -12,6 +12,7 @@ type Props = {
   width?: 'quarter' | 'third' | 'half' | 'full' | number;
   textSize?: 'small' | 'medium' | 'large';
   variation?: 'primary' | 'success' | 'warning' | 'error' | 'info';
+  noMargin?: boolean;
 } & HTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = ThemedProps & {
@@ -19,15 +20,17 @@ type WrapperProps = ThemedProps & {
   isDisabled?: boolean;
   textSize: number;
   variation: 'primary' | 'success' | 'warning' | 'error' | 'info';
+  noMargin?: boolean;
 }
 
 const StyledButton = styled.button<WrapperProps>`
-  ${({ configuredWidth, isDisabled, textSize, theme, variation }) => css`
+  ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }) => css`
     background-color: ${theme[isDisabled ? 'greyScale' : variation].bgElement};
     border-bottom-color: ${theme[isDisabled ? 'greyScale' : variation].borderElement} !important;
     color: ${theme[ isDisabled ? 'greyScale' : variation ].textLowContrast };
     cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
     font-size: ${textSize}rem;
+    margin-top: ${noMargin ? 0 : 1}rem;
     width: ${configuredWidth};
   `}
 
@@ -37,7 +40,6 @@ const StyledButton = styled.button<WrapperProps>`
   align-items: center;
 
   padding: 0.5rem 1.75rem;
-  margin-top: 1rem;
 
   border: none;
   border-bottom-style: solid;
@@ -47,22 +49,20 @@ const StyledButton = styled.button<WrapperProps>`
   transition: all 250ms ease-out;
 
   :hover {
-    border-bottom-width: 4px;
-    margin-top: calc(1rem - 2px);
-
-    ${ ({ isDisabled, theme, variation }) => !isDisabled && css`
+    ${ ({ isDisabled, noMargin, theme, variation }) => !isDisabled && css`
       color: ${theme[variation].textHighContrast};
       background-color: ${ theme[variation].bgElementHover };
       border-bottom-color: ${theme[ isDisabled ? 'greyScale' : variation ].borderElementHover} !important;
+      border-bottom-width: 4px;
+      margin-top: calc(${noMargin ? 0 : 1}rem - 2px);
     `}
   }
   
   :active {
-    border-bottom-width: 1px;
-    margin-top: calc(1rem + 1px);
-
-    ${ ({ isDisabled, theme, variation }) => !isDisabled && css`
+    ${ ({ isDisabled, noMargin, theme, variation }) => !isDisabled && css`
       background-color: ${ theme[variation].bgElementActive };
+      border-bottom-width: 1px;
+      margin-top: calc(${noMargin ? 0 : 1}rem + 1px);
     `}
   }
 `;

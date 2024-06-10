@@ -38,7 +38,7 @@ const InputWrapper = styled.div`
 
 const StyledInput = styled.input<InputProps>`
   ${({ align, theme }) => css`
-    background-color: ${ theme.primary.bgAlt };
+    background-color: ${ theme.primary.border };
     border-color: ${ theme.primary.border};
     color: ${ theme.primary.textLowContrast };
     text-align: ${align};

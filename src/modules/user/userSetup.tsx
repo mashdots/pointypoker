@@ -40,7 +40,7 @@ const UserSetup = () => {
   return (
     <Wrapper id='user-setup-show'>
       <h1>what do we call you?</h1>
-      <Notice>this is stored in a cookie so we won&apos;t ask you every time</Notice>
+      <Notice>this is stored in a cookie so you&apos;re not asked every time</Notice>
       <form onSubmit={handleSubmit} autoComplete='off'>
         <TextInput
           alignment='center'
