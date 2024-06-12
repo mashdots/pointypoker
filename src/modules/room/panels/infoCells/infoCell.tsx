@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   width: 100%;
   
   border: none;
-  color: ${ VARIATIONS.structure.textLowContrast };
+  color: ${ VARIATIONS.structure.textLow };
 `;
 
 const ContentContainer = styled.div`

@@ -37,7 +37,7 @@ const StyledVoteRow = styled.div<{isEven: boolean}>`
   padding: 0.5rem;
   width: 75%;
   border-radius: 0.5rem;
-  background-color: ${({ isEven }) => isEven ? VARIATIONS.transparent.bg : VARIATIONS.structure.bgElement};
+  background-color: ${({ isEven }) => isEven ? VARIATIONS.transparent.bg : VARIATIONS.structure.componentBg};
 `;
 
 const VoteName = styled.div`

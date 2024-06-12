@@ -13,11 +13,11 @@ export interface VariationProperties {
   // 2 - Subtle background
   bgAlt: string;
   // 3 - Component backgrounds: normal state
-  bgElement: string;
+  componentBg: string;
   // 4 - Component backgrounds: hover state
-  bgElementHover: string;
+  componentBgHover: string;
   // 5 - Component backgrounds: pressed / selected state
-  bgElementActive: string;
+  componentBgActive: string;
   // 6 - Borders: Subtle borders for non-interactive components
   border: string;
   // 7 - Borders: Borders for interactive elements
@@ -27,11 +27,11 @@ export interface VariationProperties {
   // 9 - Solid backgrounds
   solidBg: string;
   // 10 - Hovered solid backgrounds
-  hoverSolidBg: string;
+  solidBgHover: string;
   // 11 - Low-contrast text
-  textLowContrast: string;
+  textLow: string;
   // 12 - High-contrast text
-  textHighContrast: string;
+  textHigh: string;
 }
 
 export default useTheme;

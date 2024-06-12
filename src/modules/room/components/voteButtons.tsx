@@ -45,35 +45,33 @@ const VoteButton = styled.button<{ selected: boolean }>`
   font-size: 1.5rem;
 
   ${({ selected }) => css`
-    background-color: ${selected ? VARIATIONS.success.borderElementHover : VARIATIONS.structure.bgElement};
+    background-color: ${selected ? VARIATIONS.success.borderElementHover : VARIATIONS.structure.componentBg};
   `}
 
   :hover {
-    outline-color: ${VARIATIONS.structure.textLowContrast};
+    outline-color: ${VARIATIONS.structure.textLow};
     outline-offset: -8px;  
     outline-width: 2px;
     ${({ selected }) => css`
-      background-color: ${ selected ? VARIATIONS.success.borderElementHover : VARIATIONS.structure.bgElementHover };
+      background-color: ${ selected ? VARIATIONS.success.borderElementHover : VARIATIONS.structure.componentBgHover };
     `}
     font-size: 1.75rem;
   }
 
   :active {
     ${({ selected }) => !selected && css`
-      background-color: ${VARIATIONS.structure.textLowContrast};
+      background-color: ${VARIATIONS.structure.textLow};
     `}
 
-    color: ${VARIATIONS.structure.bgElement};
-    outline-offset: -16px;  
+    color: ${VARIATIONS.structure.componentBg};
+    outline-offset: -16px;
     width: 56px;
     height: 56px;
   }
 `;
 
 const VoteButtons = () => {
-  const { user } = useStore(({ user }) => ({
-    user,
-  }));
+  const user = useStore(({ user }) => user);
   const { currentTicket, handleUpdateLatestTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
 

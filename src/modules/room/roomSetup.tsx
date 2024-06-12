@@ -61,7 +61,7 @@ const RoomWrapper = styled.div<RoomWrapperProps>`
   transition: all 250ms ease-out;
   
   ${({ collapseHorizontal, heightDiff, theme, isRoomOpen }) => css`
-    background-color: ${theme.primary.bgElement};
+    background-color: ${theme.primary.componentBg};
     height: calc(100vh - ${ heightDiff * 2 || 0 }px)};
     opacity: ${isRoomOpen ? 1 : 0};
     transform: translateY(${isRoomOpen ? 0 : 2}%);

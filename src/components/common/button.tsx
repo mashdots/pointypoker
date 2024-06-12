@@ -25,9 +25,9 @@ type WrapperProps = ThemedProps & {
 
 const StyledButton = styled.button<WrapperProps>`
   ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }) => css`
-    background-color: ${theme[isDisabled ? 'greyScale' : variation].bgElement};
-    border-bottom-color: ${theme[isDisabled ? 'greyScale' : variation].borderElement} !important;
-    color: ${theme[ isDisabled ? 'greyScale' : variation ].textLowContrast };
+    background-color: ${theme[isDisabled ? 'greyscale' : variation].componentBg};
+    border-bottom-color: ${theme[isDisabled ? 'greyscale' : variation].borderElement} !important;
+    color: ${theme[ isDisabled ? 'greyscale' : variation ].textLow };
     cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
     font-size: ${textSize}rem;
     margin-top: ${noMargin ? 0 : 1}rem;
@@ -50,9 +50,9 @@ const StyledButton = styled.button<WrapperProps>`
 
   :hover {
     ${ ({ isDisabled, noMargin, theme, variation }) => !isDisabled && css`
-      color: ${theme[variation].textHighContrast};
-      background-color: ${ theme[variation].bgElementHover };
-      border-bottom-color: ${theme[ isDisabled ? 'greyScale' : variation ].borderElementHover} !important;
+      color: ${theme[variation].textHigh};
+      background-color: ${ theme[variation].componentBgHover };
+      border-bottom-color: ${theme[ isDisabled ? 'greyscale' : variation ].borderElementHover} !important;
       border-bottom-width: 4px;
       margin-top: calc(${noMargin ? 0 : 1}rem - 2px);
     `}
@@ -60,7 +60,7 @@ const StyledButton = styled.button<WrapperProps>`
   
   :active {
     ${ ({ isDisabled, noMargin, theme, variation }) => !isDisabled && css`
-      background-color: ${ theme[variation].bgElementActive };
+      background-color: ${ theme[variation].componentBgActive };
       border-bottom-width: 1px;
       margin-top: calc(${noMargin ? 0 : 1}rem + 1px);
     `}

@@ -3,7 +3,7 @@ import { ThemeReference } from '../colorSystem';
 
 const main: ThemeReference = {
   primary: THEME_COLORS.GRAY,
-  greyScale: THEME_COLORS.GRAY,
+  greyscale: THEME_COLORS.GRAY,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
   error: THEME_COLORS.RED,

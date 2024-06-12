@@ -33,8 +33,8 @@ const Wrapper = styled.div<MobileProps>`
   border-radius: 8px;
   overflow: hidden;
   
-  color: ${ VARIATIONS.structure.textLowContrast };
-  background-color: ${ VARIATIONS.structure.bgElement };
+  color: ${ VARIATIONS.structure.textLow };
+  background-color: ${ VARIATIONS.structure.componentBg };
   
   ${({ isMobile }) => css`
     width: ${isMobile ? 70 : 100}%;

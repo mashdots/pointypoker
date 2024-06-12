@@ -40,7 +40,7 @@ const StyledInput = styled.input<InputProps>`
   ${({ align, theme }) => css`
     background-color: ${ theme.primary.border };
     border-color: ${ theme.primary.border};
-    color: ${ theme.primary.textLowContrast };
+    color: ${ theme.primary.textLow };
     text-align: ${align};
   `}
 
@@ -60,15 +60,15 @@ const StyledInput = styled.input<InputProps>`
 
   :hover {
     ${({ theme }) => css`
-      background-color: ${ theme.primary.bgElementHover };
+      background-color: ${ theme.primary.componentBgHover };
     `}
   }
   
   :focus {
     ${({ theme }) => css`
-      color: ${theme.primary.textHighContrast };
-      background-color: ${theme.primary.bgElementActive };
-      border-color: ${theme.primary.textHighContrast };
+      color: ${theme.primary.textHigh };
+      background-color: ${theme.primary.componentBgActive };
+      border-color: ${theme.primary.textHigh };
     `}
   }
 `;

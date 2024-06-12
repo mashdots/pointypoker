@@ -3,7 +3,7 @@ import { ThemeReference } from '../colorSystem';
 
 const strawberry: ThemeReference = {
   primary: THEME_COLORS.CRIMSON,
-  greyScale: THEME_COLORS.MAUVE,
+  greyscale: THEME_COLORS.MAUVE,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
   error: THEME_COLORS.TOMATO,

@@ -20,7 +20,7 @@ const Notice = styled.p<NoticeProps>`
   transition: opacity 200ms;
 
   ${({ shouldShow = true, theme }) => css`
-    color: ${theme.primary.textLowContrast};
+    color: ${theme.primary.textLow};
     opacity: ${ shouldShow ? 1 : 0};
   `}
 `;

@@ -3,7 +3,7 @@ import { ThemeReference } from '../colorSystem';
 
 const dirt: ThemeReference = {
   primary: THEME_COLORS.BROWN,
-  greyScale: THEME_COLORS.SAND,
+  greyscale: THEME_COLORS.SAND,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
   error: THEME_COLORS.RED,

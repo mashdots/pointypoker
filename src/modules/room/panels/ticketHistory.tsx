@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   border: none;
   border-radius: 8px;
 
-  color: ${VARIATIONS.structure.textLowContrast};
+  color: ${VARIATIONS.structure.textLow};
 `;
 
 const TicketRow = styled.div<{shouldHighlight?: boolean}>`
@@ -31,7 +31,7 @@ const TicketRow = styled.div<{shouldHighlight?: boolean}>`
   padding: 0.5rem 1rem;
 
   ${({ shouldHighlight }) => shouldHighlight && `
-    background-color: ${VARIATIONS.structure.bgElementActive};
+    background-color: ${VARIATIONS.structure.componentBgActive};
   `}
 `;
 

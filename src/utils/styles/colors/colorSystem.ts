@@ -41,7 +41,7 @@ type SubColorReference = { [ key: string ]: string };
 export type ThemeReference = {
   [ key: string ]: LightColorReference;
   primary: LightColorReference;
-  greyScale: LightColorReference;
+  greyscale: LightColorReference;
   success: LightColorReference;
   warning: LightColorReference;
   error: LightColorReference;
@@ -51,7 +51,8 @@ export type ThemeReference = {
 export type Theme = {
   [ key: string ]: ColorAssociation;
   primary: ColorAssociation;
-  greyScale: ColorAssociation;
+  greyscale: ColorAssociation;
+  greyTransparent: ColorAssociation;
   success: ColorAssociation;
   warning: ColorAssociation;
   error: ColorAssociation;
@@ -65,27 +66,28 @@ export type ThemedProps = {
 const variationPropertiesList = [
   'bg',
   'bgAlt',
-  'bgElement',
-  'bgElementHover',
-  'bgElementActive',
+  'componentBg',
+  'componentBgHover',
+  'componentBgActive',
   'border',
   'borderElement',
   'borderElementHover',
   'solidBg',
-  'hoverSolidBg',
-  'textLowContrast',
-  'textHighContrast',
+  'solidBgHover',
+  'textLow',
+  'textHigh',
 ];
 
 /**
  * Builds the expected color association structure for a given color scheme and mode.
  */
-const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode): ColorAssociation => {
-  const combinedColor: ColorReference = `${color}${mode}`;
+const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode, isTransparent = false): ColorAssociation => {
+  const transparentModifier = isTransparent ? 'A' : '';
+  const combinedColor: ColorReference = `${color}${mode}${transparentModifier}`;
   const colorAssociation = {} as ColorAssociation;
 
   variationPropertiesList.forEach((variationProperty, i) => {
-    colorAssociation[variationProperty] = (colors[combinedColor] as SubColorReference)[`${color}${i + 1}`];
+    colorAssociation[variationProperty] = (colors[combinedColor] as SubColorReference)[`${color}${transparentModifier}${i + 1}`];
   });
 
   return colorAssociation;
@@ -94,10 +96,14 @@ const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode
 const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
   const finalColorMode = ACTUAL_THEME_MODES[mode] as ActualThemeMode;
   const builtTheme = {} as Theme;
-
   for (const key in theme) {
-    if (['primary', 'greyScale', 'success', 'warning', 'error', 'info'].includes(key) && theme[key]) {
+    if (['primary', 'greyscale', 'success', 'warning', 'error', 'info'].includes(key) && theme[key]) {
       builtTheme[key] = buildColorAssociation(theme[key] as LightColorReference, finalColorMode);
+
+      if (key === 'greyscale') {
+        builtTheme.greyTransparent = buildColorAssociation(theme[key] as LightColorReference, finalColorMode, true);
+      }
+
     } else {
       throw new Error(`Invalid theme reference. Check that your theme is properly structured. Invalid key: ${key}`);
     }
@@ -128,7 +134,7 @@ const useTheme = () => {
       let finalThemeMode = themeMode;
 
       if (!selectedTheme) {
-        finalTheme = THEMES.MAIN;
+        finalTheme = THEMES.STRAWBERRY;
         setTheme(finalTheme);
       }
 

@@ -11,8 +11,8 @@ const GlobalStyles = createGlobalStyle<ThemedProps & { isRoomOpen: boolean }>`
   body {
     transition: background-color 250ms, color 250ms;
     ${({ isRoomOpen, theme }) => css`
-      background-color: ${ theme.greyScale[isRoomOpen ? 'bg' : 'bgAlt'] };
-      color: ${ theme.primary.textLowContrast };
+      background-color: ${ theme.greyscale[isRoomOpen ? 'bg' : 'bgAlt'] };
+      color: ${ theme.primary.textLow };
     `}
 
     font-family: 'Nunito Sans', Tahoma, sans-serif;
@@ -23,7 +23,7 @@ const GlobalStyles = createGlobalStyle<ThemedProps & { isRoomOpen: boolean }>`
     font-family: 'Nunito Sans', Tahoma, sans-serif;
 
     ${({ theme }) => css`
-      color: ${ theme.primary.textHighContrast };
+      color: ${ theme.primary.textHigh };
     `}
   }
 

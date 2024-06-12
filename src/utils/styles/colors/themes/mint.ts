@@ -3,7 +3,7 @@ import { ThemeReference } from '../colorSystem';
 
 const mint: ThemeReference = {
   primary: THEME_COLORS.TEAL,
-  greyScale: THEME_COLORS.SAGE,
+  greyscale: THEME_COLORS.SAGE,
   success: THEME_COLORS.GRASS,
   warning: THEME_COLORS.YELLOW,
   error: THEME_COLORS.RED,

@@ -3,7 +3,7 @@ import { ThemeReference } from '../colorSystem';
 
 const blueberry: ThemeReference = {
   primary: THEME_COLORS.INDIGO,
-  greyScale: THEME_COLORS.SLATE,
+  greyscale: THEME_COLORS.SLATE,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
   error: THEME_COLORS.RED,

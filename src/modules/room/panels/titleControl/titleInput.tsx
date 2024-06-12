@@ -37,11 +37,11 @@ const TitleIcon = styled(ArticleIcon)<FocusProps>`
     width: ${$isFocused ? 2 : 1.5}rem;
 
     > line {
-      stroke: ${ theme.primary[$isFocused ? 'textHighContrast' : 'textLowContrast'] };
+      stroke: ${ theme.primary[$isFocused ? 'textHigh' : 'textLow'] };
     }
 
     > rect:nth-child(2) {
-      stroke: ${ theme.primary[$isFocused ? 'textHighContrast' : 'textLowContrast'] };
+      stroke: ${ theme.primary[$isFocused ? 'textHigh' : 'textLow'] };
     }
   `}
 `;
@@ -52,7 +52,7 @@ const TitleLinkIcon = styled(LinkIcon)<ThemedProps>`
   transition: all 300ms;
 
   > polyline, line, path {
-    stroke: ${({ theme }) => theme.info.textLowContrast};
+    stroke: ${({ theme }) => theme.info.textLow};
   }
 
   :hover {
