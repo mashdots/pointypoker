@@ -27,6 +27,7 @@ const StyledButton = styled.button<WrapperProps>`
   ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }) => css`
     background-color: ${theme[isDisabled ? 'greyscale' : variation].componentBg};
     border-bottom-color: ${theme[isDisabled ? 'greyscale' : variation].borderElement} !important;
+    border-bottom-width: ${isDisabled ? 0 : 2}px !important;
     color: ${theme[ isDisabled ? 'greyscale' : variation ].textLow };
     cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
     font-size: ${textSize}rem;
@@ -43,7 +44,6 @@ const StyledButton = styled.button<WrapperProps>`
 
   border: none;
   border-bottom-style: solid;
-  border-bottom-width: 2px;
   border-radius: 1rem;
 
   transition: all 250ms ease-out;
@@ -53,7 +53,7 @@ const StyledButton = styled.button<WrapperProps>`
       color: ${theme[variation].textHigh};
       background-color: ${ theme[variation].componentBgHover };
       border-bottom-color: ${theme[ isDisabled ? 'greyscale' : variation ].borderElementHover} !important;
-      border-bottom-width: 4px;
+      border-bottom-width: 4px !important;
       margin-top: calc(${noMargin ? 0 : 1}rem - 2px);
     `}
   }

@@ -8,7 +8,7 @@ const Wrapper = styled.div<ThemedProps>`
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.primary.textHighContrast};
+  color: ${({ theme }) => theme.primary.textHigh};
 `;
 
 const UserControl = () => {

@@ -3,4 +3,9 @@ import VoteStatistics from '../panels/voteStatistics';
 import VoteButtons from './voteButtons';
 import VoteDisplay from '../panels/voteDisplay';
 
-export { TitleInput, VoteStatistics, VoteButtons, VoteDisplay };
+export {
+  TitleInput,
+  VoteStatistics,
+  VoteButtons,
+  VoteDisplay,
+};

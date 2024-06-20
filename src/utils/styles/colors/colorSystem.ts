@@ -52,7 +52,7 @@ export type Theme = {
   [ key: string ]: ColorAssociation;
   primary: ColorAssociation;
   greyscale: ColorAssociation;
-  greyTransparent: ColorAssociation;
+  transparent: ColorAssociation;
   success: ColorAssociation;
   warning: ColorAssociation;
   error: ColorAssociation;
@@ -101,7 +101,7 @@ const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
       builtTheme[key] = buildColorAssociation(theme[key] as LightColorReference, finalColorMode);
 
       if (key === 'greyscale') {
-        builtTheme.greyTransparent = buildColorAssociation(theme[key] as LightColorReference, finalColorMode, true);
+        builtTheme.transparent = buildColorAssociation(theme[key] as LightColorReference, finalColorMode, true);
       }
 
     } else {
@@ -134,7 +134,7 @@ const useTheme = () => {
       let finalThemeMode = themeMode;
 
       if (!selectedTheme) {
-        finalTheme = THEMES.STRAWBERRY;
+        finalTheme = THEMES.MAIN;
         setTheme(finalTheme);
       }
 

@@ -1,20 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import Button from '../../../components/common/button';
 import { VARIATIONS } from '../../../utils/styles';
 import { useTickets } from '../hooks';
-import { calculateAverage, calculateSuggestedPoints } from '../utils';
-import { InfoCell } from './infoCells';
 import TicketHistory from './ticketHistory';
-import Timer from '../components/timer';
 import { useMobile } from '../../../utils/mobile';
 import MultiPanel from './multiPanel';
 import { VoteDistribution } from './distribution';
-
-type CellProps = {
-  calcHeight: number;
-};
+import { GridPanel } from '../../../components/common';
+import { GridPanelProps } from '../../../components/common/gridPanel';
 
 type ContainerProps = {
   orientation?: 'row' | 'column';
@@ -58,32 +52,7 @@ const RowWithBorder = styled(ContainerRow)<{ height?: number}>`
   `}
 `;
 
-const TopCellWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem 1rem 0.5rem;
-
-  height: 100%;
-`;
-
-const Cell = styled.div <CellProps>`
-  display: flex;
-  flex: 1;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 1rem;
-
-  height: ${({ calcHeight }) => calcHeight}px;
-`;
-
-const CellWithBorder = styled(Cell)`
-  border-left: 2px solid ${ VARIATIONS.structure.border };
-`;
-
-const VoteStatistics = () => {
+const VoteStatistics = (props: GridPanelProps) => {
   const { isMobile } = useMobile();
   const wrapperRef = useRef(null);
   const [cellHeight, setCellHeight] = useState(0);
@@ -93,16 +62,6 @@ const VoteStatistics = () => {
     sortedTickets,
     handleUpdateLatestTicket,
   } = useTickets();
-
-  const averagePointValue = useMemo(
-    () => calculateAverage(currentTicket),
-    [currentTicket],
-  );
-
-  const pointSuggestion = useMemo(
-    () => calculateSuggestedPoints(currentTicket),
-    [currentTicket],
-  );
 
   useEffect(() => {
     const wrapperElement = wrapperRef.current;
@@ -128,46 +87,14 @@ const VoteStatistics = () => {
     }
   }, [shouldShowVotes]);
 
-  const panels = [
-    { title: 'Distribution', component: <VoteDistribution /> },
-    {
-      title: 'History',
-      component: <TicketHistory previousTickets={sortedTickets.slice(1)} />,
-      shouldScroll: true,
-    },
-  ];
+
 
   return (
-    <Wrapper isMobile={isMobile} ref={wrapperRef}>
-      <ContainerRow orientation='column'>
-        <TopCellWrapper>
-          <Timer startTime={currentTicket?.timerStartAt} endTime={currentTicket?.votesShownAt} />
-          <Button
-            variation='info'
-            width='full'
-            onClick={() => {
-              handleUpdateLatestTicket('shouldShowVotes', true);
-              handleUpdateLatestTicket('votesShownAt', Date.now());
-            }}
-            isDisabled={shouldShowVotes}
-            textSize='small'
-          >
-        show votes
-          </Button>
-        </TopCellWrapper>
-      </ContainerRow>
-      <RowWithBorder>
-        <Cell calcHeight={cellHeight}>
-          <InfoCell icon="suggest" value={shouldShowVotes ? pointSuggestion.suggestedPoints : '?'} label='suggested' />
-        </Cell>
-        <CellWithBorder calcHeight={cellHeight}>
-          <InfoCell value={shouldShowVotes ? averagePointValue.average : '?'} label='average' />
-        </CellWithBorder>
-      </RowWithBorder>
-      <RowWithBorder height={cellHeight + 32}>
-        <MultiPanel panels={panels} width={cellHeight*2} />
-      </RowWithBorder>
-    </Wrapper>
+    <GridPanel config={props.gridConfig}>
+      <Wrapper isMobile={isMobile} ref={wrapperRef}>
+        <TicketHistory previousTickets={sortedTickets.slice(1)} />
+      </Wrapper>
+    </GridPanel>
   );
 };
 

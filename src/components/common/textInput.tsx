@@ -44,7 +44,7 @@ const StyledInput = styled.input<InputProps>`
     text-align: ${align};
   `}
 
-  padding: 0.5rem 1.75rem;
+  padding: 0.5rem 1rem;
   margin-bottom: 2px;
   font-size: 1.5rem;
   width: 100%;
@@ -54,7 +54,7 @@ const StyledInput = styled.input<InputProps>`
   outline-style: solid;
   border-width: 2px;
   border-style: solid;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 
   transition: all 200ms;
 

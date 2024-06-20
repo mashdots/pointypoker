@@ -1,4 +1,4 @@
-import React, { ContextType, useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import styled, { ThemeProvider, css } from 'styled-components';
 import { Outlet, useOutletContext } from 'react-router-dom';
 
@@ -47,30 +47,18 @@ const ChildrenWrapper = styled.div<{ referenceHeight: number }>`
 
 const Root = (): JSX.Element => {
   const { theme } = useTheme();
-  const isRoomOpen = useStore((state) => state.isRoomOpen);
-  const [refHeight, setRefHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
-
-  /**
-   * This is all so we don't have to hard-code the header height, so the rest of
-   * the app renders without making the page too long.
-   */
-  useEffect(() => {
-    if (headerRef.current) {
-      setRefHeight(headerRef.current.clientHeight);
-    }
-  }, [headerRef.current]);
 
   return (
     <ThemeProvider theme={theme}>
       <MobileProvider>
         <Container>
-          <GlobalStyles isRoomOpen={isRoomOpen} />
+          <GlobalStyles/>
           <Header headerRef={headerRef} />
           <ChildrenWrapper
-            referenceHeight={refHeight}
+            referenceHeight={headerRef?.current?.clientHeight ?? 0}
           >
-            <Outlet context={{ refHeight } satisfies ContextType} />
+            <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
           </ChildrenWrapper>
         </Container>
       </MobileProvider>

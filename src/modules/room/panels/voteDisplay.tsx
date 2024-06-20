@@ -1,128 +1,191 @@
-import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useEffect, useMemo, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 
+import { useTickets } from '../hooks';
+import { Button, GridPanel } from '../../../components/common';
+import { GridPanelProps } from '../../../components/common/gridPanel';
 import { Vote } from '../../../types';
 import useStore from '../../../utils/store';
-import { useTickets } from '../hooks';
-import { VARIATIONS } from '../../../utils/styles';
+import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
+import CircleCheckIcon from '../../../assets/icons/circle-check.svg?react';
+
+enum PARTICIPANT_MODES {
+  DEFAULT = 'default',
+  VOTED = 'voted',
+  REVEALED = 'revealed',
+}
 
 export type VoteDisplayProps = {
   name: string;
   vote?: Vote;
 }
 
-type VoteRowProps = {
+type VoteCellProps = {
+  isLast: boolean;
+  cellMode: PARTICIPANT_MODES;
   voteData: VoteDisplayProps;
-  isEven: boolean;
-  showVote: boolean;
 }
+
+type StyledVoteCellProps = {
+  hasExtraPadding: boolean;
+  showBottomBorder: boolean;
+} & ThemedProps;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-self: flex-start;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   height: 100%;
   width: 100%;
-  padding: 1rem;
-  margin-top: 1rem;
   overflow: hidden;
+  flex-wrap: wrap;
 `;
 
-const StyledVoteRow = styled.div<{isEven: boolean}>`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 0.5rem;
-  width: 75%;
-  border-radius: 0.5rem;
-  background-color: ${({ isEven }) => isEven ? VARIATIONS.transparent.bg : VARIATIONS.structure.componentBg};
-`;
-
-const VoteName = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  font-size: 1rem;
-  padding-right: 1rem;
-`;
-
-const VoteResultWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  padding-left: 1rem;
-`;
-
-const BlockedVoteResult = styled.div<{ animateVote: boolean }>`
-  display: flex;
-  flex-direction: row;
-  width: 4rem;
-  height: 1rem;
-  border-radius: 0.5rem;
-  background-color: ${VARIATIONS.structure.solidBg};
-
-  transition: background-color 0.25s ease-in-out;
-
-  ${({ animateVote }) => animateVote && css`
-    background-color: ${VARIATIONS.info.solidBg};
-  `}
-`;
-
-const VoteRow = ({ voteData, isEven, showVote }: VoteRowProps) => {
-  const [shouldAnimateVote, setShouldAnimateVote] = useState(false);
-  const { name, vote } = voteData;
-  let timeout: number;
-  let voteResult = null;
-
-  if (vote) {
-    voteResult = showVote ? vote : <BlockedVoteResult animateVote={shouldAnimateVote} />;
+const enterAnimation = keyframes`
+  0% {
+    opacity: 0;
+    filter: blur(0.125rem);
+    transform: translateY(-0.5rem);
   }
 
-  useEffect(() => {
-    if (vote) {
-      setShouldAnimateVote(true);
+  100% {
+    opacity: 1;
+    filter: blur(0rem);
+    transform: translateY(0rem);
+  }
+`;
 
-      timeout = setTimeout(() => {
-        setShouldAnimateVote(false);
-      }, 250);
-    }
+const StyledVoteCell = styled.div<StyledVoteCellProps>`
+  ${({ hasExtraPadding, showBottomBorder, theme }: StyledVoteCellProps) => css`
+    color: ${theme.primary.textHigh};
+    border-color: ${theme.primary.border};
+    border-bottom-width: ${showBottomBorder ? 1 : 0}px !important;
+    padding: 0.75rem ${hasExtraPadding ? 2.5: 2}rem 0.75rem 1rem;
+  `}
+    
+  align-items: center;
+  border-style: solid;
+  border-width: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  animation: ${enterAnimation} 300ms;
+`;
+
+const DisplayElementWrapper = styled.div<{ isVisible: boolean }>`
+  ${({ isVisible }) => css`
+    opacity: ${isVisible ? 1 : 0};
+    transform: scale(${isVisible ? 1 : 0.5});
+  `}
+
+  display: flex;
+  transition: all 250ms;
+`;
+
+const Check = styled(CircleCheckIcon) <ThemedProps>`
+  width: 1.5rem;
+
+  > polyline, line, path, circle {
+    stroke: ${ ({ theme }) => theme.success.textLow };
+  }
+`;
+
+const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
+  const [displayElement, setDisplayElement] = useState<null | JSX.Element | Vote>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const { name, vote } = voteData;
+  let timeout: number;
+
+  useEffect(() => {
+    setIsTransitioning(true);
+    timeout = setTimeout(() => {
+      switch (cellMode) {
+      case PARTICIPANT_MODES.VOTED:
+        setDisplayElement(<Check />);
+        break;
+      case PARTICIPANT_MODES.REVEALED:
+        setDisplayElement(vote as Vote);
+        break;
+      default:
+        setDisplayElement(null);
+        break;
+      }
+      setIsTransitioning(false);
+    }, 250);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [vote]);
+  }, [cellMode]);
 
   return (
-    <StyledVoteRow isEven={isEven}>
-      <VoteName>{name}</VoteName>
-      <VoteResultWrapper>{voteResult}</VoteResultWrapper>
-    </StyledVoteRow>
+    <StyledVoteCell
+      showBottomBorder={!isLast}
+      hasExtraPadding={cellMode === PARTICIPANT_MODES.REVEALED}
+    >
+      {name}
+      <DisplayElementWrapper isVisible={!isTransitioning}>
+        {displayElement}
+      </DisplayElementWrapper>
+    </StyledVoteCell>
   );
 };
 
-const VoteDisplay = () => {
+const VoteDisplay = (props: GridPanelProps) => {
   const user = useStore(({ user }) => user);
-  const { shouldShowVotes, voteData } = useTickets();
+  const { shouldShowVotes, voteData, handleUpdateLatestTicket } = useTickets();
 
-  const voteNodes = voteData.map((vote, i) => {
-    const name = vote.name === user?.name ? 'you' : vote.name;
-    const displayVote = shouldShowVotes || (vote.name === user?.name && vote.vote !== undefined);
+  const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
 
-    return (
-      <VoteRow
-        key={i}
-        isEven={i % 2 === 0}
-        showVote={displayVote}
-        voteData={{ name, vote: vote.vote }}
-      />
-    );
-  });
+  const voteNodes = useMemo(
+    () => voteData.map(({ name: participantName, vote }, i) => {
+      const userIsParticipant = participantName === user?.name;
+      const hasVoted = vote !== undefined && vote !== '';
+      const name = userIsParticipant ? 'you' : participantName;
+      const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
+      const isLast = i === voteData.length - 1;
+      let mode = PARTICIPANT_MODES.DEFAULT;
+
+      if (hasVoted) {
+        if (!displayVote) {
+          mode = PARTICIPANT_MODES.VOTED;
+        } else {
+          mode = PARTICIPANT_MODES.REVEALED;
+        }
+      }
+
+      return (
+        <VoteCell
+          key={i}
+          cellMode={mode}
+          isLast={isLast}
+          voteData={{ name, vote }}
+        />
+      );
+    }),
+    [shouldShowVotes, user, voteData],
+  );
 
   return (
-    <Wrapper>
-      {voteNodes}
-    </Wrapper>
+    <GridPanel config={props.gridConfig} title='votes'>
+      <Button
+        variation='info'
+        width='full'
+        onClick={() => {
+          handleUpdateLatestTicket('shouldShowVotes', true);
+          handleUpdateLatestTicket('votesShownAt', Date.now());
+        }}
+        isDisabled={shouldShowVotes || !hasAnyoneVoted}
+        textSize='small'
+      >
+        show votes
+      </Button>
+      <Wrapper>
+        {voteNodes}
+      </Wrapper>
+    </GridPanel>
   );
 };
 

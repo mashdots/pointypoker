@@ -23,6 +23,7 @@ const Wrapper = styled.div`
 
 const Section = styled.div<SectionProps>`
   display: flex;
+  align-items: center;
 
   ${({ align, flex }) => css`
     flex: ${flex};
@@ -33,7 +34,7 @@ const Section = styled.div<SectionProps>`
 
 const Header = ({ headerRef }: Props) => (
   <Wrapper ref={headerRef}>
-    <Section flex={2} align='left'>
+    <Section flex={6} align='left'>
       <Logo />
       <RoomControl />
     </Section>

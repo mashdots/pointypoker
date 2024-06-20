@@ -2,29 +2,31 @@ import { createGlobalStyle, css } from 'styled-components';
 
 import { ThemedProps } from './colors/colorSystem';
 
-const GlobalStyles = createGlobalStyle<ThemedProps & { isRoomOpen: boolean }>`
+const GlobalStyles = createGlobalStyle<ThemedProps>`
   html {
     scroll-behavior: smooth;
     transition: background-color 250ms, color 250ms;
-  }
-
-  body {
-    transition: background-color 250ms, color 250ms;
-    ${({ isRoomOpen, theme }) => css`
-      background-color: ${ theme.greyscale[isRoomOpen ? 'bg' : 'bgAlt'] };
-      color: ${ theme.primary.textLow };
-    `}
-
-    font-family: 'Nunito Sans', Tahoma, sans-serif;
     font-size: 16px;
   }
 
-  h1, input, button {
-    font-family: 'Nunito Sans', Tahoma, sans-serif;
+  #root {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
 
+  body {
+    ${({ theme }) => css`
+      background-color: ${ theme.greyscale.bg };
+      color: ${ theme.primary.textLow };
+    `}
+    font-family: 'Nunito Sans', Tahoma, sans-serif;
+  }
+
+  h1, input, button {
     ${({ theme }) => css`
       color: ${ theme.primary.textHigh };
     `}
+    font-family: 'Nunito Sans', Tahoma, sans-serif;
   }
 
   :root {

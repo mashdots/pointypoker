@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
 import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
@@ -8,12 +9,10 @@ import Button from '../../components/common/button';
 import { generateRoomName, usePrevious } from '../../utils';
 import useStore from '../../utils/store';
 import { Participant, Room as RoomType } from '../../types';
-import { createRoom, watchRoom } from '../../services/firebase';
+import { createRoom, updateRoom, watchRoom } from '../../services/firebase';
 import { PointingTypes } from './utils';
 import { useHeaderHeight } from '../../routes/root';
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import Room from './room';
-import { useMobile } from '../../utils/mobile';
+import RoomPresenter from './roomPresenter';
 
 type HeightAdjusted = {
   heightDiff: number;
@@ -23,10 +22,6 @@ type RoomControl = {
   isRoomOpen: boolean;
 }
 
-type RoomWrapperProps = HeightAdjusted & ThemedProps & RoomControl & {
-  collapseHorizontal: boolean;
-};
-
 const Container = styled.div<HeightAdjusted>`
   display: flex;
   position: relative;
@@ -34,7 +29,7 @@ const Container = styled.div<HeightAdjusted>`
   justify-content: center;
   align-items: center;
   height: ${({ heightDiff }) => `calc(100vh - ${heightDiff || 0}px)`};
-  width: 100vw;
+  width: 100%;
   overflow: hidden;
 `;
 
@@ -51,21 +46,15 @@ const SetupWrapper = styled.div<RoomControl>`
   `}
 `;
 
-const RoomWrapper = styled.div<RoomWrapperProps>`
-  display: flex;
-  position: absolute;
-  flex-direction: column;
+const RoomWrapper = styled.div<RoomControl>`
   align-items: center;
-  border-radius: 2rem;
-  
+  height: 100%;
+  width: 100%;
+
   transition: all 250ms ease-out;
   
-  ${({ collapseHorizontal, heightDiff, theme, isRoomOpen }) => css`
-    background-color: ${theme.primary.componentBg};
-    height: calc(100vh - ${ heightDiff * 2 || 0 }px)};
+  ${({ isRoomOpen }) => css`
     opacity: ${isRoomOpen ? 1 : 0};
-    transform: translateY(${isRoomOpen ? 0 : 2}%);
-    width: ${collapseHorizontal ? 100 : 95}vw;
   `}
 `;
 
@@ -73,15 +62,10 @@ let timeout: number | undefined;
 
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
-  const { isMobile } = useMobile();
-  const {
-    roomData,
-    user,
-    isRoomOpen,
-    setIsRoomOpen,
-  } = useStore(({ user, room, isRoomOpen, setIsRoomOpen }) => ({ user, roomData: room, isRoomOpen, setIsRoomOpen }));
+  const { roomData, user } = useStore(({ user, room }) => ({ user, roomData: room }));
   const setRoom = useStore((state) => state.setRoom);
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
+  const [ isRoomOpen, setIsRoomOpen ] = useState(false);
   const [isRoomRendered, setIsRoomRendered] = useState(false);
   const wasRendered = usePrevious(isRoomRendered);
   const wasOpen = usePrevious(isRoomOpen);
@@ -109,7 +93,7 @@ const RoomSetup = () => {
       shouldShowVotes: false,
       votes: {},
       createdAt: Date.now(),
-      pointOptions: PointingTypes.limitedFibonacci,
+      pointOptions: PointingTypes.fibonacci,
       votesShownAt: null,
     };
     const newRoom: RoomType = {
@@ -157,6 +141,23 @@ const RoomSetup = () => {
       setIsRoomOpen(false);
     }
 
+    if (
+      user && roomData && !Object.values(roomData.participants ?? {}).find((participant) => participant.id === user.id)
+    ) {
+      const selfAsParticipant: Participant = {
+        id: user.id,
+        name: user.name,
+        consecutiveMisses: 0,
+        inactive: false,
+        isHost: false,
+        joinedAt: Date.now(),
+      };
+
+      const updatedRoomData = cloneDeep(roomData);
+      updatedRoomData.participants[ selfAsParticipant.id ] = selfAsParticipant;
+      updateRoom(roomData.name, 'participants', updatedRoomData.participants);
+    }
+
     return () => {
       subscribedRoomRef.current?.();
       subscribedRoomRef.current = undefined;
@@ -200,14 +201,9 @@ const RoomSetup = () => {
     </SetupWrapper>
   );
 
-
   const roomComponent = isRoomRendered ? (
-    <RoomWrapper
-      isRoomOpen={isRoomOpen}
-      heightDiff={refHeight}
-      collapseHorizontal={isMobile}
-    >
-      <Room />
+    <RoomWrapper isRoomOpen={isRoomOpen}>
+      <RoomPresenter />
     </RoomWrapper>
   ) : null;
 

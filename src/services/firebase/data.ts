@@ -209,7 +209,7 @@ const updateRoom = async (
   data: any,
   callback?: () => void,
 ): Promise<void> => {
-  if (!room || !property || !data) {
+  if (!room || !property || (data === undefined || data === null)) {
     return;
   }
 

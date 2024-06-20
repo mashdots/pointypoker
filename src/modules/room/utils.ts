@@ -3,10 +3,8 @@ import { URLRecord } from 'whatwg-url';
 import { PointOptions, Ticket, Vote } from '../../types';
 
 enum PointingTypes {
-  fibonacci = 'Fibonacci',
   tshirt = 'T-Shirt',
-  sequential = 'Sequential',
-  limitedFibonacci = 'Limited Fibonacci',
+  fibonacci = 'Limited Fibonacci',
 }
 
 type CalculationResult = {
@@ -25,25 +23,15 @@ type SuggestedResult = CalculationResult & {
 
 const getPointOptions = (type?: string): PointOptions => {
   switch (type) {
-  case PointingTypes.fibonacci:
-    return {
-      sequence: [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, '?', '∞', '☕'],
-      exclusions: ['?', '∞', '☕'],
-    };
   case PointingTypes.tshirt:
     return {
-      sequence: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '?'],
+      sequence: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       exclusions: ['?'],
     };
-  case PointingTypes.sequential:
-    return {
-      sequence: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, '?'],
-      exclusions: ['?'],
-    };
-  case PointingTypes.limitedFibonacci:
+  case PointingTypes.fibonacci:
   default:
     return {
-      sequence: [1, 2, 3, 5, 8, '?', '∞', '☕'],
+      sequence: [0, 1, 2, 3, 5, 8, 13],
       exclusions: ['?', '∞', '☕'],
     };
   }
