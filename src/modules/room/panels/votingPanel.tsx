@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GridPanel, Panel } from '../../../components/common';
+import { GridPanel } from '../../../components/common';
 import useStore from '../../../utils/store';
 import { useTickets } from '../hooks';
 import { getPointOptions } from '../utils';

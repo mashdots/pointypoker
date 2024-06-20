@@ -1,5 +1,5 @@
-import VoteDistribution from './voteDistribution';
+import DistributionPanel from './distributionPanel';
 
 export {
-  VoteDistribution,
+  DistributionPanel,
 };

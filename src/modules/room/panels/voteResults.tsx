@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { GridPanel } from '../../../components/common';
 import { GridPanelProps } from '../../../components/common/gridPanel';
-import { InfoCell } from './infoCells';
+import { InfoCell } from '../components';
 import { useTickets } from '../hooks';
 import { calculateAverage, calculateSuggestedPoints } from '../utils';
 import { ThemedProps } from '../../../utils/styles/colors/colorSystem';

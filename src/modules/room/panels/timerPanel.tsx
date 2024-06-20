@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
-import Timer from '../components/timer';
+import { Timer } from '../components';
 import GridPanel, { GridPanelProps } from '../../../components/common/gridPanel';
 import { useTickets } from '../hooks';
 
@@ -14,7 +14,13 @@ const Wrapper = styled.div`
 `;
 
 const TimerPanel = (props: GridPanelProps) => {
-  const { currentTicket } = useTickets();
+  const { currentTicket, shouldShowVotes, handleUpdateLatestTicket } = useTickets();
+
+  useEffect(() => {
+    if (shouldShowVotes && !currentTicket?.votesShownAt) {
+      handleUpdateLatestTicket('votesShownAt', Date.now());
+    }
+  }, [ shouldShowVotes ]);
 
   return (
     <GridPanel config={props.gridConfig}>

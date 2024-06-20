@@ -20,6 +20,7 @@ type Props = {
 }
 
 const Container = styled.div<ThemedProps & GridConfiguration>`
+  display: flex;
   border-width: 1px;
   border-style: solid;
   border-radius: 0.5rem;

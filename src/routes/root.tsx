@@ -7,7 +7,6 @@ import { GlobalStyles } from '../utils/styles';
 import Header from '../components/header';
 import { MobileProvider } from '../utils/mobile';
 import useTheme from '../utils/styles/colors';
-import useStore from '../utils/store';
 
 type ContextType = {
   refHeight: number;

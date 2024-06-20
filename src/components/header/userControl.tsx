@@ -12,13 +12,9 @@ const Wrapper = styled.div<ThemedProps>`
 `;
 
 const UserControl = () => {
-  const { signOut, user } = useAuth();
+  const { user } = useAuth();
 
-  const handleSignOut = () => {
-    signOut();
-  };
-
-  return <Wrapper onClick={handleSignOut}>{user?.name}</Wrapper>;
+  return <Wrapper>{user?.name}</Wrapper>;
 };
 
 export default UserControl;

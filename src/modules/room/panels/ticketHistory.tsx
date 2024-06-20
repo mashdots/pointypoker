@@ -22,6 +22,7 @@ const TicketRowList = styled.div<{ calculatedHeight: number }>`
   ${({ calculatedHeight }: { calculatedHeight: number }) => css`
     height: ${calculatedHeight}px;
   `}
+
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -37,14 +38,26 @@ const enterAnimation = keyframes`
   }
 `;
 
+const TicketHeader = styled.div`
+  ${({ theme }: ThemedProps) => css`
+    color: ${ theme.primary.textHigh };
+  `}
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    padding: 0.75rem 2rem 0.75rem 1rem;
+`;
+
 const TicketRow = styled.div <TicketRowProps>`
   ${({ showBottomBorder, theme }: TicketRowProps) => css`
     color: ${ theme.primary.textHigh };
     border-color: ${ theme.primary.border };
     border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
-    padding: 0.75rem 2rem 0.75rem 1rem;
   `}
 
+  padding: 0.75rem 2rem 0.75rem 1rem;
   display: flex;
   align-items: center;
   border-style: solid;
@@ -98,24 +111,25 @@ const TicketHistory = ({ gridConfig }: Props) => {
   );
 
   const header = (
-    <TicketRow ref={headerRef}>
+    <TicketHeader ref={headerRef}>
       <NameCell>ticket</NameCell>
       <PointCell>{getIcon('suggest')}</PointCell>
       <PointCell>{getIcon('average')}</PointCell>
-    </TicketRow>
+    </TicketHeader>
   );
-
 
   useEffect(() => {
     if (headerRef.current) {
-      // This is over-engineered but the only way I can figure out how to get the scroll
+      /**
+       * This is over-engineered but the only way I can figure out how to get
+       * the scroll to fit in the parent container
+       */
       const headerHeight = headerRef.current.clientHeight;
       const parentHeight = headerRef.current.parentElement?.clientHeight ?? 0;
-      setScrollableHeight(parentHeight - headerHeight - 16);
+      setScrollableHeight(parentHeight - headerHeight);
     }
   }, [headerRef]);
 
-  console.log('scrollableHeight: ', scrollableHeight);
   return (
     <GridPanel config={gridConfig} title='history'>
       {header}

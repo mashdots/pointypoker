@@ -19,8 +19,7 @@ enum TIME {
   SECOND_SHORT = 'sec',
 }
 
-const buildDurationString = (duration: DurationObject) => {
-  const { minutes, seconds } = duration;
+const buildDurationString = ({ minutes, seconds }: DurationObject) => {
   const secondsString = seconds === 1 ? TIME.SECOND : TIME.SECONDS;
   const minuteString = minutes === 1 ? TIME.MINUTE : TIME.MINUTES;
   const parsedSeconds = parseInt(seconds.toString(), 10);

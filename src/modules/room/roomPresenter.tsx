@@ -1,7 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Distribution, TicketHistory, TimerPanel, TitleControl, VoteResults, VotingPanel } from './panels';
-import { VoteDisplay } from './components';
+import {
+  DistributionPanel,
+  TicketHistory,
+  TimerPanel,
+  TitleControl,
+  VoteDisplay,
+  VoteResults,
+  VotingPanel,
+} from './panels';
 import { useMobile } from '../../utils/mobile';
 
 const Wrapper = styled.div`
@@ -46,7 +53,7 @@ const RoomPresenter = () => {
         <VoteDisplay gridConfig={gridConfigs.voteDisplay} />
         <VoteResults gridConfig={gridConfigs.voteResults} />
         <TicketHistory gridConfig={gridConfigs.history} />
-        <Distribution gridConfig={gridConfigs.distribution} />
+        <DistributionPanel gridConfig={gridConfigs.distribution} />
       </RoomDataContainer>
     </Wrapper>
   );

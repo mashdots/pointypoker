@@ -1,15 +1,14 @@
-import Distribution from './distribution';
+import { DistributionPanel } from './distribution';
 import MultiPanel from './multiPanel';
 import TicketHistory from './ticketHistory';
 import TimerPanel from './timerPanel';
 import { TitleControl } from './titleControl';
 import VoteDisplay from './voteDisplay';
 import VoteResults from './voteResults';
-import VoteStatistics from './voteStatistics';
 import VotingPanel from './votingPanel';
 
 export {
-  Distribution,
+  DistributionPanel,
   MultiPanel,
   TicketHistory,
   TimerPanel,
@@ -17,6 +16,5 @@ export {
   VoteDisplay,
   VotingPanel,
   VoteResults,
-  VoteStatistics,
 };
 

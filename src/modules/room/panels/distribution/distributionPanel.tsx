@@ -1,17 +1,14 @@
 import React, { useMemo } from 'react';
+import styled, { css } from 'styled-components';
 
+import { GridPanel } from '../../../../components/common';
+import { GridPanelProps } from '../../../../components/common/gridPanel';
 
 import { useTickets } from '../../hooks';
 import { getPointOptions } from '../../utils';
-import styled, { css } from 'styled-components';
 import Consensus from './consensus';
 import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
 
-type StatDisplayProps = {
-  percentage: number;
-  revealVotes: boolean;
-  animationDuration: number;
-};
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,8 +17,15 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  padding: 1rem 0 0.5rem;
+  padding: 1rem 0 0;
 `;
+
+
+type StatDisplayProps = {
+  percentage: number;
+  revealVotes: boolean;
+  animationDuration: number;
+};
 
 const StatContainer = styled.div`
   display: flex;
@@ -33,8 +37,8 @@ const StatContainer = styled.div`
 `;
 
 const StatLabel = styled.div`
-  ${({ theme }: ThemedProps) => css`
-    border-top: 1px solid ${theme.greyscale.borderElement};
+  ${ ({ theme }: ThemedProps) => css`
+    border-top: 1px solid ${ theme.greyscale.borderElement };
   `}
 
   display: flex;
@@ -45,8 +49,8 @@ const StatLabel = styled.div`
 `;
 
 const StatDisplayWrapper = styled.div`
-  ${({ theme }: ThemedProps) => css`
-    background-color: ${theme.greyscale.borderElement};
+  ${ ({ theme }: ThemedProps) => css`
+    background-color: ${ theme.greyscale.borderElement };
   `}
 
   display: flex;
@@ -63,10 +67,10 @@ const StatDisplayWrapper = styled.div`
 `;
 
 const StatDisplay = styled.div<StatDisplayProps>`
-  ${({ animationDuration, percentage, revealVotes, theme }: StatDisplayProps & ThemedProps) => css`
-    background-color: ${theme.info.solidBg};
-    height: ${revealVotes ? percentage : 0}%;
-    transition: height ${animationDuration}ms ease-out;
+  ${ ({ animationDuration, percentage, revealVotes, theme }: StatDisplayProps & ThemedProps) => css`
+    background-color: ${ theme.info.solidBg };
+    height: ${ revealVotes ? percentage : 0 }%;
+    transition: height ${ animationDuration }ms ease-out;
   `}
 
   display: flex;
@@ -76,35 +80,36 @@ const StatDisplay = styled.div<StatDisplayProps>`
   width: 100%;
 `;
 
-const VoteDistribution = () => {
+
+const DistributionPanel = (props: GridPanelProps) => {
   const { currentTicket, shouldShowVotes, voteData } = useTickets();
   const { sequence, exclusions } = getPointOptions(currentTicket?.pointOptions);
 
   const hasConsensus = useMemo(
     () => (
       shouldShowVotes
-        && voteData.length > 0
-        && voteData.every(({ vote }) => !!vote && vote === voteData[0].vote)
+      && voteData.length > 0
+      && voteData.every(({ vote }) => !!vote && vote === voteData[ 0 ].vote)
     ),
-    [voteData],
+    [ voteData ],
   );
 
   const voteCounts = useMemo(
     () => voteData.reduce(
-      (acc: { [key: string]: number }, { vote }) => {
+      (acc: { [ key: string ]: number }, { vote }) => {
         if (vote) {
-          acc[vote] = acc[vote] ? acc[vote] + 1 : 1;
+          acc[ vote ] = acc[ vote ] ? acc[ vote ] + 1 : 1;
         }
         return acc;
       },
       {},
     ),
-    [voteData],
+    [ voteData ],
   );
 
   const voteStats = useMemo(
     () => sequence.map((point) => {
-      const votes = voteCounts[point] || 0;
+      const votes = voteCounts[ point ] || 0;
       const votePercentage = (votes / voteData.length) * 100;
 
       if (exclusions.includes(point) && votePercentage === 0) {
@@ -124,12 +129,17 @@ const VoteDistribution = () => {
         </StatContainer>
       );
     }),
-    [voteCounts, voteData, shouldShowVotes],
+    [ voteCounts, voteData, shouldShowVotes ],
   );
 
   const component = hasConsensus ? <Consensus /> : voteStats;
-
-  return <Wrapper>{component}</Wrapper>;
+  return (
+    <GridPanel config={props.gridConfig} title='distribution'>
+      <Wrapper>
+        {component}
+      </Wrapper>
+    </GridPanel>
+  );
 };
 
-export default VoteDistribution;
+export default DistributionPanel;
