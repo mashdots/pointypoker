@@ -1,38 +1,28 @@
-import React, { useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
 
 import TitleInput from './titleInput';
 import Button from '../../../../components/common/button';
 import { useTickets } from '../../hooks';
 import PlusIcon from '../../../../assets/icons/plus.svg?react';
-
-const shake = keyframes`
-  0% { transform: translateX(0); }
-  25% { transform: translateX(4px); }
-  50% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-  100% { transform: translateX(0); }
-`;
+import { useMobile } from '../../../../utils/mobile';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
+  padding: 0 1rem;
 `;
 
-const Icon = styled(PlusIcon) <{ $isHovered: boolean}>`
+const Icon = styled(PlusIcon)`
   width: 24px;
   margin-right: 0.5rem;
   transition: all 300ms;
-
-  ${({ $isHovered }) => $isHovered && css`
-    animation: ${shake} 300ms;
-  `}
 `;
 
 const TitleControl = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  const { isMobile } = useMobile();
   const {
     handleCreateTicket,
     shouldShowVotes,
@@ -42,18 +32,14 @@ const TitleControl = () => {
     <Wrapper>
       <TitleInput />
       <Button
-        margin='left'
-        variation='structure'
         width='quarter'
         onClick={() => handleCreateTicket()}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         isDisabled={!shouldShowVotes}
+        variation='success'
         textSize='small'
+        noMargin
       >
-        <>
-          <Icon $isHovered={isHovered} /> next ticket
-        </>
+        <Icon /> next {isMobile ? '' : 'ticket'}
       </Button>
     </Wrapper>
   );

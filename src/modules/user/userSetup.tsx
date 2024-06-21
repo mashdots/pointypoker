@@ -1,112 +1,59 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { createUserPayload, getUserCookie, setUserCookie } from '../../utils';
-import { VARIATIONS } from '../../utils/styles';
-import NameInput from './nameInput';
-import { getAuthClient, signIn } from '../../services/firebase/auth';
-import useStore from '../../utils/store';
+import { useAuth } from './useAuth';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
+import { TextInput } from '../../components/common';
 
-type WrapperProps = { isVisible: boolean, isOpen: boolean }
+type NoticeProps = ThemedProps & {
+  shouldShow?: boolean;
+};
 
-const Wrapper = styled.div<WrapperProps>`
-  transition: opacity 300ms;
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
-
-  ${ ({ isOpen, isVisible }) => css`
-    display: ${ isOpen ? 'inherit' : 'none' };
-    opacity: ${ isVisible ? 100 : 0 }%;
-  `};
+  align-items: center;
 `;
 
-const CookieNotice = styled.p`
-  color: ${ VARIATIONS.structure.textLowContrast };
+const Notice = styled.p<NoticeProps>`
+  transition: opacity 200ms;
+
+  ${({ shouldShow = true, theme }) => css`
+    color: ${theme.primary.textLow};
+    opacity: ${ shouldShow ? 1 : 0};
+  `}
 `;
 
-let timeout: ReturnType<typeof setTimeout>;
+const UserSetup = () => {
+  const { signIn } = useAuth();
+  const [name, setName] = useState('');
 
-const withUserSetup = (WrappedComponent: () => JSX.Element) => {
-  const UserSetup = () => {
-    const { setUser, user } = useStore(({ setUser, user }) => ({
-      setUser,
-      user,
-    }));
-    const userCookie = getUserCookie();
-    const [isVisible, setIsVisible] = useState(!user);
-    const [isOpen, setIsOpen] = useState(!user);
-    const [name, setName] = useState<string>('');
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-
-      const payload = createUserPayload(name);
-      try {
-        const anonUser = await signIn();
-        payload.id = anonUser.userId!;
-        setUserCookie(payload);
-        setUser(payload);
-      } catch (error) {
-        console.error(e);
-      }
-    };
-
-    useEffect(() => {
-      if (userCookie && !user) {
-        getAuthClient();
-        setUser(userCookie);
-      }
-    }, [user]);
-
-    useEffect(() => {
-      clearTimeout(timeout);
-
-      if (user) {
-        setIsVisible(false);
-
-        timeout = setTimeout(() => {
-          setIsOpen(false);
-        }, 300);
-      } else {
-        setIsOpen(true);
-
-        timeout = setTimeout(() => {
-          setIsVisible(true);
-        }, 100);
-      }
-
-      return () => {
-        setName('');
-        clearTimeout(timeout);
-      };
-    }, [user]);
-
-    if (!user) {
-      return (
-        <Wrapper isOpen={isOpen} isVisible={isVisible} id='user-setup-show'>
-          <h1>what do we call you?</h1>
-          <CookieNotice>this is stored in a cookie so we won&apos;t ask you every time</CookieNotice>
-          <form onSubmit={handleSubmit} autoComplete='off'>
-            <NameInput
-              id='name'
-              onChange={({ target }) => setName(target.value)}
-              value={name}
-            />
-          </form>
-        </Wrapper>
-      );
-    } else {
-      return (
-        <Wrapper isOpen={!isOpen} isVisible={!isVisible} id='user-setup-hide'>
-          <WrappedComponent />
-        </Wrapper>
-      );
+    if (name) {
+      await signIn(name);
     }
   };
 
-  return UserSetup;
+  return (
+    <Wrapper id='user-setup-show'>
+      <h1>what do we call you?</h1>
+      <Notice>this is stored in a cookie so you&apos;re not asked every time</Notice>
+      <form onSubmit={handleSubmit} autoComplete='off'>
+        <TextInput
+          alignment='center'
+          id='name'
+          onChange={({ target }) => setName(target.value)}
+          placeHolder='your name'
+          value={name}
+        />
+      </form>
+      <Notice shouldShow={!!name}>press enter to get started</Notice>
+    </Wrapper>
+  );
+
 };
 
-export default withUserSetup;
+export default UserSetup;

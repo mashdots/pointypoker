@@ -1,27 +1,28 @@
 import Cookies from 'universal-cookie';
-import { User } from '../types';
 import { Buffer } from 'buffer';
 
-const USER_COOKIE = 'yappy-user';
+enum COOKIE_TYPES {
+  USER = 'yappy-user',
+}
 const cookies = new Cookies();
 
-const getUserCookie = () => {
-  const userCookie = cookies.get(USER_COOKIE);
+const getCookie = () => {
+  const userCookie = cookies.get(COOKIE_TYPES.USER);
 
   return userCookie ? JSON.parse(Buffer.from(userCookie, 'base64').toString('ascii')) : null;
 };
 
-const setUserCookie = (user: User) => {
-  const encryptedID = Buffer.from(JSON.stringify(user)).toString('base64');
-  cookies.set(USER_COOKIE, encryptedID, { expires: new Date('2100/01/01'), sameSite: 'lax' });
+const setCookie = (value: object) => {
+  const encryptedID = Buffer.from(JSON.stringify(value)).toString('base64');
+  cookies.set(COOKIE_TYPES.USER, encryptedID, { expires: new Date('2100/01/01'), sameSite: 'lax' });
 };
 
-const clearUserCookie = () => {
-  cookies.remove(USER_COOKIE);
+const clearCookie = () => {
+  cookies.remove(COOKIE_TYPES.USER);
 };
 
 export {
-  getUserCookie,
-  setUserCookie,
-  clearUserCookie,
+  getCookie,
+  setCookie,
+  clearCookie,
 };

@@ -1,35 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import useStore from '../../utils/store';
-import { clearUserCookie } from '../../utils/cookies';
-import { signOut } from '../../services/firebase/auth';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
+import { useAuth } from '../../modules/user';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<ThemedProps>`
   cursor: pointer;
   display: flex;
   align-items: center;
+  color: ${({ theme }) => theme.primary.textHigh};
 `;
 
 const UserControl = () => {
-  const { user, clearUser, clearRoom } = useStore((state) => ({
-    user: state.user,
-    clearUser: state.clearUser,
-    clearRoom: state.clearRoom,
-  }));
+  const { user } = useAuth();
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      clearUser();
-      clearRoom();
-      clearUserCookie();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  return <Wrapper onClick={handleSignOut}>{user?.name}</Wrapper>;
+  return <Wrapper>{user?.name}</Wrapper>;
 };
 
 export default UserControl;

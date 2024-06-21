@@ -1,6 +1,7 @@
-import TitleInput from '../panels/titleControl/titleInput';
-import VoteStatistics from '../panels/voteStatistics';
-import VoteButtons from './voteButtons';
-import VoteDisplay from '../panels/voteDisplay';
+import InfoCell from './infoCell';
+import Timer from './timer';
 
-export { TitleInput, VoteStatistics, VoteButtons, VoteDisplay };
+export {
+  InfoCell,
+  Timer,
+};

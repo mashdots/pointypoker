@@ -1,22 +1,32 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 
-import { VARIATIONS } from './colors';
+import { ThemedProps } from './colors/colorSystem';
 
-const GlobalStyles = createGlobalStyle`
+const GlobalStyles = createGlobalStyle<ThemedProps>`
   html {
     scroll-behavior: smooth;
-  }
-
-  body {
-    background-color: ${ VARIATIONS.structure.bg };
-    color: ${ VARIATIONS.structure.textLowContrast };
-    font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 250ms, color 250ms;
     font-size: 16px;
   }
 
+  #root {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  body {
+    ${({ theme }) => css`
+      background-color: ${ theme.greyscale.bg };
+      color: ${ theme.primary.textLow };
+    `}
+    font-family: 'Nunito Sans', Tahoma, sans-serif;
+  }
+
   h1, input, button {
-    font-family: 'Nunito Sans', Tahoma, Geneva, Verdana, sans-serif;
-    color: ${ VARIATIONS.structure.textHighContrast };
+    ${({ theme }) => css`
+      color: ${ theme.primary.textHigh };
+    `}
+    font-family: 'Nunito Sans', Tahoma, sans-serif;
   }
 
   :root {

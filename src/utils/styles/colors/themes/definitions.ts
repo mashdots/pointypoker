@@ -1,0 +1,20 @@
+// Definition: Contains the theme colors for the application.
+export enum THEME_COLORS {
+  BLUE = 'blue',
+  BROWN = 'brown',
+  CRIMSON = 'crimson',
+  GRASS = 'grass',
+  GRAY = 'gray',
+  GREEN = 'green',
+  INDIGO = 'indigo',
+  MAUVE = 'mauve',
+  ORANGE = 'orange',
+  PURPLE = 'purple',
+  RED = 'red',
+  SAGE = 'sage',
+  SAND = 'sand',
+  SLATE = 'slate',
+  TEAL = 'teal',
+  TOMATO = 'tomato',
+  YELLOW = 'yellow',
+}

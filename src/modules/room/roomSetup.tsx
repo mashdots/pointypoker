@@ -1,22 +1,36 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
+import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
 import Button from '../../components/common/button';
-import { generateRoomName } from '../../utils';
+import { generateRoomName, usePrevious } from '../../utils';
 import useStore from '../../utils/store';
-import { Participant, Room } from '../../types';
-import { createRoom } from '../../services/firebase';
-import withUserSetup from '../user/userSetup';
+import { Participant, Room as RoomType } from '../../types';
+import { createRoom, updateRoom, watchRoom } from '../../services/firebase';
 import { PointingTypes } from './utils';
+import { useHeaderHeight } from '../../routes/root';
+import RoomPresenter from './roomPresenter';
 
-const Wrapper = styled.div`
+type HeightAdjusted = {
+  heightDiff: number;
+}
+
+type RoomControl = {
+  isRoomOpen: boolean;
+}
+
+const Container = styled.div<HeightAdjusted>`
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: ${({ heightDiff }) => `calc(100vh - ${heightDiff || 0}px)`};
+  width: 100%;
+  overflow: hidden;
 `;
 
 const ButtonContainer = styled.div`
@@ -24,10 +38,39 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const RoomSetup = withUserSetup(() => {
-  const { room, user } = useStore((state) => ({ user: state.user, room: state.room }));
+const SetupWrapper = styled.div<RoomControl>`
+  transition: all 250ms ease-out;
+  
+  ${({ isRoomOpen }) => css`
+    opacity: ${isRoomOpen ? 0 : 1};
+  `}
+`;
+
+const RoomWrapper = styled.div<RoomControl>`
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  transition: all 250ms ease-out;
+  
+  ${({ isRoomOpen }) => css`
+    opacity: ${isRoomOpen ? 1 : 0};
+  `}
+`;
+
+let timeout: number | undefined;
+
+const RoomSetup = () => {
+  const { refHeight } = useHeaderHeight();
+  const { roomData, user } = useStore(({ user, room }) => ({ user, roomData: room }));
   const setRoom = useStore((state) => state.setRoom);
+  const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
+  const [ isRoomOpen, setIsRoomOpen ] = useState(false);
+  const [isRoomRendered, setIsRoomRendered] = useState(false);
+  const wasRendered = usePrevious(isRoomRendered);
+  const wasOpen = usePrevious(isRoomOpen);
   const navigate = useNavigate();
+  const roomFromPath = useMemo(() => window.location.pathname.slice(1), [window.location.pathname]);
 
   const handleCreateRoom = async () => {
     if (!user) {
@@ -45,14 +88,15 @@ const RoomSetup = withUserSetup(() => {
     };
     const initialTicket = {
       name: '',
+      createdBy: self.id,
       id: uuid(),
       shouldShowVotes: false,
       votes: {},
       createdAt: Date.now(),
-      pointOptions: PointingTypes.limitedFibonacci,
+      pointOptions: PointingTypes.fibonacci,
       votesShownAt: null,
     };
-    const newRoom: Room = {
+    const newRoom: RoomType = {
       name: roomName,
       createdAt: Date.now(),
       participants: {
@@ -65,9 +109,8 @@ const RoomSetup = withUserSetup(() => {
 
     await createRoom(newRoom, (result) => {
       if (!result.error) {
-        const resolvedRoom = result.data as Room;
-        setRoom(resolvedRoom);
-        navigate(`/${ resolvedRoom.name}`);
+        const resolvedRoom = result.data as RoomType;
+        navigate(`/${resolvedRoom.name}`);
       } else {
         console.error(result);
       }
@@ -75,24 +118,101 @@ const RoomSetup = withUserSetup(() => {
   };
 
   useEffect(() => {
+    const roomToJoin = roomData || roomFromPath;
+
+    if (roomToJoin && !subscribedRoomRef.current) {
+      const roomToJoin = roomData?.name || roomFromPath;
+
+      subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
+        if (!result.error) {
+          if (!isEqual(result.data, roomData)) {
+            setRoom(result.data as RoomType);
+            setIsRoomRendered(true);
+            document.title = `pointy poker - ${ roomData?.name}`;
+          }
+        } else {
+          navigate('/');
+          console.error(result);
+        }
+      });
+    } else if (!roomToJoin) {
+      subscribedRoomRef.current?.();
+      navigate('/');
+      setIsRoomOpen(false);
+    }
+
+    if (
+      user && roomData && !Object.values(roomData.participants ?? {}).find((participant) => participant.id === user.id)
+    ) {
+      const selfAsParticipant: Participant = {
+        id: user.id,
+        name: user.name,
+        consecutiveMisses: 0,
+        inactive: false,
+        isHost: false,
+        joinedAt: Date.now(),
+      };
+
+      const updatedRoomData = cloneDeep(roomData);
+      updatedRoomData.participants[ selfAsParticipant.id ] = selfAsParticipant;
+      updateRoom(roomData.name, 'participants', updatedRoomData.participants);
+    }
+
+    return () => {
+      subscribedRoomRef.current?.();
+      subscribedRoomRef.current = undefined;
+    };
+  }, [roomData, roomFromPath]);
+
+  useEffect(() => {
     document.title = 'pointy poker';
   }, []);
 
-  // TEMP: Remove after development of room
+  /**
+   * Over-engineered logic to make the room component slide in and out
+   */
   useEffect(() => {
-    if (room) {
-      navigate(`/${ room.name }`);
+    clearTimeout(timeout);
+    if (isRoomRendered && !isRoomOpen && !wasRendered) {
+      setTimeout(() => {
+        setIsRoomOpen(true);
+      }, 100);
     }
-  }, [room]);
 
-  return (
-    <Wrapper>
+    if (isRoomRendered && !isRoomOpen && wasOpen) {
+      setTimeout(() => {
+        setIsRoomRendered(false);
+      }, 250);
+    }
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [isRoomOpen, isRoomRendered]);
+
+  const setupComponent = isRoomRendered ? null : (
+    <SetupWrapper isRoomOpen={isRoomOpen}>
       <h1>ready to start?</h1>
       <ButtonContainer>
-        <Button margin='center' variation='info' width='full' onClick={handleCreateRoom}>start a session</Button>
+        <Button variation='info' width='full' onClick={handleCreateRoom}>
+          start a session
+        </Button>
       </ButtonContainer>
-    </Wrapper>
+    </SetupWrapper>
   );
-});
+
+  const roomComponent = isRoomRendered ? (
+    <RoomWrapper isRoomOpen={isRoomOpen}>
+      <RoomPresenter />
+    </RoomWrapper>
+  ) : null;
+
+  return (
+    <Container heightDiff={refHeight}>
+      {setupComponent}
+      {roomComponent}
+    </Container>
+  );
+};
 
 export default RoomSetup;

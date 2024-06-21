@@ -1,38 +1,73 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
 import { getTicketNumberFromUrl } from '../utils';
 import { getIcon } from '../../../components/icons';
-import { VARIATIONS } from '../../../utils/styles';
 import { Ticket } from '../../../types';
+import GridPanel, { GridPanelProps } from '../../../components/common/gridPanel';
+import { useTickets } from '../hooks';
+import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 
-type Props = {
+type Props = GridPanelProps & {
   previousTickets?: Ticket[];
 }
 
-const Wrapper = styled.div`
+type TicketRowProps = {
+  showBottomBorder?: boolean,
+} & ThemedProps;
+
+const TicketRowList = styled.div<{ calculatedHeight: number }>`
+  ${({ calculatedHeight }: { calculatedHeight: number }) => css`
+    height: ${calculatedHeight}px;
+  `}
+
   display: flex;
-  flex: 1;
   flex-direction: column;
   width: 100%;
-  padding: 1rem 0 0.5rem;
-
-  border: none;
-  border-radius: 8px;
-
-  color: ${VARIATIONS.structure.textLowContrast};
+  overflow: auto;
 `;
 
-const TicketRow = styled.div<{shouldHighlight?: boolean}>`
+const enterAnimation = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const TicketHeader = styled.div`
+  ${({ theme }: ThemedProps) => css`
+    color: ${ theme.primary.textHigh };
+    background-color: ${ theme.greyscale.componentBg };
+  `}
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+    padding: 0.75rem 2rem 0.75rem 1rem;
+`;
+
+const TicketRow = styled.div <TicketRowProps>`
+  ${({ showBottomBorder, theme }: TicketRowProps) => css`
+    color: ${ theme.primary.textHigh };
+    border-color: ${ theme.primary.border };
+    border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
+  `}
+
+  padding: 0.75rem 2rem 0.75rem 1rem;
   display: flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-
-  ${({ shouldHighlight }) => shouldHighlight && `
-    background-color: ${VARIATIONS.structure.bgElementActive};
-  `}
+  border-style: solid;
+  border-width: 0px;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  animation: ${enterAnimation} 300ms;
 `;
 
 const NameCell = styled.div`
@@ -45,14 +80,22 @@ const NameCell = styled.div`
 `;
 
 const PointCell = styled.div`
+  ${({ theme }: ThemedProps) => css`
+    color: ${ theme.primary.textLow };
+  `}
+
   display: flex;
+  font-size: 0.9rem;
   flex: 1;
   justify-content: flex-end;
   align-items: center;
 `;
 
-const TicketHistory = ({ previousTickets }: Props) => {
-
+const TicketHistory = ({ gridConfig }: Props) => {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [scrollableHeight, setScrollableHeight] = useState(0);
+  const { sortedTickets } = useTickets();
+  const previousTickets = sortedTickets.slice(1);
   const ticketRows = useMemo(() => previousTickets?.map(({
     id,
     name,
@@ -62,10 +105,11 @@ const TicketHistory = ({ previousTickets }: Props) => {
     const parsedUrl = parseURL(name ?? '');
     const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
     const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
+    const isLast = i === previousTickets.length - 1;
 
     return (
-      <TicketRow key={id} shouldHighlight={i % 2 === 0}>
-        <NameCell>{nameComponent ?? '(no title)'}</NameCell>
+      <TicketRow key={id} showBottomBorder={!isLast}>
+        <NameCell>{nameComponent || '(no title)'}</NameCell>
         <PointCell>{suggestedPoints}</PointCell>
         <PointCell>{averagePoints}</PointCell>
       </TicketRow>
@@ -74,14 +118,33 @@ const TicketHistory = ({ previousTickets }: Props) => {
   );
 
   const header = (
-    <TicketRow>
+    <TicketHeader ref={headerRef}>
       <NameCell>ticket</NameCell>
       <PointCell>{getIcon('suggest')}</PointCell>
       <PointCell>{getIcon('average')}</PointCell>
-    </TicketRow>
+    </TicketHeader>
   );
 
-  return <Wrapper>{header}{ticketRows}</Wrapper>;
+  useEffect(() => {
+    if (headerRef.current) {
+      /**
+       * This is over-engineered but the only way I can figure out how to get
+       * the scroll to fit in the parent container
+       */
+      const headerHeight = headerRef.current.clientHeight;
+      const parentHeight = headerRef.current.parentElement?.clientHeight ?? 0;
+      setScrollableHeight(parentHeight - headerHeight);
+    }
+  }, [headerRef]);
+
+  return (
+    <GridPanel config={gridConfig} title='history'>
+      {header}
+      <TicketRowList calculatedHeight={scrollableHeight}>
+        {ticketRows}
+      </TicketRowList>
+    </GridPanel>
+  );
 };
 
 export default TicketHistory;

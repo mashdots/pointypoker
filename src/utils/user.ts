@@ -1,6 +1,12 @@
 import { v4 as uuid } from 'uuid';
 
-const createUserPayload = (name: string) => {
+export type UserPayload = {
+  name: string;
+  id: string;
+  created: string;
+};
+
+const createUserPayload = (name: string): UserPayload => {
   const userPayload = {
     name,
     id: uuid(),

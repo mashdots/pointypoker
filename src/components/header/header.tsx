@@ -5,6 +5,10 @@ import Logo from './logo';
 import RoomControl from './roomControl';
 import UserControl from './userControl';
 
+type Props = {
+  headerRef: React.RefObject<HTMLDivElement>;
+}
+
 type SectionProps = {
   align: 'left' | 'right';
   flex: number;
@@ -19,6 +23,7 @@ const Wrapper = styled.div`
 
 const Section = styled.div<SectionProps>`
   display: flex;
+  align-items: center;
 
   ${({ align, flex }) => css`
     flex: ${flex};
@@ -27,9 +32,9 @@ const Section = styled.div<SectionProps>`
   `}
 `;
 
-const Header = () => (
-  <Wrapper>
-    <Section flex={2} align='left'>
+const Header = ({ headerRef }: Props) => (
+  <Wrapper ref={headerRef}>
+    <Section flex={6} align='left'>
       <Logo />
       <RoomControl />
     </Section>

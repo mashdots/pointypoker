@@ -7,7 +7,7 @@ import {
 
 import './index.css';
 import Root from './routes/root';
-import { Room, RoomSetup } from './modules/room';
+import Switcher from './modules/switcher';
 
 const router = createBrowserRouter([
   {
@@ -16,11 +16,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <RoomSetup />,
+        element: <Switcher />,
       },
       {
         path: '/:roomName',
-        element: <Room />,
+        element: <Switcher />,
       },
     ],
   },

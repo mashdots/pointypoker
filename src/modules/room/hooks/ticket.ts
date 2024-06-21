@@ -50,19 +50,9 @@ const useTickets = () => {
 
   const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
     if (roomName && user && currentTicket) {
-      let roomObjPath = `tickets.${ currentTicket.id }.${field}`;
-      let resolvedValue = value;
+      const roomObjPath = `tickets.${ currentTicket.id }.${field}`;
 
-      if (field === 'votes') {
-        resolvedValue = {
-          participantId: user.id,
-          vote: value,
-        };
-
-        roomObjPath += `.${user.id}`;
-      }
-
-      updateRoom(roomName, roomObjPath, resolvedValue, callback);
+      updateRoom(roomName, roomObjPath, value, callback);
     }
   }, [roomName, currentTicket]);
 
@@ -77,12 +67,17 @@ const useTickets = () => {
       const newTicket: Ticket = {
         createdAt: Date.now(),
         id: uuid(),
+        createdBy: user.id,
         name: newTicketName || '',
         pointOptions: currentTicket?.pointOptions,
         shouldShowVotes: false,
         votes: {},
         votesShownAt: null,
       };
+
+      if (newTicketName) {
+        newTicket.timerStartAt = Date.now();
+      }
 
       updateRoom(roomName, `tickets.${newTicket.id}`, newTicket);
     }
