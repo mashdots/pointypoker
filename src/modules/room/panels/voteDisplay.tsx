@@ -137,7 +137,7 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
 
 const VoteDisplay = (props: GridPanelProps) => {
   const user = useStore(({ user }) => user);
-  const headerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLButtonElement>(null);
   const [ scrollableHeight, setScrollableHeight ] = useState(0);
   const { shouldShowVotes, voteData, handleUpdateLatestTicket } = useTickets();
 

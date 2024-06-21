@@ -13,7 +13,7 @@ type Props = {
   textSize?: 'small' | 'medium' | 'large';
   variation?: 'primary' | 'success' | 'warning' | 'error' | 'info';
   noMargin?: boolean;
-  buttonRef?: React.RefObject<HTMLInputElement>;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
 } & HTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = ThemedProps & {
@@ -25,7 +25,7 @@ type WrapperProps = ThemedProps & {
 }
 
 const StyledButton = styled.button<WrapperProps>`
-  ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }) => css`
+  ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }: WrapperProps) => css`
     background-color: ${theme[isDisabled ? 'greyscale' : variation].componentBg};
     border-bottom-color: ${theme[isDisabled ? 'greyscale' : variation].borderElement} !important;
     border-bottom-width: ${isDisabled ? 0 : 2}px !important;
@@ -50,7 +50,7 @@ const StyledButton = styled.button<WrapperProps>`
   transition: all 250ms ease-out;
 
   :hover {
-    ${ ({ isDisabled, noMargin, theme, variation }) => !isDisabled && css`
+    ${ ({ isDisabled, noMargin, theme, variation }: WrapperProps) => !isDisabled && css`
       color: ${theme[variation].textHigh};
       background-color: ${ theme[variation].componentBgHover };
       border-bottom-color: ${theme[ isDisabled ? 'greyscale' : variation ].borderElementHover} !important;
@@ -60,7 +60,7 @@ const StyledButton = styled.button<WrapperProps>`
   }
   
   :active {
-    ${ ({ isDisabled, noMargin, theme, variation }) => !isDisabled && css`
+    ${ ({ isDisabled, noMargin, theme, variation }: WrapperProps) => !isDisabled && css`
       background-color: ${ theme[variation].componentBgActive };
       border-bottom-width: 1px;
       margin-top: calc(${noMargin ? 0 : 1}rem + 1px);
@@ -95,13 +95,13 @@ const Button = ({
 
   return (
     <StyledButton
+      ref={buttonRef}
       configuredWidth={widthValue}
       disabled={isDisabled}
       isDisabled={isDisabled}
       onClick={onClick}
       textSize={buttonFontSize}
       variation={variation}
-      ref={buttonRef}
       {...rest}
     >
       {children}
