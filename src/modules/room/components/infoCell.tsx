@@ -57,8 +57,6 @@ const InfoCell = ({ icon, value, label }: InfoCellProps) => {
   const [shouldHide, setShouldHide] = useState(false);
 
   useEffect(() => {
-    console.log('value', value);
-
     if (value === null) {
       setShouldHide(true);
       timeout = setTimeout(() => {

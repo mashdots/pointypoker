@@ -41,11 +41,13 @@ const enterAnimation = keyframes`
 const TicketHeader = styled.div`
   ${({ theme }: ThemedProps) => css`
     color: ${ theme.primary.textHigh };
+    background-color: ${ theme.greyscale.componentBg };
   `}
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-radius: 0.25rem;
     flex-shrink: 0;
     padding: 0.75rem 2rem 0.75rem 1rem;
 `;
@@ -78,7 +80,12 @@ const NameCell = styled.div`
 `;
 
 const PointCell = styled.div`
+  ${({ theme }: ThemedProps) => css`
+    color: ${ theme.primary.textLow };
+  `}
+
   display: flex;
+  font-size: 0.9rem;
   flex: 1;
   justify-content: flex-end;
   align-items: center;
@@ -102,7 +109,7 @@ const TicketHistory = ({ gridConfig }: Props) => {
 
     return (
       <TicketRow key={id} showBottomBorder={!isLast}>
-        <NameCell>{nameComponent ?? '(no title)'}</NameCell>
+        <NameCell>{nameComponent || '(no title)'}</NameCell>
         <PointCell>{suggestedPoints}</PointCell>
         <PointCell>{averagePoints}</PointCell>
       </TicketRow>

@@ -13,6 +13,7 @@ type Props = {
   textSize?: 'small' | 'medium' | 'large';
   variation?: 'primary' | 'success' | 'warning' | 'error' | 'info';
   noMargin?: boolean;
+  buttonRef?: React.RefObject<HTMLInputElement>;
 } & HTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = ThemedProps & {
@@ -74,6 +75,7 @@ const Button = ({
   width,
   textSize = 'medium',
   variation = 'primary',
+  buttonRef,
   ...rest
 }: Props) => {
   const widthValue = getWidth(width);
@@ -99,6 +101,7 @@ const Button = ({
       onClick={onClick}
       textSize={buttonFontSize}
       variation={variation}
+      ref={buttonRef}
       {...rest}
     >
       {children}

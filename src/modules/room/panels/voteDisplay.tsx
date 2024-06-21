@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import { useTickets } from '../hooks';
@@ -31,15 +31,17 @@ type StyledVoteCellProps = {
   showBottomBorder: boolean;
 } & ThemedProps;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ calculatedHeight: number }>`
+  ${({ calculatedHeight }: { calculatedHeight: number }) => css`
+    height: ${ calculatedHeight }px;
+  `}
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  height: 100%;
   width: 100%;
-  overflow: hidden;
-  flex-wrap: wrap;
+  overflow: auto;
+
 `;
 
 const enterAnimation = keyframes`
@@ -135,6 +137,8 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
 
 const VoteDisplay = (props: GridPanelProps) => {
   const user = useStore(({ user }) => user);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [ scrollableHeight, setScrollableHeight ] = useState(0);
   const { shouldShowVotes, voteData, handleUpdateLatestTicket } = useTickets();
 
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
@@ -168,6 +172,20 @@ const VoteDisplay = (props: GridPanelProps) => {
     [shouldShowVotes, user, voteData],
   );
 
+  useEffect(() => {
+    if (headerRef.current) {
+      /**
+       * This is over-engineered but the only way I can figure out how to get
+       * the scroll to fit in the parent container
+       */
+      const headerHeight = headerRef.current.clientHeight;
+      const parentHeight = headerRef.current.parentElement?.clientHeight ?? 0;
+      console.log(parentHeight, headerHeight);
+      setScrollableHeight(parentHeight - headerHeight);
+    }
+  }, [ headerRef ]);
+
+
   return (
     <GridPanel config={props.gridConfig} title='votes'>
       <Button
@@ -179,10 +197,11 @@ const VoteDisplay = (props: GridPanelProps) => {
         }}
         isDisabled={shouldShowVotes || !hasAnyoneVoted}
         textSize='small'
+        buttonRef={headerRef}
       >
         show votes
       </Button>
-      <Wrapper>
+      <Wrapper calculatedHeight={scrollableHeight}>
         {voteNodes}
       </Wrapper>
     </GridPanel>
