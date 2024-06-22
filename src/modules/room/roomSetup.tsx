@@ -126,9 +126,10 @@ const RoomSetup = () => {
       subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
         if (!result.error) {
           if (!isEqual(result.data, roomData)) {
-            setRoom(result.data as RoomType);
+            const { data } = result;
+            setRoom(data as RoomType);
             setIsRoomRendered(true);
-            document.title = `pointy poker - ${ roomData?.name}`;
+            document.title = `pointy poker - ${ (data as RoomType).name}`;
           }
         } else {
           navigate('/');
