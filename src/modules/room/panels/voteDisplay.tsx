@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import { useTickets } from '../hooks';
@@ -27,21 +27,16 @@ type VoteCellProps = {
 }
 
 type StyledVoteCellProps = {
-  hasExtraPadding: boolean;
   showBottomBorder: boolean;
 } & ThemedProps;
 
-const Wrapper = styled.div<{ calculatedHeight: number }>`
-  ${({ calculatedHeight }: { calculatedHeight: number }) => css`
-    height: ${ calculatedHeight }px;
-  `}
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
   overflow: auto;
-
 `;
 
 const enterAnimation = keyframes`
@@ -59,11 +54,11 @@ const enterAnimation = keyframes`
 `;
 
 const StyledVoteCell = styled.div<StyledVoteCellProps>`
-  ${({ hasExtraPadding, showBottomBorder, theme }: StyledVoteCellProps) => css`
+  ${({ showBottomBorder, theme }: StyledVoteCellProps) => css`
     color: ${theme.primary.textHigh};
     border-color: ${theme.primary.border};
     border-bottom-width: ${showBottomBorder ? 1 : 0}px !important;
-    padding: 0.75rem ${hasExtraPadding ? 2.5: 2}rem 0.75rem 1rem;
+    padding: 0.75rem 2rem 0.75rem 0.75rem;
   `}
     
   align-items: center;
@@ -125,7 +120,6 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
   return (
     <StyledVoteCell
       showBottomBorder={!isLast}
-      hasExtraPadding={cellMode === PARTICIPANT_MODES.REVEALED}
     >
       {name}
       <DisplayElementWrapper isVisible={!isTransitioning}>
@@ -137,8 +131,6 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
 
 const VoteDisplay = (props: GridPanelProps) => {
   const user = useStore(({ user }) => user);
-  const headerRef = useRef<HTMLButtonElement>(null);
-  const [ scrollableHeight, setScrollableHeight ] = useState(0);
   const { shouldShowVotes, voteData, handleUpdateLatestTicket } = useTickets();
 
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
@@ -172,36 +164,29 @@ const VoteDisplay = (props: GridPanelProps) => {
     [shouldShowVotes, user, voteData],
   );
 
-  useEffect(() => {
-    if (headerRef.current) {
-      /**
-       * This is over-engineered but the only way I can figure out how to get
-       * the scroll to fit in the parent container
-       */
-      const headerHeight = headerRef.current.clientHeight;
-      const parentHeight = headerRef.current.parentElement?.clientHeight ?? 0;
-      console.log(parentHeight, headerHeight);
-      setScrollableHeight(parentHeight - headerHeight);
-    }
-  }, [ headerRef ]);
 
+  const showVotesButton = (
+    <Button
+      variation='info'
+      width='full'
+      onClick={() => {
+        handleUpdateLatestTicket('shouldShowVotes', true);
+        handleUpdateLatestTicket('votesShownAt', Date.now());
+      }}
+      isDisabled={shouldShowVotes || !hasAnyoneVoted}
+      textSize='small'
+    >
+      show votes
+    </Button>
+  );
 
   return (
-    <GridPanel config={props.gridConfig} title='votes'>
-      <Button
-        variation='info'
-        width='full'
-        onClick={() => {
-          handleUpdateLatestTicket('shouldShowVotes', true);
-          handleUpdateLatestTicket('votesShownAt', Date.now());
-        }}
-        isDisabled={shouldShowVotes || !hasAnyoneVoted}
-        textSize='small'
-        buttonRef={headerRef}
-      >
-        show votes
-      </Button>
-      <Wrapper calculatedHeight={scrollableHeight}>
+    <GridPanel
+      config={props.gridConfig}
+      headingElement={showVotesButton}
+      title='votes'
+    >
+      <Wrapper>
         {voteNodes}
       </Wrapper>
     </GridPanel>

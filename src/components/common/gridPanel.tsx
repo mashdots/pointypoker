@@ -17,6 +17,7 @@ type Props = {
   title?: string;
   config: GridConfiguration;
   children: React.ReactNode;
+  headingElement?: React.ReactNode;
 }
 
 const Container = styled.div<ThemedProps & GridConfiguration>`
@@ -48,15 +49,26 @@ const Title = styled.h2`
   `}
 `;
 
-const GridPanel = ({ config, children, title }: Props) => {
+const ChildrenWrapper = styled.div`
+  height: 100%;
+  overflow: auto;
+`;
+
+const GridPanel = ({
+  config,
+  children,
+  title,
+  headingElement,
+}: Props) => {
   const titleComponent = title ? <Title>{title.toLowerCase()}</Title> : null;
 
   return (
     <Container {...config}>
       {titleComponent}
-      <div style={{ height: '100%' }}>
+      {headingElement}
+      <ChildrenWrapper id="children-wrapper">
         {children}
-      </div>
+      </ChildrenWrapper>
     </Container>
   );
 };

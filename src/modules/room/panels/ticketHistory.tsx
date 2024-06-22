@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import { parseURL } from 'whatwg-url';
@@ -18,11 +18,7 @@ type TicketRowProps = {
   showBottomBorder?: boolean,
 } & ThemedProps;
 
-const TicketRowList = styled.div<{ calculatedHeight: number }>`
-  ${({ calculatedHeight }: { calculatedHeight: number }) => css`
-    height: ${calculatedHeight}px;
-  `}
-
+const TicketRowList = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -50,6 +46,7 @@ const TicketHeader = styled.div`
     border-radius: 0.25rem;
     flex-shrink: 0;
     padding: 0.75rem 2rem 0.75rem 1rem;
+    margin-top: 1rem;
 `;
 
 const TicketRow = styled.div <TicketRowProps>`
@@ -93,7 +90,6 @@ const PointCell = styled.div`
 
 const TicketHistory = ({ gridConfig }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const [scrollableHeight, setScrollableHeight] = useState(0);
   const { sortedTickets } = useTickets();
   const previousTickets = sortedTickets.slice(1);
   const ticketRows = useMemo(() => previousTickets?.map(({
@@ -125,22 +121,9 @@ const TicketHistory = ({ gridConfig }: Props) => {
     </TicketHeader>
   );
 
-  useEffect(() => {
-    if (headerRef.current) {
-      /**
-       * This is over-engineered but the only way I can figure out how to get
-       * the scroll to fit in the parent container
-       */
-      const headerHeight = headerRef.current.clientHeight;
-      const parentHeight = headerRef.current.parentElement?.clientHeight ?? 0;
-      setScrollableHeight(parentHeight - headerHeight);
-    }
-  }, [headerRef]);
-
   return (
-    <GridPanel config={gridConfig} title='history'>
-      {header}
-      <TicketRowList calculatedHeight={scrollableHeight}>
+    <GridPanel config={gridConfig} title='history' headingElement={header}>
+      <TicketRowList>
         {ticketRows}
       </TicketRowList>
     </GridPanel>
