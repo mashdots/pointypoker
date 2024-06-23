@@ -96,7 +96,9 @@ const TitleInput = () => {
   }, [value]);
 
   useEffect(() => {
-    setValue(currentTicket?.name);
+    if (currentTicket?.name !== value) {
+      setValue(currentTicket?.name);
+    }
   }, [currentTicket?.name]);
 
   return (
