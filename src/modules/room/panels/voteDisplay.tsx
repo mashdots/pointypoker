@@ -115,7 +115,7 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [cellMode]);
+  }, [cellMode, vote]);
 
   return (
     <StyledVoteCell
