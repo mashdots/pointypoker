@@ -4,30 +4,36 @@ import styled, { css, keyframes } from 'styled-components';
 import { useTickets } from '../hooks';
 import { Button, GridPanel } from '../../../components/common';
 import { GridPanelProps } from '../../../components/common/gridPanel';
-import { Vote } from '../../../types';
+import { Participant, Vote } from '../../../types';
 import useStore from '../../../utils/store';
 import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 import CircleCheckIcon from '../../../assets/icons/circle-check.svg?react';
+import InactiveIcon from '../../../assets/icons/inactive.svg?react';
+import IdleIcon from '../../../assets/icons/idle.svg?react';
 
 enum PARTICIPANT_MODES {
+  ABSENT = 'absent',
   DEFAULT = 'default',
-  VOTED = 'voted',
+  INACTIVE = 'inactive',
   REVEALED = 'revealed',
+  VOTED = 'voted',
 }
 
 export type VoteDisplayProps = {
   name: string;
   vote?: Vote;
-}
+} & Pick<Participant, 'inactive' | 'consecutiveMisses'>;
 
 type VoteCellProps = {
   isLast: boolean;
   cellMode: PARTICIPANT_MODES;
-  voteData: VoteDisplayProps;
+  voteData: Omit<VoteDisplayProps, 'inactive' | 'consecutiveMisses'>;
 }
 
 type StyledVoteCellProps = {
   showBottomBorder: boolean;
+  isIdle?: boolean;
+  isInactive?: boolean;
 } & ThemedProps;
 
 const Wrapper = styled.div`
@@ -54,13 +60,23 @@ const enterAnimation = keyframes`
 `;
 
 const StyledVoteCell = styled.div<StyledVoteCellProps>`
-  ${({ showBottomBorder, theme }: StyledVoteCellProps) => css`
-    color: ${theme.primary.textHigh};
-    border-color: ${theme.primary.border};
-    border-bottom-width: ${showBottomBorder ? 1 : 0}px !important;
-    padding: 0.75rem 2rem 0.75rem 0.75rem;
-  `}
-    
+  ${({ isIdle, isInactive, showBottomBorder, theme }: StyledVoteCellProps) => {
+    let color = theme.primary.textHigh;
+
+    if (isIdle) {
+      color = theme.warning.textLow;
+    } else if (isInactive) {
+      color = theme.greyscale.textLow;
+    }
+
+    return css`
+      color: ${color};
+      border-color: ${ theme.primary.border };
+      border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
+      padding: 0.75rem 2rem 0.75rem 0.75rem;
+    `;
+  }}
+
   align-items: center;
   border-style: solid;
   border-width: 0px;
@@ -81,11 +97,27 @@ const DisplayElementWrapper = styled.div<{ isVisible: boolean }>`
   transition: all 250ms;
 `;
 
-const Check = styled(CircleCheckIcon) <ThemedProps>`
+const Check = styled(CircleCheckIcon)<ThemedProps>`
   width: 1.5rem;
 
   > polyline, line, path, circle {
-    stroke: ${ ({ theme }) => theme.success.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.success.textLow };
+  }
+`;
+
+const Idle = styled(IdleIcon)<ThemedProps>`
+  width: 1.5rem;
+
+  > polyline, line, path, circle {
+    stroke: ${ ({ theme }: ThemedProps) => theme.warning.textLow };
+  }
+`;
+
+const Inactive = styled(InactiveIcon)<ThemedProps>`
+  width: 1.5rem;
+
+  > polyline, line, path, circle {
+    stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.textLow };
   }
 `;
 
@@ -105,6 +137,12 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
       case PARTICIPANT_MODES.REVEALED:
         setDisplayElement(vote as Vote);
         break;
+      case PARTICIPANT_MODES.ABSENT:
+        setDisplayElement(<Idle />);
+        break;
+      case PARTICIPANT_MODES.INACTIVE:
+        setDisplayElement(<Inactive />);
+        break;
       default:
         setDisplayElement(null);
         break;
@@ -120,6 +158,8 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
   return (
     <StyledVoteCell
       showBottomBorder={!isLast}
+      isInactive={cellMode === PARTICIPANT_MODES.INACTIVE}
+      isIdle={cellMode === PARTICIPANT_MODES.ABSENT}
     >
       {name}
       <DisplayElementWrapper isVisible={!isTransitioning}>
@@ -136,7 +176,7 @@ const VoteDisplay = (props: GridPanelProps) => {
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
 
   const voteNodes = useMemo(
-    () => voteData.map(({ name: participantName, vote }, i) => {
+    () => voteData.map(({ name: participantName, vote, inactive, consecutiveMisses }, i) => {
       const userIsParticipant = participantName === user?.name;
       const hasVoted = vote !== undefined && vote !== '';
       const name = userIsParticipant ? 'you' : participantName;
@@ -144,7 +184,11 @@ const VoteDisplay = (props: GridPanelProps) => {
       const isLast = i === voteData.length - 1;
       let mode = PARTICIPANT_MODES.DEFAULT;
 
-      if (hasVoted) {
+      if (inactive) {
+        mode = PARTICIPANT_MODES.INACTIVE;
+      } else if (consecutiveMisses > 2) {
+        mode = PARTICIPANT_MODES.ABSENT;
+      } else if (hasVoted) {
         if (!displayVote) {
           mode = PARTICIPANT_MODES.VOTED;
         } else {

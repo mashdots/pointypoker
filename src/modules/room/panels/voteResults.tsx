@@ -72,12 +72,12 @@ const VoteResults = (props: GridPanelProps) => {
 
   const averagePointValue = useMemo(
     () => calculateAverage(currentTicket),
-    [ currentTicket ],
+    [currentTicket],
   );
 
   const pointSuggestion = useMemo(
     () => calculateSuggestedPoints(currentTicket),
-    [ currentTicket ],
+    [currentTicket],
   );
 
   return (

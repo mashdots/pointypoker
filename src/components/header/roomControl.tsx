@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import useStore from '../../utils/store';
 import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import DoorIcon from '../../assets/icons/door.svg?react';
-
+import { updateRoom } from '../../services/firebase';
 
 type NoticeProps = ThemedProps & {
   shouldShow?: boolean;
@@ -71,15 +71,23 @@ const Notice = styled.p<NoticeProps>`
 `;
 
 const RoomControl = () => {
-  const { isInRoom, roomName, clearRoom } = useStore((state) => ({
+  const { isInRoom, roomName, room, clearRoom, user } = useStore((state) => ({
     isInRoom: !!state.room,
     roomName: state?.room?.name,
+    room: state.room,
     clearRoom: state.clearRoom,
+    user: state.user,
   }));
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
   const handleExitRoom = () => {
+    if (room && user && room.participants[user.id]) {
+      const updateObj: Record<string, any> = {};
+      updateObj[`participants.${user.id}.inactive`] = true;
+
+      updateRoom(room.name, updateObj);
+    }
     navigate('/');
     clearRoom();
   };

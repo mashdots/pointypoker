@@ -8,7 +8,7 @@ type Store = {
   setUser: (arg: User) => void;
   clearUser: () => void;
   room: Room | null;
-  setRoom: (arg: Room) => void;
+  setRoom: (arg: Room | null) => void;
   clearRoom: () => void;
   theme: THEMES | null;
   themeMode: THEME_MODES | null;
