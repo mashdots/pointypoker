@@ -7,6 +7,7 @@ import ArticleIcon from '../../../../assets/icons/article.svg?react';
 import LinkIcon from '../../../../assets/icons/link-out.svg?react';
 import { TextInput } from '../../../../components/common';
 import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
+import useStore from '../../../../utils/store';
 
 
 type FocusProps = ThemedProps & {
@@ -69,7 +70,10 @@ const TitleInput = () => {
   const { currentTicket, handleCreateTicket, handleUpdateLatestTicket, shouldShowVotes } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState(currentTicket?.name);
-  const [isFocused, setIsFocused] = useState(false);
+  const {
+    isTitleInputFocused: isFocused,
+    setTitleInputFocus: setIsFocused,
+  } = useStore(({ isTitleInputFocused, setTitleInputFocus }) => ({ isTitleInputFocused, setTitleInputFocus }));
 
   const parsedUrl = parseURL(value ?? '');
 
