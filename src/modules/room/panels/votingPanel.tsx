@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { GridPanel } from '../../../components/common';
 import useStore from '../../../utils/store';
@@ -63,7 +63,7 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
 `;
 
 const VotingPanel = ({ gridConfig }: GridPanelProps) => {
-  const user = useStore(({ user }) => user);
+  const { user, isTitleInputFocused } = useStore(({ user, isTitleInputFocused }) => ({ user, isTitleInputFocused }));
   const { currentTicket, handleUpdateLatestTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
   const voteOptions = getPointOptions(currentTicket?.pointOptions);
@@ -83,6 +83,23 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
         </VoteButton>
       </ButtonWrapper>
     ));
+
+  const handleKeyPress = useCallback(({ key }: KeyboardEvent) => {
+    if (currentTicket && !isTitleInputFocused) {
+      if (voteOptions.sequence.includes(parseInt(key))) {
+        handleUpdateLatestTicket(`votes.${user?.id}`, parseInt(key));
+      }
+      if (voteOptions.exclusions.includes(key)) {
+        handleUpdateLatestTicket(`votes.${user?.id}`, key);
+      }
+    }
+  }, [ currentTicket, voteOptions, isTitleInputFocused ]);
+
+  useEffect(() => {
+    if (currentTicket) {
+      document.onkeydown = handleKeyPress;
+    }
+  }, [currentTicket, isTitleInputFocused]);
 
   return (
     <GridPanel config={gridConfig}>
