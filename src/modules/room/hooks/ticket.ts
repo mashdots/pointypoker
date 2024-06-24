@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Ticket } from '../../../types';
+import { Room, Ticket } from '../../../types';
 import { VoteDisplayProps } from '../panels/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
@@ -31,15 +31,19 @@ const useTickets = () => {
 
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
-    .map(({ name, id }): VoteDisplayProps => ({
+    .map(({ name, id, inactive, consecutiveMisses }): VoteDisplayProps => ({
       name: name,
       vote: currentTicket?.votes[id] ?? '',
+      inactive,
+      consecutiveMisses,
     })),
   [participants, currentTicket],
   );
 
   const areAllVotesCast = useMemo(
-    () => participants.every(({ id }) => currentTicket?.votes[id]),
+    () => participants
+      .filter(({ inactive,consecutiveMisses }) => !inactive && consecutiveMisses < 3)
+      .every(({ id }) => currentTicket?.votes[ id ]),
     [participants, currentTicket?.votes],
   );
 
@@ -50,19 +54,31 @@ const useTickets = () => {
 
   const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
     if (roomName && user && currentTicket) {
-      const roomObjPath = `tickets.${ currentTicket.id }.${field}`;
+      const updateObj: Record<string, any> = {};
+      updateObj[`tickets.${currentTicket.id}.${field}`] = value;
 
-      updateRoom(roomName, roomObjPath, value, callback);
+      if (field.includes('votes.')) {
+        updateObj[`participants.${user.id}.consecutiveMisses`] = 0;
+      }
+
+      updateRoom(roomName, updateObj, callback);
     }
   }, [roomName, currentTicket]);
 
   const handleCreateTicket = useCallback((newTicketName?: string) => {
     if (roomName && user && currentTicket) {
+      const updateObj: Record<string, any> = {};
+      // If any users did not vote, increment their consecutive misses
+      participants.forEach(({ id }) => {
+        if (!currentTicket.votes[id]) {
+          const currentConsecutiveMisses = participants.find((participant) => participant.id === id)?.consecutiveMisses || 0;
+          updateObj[`participants.${ id }.consecutiveMisses`] = currentConsecutiveMisses + 1;
+        }
+      });
+
       // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
-      const { average } = calculateAverage(currentTicket);
-      const { suggestedPoints } = calculateSuggestedPoints(currentTicket);
-      handleUpdateLatestTicket('averagePoints', average);
-      handleUpdateLatestTicket('suggestedPoints', suggestedPoints);
+      updateObj[`tickets.${currentTicket.id}.averagePoints`] = calculateAverage(currentTicket).average;
+      updateObj[`tickets.${currentTicket.id}.suggestedPoints`] = calculateSuggestedPoints(currentTicket).suggestedPoints;
 
       const newTicket: Ticket = {
         createdAt: Date.now(),
@@ -79,9 +95,11 @@ const useTickets = () => {
         newTicket.timerStartAt = Date.now();
       }
 
-      updateRoom(roomName, `tickets.${newTicket.id}`, newTicket);
+      updateObj[`tickets.${newTicket.id}`] = newTicket;
+
+      updateRoom(roomName, updateObj);
     }
-  }, [roomName, currentTicket]);
+  }, [roomName, currentTicket, participants]);
 
   return {
     areAllVotesCast,

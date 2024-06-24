@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
-import cloneDeep from 'lodash/cloneDeep';
 import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
@@ -62,8 +61,7 @@ let timeout: number | undefined;
 
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
-  const { roomData, user } = useStore(({ user, room }) => ({ user, roomData: room }));
-  const setRoom = useStore((state) => state.setRoom);
+  const { roomData, user, setRoom } = useStore(({ user, room, setRoom }) => ({ user, roomData: room, setRoom }));
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
   const [ isRoomOpen, setIsRoomOpen ] = useState(false);
   const [isRoomRendered, setIsRoomRendered] = useState(false);
@@ -106,7 +104,6 @@ const RoomSetup = () => {
         [initialTicket.id]: initialTicket,
       },
     };
-
     await createRoom(newRoom, (result) => {
       if (!result.error) {
         const resolvedRoom = result.data as RoomType;
@@ -138,28 +135,46 @@ const RoomSetup = () => {
       });
     } else if (!roomToJoin) {
       subscribedRoomRef.current?.();
-      navigate('/');
+      subscribedRoomRef.current = undefined;
       setIsRoomOpen(false);
+      setRoom(null);
+      navigate('/');
     }
 
-    if (
-      user && roomData && !Object.values(roomData.participants ?? {}).find((participant) => participant.id === user.id)
-    ) {
-      const selfAsParticipant: Participant = {
-        id: user.id,
-        name: user.name,
-        consecutiveMisses: 0,
-        inactive: false,
-        isHost: false,
-        joinedAt: Date.now(),
-      };
+    if (user && roomData) {
+      const userInRoom = Object
+        .values(roomData?.participants ?? {})
+        .find((participant) => participant.id === user?.id);
 
-      const updatedRoomData = cloneDeep(roomData);
-      updatedRoomData.participants[ selfAsParticipant.id ] = selfAsParticipant;
-      updateRoom(roomData.name, 'participants', updatedRoomData.participants);
+      // If the user is not in the room, add them
+      if (!userInRoom) {
+        const updateObj: Record<string, any> = {};
+        const selfAsParticipant: Participant = {
+          id: user.id,
+          name: user.name,
+          consecutiveMisses: 0,
+          inactive: false,
+          isHost: false,
+          joinedAt: Date.now(),
+        };
+
+        updateObj[`participants.${selfAsParticipant.id}`] = selfAsParticipant;
+
+        updateRoom(roomData.name, updateObj);
+      }
+
+      // If the user is in the room, update their presence
+      if (userInRoom && userInRoom.inactive) {
+        const updateObj: Record<string, any> = {};
+        updateObj[`participants.${user.id}.inactive`] = false;
+        updateObj[ `participants.${ user.id}.consecutiveMisses`] = 0;
+
+        updateRoom(roomData.name, updateObj);
+      }
     }
 
     return () => {
+      // Unsubscribe from the room
       subscribedRoomRef.current?.();
       subscribedRoomRef.current = undefined;
     };

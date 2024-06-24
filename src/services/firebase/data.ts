@@ -167,7 +167,7 @@ const createRoom = async (
     }
   } catch (error) {
     result.error = true;
-    result.message = `There was a problem creating ${ data.name } in the ${ PossibleFirebaseCollections.ROOMS} collection`;
+    result.message = `There was a problem creating ${ data.name } in the ${ PossibleFirebaseCollections.ROOMS } collection`, error;
   }
 
   callback(result);
@@ -205,11 +205,10 @@ const watchRoom = (roomName: string, callback: (arg: ResultType) => void) => {
 
 const updateRoom = async (
   room: string,
-  property: string,
-  data: any,
+  data: Record<string, any>,
   callback?: () => void,
 ): Promise<void> => {
-  if (!room || !property || (data === undefined || data === null)) {
+  if (!room || (data === undefined || data === null)) {
     return;
   }
 
@@ -218,16 +217,7 @@ const updateRoom = async (
 
     if (db) {
       const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
-
-      if (property.includes('.')) {
-        await updateDoc(roomRef, {
-          [property]: data,
-        });
-      } else {
-        await setDoc(roomRef, {
-          [property]: data,
-        }, { merge: true });
-      }
+      await updateDoc(roomRef, data);
     }
   } catch (error) {
     console.error(error);
