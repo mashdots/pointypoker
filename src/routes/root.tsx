@@ -5,6 +5,7 @@ import { Outlet, useOutletContext } from 'react-router-dom';
 import '../App.css';
 import { GlobalStyles } from '../utils/styles';
 import Header from '../components/header';
+import Menu from '../modules/menu';
 import { MobileProvider } from '../utils/mobile';
 import useTheme from '../utils/styles/colors';
 
@@ -54,9 +55,8 @@ const Root = (): JSX.Element => {
         <Container>
           <GlobalStyles/>
           <Header headerRef={headerRef} />
-          <ChildrenWrapper
-            referenceHeight={headerRef?.current?.clientHeight ?? 0}
-          >
+          <Menu topOffset={headerRef?.current?.clientHeight ?? 0} />
+          <ChildrenWrapper referenceHeight={headerRef?.current?.clientHeight ?? 0} >
             <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
           </ChildrenWrapper>
         </Container>

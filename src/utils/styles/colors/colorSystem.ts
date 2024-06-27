@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import * as colors from '@radix-ui/colors';
 
 import { VariationProperties as ColorAssociation } from '.';
@@ -121,12 +121,14 @@ const useTheme = () => {
     selectedTheme,
     themeMode,
     setTheme,
-    setThemeMode: setThemeModeAction,
+    setThemeMode,
   } = useStore(
     ({ theme: selectedTheme, themeMode, setTheme, setThemeMode }) => (
       { selectedTheme, themeMode, setTheme, setThemeMode }
     ),
   );
+
+  const setThemeModeFromEvent = (e: MediaQueryListEvent) => setThemeMode(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
 
   const theme = useMemo(
     () => {
@@ -140,7 +142,7 @@ const useTheme = () => {
 
       if (!themeMode) {
         finalThemeMode = darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
-        setThemeModeAction(darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
+        setThemeMode(darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
       }
 
       return buildTheme(themes[finalTheme as THEMES], finalThemeMode as THEME_MODES);
@@ -148,13 +150,14 @@ const useTheme = () => {
     [selectedTheme, themeMode],
   );
 
-  const setThemeMode = (mode: THEME_MODES) => {
-    setThemeModeAction(mode);
+  const toggleThemeMode = useCallback(() => {
+    const newMode = themeMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+    setThemeMode(newMode);
     darkModePreference.removeEventListener(
       'change',
-      e => setThemeModeAction(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT),
+      setThemeModeFromEvent,
     );
-  };
+  }, [themeMode]);
 
   /**
    * Connect the theme mode to the user's system preference.
@@ -162,13 +165,13 @@ const useTheme = () => {
   useEffect(() => {
     darkModePreference.addEventListener(
       'change',
-      e => setThemeModeAction(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT),
+      setThemeModeFromEvent,
     );
 
     return () => {
       darkModePreference.removeEventListener(
         'change',
-        e => setThemeModeAction(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT),
+        setThemeModeFromEvent,
       );
     };
   }, []);
@@ -177,7 +180,7 @@ const useTheme = () => {
     theme,
     themeMode,
     setTheme,
-    setThemeMode,
+    toggleThemeMode,
   };
 };
 

@@ -16,6 +16,8 @@ type Store = {
   setThemeMode: (arg: THEME_MODES) => void;
   isTitleInputFocused: boolean;
   setTitleInputFocus: (arg: boolean) => void;
+  isMenuOpen: boolean;
+  setIsMenuOpen: (arg: boolean) => void;
 }
 
 const useStore = create<Store>((set) => ({
@@ -31,6 +33,8 @@ const useStore = create<Store>((set) => ({
   setThemeMode: (newThemeMode) => set(() => ({ themeMode: newThemeMode })),
   isTitleInputFocused: false,
   setTitleInputFocus: (isFocused) => set(() => ({ isTitleInputFocused: isFocused })),
+  isMenuOpen: false,
+  setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
 }));
 
 export default useStore;
