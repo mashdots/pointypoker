@@ -4,6 +4,7 @@ import * as colors from '@radix-ui/colors';
 import { VariationProperties as ColorAssociation } from '.';
 import * as themes from './themes';
 import useStore from '../../store';
+import usePreferenceSync from '../../../modules/preferences/hooks';
 
 export enum THEMES {
   MAIN = 'main',
@@ -96,6 +97,7 @@ const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode
 const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
   const finalColorMode = ACTUAL_THEME_MODES[mode] as ActualThemeMode;
   const builtTheme = {} as Theme;
+
   for (const key in theme) {
     if (['primary', 'greyscale', 'success', 'warning', 'error', 'info'].includes(key) && theme[key]) {
       builtTheme[key] = buildColorAssociation(theme[key] as LightColorReference, finalColorMode);
@@ -105,7 +107,7 @@ const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
       }
 
     } else {
-      throw new Error(`Invalid theme reference. Check that your theme is properly structured. Invalid key: ${key}`);
+      throw new Error(`Invalid theme reference: ${key}. Check that your theme is properly structured.`);
     }
   }
 
@@ -117,14 +119,20 @@ const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
 const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 
 const useTheme = () => {
+  const { getPrefFromLocalStorage } = usePreferenceSync();
   const {
     selectedTheme,
     themeMode,
     setTheme,
     setThemeMode,
   } = useStore(
-    ({ theme: selectedTheme, themeMode, setTheme, setThemeMode }) => (
-      { selectedTheme, themeMode, setTheme, setThemeMode }
+    ({ preferences, setPreferences }) => (
+      {
+        selectedTheme: preferences?.theme,
+        themeMode: preferences?.themeMode,
+        setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
+        setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
+      }
     ),
   );
 
@@ -135,14 +143,29 @@ const useTheme = () => {
       let finalTheme = selectedTheme;
       let finalThemeMode = themeMode;
 
-      if (!selectedTheme) {
-        finalTheme = THEMES.MAIN;
+      if (!finalTheme) {
+        const storedTheme = getPrefFromLocalStorage('theme');
+        // If there is no theme in state, check localStorage
+        if (storedTheme) {
+          finalTheme = <THEMES> storedTheme;
+        } else {
+          // Otherwise, default to the main theme
+          finalTheme = THEMES.MAIN;
+        }
+
         setTheme(finalTheme);
       }
 
-      if (!themeMode) {
-        finalThemeMode = darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
-        setThemeMode(darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
+      if (!finalThemeMode) {
+        const storedThemeMode = getPrefFromLocalStorage('themeMode');
+        // If there is no theme mode in state, check localStorage
+        if (storedThemeMode) {
+          finalThemeMode = <THEME_MODES> storedThemeMode;
+        } else {
+          // Otherwise, default to the user's system preference
+          finalThemeMode = darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+        }
+        setThemeMode(finalThemeMode);
       }
 
       return buildTheme(themes[finalTheme as THEMES], finalThemeMode as THEME_MODES);
@@ -152,27 +175,19 @@ const useTheme = () => {
 
   const toggleThemeMode = useCallback(() => {
     const newMode = themeMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+
     setThemeMode(newMode);
-    darkModePreference.removeEventListener(
-      'change',
-      setThemeModeFromEvent,
-    );
+    darkModePreference.removeEventListener('change', setThemeModeFromEvent);
   }, [themeMode]);
 
   /**
    * Connect the theme mode to the user's system preference.
   */
   useEffect(() => {
-    darkModePreference.addEventListener(
-      'change',
-      setThemeModeFromEvent,
-    );
+    darkModePreference.addEventListener('change', setThemeModeFromEvent);
 
     return () => {
-      darkModePreference.removeEventListener(
-        'change',
-        setThemeModeFromEvent,
-      );
+      darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     };
   }, []);
 
