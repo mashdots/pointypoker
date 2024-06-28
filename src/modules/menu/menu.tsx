@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import debounce from 'lodash/debounce';
 
@@ -43,7 +43,8 @@ const Container = styled.div<ContainerProps>`
 let timer: number;
 
 const Menu = ({ topOffset }: Props) => {
-  const { isMenuOpen } = useStore(({ isMenuOpen }) => ({ isMenuOpen }));
+  const menuRef = useRef<HTMLDivElement>(null);
+  const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }));
   const [isMenuRendered, setIsMenuRendered] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [rightOffset, setRightOffset] = useState(0);
@@ -67,14 +68,23 @@ const Menu = ({ topOffset }: Props) => {
     };
   }, []);
 
+  // If the user clicks outside the menu, close it
+  const handleOutsideClick = useCallback((event: MouseEvent) => {
+    if (menuRef.current && !event.composedPath().includes(menuRef.current)) {
+      setIsMenuOpen(false);
+    }
+  }, [setIsMenuOpen, menuRef.current]);
+
   useEffect(() => {
     clearTimeout(timer);
     if (isMenuOpen) {
+      document.addEventListener('click', handleOutsideClick);
       setIsMenuRendered(true);
       timer = setTimeout(() => {
         setIsMenuVisible(true);
       }, 100);
     } else {
+      document.removeEventListener('click', handleOutsideClick);
       setIsMenuVisible(false);
       timer = setTimeout(() => {
         setIsMenuRendered(false);
@@ -82,12 +92,15 @@ const Menu = ({ topOffset }: Props) => {
     }
 
     return () => {
+      document.removeEventListener('click', handleOutsideClick);
       clearTimeout(timer);
     };
   }, [isMenuOpen]);
 
   return isMenuRendered ? (
     <Container
+      id="menu"
+      ref={menuRef}
       isVisible={isMenuVisible}
       top={topOffset}
       right={rightOffset}

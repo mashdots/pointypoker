@@ -112,6 +112,8 @@ const Toggle = ({
     <CheckBox
       type="checkbox"
       checked={isOn}
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onChange={() => {}}
     />
     <Slider isOn={isOn} id='slider' {...colorOverrides}>
       <Icon position='left'>
