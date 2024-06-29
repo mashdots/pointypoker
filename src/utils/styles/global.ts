@@ -15,7 +15,7 @@ const GlobalStyles = createGlobalStyle<ThemedProps>`
   }
 
   body {
-    ${({ theme }) => css`
+    ${({ theme }: ThemedProps) => css`
       background-color: ${ theme.greyscale.bg };
       color: ${ theme.primary.textLow };
     `}
@@ -23,7 +23,7 @@ const GlobalStyles = createGlobalStyle<ThemedProps>`
   }
 
   h1, input, button {
-    ${({ theme }) => css`
+    ${({ theme }: ThemedProps) => css`
       color: ${ theme.primary.textHigh };
     `}
     font-family: 'Nunito Sans', Tahoma, sans-serif;

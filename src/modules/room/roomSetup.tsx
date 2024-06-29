@@ -38,11 +38,12 @@ const ButtonContainer = styled.div`
 `;
 
 const SetupWrapper = styled.div<RoomControl>`
-  transition: all 250ms ease-out;
-  
   ${({ isRoomOpen }) => css`
-    opacity: ${isRoomOpen ? 0 : 1};
+    opacity: ${ isRoomOpen ? 0 : 1 };
   `}
+
+  transition: opacity 250ms ease-out;
+  text-align: center;
 `;
 
 const RoomWrapper = styled.div<RoomControl>`
@@ -206,7 +207,11 @@ const RoomSetup = () => {
     };
   }, [isRoomOpen, isRoomRendered]);
 
-  const setupComponent = isRoomRendered ? null : (
+  const conditionalComponent = isRoomRendered ? (
+    <RoomWrapper isRoomOpen={isRoomOpen}>
+      <RoomPresenter />
+    </RoomWrapper>
+  ) : (
     <SetupWrapper isRoomOpen={isRoomOpen}>
       <h1>ready to start?</h1>
       <ButtonContainer>
@@ -217,16 +222,9 @@ const RoomSetup = () => {
     </SetupWrapper>
   );
 
-  const roomComponent = isRoomRendered ? (
-    <RoomWrapper isRoomOpen={isRoomOpen}>
-      <RoomPresenter />
-    </RoomWrapper>
-  ) : null;
-
   return (
     <Container heightDiff={refHeight}>
-      {setupComponent}
-      {roomComponent}
+      {conditionalComponent}
     </Container>
   );
 };

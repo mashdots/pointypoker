@@ -4,6 +4,9 @@ import styled, { css } from 'styled-components';
 import Logo from './logo';
 import RoomControl from './roomControl';
 import UserControl from './userControl';
+import MenuIcon from '../../assets/icons/menu.svg?react';
+import useStore from '../../utils/store';
+import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 
 type Props = {
   headerRef: React.RefObject<HTMLDivElement>;
@@ -14,11 +17,15 @@ type SectionProps = {
   flex: number;
 }
 
+type MenuIconProps = {
+  isOpen: boolean;
+} & ThemedProps;
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
 `;
 
 const Section = styled.div<SectionProps>`
@@ -32,16 +39,54 @@ const Section = styled.div<SectionProps>`
   `}
 `;
 
-const Header = ({ headerRef }: Props) => (
-  <Wrapper ref={headerRef}>
-    <Section flex={6} align='left'>
-      <Logo />
-      <RoomControl />
-    </Section>
-    <Section flex={1} align='right'>
-      <UserControl />
-    </Section>
-  </Wrapper>
-);
+const MenuButton = styled(MenuIcon)<MenuIconProps>`
+  ${({ theme, isOpen }: MenuIconProps) => isOpen ? css`
+    > line {
+      stroke: ${theme.primary.textHigh};
+    }
+
+    > line:nth-child(3) {
+      transform: rotate(-45deg) translateY(124px) translateX(-120px);
+    }
+
+    > line:nth-child(2){
+      opacity: 0;
+    }
+
+    > line:nth-child(4) {
+      transform: rotate(45deg) translateY(-200px) translateX(64px);
+    }
+  ` : css`
+    > line {
+      stroke: ${theme.primary.textLow};
+    }
+    `}
+    
+  cursor: pointer;
+  margin-left: 1rem;
+  overflow: visible;
+  width: 2rem;
+
+  > line {
+    transition: all 300ms ease-out;
+  }
+`;
+
+const Header = ({ headerRef }: Props) => {
+  const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }));
+
+  return (
+    <Wrapper ref={headerRef}>
+      <Section flex={6} align='left'>
+        <Logo />
+        <RoomControl />
+      </Section>
+      <Section flex={1} align='right'>
+        <UserControl />
+        <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isOpen={isMenuOpen} />
+      </Section>
+    </Wrapper>
+  );
+};
 
 export default Header;
