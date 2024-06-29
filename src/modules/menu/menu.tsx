@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce';
 import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import useStore from '../../utils/store';
 import { ThemeModeToggleRow } from '../preferences';
+import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem } from './menuItems';
 
 type Props = {
   topOffset: number;
@@ -44,7 +45,7 @@ let timer: number;
 
 const Menu = ({ topOffset }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null);
-  const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }));
+  const { isMenuOpen, setIsMenuOpen, roomName } = useStore(({ isMenuOpen, setIsMenuOpen, room }) => ({ isMenuOpen, setIsMenuOpen, roomName: room?.name }));
   const [isMenuRendered, setIsMenuRendered] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [rightOffset, setRightOffset] = useState(0);
@@ -97,6 +98,21 @@ const Menu = ({ topOffset }: Props) => {
     };
   }, [isMenuOpen]);
 
+  const menuItems: Array<{ component: JSX.Element, shouldShow?: boolean }> = [
+    {
+      component: <PreferencesMenuItem />,
+      shouldShow: false,
+    },
+    {
+      component: <FeedbackMenuItem />,
+      shouldShow: false,
+    },
+    {
+      component: <LeaveRoomMenuItem />,
+      shouldShow: !!roomName,
+    },
+  ];
+
   return isMenuRendered ? (
     <Container
       id="menu"
@@ -106,6 +122,7 @@ const Menu = ({ topOffset }: Props) => {
       right={rightOffset}
     >
       <ThemeModeToggleRow />
+      {menuItems.map(({ component, shouldShow }) => shouldShow && component)}
     </Container>
   ) : null;
 };

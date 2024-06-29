@@ -1,15 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 
 import useStore from '../../utils/store';
 import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import DoorIcon from '../../assets/icons/door.svg?react';
-import { updateRoom } from '../../services/firebase';
-
-type NoticeProps = ThemedProps & {
-  shouldShow?: boolean;
-};
 
 const Wrapper = styled.div<{ appear: boolean }>`
   cursor: default;
@@ -38,71 +31,15 @@ const Separator = styled.div<ThemedProps & { appear: boolean }>`
   `}
 `;
 
-const ExitWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const Icon = styled(DoorIcon)<ThemedProps>`
-  width: 1.25rem;
-  margin-left: 0.5rem;
-  transition: all 300ms;
-
-  ${({ theme }) => css`
-    > line, path {
-      stroke: ${theme.primary.textHigh};
-    }
-    > circle {
-      fill: ${theme.primary.textHigh};
-    }
-  `}
-`;
-
-const Notice = styled.p<NoticeProps>`
-  margin-left: 0.5rem;
-  transition: opacity 250ms;
-  font-size: 0.75rem;
-
-  ${ ({ shouldShow = true, theme }) => css`
-    color: ${ theme.primary.textHigh };
-    opacity: ${ shouldShow ? 1 : 0 };
-  `}
-`;
-
 const RoomControl = () => {
-  const { isInRoom, roomName, room, clearRoom, user } = useStore((state) => ({
+  const { isInRoom, roomName } = useStore((state) => ({
     isInRoom: !!state.room,
     roomName: state?.room?.name,
-    room: state.room,
-    clearRoom: state.clearRoom,
-    user: state.user,
   }));
-  const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate();
-
-  const handleExitRoom = () => {
-    if (room && user && room.participants[user.id]) {
-      const updateObj: Record<string, any> = {};
-      updateObj[`participants.${user.id}.inactive`] = true;
-
-      updateRoom(room.name, updateObj);
-    }
-    navigate('/');
-    clearRoom();
-  };
-
   return (
     <Wrapper appear={isInRoom}>
       <Separator appear={isInRoom} />
       {roomName}
-      <ExitWrapper
-        onClick={() => isInRoom && handleExitRoom()}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <Icon /><Notice shouldShow={isHovered}>leave room</Notice>
-      </ExitWrapper>
     </Wrapper>
   );
 };
