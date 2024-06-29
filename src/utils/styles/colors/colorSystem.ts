@@ -125,13 +125,17 @@ const useTheme = () => {
     themeMode,
     setTheme,
     setThemeMode,
+    isThemeModeSetByUser,
+    setIsThemeModeSetByUser,
   } = useStore(
     ({ preferences, setPreferences }) => (
       {
         selectedTheme: preferences?.theme,
         themeMode: preferences?.themeMode,
+        isThemeModeSetByUser: preferences?.isThemeModeSetByUser,
         setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
         setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
+        setIsThemeModeSetByUser: (isIt: boolean) => setPreferences('isThemeModeSetByUser', isIt),
       }
     ),
   );
@@ -176,15 +180,20 @@ const useTheme = () => {
   const toggleThemeMode = useCallback(() => {
     const newMode = themeMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
 
-    setThemeMode(newMode);
     darkModePreference.removeEventListener('change', setThemeModeFromEvent);
-  }, [themeMode]);
+    setThemeMode(newMode);
+    setIsThemeModeSetByUser(true);
+  }, [themeMode, isThemeModeSetByUser]);
 
   /**
    * Connect the theme mode to the user's system preference.
   */
   useEffect(() => {
-    darkModePreference.addEventListener('change', setThemeModeFromEvent);
+    const storedIsThemeModeSetByUser = getPrefFromLocalStorage('isThemeModeSetByUser');
+
+    if (!storedIsThemeModeSetByUser) {
+      darkModePreference.addEventListener('change', setThemeModeFromEvent);
+    }
 
     return () => {
       darkModePreference.removeEventListener('change', setThemeModeFromEvent);

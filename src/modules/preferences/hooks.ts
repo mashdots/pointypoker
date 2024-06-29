@@ -7,6 +7,7 @@ export type PreferencesType = {
   [key: string]: string | boolean | number | THEMES | THEME_MODES | undefined;
   theme?: THEMES;
   themeMode?: THEME_MODES;
+  isThemeModeSetByUser?: boolean;
   name?: string;
 }
 
