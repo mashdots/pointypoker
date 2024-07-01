@@ -63,7 +63,10 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
 `;
 
 const VotingPanel = ({ gridConfig }: GridPanelProps) => {
-  const { user, isTitleInputFocused } = useStore(({ user, isTitleInputFocused }) => ({ user, isTitleInputFocused }));
+  const { user, isModalOpen, isTitleInputFocused } = useStore(
+    ({ user, isTitleInputFocused, currentModal }) => (
+      { user, isTitleInputFocused, isModalOpen: !!currentModal }
+    ));
   const { currentTicket, handleUpdateLatestTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
   const voteOptions = getPointOptions(currentTicket?.pointOptions);
@@ -85,7 +88,7 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
     ));
 
   const handleKeyPress = useCallback(({ key }: KeyboardEvent) => {
-    if (currentTicket && !isTitleInputFocused) {
+    if (currentTicket && !isTitleInputFocused && !isModalOpen) {
       if (voteOptions.sequence.includes(parseInt(key))) {
         handleUpdateLatestTicket(`votes.${user?.id}`, parseInt(key));
       }
@@ -93,7 +96,7 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
         handleUpdateLatestTicket(`votes.${user?.id}`, key);
       }
     }
-  }, [ currentTicket, voteOptions, isTitleInputFocused ]);
+  }, [ currentTicket, isModalOpen, isTitleInputFocused, voteOptions ]);
 
   useEffect(() => {
     if (currentTicket) {

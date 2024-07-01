@@ -4,6 +4,8 @@ import styled, { css } from 'styled-components';
 import SettingsIcon from '../../../assets/icons/settings.svg?react';
 import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 import MenuItem from './menuItem';
+import useStore from '../../../utils/store';
+import { MODAL_TYPES } from '../../modal';
 
 
 const Icon = styled(SettingsIcon)<ThemedProps>`
@@ -18,10 +20,13 @@ const Icon = styled(SettingsIcon)<ThemedProps>`
 `;
 
 const PreferencesMenuItem = () => {
+  const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.PREFERENCES));
+
   return (
     <MenuItem
       uniqueElement={<Icon />}
       text='preferences'
+      onClick={openModal}
     />
   );
 

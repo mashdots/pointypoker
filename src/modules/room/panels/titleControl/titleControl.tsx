@@ -5,7 +5,7 @@ import TitleInput from './titleInput';
 import Button from '../../../../components/common/button';
 import { useTickets } from '../../hooks';
 import PlusIcon from '../../../../assets/icons/plus.svg?react';
-import { useMobile } from '../../../../utils/mobile';
+import { useMobile } from '../../../../utils/hooks/mobile';
 
 const Wrapper = styled.div`
   display: flex;

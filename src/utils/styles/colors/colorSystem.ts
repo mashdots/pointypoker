@@ -4,7 +4,6 @@ import * as colors from '@radix-ui/colors';
 import { VariationProperties as ColorAssociation } from '.';
 import * as themes from './themes';
 import useStore from '../../store';
-import usePreferenceSync from '../../../modules/preferences/hooks';
 
 export enum THEMES {
   MAIN = 'main',
@@ -119,7 +118,6 @@ const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
 const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 
 const useTheme = () => {
-  const { getPrefFromLocalStorage } = usePreferenceSync();
   const {
     selectedTheme,
     themeMode,
@@ -144,35 +142,10 @@ const useTheme = () => {
 
   const theme = useMemo(
     () => {
-      let finalTheme = selectedTheme;
-      let finalThemeMode = themeMode;
+      const finalTheme = selectedTheme ? selectedTheme : THEMES.MAIN;
+      const finalThemeMode = themeMode ? themeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
 
-      if (!finalTheme) {
-        const storedTheme = getPrefFromLocalStorage('theme');
-        // If there is no theme in state, check localStorage
-        if (storedTheme) {
-          finalTheme = <THEMES> storedTheme;
-        } else {
-          // Otherwise, default to the main theme
-          finalTheme = THEMES.MAIN;
-        }
-
-        setTheme(finalTheme);
-      }
-
-      if (!finalThemeMode) {
-        const storedThemeMode = getPrefFromLocalStorage('themeMode');
-        // If there is no theme mode in state, check localStorage
-        if (storedThemeMode) {
-          finalThemeMode = <THEME_MODES> storedThemeMode;
-        } else {
-          // Otherwise, default to the user's system preference
-          finalThemeMode = darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
-        }
-        setThemeMode(finalThemeMode);
-      }
-
-      return buildTheme(themes[finalTheme as THEMES], finalThemeMode as THEME_MODES);
+      return buildTheme(themes[finalTheme], finalThemeMode);
     },
     [selectedTheme, themeMode],
   );
@@ -183,22 +156,20 @@ const useTheme = () => {
     darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     setThemeMode(newMode);
     setIsThemeModeSetByUser(true);
-  }, [themeMode, isThemeModeSetByUser]);
+  }, [themeMode]);
 
   /**
    * Connect the theme mode to the user's system preference.
   */
   useEffect(() => {
-    const storedIsThemeModeSetByUser = getPrefFromLocalStorage('isThemeModeSetByUser');
-
-    if (!storedIsThemeModeSetByUser) {
+    if (!isThemeModeSetByUser) {
       darkModePreference.addEventListener('change', setThemeModeFromEvent);
     }
 
     return () => {
       darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     };
-  }, []);
+  }, [isThemeModeSetByUser]);
 
   return {
     theme,

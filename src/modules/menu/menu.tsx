@@ -78,15 +78,18 @@ const Menu = ({ topOffset }: Props) => {
 
   useEffect(() => {
     clearTimeout(timer);
+
     if (isMenuOpen) {
       document.addEventListener('click', handleOutsideClick);
       setIsMenuRendered(true);
+
       timer = setTimeout(() => {
         setIsMenuVisible(true);
       }, 100);
     } else {
       document.removeEventListener('click', handleOutsideClick);
       setIsMenuVisible(false);
+
       timer = setTimeout(() => {
         setIsMenuRendered(false);
       }, 300);
@@ -101,11 +104,10 @@ const Menu = ({ topOffset }: Props) => {
   const menuItems: Array<{ component: JSX.Element, shouldShow?: boolean }> = [
     {
       component: <PreferencesMenuItem />,
-      shouldShow: false,
+      shouldShow: true,
     },
     {
       component: <FeedbackMenuItem />,
-      shouldShow: false,
     },
     {
       component: <LeaveRoomMenuItem />,
