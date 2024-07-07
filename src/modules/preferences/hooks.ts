@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
-import { THEMES, THEME_MODES } from '../../utils/styles/colors/colorSystem';
+import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '../../utils/styles/colors/colorSystem';
 import useStore from '../../utils/store';
 
 export type PreferencesType = {
   [key: string]: string | boolean | number | THEMES | THEME_MODES | undefined;
   theme?: THEMES;
   themeMode?: THEME_MODES;
-  isThemeModeSetByUser?: boolean;
+  themeModeController?: THEME_MODE_CONTROLLER;
   name?: string;
 }
 
@@ -43,10 +43,7 @@ const usePreferenceSync = () => {
     for (const key in storedPreferences) {
       try {
         pref = JSON.parse(storedPreferences[key]);
-
-        if (pref) {
-          setPref(key, pref);
-        }
+        setPref(key, pref);
       } catch (error) {
         console.error('Error parsing stored preference:', key, storedPreferences[key]);
       }

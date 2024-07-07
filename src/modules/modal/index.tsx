@@ -10,6 +10,7 @@ import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import useStore from '../../utils/store';
 import { useMobile } from '../../utils/hooks/mobile';
 import PlusIcon from '../../assets/icons/plus.svg?react';
+import { PreferencesModal } from '../preferences';
 
 export enum MODAL_TYPES {
   FEEDBACK,
@@ -158,7 +159,7 @@ const Modal = () => {
         modalContent = {
           title: 'Preferences',
           subtitle: 'Changes save automatically',
-          contents: <div>Preferences</div>,
+          contents: <PreferencesModal />,
         };
         break;
       default:
@@ -202,7 +203,7 @@ const Modal = () => {
             <Title>{renderedModal.title}</Title>
             <Subtitle>{renderedModal?.subtitle}</Subtitle>
           </TitlesWrapper>
-          <CloseIcon />
+          <CloseIcon onClick={closeModal} />
         </HeaderWrapper>
         {renderedModal.contents}
       </Container>

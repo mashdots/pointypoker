@@ -6,7 +6,7 @@ import * as themes from './themes';
 import useStore from '../../store';
 
 export enum THEMES {
-  MAIN = 'main',
+  WHATEVER = 'whatever',
   BLUEBERRY = 'blueberry',
   DIRT = 'dirt',
   GRAPE = 'grape',
@@ -18,6 +18,11 @@ export enum THEMES {
 export enum THEME_MODES {
   DARK = 'dark',
   LIGHT = 'light',
+}
+
+export enum THEME_MODE_CONTROLLER {
+  SYSTEM = 'system',
+  USER = 'user',
 }
 
 type ActualThemeMode = '' | 'Dark'
@@ -61,6 +66,11 @@ export type Theme = {
 
 export type ThemedProps = {
   theme: Theme;
+};
+
+export type ThemeOption = {
+  theme: string,
+  color: string;
 };
 
 const variationPropertiesList = [
@@ -123,17 +133,17 @@ const useTheme = () => {
     themeMode,
     setTheme,
     setThemeMode,
-    isThemeModeSetByUser,
+    isThemeModeSetBySystem,
     setIsThemeModeSetByUser,
   } = useStore(
     ({ preferences, setPreferences }) => (
       {
         selectedTheme: preferences?.theme,
         themeMode: preferences?.themeMode,
-        isThemeModeSetByUser: preferences?.isThemeModeSetByUser,
+        isThemeModeSetBySystem: preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM,
         setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
         setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
-        setIsThemeModeSetByUser: (isIt: boolean) => setPreferences('isThemeModeSetByUser', isIt),
+        setIsThemeModeSetByUser: () => setPreferences('themeModeController', THEME_MODE_CONTROLLER.USER),
       }
     ),
   );
@@ -142,7 +152,7 @@ const useTheme = () => {
 
   const theme = useMemo(
     () => {
-      const finalTheme = selectedTheme ? selectedTheme : THEMES.MAIN;
+      const finalTheme = selectedTheme ? selectedTheme : THEMES.WHATEVER;
       const finalThemeMode = themeMode ? themeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
 
       return buildTheme(themes[finalTheme], finalThemeMode);
@@ -150,32 +160,46 @@ const useTheme = () => {
     [selectedTheme, themeMode],
   );
 
+  const themeOptions = useMemo(
+    () => Object.values(THEMES).map((theme) => {
+      const finalThemeMode = themeMode ? themeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+      const colors = buildTheme(themes[theme], finalThemeMode);
+      return {
+        theme,
+        color: colors.primary.solidBg,
+      };
+    }),
+    [themeMode],
+  );
+
   const toggleThemeMode = useCallback(() => {
     const newMode = themeMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
 
     darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     setThemeMode(newMode);
-    setIsThemeModeSetByUser(true);
+    setIsThemeModeSetByUser();
   }, [themeMode]);
 
   /**
    * Connect the theme mode to the user's system preference.
   */
   useEffect(() => {
-    if (!isThemeModeSetByUser) {
+    if (isThemeModeSetBySystem) {
+      setThemeModeFromEvent(darkModePreference as unknown as MediaQueryListEvent);
       darkModePreference.addEventListener('change', setThemeModeFromEvent);
     }
 
     return () => {
       darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     };
-  }, [isThemeModeSetByUser]);
+  }, [isThemeModeSetBySystem]);
 
   return {
     theme,
     themeMode,
     setTheme,
     toggleThemeMode,
+    themeOptions,
   };
 };
 

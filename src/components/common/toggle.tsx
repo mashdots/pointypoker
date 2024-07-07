@@ -54,7 +54,7 @@ const Wrapper = styled.div<ColorOverrides & { position?: 'left' | 'right' }>`
 const Slider = styled.div <Pick<Props, 'isOn'> & ColorOverrides>`
   ${({ isOn, offBg, theme }: Pick<Props, 'isOn'> & ThemedProps & ColorOverrides) => css`
     background-color: ${ offBg ? get(theme, offBg) : theme.primary.componentBg };
-    border: 1px solid ${ theme.primary.borderElement };
+    border: 1px solid ${ isOn ? theme.primary.borderElement : theme.primary.textHigh };
 
     > span {
       transition: transform 0.25s cubic-bezier(.54, 1.60, .5, 1);
