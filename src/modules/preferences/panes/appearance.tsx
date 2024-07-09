@@ -6,6 +6,7 @@ import Icon from '../../../assets/icons/settings-appearance.svg?react';
 import useTheme, { ThemeOption as ThemeOptionType, ThemedProps } from '../../../utils/styles/colors/colorSystem';
 import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
 import useStore from '../../../utils/store';
+import { Separator, SettingsRow, VerticalContainer } from './common';
 
 type ThemeOptionWrapperProps = {
   isActive: boolean;
@@ -13,30 +14,9 @@ type ThemeOptionWrapperProps = {
   onClick: () => void
 } & ThemedProps;
 
-const Separator = styled.span`
-  ${({ theme }: ThemedProps) => css`
-    background-color: ${theme.primary.border};
-  `}
-
-    display: inline-block;
-    height: 2px;
-    width: 100%;
-`;
-
-const SettingsRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-`;
-
 const Control = styled.span`
   display: flex;
   align-items: center;
-`;
-
-const VerticalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 
 const ThemeOptionContainer = styled.div`
@@ -103,17 +83,23 @@ const AppearancePreferences = () => {
     <div>
       <h2>Appearance</h2>
       <SettingsRow>
-        <label>Color mode</label>
+        <label>
+          Color mode
+        </label>
         <Control>{themeMode}&nbsp;&nbsp;<ThemeModeToggle /></Control>
       </SettingsRow>
       <SettingsRow>
-        <label>Sync color mode with system</label>
+        <label>
+          Sync color mode with system
+        </label>
         <Control><SystemModeCheckbox /></Control>
       </SettingsRow>
       <Separator />
       <SettingsRow>
         <VerticalContainer>
-          <label>Theme</label>
+          <label>
+            Theme
+          </label>
           <ThemeOptionContainer>
             {themeOptions.map(
               (option) => (

@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { UserSetup, useAuth } from '../user';
+import { UserSetup } from '../user';
 import { RoomSetup } from '../room';
+import useStore from '../../utils/store';
 
 type WrapperProps = {
   shouldShow: boolean;
@@ -32,7 +33,7 @@ const Wrapper = styled.div<WrapperProps>`
  * to set up the user, set up the room, or facilitate the room.
  */
 const Switcher = () => {
-  const { user } = useAuth();
+  const user = useStore(({ preferences }) => preferences?.user);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [childComponent, setChildComponent] = useState<React.ReactNode>(null);
 

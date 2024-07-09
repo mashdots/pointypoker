@@ -130,7 +130,7 @@ const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 const useTheme = () => {
   const {
     selectedTheme,
-    themeMode,
+    selectedThemeMode,
     setTheme,
     setThemeMode,
     isThemeModeSetBySystem,
@@ -139,8 +139,8 @@ const useTheme = () => {
     ({ preferences, setPreferences }) => (
       {
         selectedTheme: preferences?.theme,
-        themeMode: preferences?.themeMode,
-        isThemeModeSetBySystem: preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM,
+        selectedThemeMode: preferences?.themeMode,
+        isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
         setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
         setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
         setIsThemeModeSetByUser: () => setPreferences('themeModeController', THEME_MODE_CONTROLLER.USER),
@@ -150,20 +150,23 @@ const useTheme = () => {
 
   const setThemeModeFromEvent = (e: MediaQueryListEvent) => setThemeMode(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
 
+  const themeMode = useMemo(
+    () => selectedThemeMode ? selectedThemeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT,
+    [selectedThemeMode],
+  );
+
   const theme = useMemo(
     () => {
       const finalTheme = selectedTheme ? selectedTheme : THEMES.WHATEVER;
-      const finalThemeMode = themeMode ? themeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
 
-      return buildTheme(themes[finalTheme], finalThemeMode);
+      return buildTheme(themes[ finalTheme ], themeMode);
     },
     [selectedTheme, themeMode],
   );
 
   const themeOptions = useMemo(
     () => Object.values(THEMES).map((theme) => {
-      const finalThemeMode = themeMode ? themeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT;
-      const colors = buildTheme(themes[theme], finalThemeMode);
+      const colors = buildTheme(themes[ theme ], themeMode);
       return {
         theme,
         color: colors.primary.solidBg,

@@ -44,7 +44,7 @@ export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) =
 
   return (
     <Toggle
-      isOn={themeMode === THEME_MODES.DARK}
+      isOn={themeMode !== THEME_MODES.LIGHT}
       handleToggle={toggleThemeMode}
       onIcon={<DarkMode />}
       offIcon={<LightMode />}
@@ -71,7 +71,7 @@ const ThemeModeToggleRow = () => {
 
 export const SystemModeCheckbox = () => {
   const { isThemeModeSetBySystem, setThemeModeController } = useStore(({ preferences, setPreferences }) => ({
-    isThemeModeSetBySystem: preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM,
+    isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
     setThemeModeController: () => setPreferences(
       'themeModeController',
       preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM

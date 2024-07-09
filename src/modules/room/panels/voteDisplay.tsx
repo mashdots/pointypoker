@@ -170,7 +170,7 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
 };
 
 const VoteDisplay = (props: GridPanelProps) => {
-  const user = useStore(({ user }) => user);
+  const user = useStore(({ preferences }) => preferences?.user);
   const { shouldShowVotes, voteData, handleUpdateLatestTicket } = useTickets();
 
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');

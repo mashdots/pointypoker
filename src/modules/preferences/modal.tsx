@@ -31,6 +31,7 @@ const Wrapper = styled.div<MobileProps>`
 
   display: flex;
   width: 100%;
+  overflow: hidden;
 `;
 
 const CategoryList = styled.ul<MobileProps>`
@@ -48,12 +49,20 @@ const CategoryList = styled.ul<MobileProps>`
   margin: 0;
 `;
 
-const SettingsDisplay = styled.div`
+const SettingsContainer = styled.div`
   display: flex;
+  flex: 4;
+  overflow: auto;
+  width: 100%;
+
+  > div {
+    width: 100%;
+  }
+`;
+
+const SettingsDisplay = styled.div`
   flex-direction: column;
   padding: 1rem;
-  flex: 4;
-  overflow: scroll;
 `;
 
 const PreferencesModal = () => {
@@ -83,9 +92,11 @@ const PreferencesModal = () => {
           )
         ))}
       </CategoryList>
-      <SettingsDisplay>
-        {panes[currentCategory].pane}
-      </SettingsDisplay>
+      <SettingsContainer>
+        <SettingsDisplay>
+          {panes[currentCategory].pane}
+        </SettingsDisplay>
+      </SettingsContainer>
     </Wrapper>
   );
 };

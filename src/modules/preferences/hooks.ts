@@ -2,13 +2,15 @@ import { useEffect } from 'react';
 
 import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '../../utils/styles/colors/colorSystem';
 import useStore from '../../utils/store';
+import { User } from '../../types';
 
 export type PreferencesType = {
-  [key: string]: string | boolean | number | THEMES | THEME_MODES | undefined;
+  [key: string]: string | boolean | number | THEMES | THEME_MODES | User | undefined | null;
   theme?: THEMES;
   themeMode?: THEME_MODES;
   themeModeController?: THEME_MODE_CONTROLLER;
   name?: string;
+  user?: User | null;
 }
 
 const getPrefFromLocalStorage = (key: string): string | boolean | number | THEMES | THEME_MODES | undefined => {

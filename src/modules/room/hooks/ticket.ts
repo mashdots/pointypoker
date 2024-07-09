@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Room, Ticket } from '../../../types';
+import { Ticket } from '../../../types';
 import { VoteDisplayProps } from '../panels/voteDisplay';
 import { updateRoom } from '../../../services/firebase';
 import useStore from '../../../utils/store';
@@ -13,9 +13,9 @@ const useTickets = () => {
     roomName,
     tickets,
     user,
-  } = useStore(({ user, room }) => (
+  } = useStore(({ preferences, room }) => (
     {
-      user,
+      user: preferences?.user,
       participants: Object.values(room?.participants || {}),
       tickets: room?.tickets ?? {},
       roomName: room?.name,

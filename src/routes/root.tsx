@@ -10,6 +10,7 @@ import { MobileProvider } from '../utils/hooks/mobile';
 import useTheme from '../utils/styles/colors';
 import Modal from '../modules/modal';
 import usePreferenceSync from '../modules/preferences/hooks';
+import { useAuth } from '../modules/user';
 
 type ContextType = {
   refHeight: number;
@@ -33,6 +34,7 @@ const ChildrenWrapper = styled.div<{ referenceHeight: number }>`
 
 const Root = (): JSX.Element => {
   usePreferenceSync();
+  useAuth();
   const { theme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerHeight = useMemo(() => headerRef?.current?.clientHeight ?? 0, [headerRef?.current]);

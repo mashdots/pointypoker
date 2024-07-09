@@ -12,41 +12,36 @@ type Props = {
   onBlur?: () => void;
   onChange: (arg: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
-  placeHolder: string;
+  placeHolder?: string;
   value: string;
+  size?: 'small' | 'medium' | 'large';
 }
 
 type InputProps = ThemedProps & {
   align: string;
   isLoading: boolean;
+  size: number;
 }
-
-const FormWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 1rem;
-`;
 
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
+  padding: 1rem;
 `;
 
 const StyledInput = styled.input<InputProps>`
-  ${({ align, theme }) => css`
+  ${({ align, size, theme }) => css`
     background-color: ${ theme.primary.border };
     border-color: ${ theme.primary.border};
     color: ${ theme.primary.textLow };
     text-align: ${align};
+    font-size: ${size}rem;
   `}
 
   padding: 0.5rem 1rem;
   margin-bottom: 2px;
-  font-size: 1.5rem;
   width: 100%;
 
   /* These prevent the awful highlight around the text input */
@@ -83,8 +78,10 @@ const TextInput = ({
   placeHolder,
   onFocus,
   onBlur,
+  size,
 }: Props) => {
   let inputAlign;
+  let inputSize;
 
   switch (alignment) {
   case 'center':
@@ -99,29 +96,41 @@ const TextInput = ({
     break;
   }
 
+  switch (size) {
+  case 'small':
+    inputSize = 1;
+    break;
+  case 'large':
+    inputSize = 2;
+    break;
+  case 'medium':
+  default:
+    inputSize = 1.5;
+    break;
+  }
+
   return (
-    <FormWrapper>
-      <InputWrapper>
-        {icon}
-        <StyledInput
-          data-1pignore="true"
-          autoComplete='off'
-          ref={inputRef}
-          type='text'
-          align={inputAlign}
-          placeholder={placeHolder}
-          value={value ?? ''}
-          onChange={onChange}
-          onFocus={() => {
-            onFocus?.();
-          }}
-          onBlur={() => {
-            onBlur?.();
-          }}
-          isLoading={false}
-        />
-      </InputWrapper>
-    </FormWrapper>
+    <InputWrapper>
+      {icon}
+      <StyledInput
+        data-1pignore="true"
+        autoComplete='off'
+        ref={inputRef}
+        type='text'
+        align={inputAlign}
+        placeholder={placeHolder}
+        value={value ?? ''}
+        onChange={onChange}
+        onFocus={() => {
+          onFocus?.();
+        }}
+        onBlur={() => {
+          onBlur?.();
+        }}
+        isLoading={false}
+        size={inputSize}
+      />
+    </InputWrapper>
   );
 };
 

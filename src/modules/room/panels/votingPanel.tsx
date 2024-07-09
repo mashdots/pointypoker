@@ -64,8 +64,8 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
 
 const VotingPanel = ({ gridConfig }: GridPanelProps) => {
   const { user, isModalOpen, isTitleInputFocused } = useStore(
-    ({ user, isTitleInputFocused, currentModal }) => (
-      { user, isTitleInputFocused, isModalOpen: !!currentModal }
+    ({ preferences, isTitleInputFocused, currentModal }) => (
+      { user: preferences?.user, isTitleInputFocused, isModalOpen: !!currentModal }
     ));
   const { currentTicket, handleUpdateLatestTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;

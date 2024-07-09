@@ -62,7 +62,13 @@ let timeout: number | undefined;
 
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
-  const { roomData, user, setRoom } = useStore(({ user, room, setRoom }) => ({ user, roomData: room, setRoom }));
+  const { roomData, user, setRoom } = useStore(
+    ({ preferences, room, setRoom }) => ({
+      user: preferences?.user,
+      roomData: room,
+      setRoom,
+    }),
+  );
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
   const [ isRoomOpen, setIsRoomOpen ] = useState(false);
   const [isRoomRendered, setIsRoomRendered] = useState(false);
@@ -105,6 +111,7 @@ const RoomSetup = () => {
         [initialTicket.id]: initialTicket,
       },
     };
+
     await createRoom(newRoom, (result) => {
       if (!result.error) {
         const resolvedRoom = result.data as RoomType;
@@ -168,7 +175,7 @@ const RoomSetup = () => {
       if (userInRoom && userInRoom.inactive) {
         const updateObj: Record<string, any> = {};
         updateObj[`participants.${user.id}.inactive`] = false;
-        updateObj[ `participants.${ user.id}.consecutiveMisses`] = 0;
+        updateObj[`participants.${user.id}.consecutiveMisses`] = 0;
 
         updateRoom(roomData.name, updateObj);
       }
