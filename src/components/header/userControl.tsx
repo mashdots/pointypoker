@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import { useAuth } from '../../modules/user';
+import useStore from '../../utils/store';
 
 const Wrapper = styled.div<ThemedProps>`
   display: flex;
@@ -11,7 +11,7 @@ const Wrapper = styled.div<ThemedProps>`
 `;
 
 const UserControl = () => {
-  const { user } = useAuth();
+  const user = useStore(({ preferences }) => preferences?.user);
 
   return <Wrapper>{user?.name}</Wrapper>;
 };

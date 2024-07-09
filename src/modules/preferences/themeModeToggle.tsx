@@ -3,9 +3,10 @@ import styled, { css } from 'styled-components';
 
 import Toggle from '../../components/common/toggle';
 import useTheme from '../../utils/styles/colors';
-import { THEME_MODES, ThemedProps } from '../../utils/styles/colors/colorSystem';
+import { THEME_MODE_CONTROLLER, THEME_MODES, ThemedProps } from '../../utils/styles/colors/colorSystem';
 import DarkModeIcon from '../../assets/icons/dark-mode-fill.svg?react';
 import LightModeIcon from '../../assets/icons/light-mode-fill.svg?react';
+import useStore from '../../utils/store';
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ const LightMode = styled(LightModeIcon)`
   width: 1rem;
 `;
 
-const ThemeModeToggle = () => {
+export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) => {
   const { themeMode, toggleThemeMode } = useTheme();
   const colorOverrides = {
     onBg: 'success.solidBg',
@@ -43,17 +44,17 @@ const ThemeModeToggle = () => {
 
   return (
     <Toggle
-      isOn={themeMode === THEME_MODES.DARK}
+      isOn={themeMode !== THEME_MODES.LIGHT}
       handleToggle={toggleThemeMode}
       onIcon={<DarkMode />}
       offIcon={<LightMode />}
       colorOverrides={colorOverrides}
-      position='left'
+      position={position}
     />
   );
 };
 
-export const ThemeModeToggleRow = () => {
+const ThemeModeToggleRow = () => {
   const { themeMode } = useTheme();
 
   const modeLabel = themeMode === THEME_MODES.DARK ? 'dark' : 'light';
@@ -61,10 +62,26 @@ export const ThemeModeToggleRow = () => {
   return (
     <Wrapper>
       <ToggleWrapper>
-        <ThemeModeToggle />
+        <ThemeModeToggle position='left' />
       </ToggleWrapper>
       {modeLabel} mode
     </Wrapper>
+  );
+};
+
+export const SystemModeCheckbox = () => {
+  const { isThemeModeSetBySystem, setThemeModeController } = useStore(({ preferences, setPreferences }) => ({
+    isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
+    setThemeModeController: () => setPreferences(
+      'themeModeController',
+      preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
+        ? THEME_MODE_CONTROLLER.USER
+        : THEME_MODE_CONTROLLER.SYSTEM,
+    ),
+  }));
+
+  return (
+    <Toggle isOn={isThemeModeSetBySystem} handleToggle={setThemeModeController} position='right' />
   );
 };
 

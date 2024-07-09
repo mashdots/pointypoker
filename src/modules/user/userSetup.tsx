@@ -14,6 +14,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  > form {
+    width: 100%;
+  }
 `;
 
 const Notice = styled.p<NoticeProps>`
@@ -40,8 +44,8 @@ const UserSetup = () => {
   return (
     <Wrapper id='user-setup-show'>
       <h1>what do we call you?</h1>
-      <Notice>this is stored in a cookie so you&apos;re not asked every time</Notice>
-      <form onSubmit={handleSubmit} autoComplete='off'>
+      <Notice>this is stored locally so you&apos;re not asked every time</Notice>
+      <form onSubmit={handleSubmit} autoComplete='off' role="user name">
         <TextInput
           alignment='center'
           id='name'

@@ -4,7 +4,7 @@ import { PointOptions, Ticket, Vote } from '../../types';
 
 enum PointingTypes {
   tshirt = 'T-Shirt',
-  fibonacci = 'Limited Fibonacci',
+  fibonacci = 'Fibonacci',
 }
 
 type CalculationResult = {

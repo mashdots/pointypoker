@@ -28,7 +28,7 @@ const LeaveRoomMenuItem = () => {
     roomName: state?.room?.name,
     room: state.room,
     clearRoom: state.clearRoom,
-    user: state.user,
+    user: state.preferences?.user,
   }));
   const navigate = useNavigate();
 

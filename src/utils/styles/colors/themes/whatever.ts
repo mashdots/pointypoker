@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
 import { ThemeReference } from '../colorSystem';
 
-const main: ThemeReference = {
+const whatever: ThemeReference = {
   primary: THEME_COLORS.GRAY,
   greyscale: THEME_COLORS.GRAY,
   success: THEME_COLORS.GREEN,
@@ -10,4 +10,4 @@ const main: ThemeReference = {
   info: THEME_COLORS.BLUE,
 };
 
-export default main;
+export default whatever;

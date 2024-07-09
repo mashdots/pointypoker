@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { getCookie, setCookie, clearCookie } from '../../utils/cookies';
+
+import { clearCookie } from '../../utils/cookies';
 import useStore from '../../utils/store';
 import { createUserPayload } from '../../utils';
 import {
@@ -7,18 +8,19 @@ import {
   signIn as signInFB,
   signOut as signOutFB,
 } from '../../services/firebase/auth';
+import { User } from '../../types';
 
 
 const useAuth = () => {
   const { setUser, user, clearUser, clearRoom } = useStore(
-    ({ setUser, user, clearUser, clearRoom }) => ({
-      setUser,
-      user,
-      clearUser,
+    ({ clearRoom, preferences, setPreferences }) => ({
+      setUser: (newUser: User) => setPreferences('user', { ...newUser }),
+      user: preferences?.user,
+      clearUser: () => setPreferences('user', null),
       clearRoom,
     }),
   );
-  const userCookie = getCookie();
+  // const userCookie = getCookie();
 
   const signIn = async (newUserName: string) => {
     const payload = createUserPayload(newUserName);
@@ -26,8 +28,7 @@ const useAuth = () => {
     try {
       const anonUser = await signInFB();
       payload.id = anonUser.userId as string;
-      setCookie(payload);
-      setUser(payload);
+      setUser(payload as User);
     } catch (error) {
       console.error(error);
     }
@@ -38,17 +39,15 @@ const useAuth = () => {
       signOutFB();
       clearUser();
       clearRoom();
-      clearCookie();
     } catch (e) {
       console.error(e);
     }
   };
 
   useEffect(() => {
-    if (userCookie && !user) {
-      getAuthClient();
-      setUser(userCookie);
-    }
+    getAuthClient();
+    // Deprecated - Legacy user name management.
+    clearCookie();
   }, [user]);
 
   return {

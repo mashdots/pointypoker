@@ -45,7 +45,16 @@ let timer: number;
 
 const Menu = ({ topOffset }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null);
-  const { isMenuOpen, setIsMenuOpen, roomName } = useStore(({ isMenuOpen, setIsMenuOpen, room }) => ({ isMenuOpen, setIsMenuOpen, roomName: room?.name }));
+  const { isAuthed, isMenuOpen, setIsMenuOpen, roomName } = useStore(
+    ({ isMenuOpen, setIsMenuOpen, room, preferences }) => (
+      {
+        isAuthed: !!preferences?.user,
+        isMenuOpen,
+        setIsMenuOpen,
+        roomName: room?.name,
+      }
+    ),
+  );
   const [isMenuRendered, setIsMenuRendered] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [rightOffset, setRightOffset] = useState(0);
@@ -78,15 +87,18 @@ const Menu = ({ topOffset }: Props) => {
 
   useEffect(() => {
     clearTimeout(timer);
+
     if (isMenuOpen) {
       document.addEventListener('click', handleOutsideClick);
       setIsMenuRendered(true);
+
       timer = setTimeout(() => {
         setIsMenuVisible(true);
       }, 100);
     } else {
       document.removeEventListener('click', handleOutsideClick);
       setIsMenuVisible(false);
+
       timer = setTimeout(() => {
         setIsMenuRendered(false);
       }, 300);
@@ -101,11 +113,10 @@ const Menu = ({ topOffset }: Props) => {
   const menuItems: Array<{ component: JSX.Element, shouldShow?: boolean }> = [
     {
       component: <PreferencesMenuItem />,
-      shouldShow: false,
+      shouldShow: isAuthed,
     },
     {
       component: <FeedbackMenuItem />,
-      shouldShow: false,
     },
     {
       component: <LeaveRoomMenuItem />,
