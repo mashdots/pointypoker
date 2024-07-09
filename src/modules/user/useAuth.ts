@@ -53,7 +53,7 @@ const useAuth = () => {
     if (user) {
       getAuthClient();
     }
-  }, [user]);
+  }, [user?.id]);
 
   return {
     signIn,
