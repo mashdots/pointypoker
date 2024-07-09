@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { clearCookie } from '../../utils/cookies';
+import { getCookie, clearCookie } from '../../utils/cookies';
 import useStore from '../../utils/store';
 import { createUserPayload } from '../../utils';
 import {
@@ -20,7 +20,7 @@ const useAuth = () => {
       clearRoom,
     }),
   );
-  // const userCookie = getCookie();
+  const userCookie = getCookie();
 
   const signIn = async (newUserName: string) => {
     const payload = createUserPayload(newUserName);
@@ -45,9 +45,14 @@ const useAuth = () => {
   };
 
   useEffect(() => {
-    getAuthClient();
-    // Deprecated - Legacy user name management.
-    clearCookie();
+    if (userCookie) {
+      // Deprecated - Legacy user name management
+      clearCookie();
+    }
+
+    if (user) {
+      getAuthClient();
+    }
   }, [user]);
 
   return {
