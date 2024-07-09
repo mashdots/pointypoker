@@ -45,8 +45,9 @@ const useAuth = () => {
   };
 
   useEffect(() => {
+    // Deprecated - Legacy user name management
     if (userCookie) {
-      // Deprecated - Legacy user name management
+      setUser(userCookie);
       clearCookie();
     }
 
