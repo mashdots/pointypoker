@@ -171,7 +171,7 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
 
 const VoteDisplay = (props: GridPanelProps) => {
   const user = useStore(({ preferences }) => preferences?.user);
-  const { shouldShowVotes, voteData, handleUpdateLatestTicket } = useTickets();
+  const { shouldShowVotes, voteData, handleUpdateCurrentTicket } = useTickets();
 
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
 
@@ -214,8 +214,8 @@ const VoteDisplay = (props: GridPanelProps) => {
       variation='info'
       width='full'
       onClick={() => {
-        handleUpdateLatestTicket('shouldShowVotes', true);
-        handleUpdateLatestTicket('votesShownAt', Date.now());
+        handleUpdateCurrentTicket('shouldShowVotes', true);
+        handleUpdateCurrentTicket('votesShownAt', Date.now());
       }}
       isDisabled={shouldShowVotes || !hasAnyoneVoted}
       textSize='small'

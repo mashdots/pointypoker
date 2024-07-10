@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Timer } from '../components';
-import GridPanel, { GridPanelProps } from '../../../components/common/gridPanel';
 import { useTickets } from '../hooks';
+import GridPanel, { GridPanelProps } from '../../../components/common/gridPanel';
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,11 +14,11 @@ const Wrapper = styled.div`
 `;
 
 const TimerPanel = (props: GridPanelProps) => {
-  const { currentTicket, shouldShowVotes, handleUpdateLatestTicket } = useTickets();
+  const { currentTicket, shouldShowVotes, handleUpdateCurrentTicket } = useTickets();
 
   useEffect(() => {
     if (shouldShowVotes && !currentTicket?.votesShownAt) {
-      handleUpdateLatestTicket('votesShownAt', Date.now());
+      handleUpdateCurrentTicket('votesShownAt', Date.now());
     }
   }, [ shouldShowVotes ]);
 

@@ -29,7 +29,7 @@ type Ticket = {
   };
   votesShownAt: number | null;
   averagePoints?: number;
-  suggestedPoints?: number;
+  suggestedPoints?: number | string;
 }
 
 type Room = {
@@ -38,15 +38,24 @@ type Room = {
   participants: {
     [key: string]: Participant;
   };
+  ticketQueue: Array<string>;
+  currentTicket: Ticket | null;
+  completedTickets: Array<Ticket>;
+  // Deprecated field. Keeping it for historical data
   tickets: {
     [key: string]: Ticket;
   };
+}
+
+type RoomUpdateObject = {
+  [key: string]: any;
 }
 
 export type {
   Participant,
   PointOptions,
   Room,
+  RoomUpdateObject,
   Ticket,
   Vote,
 };
