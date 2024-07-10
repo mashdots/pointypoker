@@ -67,7 +67,7 @@ const TitleLinkIcon = styled(LinkIcon)<ThemedProps>`
 let timeout: number;
 
 const TitleInput = () => {
-  const { currentTicket, handleCreateTicket, handleUpdateLatestTicket, shouldShowVotes } = useTickets();
+  const { currentTicket, handleCreateTicket, handleUpdateCurrentTicket, shouldShowVotes } = useTickets();
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState(currentTicket?.name);
   const {
@@ -82,23 +82,27 @@ const TitleInput = () => {
     : <TitleIcon $isFocused={isFocused} />;
 
 
+  // If the value changes and it doesn't match the current ticket name:
   useEffect(() => {
     if (value && currentTicket?.name !== value) {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
+        // If votes are shown, create a new ticket with the value.
         if (shouldShowVotes) {
           handleCreateTicket(value);
         } else {
-          if (currentTicket.name?.length === 0) {
-            handleUpdateLatestTicket('timerStartAt', Date.now());
+          // Otherwise update the current ticket with the value.
+          if (currentTicket?.name?.length === 0) {
+            handleUpdateCurrentTicket('timerStartAt', Date.now());
           }
 
-          handleUpdateLatestTicket('name', value);
+          handleUpdateCurrentTicket('name', value);
         }
       }, 1000);
     }
   }, [value]);
 
+  // Set the value of the input to the ticket name from the API.
   useEffect(() => {
     if (currentTicket?.name !== value) {
       setValue(currentTicket?.name);

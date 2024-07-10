@@ -1,33 +1,33 @@
 import { useCallback, useMemo } from 'react';
+import { arrayUnion } from 'firebase/firestore';
+import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
 
-import { Ticket } from '../../../types';
 import { VoteDisplayProps } from '../panels/voteDisplay';
+import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes } from '../utils';
 import { updateRoom } from '../../../services/firebase';
+import { Ticket } from '../../../types';
 import useStore from '../../../utils/store';
-import { calculateAverage, calculateSuggestedPoints } from '../utils';
+import { RoomUpdateObject } from '../../../types/room';
 
 const useTickets = () => {
   const {
-    participants = [],
+    completedTickets,
+    currentTicket,
+    participants,
     roomName,
-    tickets,
+    queue,
     user,
   } = useStore(({ preferences, room }) => (
     {
-      user: preferences?.user,
+      completedTickets: room?.completedTickets,
+      currentTicket: room?.currentTicket,
       participants: Object.values(room?.participants || {}),
-      tickets: room?.tickets ?? {},
+      queue: room?.ticketQueue,
       roomName: room?.name,
+      user: preferences?.user,
     }
   ));
-
-  const sortedTickets = useMemo(() =>
-    Object.values(tickets).sort((a, b) => b?.createdAt - a?.createdAt),
-  [tickets],
-  );
-
-  const currentTicket = useMemo(() => sortedTickets[0], [sortedTickets]);
 
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
@@ -43,19 +43,19 @@ const useTickets = () => {
   const areAllVotesCast = useMemo(
     () => participants
       .filter(({ inactive,consecutiveMisses }) => !inactive && consecutiveMisses < 3)
-      .every(({ id }) => currentTicket?.votes[ id ]),
+      .every(({ id }) => isVoteCast(currentTicket?.votes[id])),
     [participants, currentTicket?.votes],
   );
 
   const shouldShowVotes = useMemo(
-    () => areAllVotesCast || currentTicket?.shouldShowVotes,
+    () => areAllVotesCast || !!currentTicket?.shouldShowVotes,
     [areAllVotesCast, currentTicket],
   );
 
-  const handleUpdateLatestTicket = useCallback((field: string, value: any, callback?: () => void) => {
+  const handleUpdateCurrentTicket = useCallback((field: string, value: any, callback?: () => void) => {
     if (roomName && user && currentTicket) {
-      const updateObj: Record<string, any> = {};
-      updateObj[`tickets.${currentTicket.id}.${field}`] = value;
+      const updateObj: RoomUpdateObject = {};
+      updateObj[`currentTicket.${field}`] = value;
 
       if (field.includes('votes.')) {
         updateObj[`participants.${user.id}.consecutiveMisses`] = 0;
@@ -65,49 +65,59 @@ const useTickets = () => {
     }
   }, [roomName, currentTicket]);
 
-  const handleCreateTicket = useCallback((newTicketName?: string) => {
-    if (roomName && user && currentTicket) {
-      const updateObj: Record<string, any> = {};
-      // If any users did not vote, increment their consecutive misses
-      participants.forEach(({ id }) => {
-        if (!currentTicket.votes[id]) {
-          const currentConsecutiveMisses = participants.find((participant) => participant.id === id)?.consecutiveMisses || 0;
-          updateObj[`participants.${ id }.consecutiveMisses`] = currentConsecutiveMisses + 1;
-        }
-      });
-
-      // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
-      updateObj[`tickets.${currentTicket.id}.averagePoints`] = calculateAverage(currentTicket).average;
-      updateObj[`tickets.${currentTicket.id}.suggestedPoints`] = calculateSuggestedPoints(currentTicket).suggestedPoints;
-
-      const newTicket: Ticket = {
-        createdAt: Date.now(),
-        id: uuid(),
+  /**
+   * Creates a new ticket with the provided name.
+   *
+   * Any new ticket will be written to the `currentTicket` in the room. If there
+   * is already a ticket in the `currentTicket`, the average and suggested
+   * points will be calculated, and the ticket will be moved to the
+   * `completedTickets` array.
+   */
+  const handleCreateTicket = useCallback((newTicketName: string) => {
+    if (roomName && user) {
+      const updateObj: RoomUpdateObject = {};
+      updateObj['currentTicket'] = {
+        name: newTicketName,
         createdBy: user.id,
-        name: newTicketName || '',
-        pointOptions: currentTicket?.pointOptions,
+        id: uuid(),
         shouldShowVotes: false,
         votes: {},
+        createdAt: Date.now(),
+        timerStartAt: Date.now(),
+        pointOptions: PointingTypes.fibonacci,
         votesShownAt: null,
-      };
+      } as Ticket;
 
-      if (newTicketName) {
-        newTicket.timerStartAt = Date.now();
+      if (currentTicket) {
+        const completedTicket = cloneDeep(currentTicket);
+        // If any users did not vote, increment their consecutive misses
+        participants.forEach(({ id }) => {
+          if (!isVoteCast(currentTicket.votes[id])) {
+            const currentConsecutiveMisses = participants.find((participant) => participant.id === id)?.consecutiveMisses || 0;
+            updateObj[`participants.${ id }.consecutiveMisses`] = currentConsecutiveMisses + 1;
+          }
+        });
+
+        // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
+        completedTicket.averagePoints = calculateAverage(currentTicket).average;
+        completedTicket.suggestedPoints = calculateSuggestedPoints(currentTicket).suggestedPoints;
+
+        // Move the current ticket to the completed tickets array
+        updateObj['completedTickets'] = arrayUnion(completedTicket);
+
+        updateRoom(roomName, updateObj);
       }
-
-      updateObj[`tickets.${newTicket.id}`] = newTicket;
-
-      updateRoom(roomName, updateObj);
     }
   }, [roomName, currentTicket, participants]);
 
   return {
     areAllVotesCast,
     currentTicket,
-    sortedTickets,
+    completedTickets,
+    queue,
     shouldShowVotes,
     voteData,
-    handleUpdateLatestTicket,
+    handleUpdateCurrentTicket,
     handleCreateTicket,
   };
 };

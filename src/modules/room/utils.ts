@@ -149,10 +149,14 @@ const getTicketNumberFromUrl = ({ host, path }: URLRecord): string => {
   return parsed ?? host?.toString() ?? '';
 };
 
+const isVoteCast = (vote?: Vote): boolean => ![null, undefined, ''].includes(vote as any);
+
 export {
   calculateAverage,
   calculateSuggestedPoints,
   getPointOptions,
   getTicketNumberFromUrl,
+  isVoteCast,
 };
+
 export { PointingTypes };
