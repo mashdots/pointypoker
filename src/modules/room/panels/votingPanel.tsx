@@ -81,6 +81,7 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
               handleUpdateCurrentTicket(`votes.${user.id}`, option);
             }
           }}
+          disabled={!currentTicket}
         >
           {option}
         </VoteButton>

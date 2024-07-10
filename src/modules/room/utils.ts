@@ -37,7 +37,7 @@ const getPointOptions = (type?: string): PointOptions => {
   }
 };
 
-const calculateAverage = (currentTicket?: Ticket): AverageResult  => {
+const calculateAverage = (currentTicket?: Ticket | null): AverageResult  => {
   if (!currentTicket) {
     return { average: 0, warning: '' };
   }
@@ -80,7 +80,7 @@ const calculateAverage = (currentTicket?: Ticket): AverageResult  => {
   };
 };
 
-const calculateSuggestedPoints = (currentTicket?: Ticket): SuggestedResult => {
+const calculateSuggestedPoints = (currentTicket?: Ticket | null): SuggestedResult => {
   if (!currentTicket) {
     return { suggestedPoints: 0, warning: '' };
   }
@@ -90,6 +90,7 @@ const calculateSuggestedPoints = (currentTicket?: Ticket): SuggestedResult => {
   const votesArray: Vote[] = [];
   const excludedVotes = [];
   const result: SuggestedResult = { suggestedPoints: 0 };
+  let average: number;
   let roundUp;
   let roundDown;
   let middle;
@@ -110,20 +111,20 @@ const calculateSuggestedPoints = (currentTicket?: Ticket): SuggestedResult => {
       total += sequence.indexOf(vote as string);
     }
 
-    const average = votesArray.length > 0 ? total / votesArray.length : 0;
+    average = votesArray.length > 0 ? total / votesArray.length : 0;
     roundUp = Math.ceil(average);
     roundDown = Math.floor(average);
     middle = Math.abs((roundUp - roundDown) / 2);
     mark = average - roundDown;
   } else {
-    const average = calculateAverage(currentTicket).average as number;
+    average = calculateAverage(currentTicket).average;
     roundUp = sequence.findIndex((point) => parseInt(point as string, 10) >= average);
     roundDown = roundUp - 1;
     middle = Math.abs((sequence[roundUp] as number) - (sequence[roundDown] as number)) / 2;
     mark = average - (sequence[roundDown] as number);
   }
 
-  result.suggestedPoints = sequence[mark >= middle ? roundUp : roundDown];
+  result.suggestedPoints = average !== 0 ? sequence[mark >= middle ? roundUp : roundDown] : 0;
 
   if (excludedVotes.length >= votesArray.length) {
     result.warning = 'Too many people didn\'t pick a number';
