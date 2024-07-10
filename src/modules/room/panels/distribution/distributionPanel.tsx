@@ -123,7 +123,7 @@ const DistributionPanel = (props: GridPanelProps) => {
             <StatDisplay
               revealVotes={shouldShowVotes}
               percentage={votePercentage}
-              animationDuration={votes > 0 ? votes * 250 : 250}
+              animationDuration={votes ? votes * 250 : 250}
             />
           </StatDisplayWrapper>
           <StatLabel>{point}</StatLabel>

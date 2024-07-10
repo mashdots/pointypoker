@@ -10,6 +10,7 @@ import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 import CircleCheckIcon from '../../../assets/icons/circle-check.svg?react';
 import InactiveIcon from '../../../assets/icons/inactive.svg?react';
 import IdleIcon from '../../../assets/icons/idle.svg?react';
+import { isVoteCast } from '../utils';
 
 enum PARTICIPANT_MODES {
   ABSENT = 'absent',
@@ -178,7 +179,7 @@ const VoteDisplay = (props: GridPanelProps) => {
   const voteNodes = useMemo(
     () => voteData.map(({ name: participantName, vote, inactive, consecutiveMisses }, i) => {
       const userIsParticipant = participantName === user?.name;
-      const hasVoted = vote !== undefined && vote !== '';
+      const hasVoted = isVoteCast(vote);
       const name = userIsParticipant ? 'you' : participantName;
       const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
       const isLast = i === voteData.length - 1;
