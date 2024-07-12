@@ -98,8 +98,6 @@ const RoomSetup = () => {
       ticketQueue: [],
       currentTicket: null,
       completedTickets: [],
-      // Deprecated field. Keeping it for historical data
-      tickets: {},
     };
 
     await createRoom(newRoom, (result) => {

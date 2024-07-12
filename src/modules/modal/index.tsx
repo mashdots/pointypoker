@@ -11,10 +11,12 @@ import useStore from '../../utils/store';
 import { useMobile } from '../../utils/hooks/mobile';
 import PlusIcon from '../../assets/icons/plus.svg?react';
 import { PreferencesModal } from '../preferences';
+import { QueueModal } from '../room';
 
 export enum MODAL_TYPES {
   FEEDBACK,
   PREFERENCES,
+  QUEUE,
 }
 
 type VisibleProps = {
@@ -160,6 +162,12 @@ const Modal = () => {
           title: 'Preferences',
           subtitle: 'Changes save automatically',
           contents: <PreferencesModal />,
+        };
+        break;
+      case MODAL_TYPES.QUEUE:
+        modalContent = {
+          title: 'Build a ticket queue',
+          contents: <QueueModal />,
         };
         break;
       default:

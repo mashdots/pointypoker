@@ -42,7 +42,7 @@ type Room = {
   currentTicket: Ticket | null;
   completedTickets: Array<Ticket>;
   // Deprecated field. Keeping it for historical data
-  tickets: {
+  tickets?: {
     [key: string]: Ticket;
   };
 }

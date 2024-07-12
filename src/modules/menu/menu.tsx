@@ -5,7 +5,8 @@ import debounce from 'lodash/debounce';
 import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import useStore from '../../utils/store';
 import { ThemeModeToggleRow } from '../preferences';
-import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem } from './menuItems';
+import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, QueueMenuItem } from './menuItems';
+import { Separator } from '../preferences/panes/common';
 
 type Props = {
   topOffset: number;
@@ -117,6 +118,14 @@ const Menu = ({ topOffset }: Props) => {
     },
     {
       component: <FeedbackMenuItem />,
+    },
+    {
+      component: <Separator />,
+      shouldShow: !!roomName,
+    },
+    {
+      component: <QueueMenuItem />,
+      shouldShow: !!roomName,
     },
     {
       component: <LeaveRoomMenuItem />,
