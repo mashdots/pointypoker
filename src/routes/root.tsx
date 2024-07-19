@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import styled, { ThemeProvider, css } from 'styled-components';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { Outlet, useOutletContext, useLocation } from 'react-router-dom';
 
 import '../App.css';
 import { GlobalStyles } from '../utils/styles';
@@ -11,6 +11,7 @@ import useTheme from '../utils/styles/colors';
 import Modal from '../modules/modal';
 import usePreferenceSync from '../modules/preferences/hooks';
 import { useAuth } from '../modules/user';
+import { JIRA_REDIRECT_PATH } from '../main';
 
 type ContextType = {
   refHeight: number;
@@ -38,15 +39,17 @@ const Root = (): JSX.Element => {
   const { theme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerHeight = useMemo(() => headerRef?.current?.clientHeight ?? 0, [headerRef?.current]);
+  const location = useLocation();
+  const shouldShowMenu = !location.pathname.includes(JIRA_REDIRECT_PATH);
 
   return (
     <ThemeProvider theme={theme}>
       <MobileProvider>
         <Container>
           <GlobalStyles/>
-          <Header headerRef={headerRef} />
+          <Header headerRef={headerRef} hideMenu={!shouldShowMenu} />
           <Modal />
-          <Menu topOffset={headerHeight ?? 0} />
+          {shouldShowMenu && <Menu topOffset={headerHeight ?? 0} />}
           <ChildrenWrapper referenceHeight={headerHeight ?? 0} >
             <Outlet context={{ refHeight: headerHeight ?? 0 } satisfies ContextType} />
           </ChildrenWrapper>

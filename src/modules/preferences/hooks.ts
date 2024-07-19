@@ -3,14 +3,25 @@ import { useEffect } from 'react';
 import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '../../utils/styles/colors/colorSystem';
 import useStore from '../../utils/store';
 import { User } from '../../types';
+import { JiraAuthData, JiraResourceData } from '../integrations/jira';
 
 export type PreferencesType = {
-  [key: string]: string | boolean | number | THEMES | THEME_MODES | User | undefined | null;
+  [ key: string ]: string
+    | boolean
+    | number
+    | THEMES
+    | THEME_MODES
+    | User
+    | JiraAuthData
+    | undefined
+    | null;
   theme?: THEMES;
   themeMode?: THEME_MODES;
   themeModeController?: THEME_MODE_CONTROLLER;
   name?: string;
   user?: User | null;
+  jiraAccess?: JiraAuthData;
+  jiraResources?: JiraResourceData;
 }
 
 const getPrefFromLocalStorage = (key: string): string | boolean | number | THEMES | THEME_MODES | undefined => {
@@ -37,19 +48,23 @@ const usePreferenceSync = () => {
     { preferences, setPref: (key: string, pref: keyof PreferencesType) => setPreferences(key, pref) }
   ));
 
-  // Imports preferences from localStorage to global state
-  useEffect(() => {
+  const syncPrefsToStore = () => {
     const storedPreferences = { ...localStorage };
     let pref = null;
 
     for (const key in storedPreferences) {
       try {
-        pref = JSON.parse(storedPreferences[key]);
+        pref = JSON.parse(storedPreferences[ key ]);
         setPref(key, pref);
       } catch (error) {
-        console.error('Error parsing stored preference:', key, storedPreferences[key]);
+        console.error('Error parsing stored preference:', key, storedPreferences[ key ]);
       }
     }
+  };
+
+  // Imports preferences from localStorage to global state
+  useEffect(() => {
+    syncPrefsToStore();
   }, []);
 
   // Write to localStorage when preferences change
@@ -61,6 +76,7 @@ const usePreferenceSync = () => {
 
   return {
     getPrefFromLocalStorage,
+    syncPrefsToStore,
     purgeLocalStorage,
   };
 };

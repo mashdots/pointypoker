@@ -80,6 +80,7 @@ const GeneralPrefsIcon = styled(Icon)`
 
 const GeneralPreferencesCard = ({ onClick, isActive }: GenericPrefCardProps) => (
   <CategoryCard
+    key="general-card"
     onClick={onClick}
     icon={<GeneralPrefsIcon />}
     isActive={isActive}

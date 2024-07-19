@@ -6,8 +6,13 @@ import {
 } from 'react-router-dom';
 
 import './index.css';
-import Root from './routes/root';
-import Switcher from './modules/switcher';
+import {
+  Root,
+  Switcher,
+} from './routes';
+import JiraRedirect from './routes/jiraRedirect';
+
+export const JIRA_REDIRECT_PATH = '/jira-redirect';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: '/:roomName',
         element: <Switcher />,
+      },
+      {
+        path: JIRA_REDIRECT_PATH,
+        element: <JiraRedirect />,
       },
     ],
   },

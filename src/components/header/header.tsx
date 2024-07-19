@@ -10,6 +10,7 @@ import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 
 type Props = {
   headerRef: React.RefObject<HTMLDivElement>;
+  hideMenu: boolean;
 }
 
 type SectionProps = {
@@ -72,7 +73,7 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
   }
 `;
 
-const Header = ({ headerRef }: Props) => {
+const Header = ({ headerRef, hideMenu }: Props) => {
   const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }));
 
   return (
@@ -83,7 +84,7 @@ const Header = ({ headerRef }: Props) => {
       </Section>
       <Section flex={1} align='right'>
         <UserControl />
-        <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isOpen={isMenuOpen} />
+        {!hideMenu && <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isOpen={isMenuOpen} />}
       </Section>
     </Wrapper>
   );
