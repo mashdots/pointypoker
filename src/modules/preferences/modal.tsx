@@ -8,6 +8,8 @@ import {
   AppearancePreferencesCard,
   GeneralPreferences,
   GeneralPreferencesCard,
+  IntegrationsPreferences,
+  IntegrationsPreferencesCard,
 } from './panes';
 import { GenericPrefCardProps } from './panes/categoryCard';
 
@@ -77,6 +79,10 @@ const PreferencesModal = () => {
     {
       categoryCard: AppearancePreferencesCard,
       pane: <AppearancePreferences />,
+    },
+    {
+      categoryCard: IntegrationsPreferencesCard,
+      pane: <IntegrationsPreferences />,
     },
   ];
 

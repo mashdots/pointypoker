@@ -132,6 +132,7 @@ const AppearancePrefsIcon = styled(Icon)`
 
 const AppearancePreferencesCard = ({ isActive, onClick }: GenericPrefCardProps) => (
   <CategoryCard
+    key="appearance-card"
     icon={<AppearancePrefsIcon />}
     isActive={isActive}
     onClick={onClick}
