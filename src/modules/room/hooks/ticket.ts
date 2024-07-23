@@ -61,6 +61,10 @@ const useTickets = () => {
         updateObj[`participants.${user.id}.consecutiveMisses`] = 0;
       }
 
+      if (field === 'shouldShowVotes' && value) {
+        updateObj['currentTicket.votesShownAt'] = Date.now();
+      }
+
       updateRoom(roomName, updateObj, callback);
     }
   }, [roomName, currentTicket]);

@@ -216,7 +216,6 @@ const VoteDisplay = (props: GridPanelProps) => {
       width='full'
       onClick={() => {
         handleUpdateCurrentTicket('shouldShowVotes', true);
-        handleUpdateCurrentTicket('votesShownAt', Date.now());
       }}
       isDisabled={shouldShowVotes || !hasAnyoneVoted}
       textSize='small'
