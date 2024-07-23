@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 
-import { getCookie, clearCookie } from '../../utils/cookies';
-import useStore from '../../utils/store';
-import { createUserPayload } from '../../utils';
 import {
   getAuthClient,
   signIn as signInFB,
   signOut as signOutFB,
-} from '../../services/firebase/auth';
-import { User } from '../../types';
+} from '@services/firebase/auth';
+import { createUserPayload } from '@utils';
+import { getCookie, clearCookie } from '@utils/cookies';
+import useStore from '@utils/store';
+import { User } from '@yappy/types';
 
 
 const useAuth = () => {

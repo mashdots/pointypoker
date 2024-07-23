@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
   button?: React.ReactNode;

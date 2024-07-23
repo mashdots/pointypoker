@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import SettingsIcon from '../../../assets/icons/settings.svg?react';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 import MenuItem from './menuItem';
-import useStore from '../../../utils/store';
-import { MODAL_TYPES } from '../../modal';
+import SettingsIcon from '@assets/icons/settings.svg?react';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { MODAL_TYPES } from '@modules/modal';
 
 
 const Icon = styled(SettingsIcon)<ThemedProps>`

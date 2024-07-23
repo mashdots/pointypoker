@@ -3,15 +3,15 @@ import styled, { ThemeProvider, css } from 'styled-components';
 import { Outlet, useOutletContext, useLocation } from 'react-router-dom';
 
 import '../App.css';
-import { GlobalStyles } from '../utils/styles';
-import Header from '../components/header';
-import Menu from '../modules/menu';
-import { MobileProvider } from '../utils/hooks/mobile';
-import useTheme from '../utils/styles/colors';
-import Modal from '../modules/modal';
-import usePreferenceSync from '../modules/preferences/hooks';
-import { useAuth } from '../modules/user';
-import { JIRA_REDIRECT_PATH } from '../main';
+import Header from '@components/header';
+import Menu from '@modules/menu';
+import { useAuth } from '@modules/user';
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+import { MobileProvider } from '@utils/hooks/mobile';
+import Modal from '@modules/modal';
+import usePreferenceSync from '@modules/preferences/hooks';
+import { GlobalStyles } from '@utils/styles';
+import useTheme from '@utils/styles/colors';
 
 type ContextType = {
   refHeight: number;

@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
-import useStore from '../../../utils/store';
+
 import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
-import { JIRA_REDIRECT_PATH } from '../../../main';
-import getApiClient from '../../../utils/axios';
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+import useStore from '@utils/store';
+import getApiClient from '@utils/axios';
 
 type InitialAuth = {
   code: string;

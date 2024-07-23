@@ -1,6 +1,6 @@
 import { URLRecord } from 'whatwg-url';
 
-import { PointOptions, Ticket, Vote } from '../../types';
+import { PointOptions, Ticket, Vote } from '@yappy/types';
 
 enum PointingTypes {
   tshirt = 'T-Shirt',

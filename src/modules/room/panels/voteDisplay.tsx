@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import { useTickets } from '../hooks';
-import { Button, GridPanel } from '../../../components/common';
-import { GridPanelProps } from '../../../components/common/gridPanel';
-import { Participant, Vote } from '../../../types';
-import useStore from '../../../utils/store';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
-import CircleCheckIcon from '../../../assets/icons/circle-check.svg?react';
-import InactiveIcon from '../../../assets/icons/inactive.svg?react';
-import IdleIcon from '../../../assets/icons/idle.svg?react';
 import { isVoteCast } from '../utils';
+import CircleCheckIcon from '@assets/icons/circle-check.svg?react';
+import IdleIcon from '@assets/icons/idle.svg?react';
+import InactiveIcon from '@assets/icons/inactive.svg?react';
+import { Button, GridPanel } from '@components/common';
+import { GridPanelProps } from '@components/common/gridPanel';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Participant, Vote } from '@yappy/types';
 
 enum PARTICIPANT_MODES {
   ABSENT = 'absent',

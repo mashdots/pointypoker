@@ -1,5 +1,5 @@
-import { PointingTypes } from '../modules/room/utils';
 import User from './user';
+import { PointingTypes } from '@modules/room/utils';
 
 type Participant = User & {
   consecutiveMisses: number;

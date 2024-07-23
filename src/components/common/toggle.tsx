@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import get from 'lodash/get';
 
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type ColorOverrides = {
   onBg?: string;

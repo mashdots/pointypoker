@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { VARIATIONS } from '../../../utils/styles';
-import { getIcon } from '../../../components/icons';
+import { getIcon } from '@components/icons';
+import { VARIATIONS } from '@utils/styles';
 
 export type InfoCellProps = {
   icon?: string | JSX.Element;

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useMobile } from '../../utils/hooks/mobile';
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
 import {
   AppearancePreferences,
   AppearancePreferencesCard,
@@ -12,6 +10,8 @@ import {
   IntegrationsPreferencesCard,
 } from './panes';
 import { GenericPrefCardProps } from './panes/categoryCard';
+import { useMobile } from '@utils/hooks/mobile';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type MobileProps = {
   isMobile: boolean;
