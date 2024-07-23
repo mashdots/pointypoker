@@ -1,8 +1,8 @@
 import React, { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import { getWidth } from '../../utils/styles';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { getWidth } from '@utils/styles';
 
 type Props = {
   children: any;

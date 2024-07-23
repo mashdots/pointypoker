@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import useStore from '../../utils/store';
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div<{ appear: boolean }>`
   cursor: default;

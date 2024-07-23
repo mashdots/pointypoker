@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import useStore from '../../utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
 
 const Wrapper = styled.div<ThemedProps>`
   display: flex;

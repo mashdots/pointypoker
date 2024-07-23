@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
-import { Room } from '../types';
-import { PreferencesType } from '../modules/preferences/hooks';
-import { MODAL_TYPES } from '../modules/modal';
+import { PreferencesType } from '@modules/preferences/hooks';
+import { MODAL_TYPES } from '@modules/modal';
+import { Room } from '@yappy/types';
 
 type Store = {
   preferences: PreferencesType;

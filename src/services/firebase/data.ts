@@ -15,8 +15,8 @@ import {
 } from 'firebase/firestore';
 
 import getApp from '.';
-import { Ticket, Participant, Room, User } from '../../types';
 import { PossibleFirebaseCollections } from './constants';
+import { Ticket, Participant, Room, User } from '@yappy/types';
 
 type PossibleFirebaseTypes = Room | Participant | Ticket;
 

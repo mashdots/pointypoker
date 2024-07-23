@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-import { useJira } from '../modules/integrations';
-import LoadingIcon from '../assets/icons/loading-circle.svg?react';
-import Check from '../assets/icons/check.svg?react';
-import Error from '../assets/icons/plus.svg?react';
-import { ThemedProps } from '../utils/styles/colors/colorSystem';
-import useStore from '../utils/store';
-import { JiraAuthData } from '../modules/integrations/jira';
+import LoadingIcon from '@assets/icons/loading-circle.svg?react';
+import Check from '@assets/icons/check.svg?react';
+import Error from '@assets/icons/plus.svg?react';
+import { useJira } from '@modules/integrations';
+import { JiraAuthData } from '@modules/integrations/jira';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
+export const JIRA_REDIRECT_PATH = '/jira-redirect';
 
 enum STATUS {
   LOADING = 'loading',

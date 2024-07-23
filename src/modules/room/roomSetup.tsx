@@ -4,12 +4,12 @@ import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import RoomPresenter from './roomPresenter';
-import Button from '../../components/common/button';
-import { useHeaderHeight } from '../../routes/root';
-import { createRoom, updateRoom, watchRoom } from '../../services/firebase';
-import { Participant, Room as RoomType, RoomUpdateObject } from '../../types';
-import { generateRoomName, usePrevious } from '../../utils';
-import useStore from '../../utils/store';
+import Button from '@components/common/button';
+import { useHeaderHeight } from '@routes/root';
+import { createRoom, updateRoom, watchRoom } from '@services/firebase';
+import { generateRoomName, usePrevious } from '@utils';
+import useStore from '@utils/store';
+import { Participant, Room as RoomType, RoomUpdateObject } from '@yappy/types';
 
 type HeightAdjusted = {
   heightDiff: number;

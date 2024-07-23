@@ -1,7 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
-import { useMobile } from '../../../utils/hooks/mobile';
+
+import { useMobile } from '@utils/hooks/mobile';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
   icon: React.ReactNode;

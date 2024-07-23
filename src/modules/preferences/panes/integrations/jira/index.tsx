@@ -2,16 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import IntegrationCard from '../integrationCard';
-import { useJira } from '../../../../integrations';
-import JiraLogo from '../../../../../assets/icons/jira-logo.svg?react';
-import Check from '../../../../../assets/icons/check.svg?react';
-import Spinner from '../../../../../assets/icons/loading-circle.svg?react';
-import Link from '../../../../../assets/icons/link-out.svg?react';
-import { Button } from '../../../../../components/common';
-import useStore from '../../../../../utils/store';
-import { ThemedProps } from '../../../../../utils/styles/colors/colorSystem';
-import { JiraResourceData } from '../../../../integrations/jira';
 import usePreferenceSync from '../../../hooks';
+import Check from '@assets/icons/check.svg?react';
+import JiraLogo from '@assets/icons/jira-logo.svg?react';
+import Link from '@assets/icons/link-out.svg?react';
+import Spinner from '@assets/icons/loading-circle.svg?react';
+import { Button } from '@components/common';
+import { useJira } from '@modules/integrations';
+import { JiraResourceData } from '@modules/integrations/jira';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const spin = keyframes`
   0% {

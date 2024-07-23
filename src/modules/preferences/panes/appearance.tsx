@@ -2,11 +2,11 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
-import Icon from '../../../assets/icons/settings-appearance.svg?react';
-import useTheme, { ThemeOption as ThemeOptionType, ThemedProps } from '../../../utils/styles/colors/colorSystem';
-import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
-import useStore from '../../../utils/store';
 import { Separator, SettingsRow, VerticalContainer } from './common';
+import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
+import Icon from '@assets/icons/settings-appearance.svg?react';
+import useStore from '@utils/store';
+import useTheme, { ThemeOption as ThemeOptionType, ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type ThemeOptionWrapperProps = {
   isActive: boolean;

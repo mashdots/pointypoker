@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { VARIATIONS } from '../../../utils/styles';
+
+import { VARIATIONS } from '@utils/styles';
 
 type Panel = {
   title: string;
