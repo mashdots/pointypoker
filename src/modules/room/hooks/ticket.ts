@@ -77,7 +77,7 @@ const useTickets = () => {
    * points will be calculated, and the ticket will be moved to the
    * `completedTickets` array.
    */
-  const handleCreateTicket = useCallback((newTicketName: string) => {
+  const handleCreateTicket = useCallback((newTicketName = '') => {
     if (roomName && user) {
       const updateObj: RoomUpdateObject = {};
       updateObj['currentTicket'] = {
