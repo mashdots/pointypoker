@@ -1,4 +1,4 @@
-import { JIRA_REDIRECT_PATH } from '../../../main';
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 export enum URL_ACTIONS {
   AUTHORIZE = 'authorize',
