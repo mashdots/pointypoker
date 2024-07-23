@@ -6,12 +6,12 @@ import React, {
 } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import useStore from '../../utils/store';
-import { useMobile } from '../../utils/hooks/mobile';
-import PlusIcon from '../../assets/icons/plus.svg?react';
 import { PreferencesModal } from '../preferences';
 import { QueueModal } from '../room';
+import PlusIcon from '@assets/icons/plus.svg?react';
+import { useMobile } from '@utils/hooks/mobile';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
 
 export enum MODAL_TYPES {
   FEEDBACK,

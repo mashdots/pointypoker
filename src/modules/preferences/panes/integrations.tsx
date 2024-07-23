@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
-import Icon from '../../../assets/icons/settings-integrations.svg?react';
 import JiraIntegrationCard from './integrations/jira';
+import Icon from '@assets/icons/settings-integrations.svg?react';
 
 const IntegrationsPreferences = () => {
   return (

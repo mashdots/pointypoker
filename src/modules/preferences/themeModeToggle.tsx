@@ -2,11 +2,11 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import Toggle from '../../components/common/toggle';
-import useTheme from '../../utils/styles/colors';
-import { THEME_MODE_CONTROLLER, THEME_MODES, ThemedProps } from '../../utils/styles/colors/colorSystem';
-import DarkModeIcon from '../../assets/icons/dark-mode-fill.svg?react';
-import LightModeIcon from '../../assets/icons/light-mode-fill.svg?react';
-import useStore from '../../utils/store';
+import DarkModeIcon from '@assets/icons/dark-mode-fill.svg?react';
+import LightModeIcon from '@assets/icons/light-mode-fill.svg?react';
+import useStore from '@utils/store';
+import useTheme from '@utils/styles/colors';
+import { THEME_MODE_CONTROLLER, THEME_MODES, ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div`
   display: flex;

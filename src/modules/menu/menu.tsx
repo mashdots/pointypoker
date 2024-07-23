@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import debounce from 'lodash/debounce';
 
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import useStore from '../../utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
 import { ThemeModeToggleRow } from '../preferences';
 import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, QueueMenuItem } from './menuItems';
 import { Separator } from '../preferences/panes/common';

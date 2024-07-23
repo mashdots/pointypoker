@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '../../utils/styles/colors/colorSystem';
-import useStore from '../../utils/store';
-import { User } from '../../types';
 import { JiraAuthData, JiraResourceData } from '../integrations/jira';
+import { User } from '../../types';
+import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '@utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
 
 export type PreferencesType = {
   [ key: string ]: string

@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
 import { SettingsRow, VerticalContainer } from './common';
-import Icon from '../../../assets/icons/settings-general.svg?react';
 import { TextInput } from '../../../components/common';
-import { updateRoom } from '../../../services/firebase';
-import useStore from '../../../utils/store';
 import { User, RoomUpdateObject } from '../../../types';
+import Icon from '@assets/icons/settings-general.svg?react';
+import { updateRoom } from '@services/firebase';
+import useStore from '@utils/store';
 
 
 let timeout: number;

@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import QueueIcon from '../../../assets/icons/queue.svg?react';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 import MenuItem from './menuItem';
-import useStore from '../../../utils/store';
 import { MODAL_TYPES } from '../../modal';
+import QueueIcon from '@assets/icons/queue.svg?react';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 
 const Icon = styled(QueueIcon) <ThemedProps>`
