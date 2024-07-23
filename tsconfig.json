@@ -22,7 +22,8 @@
       "@modules/*": ["./src/modules/*"],
       "@routes/*": ["./src/routes/*"],
       "@services/*": ["./src/services/*"],
-      "@types/*": ["./src/types/*"],
+      "@yappy/types": ["./src/types"],
+      "@yappy/types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
     }
   },

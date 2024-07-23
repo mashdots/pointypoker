@@ -17,7 +17,7 @@ export default defineConfig({
       '@modules': path.resolve(__dirname, 'src/modules'),
       '@routes': path.resolve(__dirname, 'src/routes'),
       '@services': path.resolve(__dirname, 'src/services'),
-      '@types': path.resolve(__dirname, 'src/types'),
+      '@yappy/types': path.resolve(__dirname, 'src/types'),
       '@utils': path.resolve(__dirname, 'src/utils'),
     },
   },
