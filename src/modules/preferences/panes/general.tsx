@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
-import Icon from '../../../assets/icons/settings-general.svg?react';
 import { SettingsRow, VerticalContainer } from './common';
+import Icon from '../../../assets/icons/settings-general.svg?react';
 import { TextInput } from '../../../components/common';
-import useStore from '../../../utils/store';
-import { User } from '../../../types';
 import { updateRoom } from '../../../services/firebase';
+import useStore from '../../../utils/store';
+import { User, RoomUpdateObject } from '../../../types';
 
 
 let timeout: number;
@@ -40,7 +40,7 @@ const UserNameUpdateForm = () => {
             .find((participant) => participant.id === userId);
 
           if (roomName && userInRoom) {
-            const updateObj: Record<string, any> = {};
+            const updateObj: RoomUpdateObject = {};
             updateObj[`participants.${userId}.name`] = value;
 
             updateRoom(roomName, updateObj);

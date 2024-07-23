@@ -51,9 +51,6 @@ Below is the remainder of the task list. All the tasks have been migrated into t
 
 |Settings Tasks|✅ or Release Version|
 |-|-|
-|Personal: Change username||
-|Personal: Dark or light mode||
-|Personal: Change theme||
 |Room: Pointing scale||
 |Room: Auto-show all votes when everyone has voted||
 |Room: Auto-create new ticket when changing the name after everyone votes||

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 
-import { GridPanel } from '../../../components/common';
-import useStore from '../../../utils/store';
 import { useTickets } from '../hooks';
 import { getPointOptions } from '../utils';
-import { PointOptions } from '../../../types';
-import styled, { css } from 'styled-components';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
+import { GridPanel } from '../../../components/common';
 import { GridPanelProps } from '../../../components/common/gridPanel';
+import { PointOptions } from '../../../types';
+import useStore from '../../../utils/store';
+import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 
 const VoteButtonsContainer = styled.div`
   display: flex;
@@ -67,7 +67,7 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
     ({ preferences, isTitleInputFocused, currentModal }) => (
       { user: preferences?.user, isTitleInputFocused, isModalOpen: !!currentModal }
     ));
-  const { currentTicket, handleUpdateLatestTicket, voteData } = useTickets();
+  const { currentTicket, handleUpdateCurrentTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
   const voteOptions = getPointOptions(currentTicket?.pointOptions);
 
@@ -78,9 +78,10 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
           selected={myVote === option}
           onClick={() => {
             if (user) {
-              handleUpdateLatestTicket(`votes.${user.id}`, option);
+              handleUpdateCurrentTicket(`votes.${user.id}`, option);
             }
           }}
+          disabled={!currentTicket}
         >
           {option}
         </VoteButton>
@@ -90,10 +91,10 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
   const handleKeyPress = useCallback(({ key }: KeyboardEvent) => {
     if (currentTicket && !isTitleInputFocused && !isModalOpen) {
       if (voteOptions.sequence.includes(parseInt(key))) {
-        handleUpdateLatestTicket(`votes.${user?.id}`, parseInt(key));
+        handleUpdateCurrentTicket(`votes.${user?.id}`, parseInt(key));
       }
       if (voteOptions.exclusions.includes(key)) {
-        handleUpdateLatestTicket(`votes.${user?.id}`, key);
+        handleUpdateCurrentTicket(`votes.${user?.id}`, key);
       }
     }
   }, [ currentTicket, isModalOpen, isTitleInputFocused, voteOptions ]);

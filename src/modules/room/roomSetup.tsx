@@ -2,16 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
 import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 
+import RoomPresenter from './roomPresenter';
 import Button from '../../components/common/button';
+import { useHeaderHeight } from '../../routes/root';
+import { createRoom, updateRoom, watchRoom } from '../../services/firebase';
+import { Participant, Room as RoomType, RoomUpdateObject } from '../../types';
 import { generateRoomName, usePrevious } from '../../utils';
 import useStore from '../../utils/store';
-import { Participant, Room as RoomType } from '../../types';
-import { createRoom, updateRoom, watchRoom } from '../../services/firebase';
-import { PointingTypes } from './utils';
-import { useHeaderHeight } from '../../routes/root';
-import RoomPresenter from './roomPresenter';
 
 type HeightAdjusted = {
   heightDiff: number;
@@ -70,7 +68,7 @@ const RoomSetup = () => {
     }),
   );
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
-  const [ isRoomOpen, setIsRoomOpen ] = useState(false);
+  const [isRoomOpen, setIsRoomOpen] = useState(false);
   const [isRoomRendered, setIsRoomRendered] = useState(false);
   const wasRendered = usePrevious(isRoomRendered);
   const wasOpen = usePrevious(isRoomOpen);
@@ -91,25 +89,15 @@ const RoomSetup = () => {
       inactive: false,
       joinedAt: Date.now(),
     };
-    const initialTicket = {
-      name: '',
-      createdBy: self.id,
-      id: uuid(),
-      shouldShowVotes: false,
-      votes: {},
-      createdAt: Date.now(),
-      pointOptions: PointingTypes.fibonacci,
-      votesShownAt: null,
-    };
     const newRoom: RoomType = {
       name: roomName,
       createdAt: Date.now(),
       participants: {
         [self.id]: self,
       },
-      tickets: {
-        [initialTicket.id]: initialTicket,
-      },
+      ticketQueue: [],
+      currentTicket: null,
+      completedTickets: [],
     };
 
     await createRoom(newRoom, (result) => {
@@ -156,7 +144,7 @@ const RoomSetup = () => {
 
       // If the user is not in the room, add them
       if (!userInRoom) {
-        const updateObj: Record<string, any> = {};
+        const updateObj: RoomUpdateObject = {};
         const selfAsParticipant: Participant = {
           id: user.id,
           name: user.name,
@@ -173,7 +161,7 @@ const RoomSetup = () => {
 
       // If the user is in the room, update their presence
       if (userInRoom && userInRoom.inactive) {
-        const updateObj: Record<string, any> = {};
+        const updateObj: RoomUpdateObject = {};
         updateObj[`participants.${user.id}.inactive`] = false;
         updateObj[`participants.${user.id}.consecutiveMisses`] = 0;
 

@@ -2,10 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import useStore from '../../../utils/store';
-import { updateRoom } from '../../../services/firebase';
 import MenuItem from './menuItem';
 import DoorIcon from '../../../assets/icons/door.svg?react';
+import { updateRoom } from '../../../services/firebase';
+import { RoomUpdateObject } from '../../../types';
+import useStore from '../../../utils/store';
 import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
 
 
@@ -34,7 +35,7 @@ const LeaveRoomMenuItem = () => {
 
   const handleExitRoom = () => {
     if (room && user && room.participants[ user.id ]) {
-      const updateObj: Record<string, any> = {};
+      const updateObj: RoomUpdateObject = {};
       updateObj[ `participants.${ user.id }.inactive` ] = true;
 
       updateRoom(room.name, updateObj);

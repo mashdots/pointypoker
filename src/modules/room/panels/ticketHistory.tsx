@@ -90,9 +90,8 @@ const PointCell = styled.div`
 
 const TicketHistory = ({ gridConfig }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const { sortedTickets } = useTickets();
-  const previousTickets = sortedTickets.slice(1);
-  const ticketRows = useMemo(() => previousTickets?.map(({
+  const { completedTickets } = useTickets();
+  const ticketRows = useMemo(() => completedTickets?.map(({
     id,
     name,
     averagePoints,
@@ -101,7 +100,7 @@ const TicketHistory = ({ gridConfig }: Props) => {
     const parsedUrl = parseURL(name ?? '');
     const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
     const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
-    const isLast = i === previousTickets.length - 1;
+    const isLast = i === completedTickets.length - 1;
 
     return (
       <TicketRow key={id} showBottomBorder={!isLast}>
@@ -110,7 +109,7 @@ const TicketHistory = ({ gridConfig }: Props) => {
         <PointCell>{averagePoints}</PointCell>
       </TicketRow>
     );
-  }), [previousTickets],
+  }), [completedTickets],
   );
 
   const header = (

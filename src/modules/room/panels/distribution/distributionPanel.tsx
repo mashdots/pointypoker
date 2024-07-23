@@ -4,9 +4,9 @@ import styled, { css } from 'styled-components';
 import { GridPanel } from '../../../../components/common';
 import { GridPanelProps } from '../../../../components/common/gridPanel';
 
-import { useTickets } from '../../hooks';
-import { getPointOptions } from '../../utils';
 import Consensus from './consensus';
+import { useTickets } from '../../hooks';
+import { getPointOptions, isVoteCast } from '../../utils';
 import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
 
 
@@ -96,9 +96,10 @@ const DistributionPanel = (props: GridPanelProps) => {
 
   const voteCounts = useMemo(
     () => voteData.reduce(
-      (acc: { [ key: string ]: number }, { vote }) => {
-        if (vote) {
-          acc[ vote ] = acc[ vote ] ? acc[ vote ] + 1 : 1;
+      (acc: { [key: string]: number }, { vote }) => {
+        if (isVoteCast(vote)) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          acc[vote!] = acc[vote!] ? acc[vote!] + 1 : 1;
         }
         return acc;
       },
@@ -109,7 +110,7 @@ const DistributionPanel = (props: GridPanelProps) => {
 
   const voteStats = useMemo(
     () => sequence.map((point) => {
-      const votes = voteCounts[ point ] || 0;
+      const votes = voteCounts[point] || 0;
       const votePercentage = (votes / voteData.length) * 100;
 
       if (exclusions.includes(point) && votePercentage === 0) {
@@ -122,7 +123,7 @@ const DistributionPanel = (props: GridPanelProps) => {
             <StatDisplay
               revealVotes={shouldShowVotes}
               percentage={votePercentage}
-              animationDuration={votes > 0 ? votes * 250 : 250}
+              animationDuration={votes ? votes * 250 : 250}
             />
           </StatDisplayWrapper>
           <StatLabel>{point}</StatLabel>
