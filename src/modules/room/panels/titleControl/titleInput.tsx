@@ -88,11 +88,11 @@ const TitleInput = () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         // If votes are shown, create a new ticket with the value.
-        if (shouldShowVotes) {
+        if (!currentTicket || shouldShowVotes) {
           handleCreateTicket(value);
         } else {
           // Otherwise update the current ticket with the value.
-          if (currentTicket?.name?.length === 0) {
+          if (currentTicket.name?.length === 0) {
             handleUpdateCurrentTicket('timerStartAt', Date.now());
           }
 
