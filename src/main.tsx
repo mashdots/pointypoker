@@ -7,12 +7,11 @@ import {
 
 import './index.css';
 import {
+  JiraRedirect,
   Root,
   Switcher,
 } from './routes';
-import JiraRedirect from './routes/jiraRedirect';
-
-export const JIRA_REDIRECT_PATH = '/jira-redirect';
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 const router = createBrowserRouter([
   {
