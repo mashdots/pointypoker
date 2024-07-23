@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { UserSetup } from '../modules/user';
-import { RoomSetup } from '../modules/room';
-import useStore from '../utils/store';
+import { UserSetup } from '@modules/user';
+import { RoomSetup } from '@modules/room';
+import useStore from '@utils/store';
 
 type WrapperProps = {
   shouldShow: boolean;

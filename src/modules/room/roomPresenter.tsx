@@ -10,7 +10,7 @@ import {
   VoteResults,
   VotingPanel,
 } from './panels';
-import { useMobile } from '../../utils/hooks/mobile';
+import { useMobile } from '@utils/hooks/mobile';
 
 type RoomDataContainerProps = {
   showNarrow: boolean;

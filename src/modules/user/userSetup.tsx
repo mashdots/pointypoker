@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useAuth } from './useAuth';
-import { ThemedProps } from '../../utils/styles/colors/colorSystem';
-import { TextInput } from '../../components/common';
+import { TextInput } from '@components/common';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type NoticeProps = ThemedProps & {
   shouldShow?: boolean;

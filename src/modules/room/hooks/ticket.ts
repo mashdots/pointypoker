@@ -5,10 +5,9 @@ import { v4 as uuid } from 'uuid';
 
 import { VoteDisplayProps } from '../panels/voteDisplay';
 import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes } from '../utils';
-import { updateRoom } from '../../../services/firebase';
-import { Ticket } from '../../../types';
-import useStore from '../../../utils/store';
-import { RoomUpdateObject } from '../../../types/room';
+import { updateRoom } from '@services/firebase';
+import useStore from '@utils/store';
+import { RoomUpdateObject, Ticket } from '@yappy/types';
 
 const useTickets = () => {
   const {

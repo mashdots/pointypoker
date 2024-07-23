@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components';
 
 import { useTickets } from '../hooks';
 import { getPointOptions } from '../utils';
-import { GridPanel } from '../../../components/common';
-import { GridPanelProps } from '../../../components/common/gridPanel';
-import { PointOptions } from '../../../types';
-import useStore from '../../../utils/store';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
+import { GridPanel } from '@components/common';
+import { GridPanelProps } from '@components/common/gridPanel';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { PointOptions } from '@yappy/types';
 
 const VoteButtonsContainer = styled.div`
   display: flex;

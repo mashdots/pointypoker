@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
-import { getTicketNumberFromUrl } from '../utils';
-import { getIcon } from '../../../components/icons';
-import { Ticket } from '../../../types';
-import GridPanel, { GridPanelProps } from '../../../components/common/gridPanel';
 import { useTickets } from '../hooks';
-import { ThemedProps } from '../../../utils/styles/colors/colorSystem';
+import { getTicketNumberFromUrl } from '../utils';
+import GridPanel, { GridPanelProps } from '@components/common/gridPanel';
+import { getIcon } from '@components/icons';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Ticket } from '@yappy/types';
 
 type Props = GridPanelProps & {
   previousTickets?: Ticket[];
