@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import MenuItem from './menuItem';
-import { RoomUpdateObject } from '../../../types';
 import DoorIcon from '@assets/icons/door.svg?react';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { RoomUpdateObject } from '@yappy/types';
 
 
 const Icon = styled(DoorIcon)<ThemedProps>`
