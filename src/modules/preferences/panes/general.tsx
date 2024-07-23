@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
 import { SettingsRow, VerticalContainer } from './common';
-import { TextInput } from '../../../components/common';
+import { TextInput } from '@components/common';
 import Icon from '@assets/icons/settings-general.svg?react';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';

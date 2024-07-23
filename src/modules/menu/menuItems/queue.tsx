@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import MenuItem from './menuItem';
-import { MODAL_TYPES } from '../../modal';
+import { MODAL_TYPES } from '@modules/modal';
 import QueueIcon from '@assets/icons/queue.svg?react';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';

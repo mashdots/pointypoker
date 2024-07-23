@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
 import { useTickets } from '../../hooks';
-import ArticleIcon from '../../../../assets/icons/article.svg?react';
-import LinkIcon from '../../../../assets/icons/link-out.svg?react';
-import { TextInput } from '../../../../components/common';
-import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
-import useStore from '../../../../utils/store';
+import ArticleIcon from '@assets/icons/article.svg?react';
+import LinkIcon from '@assets/icons/link-out.svg?react';
+import { TextInput } from '@components/common';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
 
 
 type FocusProps = ThemedProps & {

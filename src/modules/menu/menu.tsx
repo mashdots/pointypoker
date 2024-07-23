@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import debounce from 'lodash/debounce';
 
+import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, QueueMenuItem } from './menuItems';
+import { ThemeModeToggleRow } from '@modules/preferences';
+import { Separator } from '@modules/preferences/panes/common';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
-import { ThemeModeToggleRow } from '../preferences';
-import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, QueueMenuItem } from './menuItems';
-import { Separator } from '../preferences/panes/common';
 
 type Props = {
   topOffset: number;

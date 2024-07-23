@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
-import { GridPanel } from '../../../../components/common';
-import { GridPanelProps } from '../../../../components/common/gridPanel';
-
 import Consensus from './consensus';
 import { useTickets } from '../../hooks';
 import { getPointOptions, isVoteCast } from '../../utils';
-import { ThemedProps } from '../../../../utils/styles/colors/colorSystem';
+import { GridPanel } from '@components/common';
+import { GridPanelProps } from '@components/common/gridPanel';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 
 const Wrapper = styled.div`

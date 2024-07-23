@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import TitleInput from './titleInput';
-import Button from '../../../../components/common/button';
 import { useTickets } from '../../hooks';
-import PlusIcon from '../../../../assets/icons/plus.svg?react';
-import { useMobile } from '../../../../utils/hooks/mobile';
+import PlusIcon from '@assets/icons/plus.svg?react';
+import Button from '@components/common/button';
+import { useMobile } from '@utils/hooks/mobile';
 
 const Wrapper = styled.div`
   display: flex;

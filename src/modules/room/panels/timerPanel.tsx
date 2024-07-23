@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Timer } from '../components';
 import { useTickets } from '../hooks';
-import GridPanel, { GridPanelProps } from '../../../components/common/gridPanel';
+import GridPanel, { GridPanelProps } from '@components/common/gridPanel';
 
 const Wrapper = styled.div`
   display: flex;
