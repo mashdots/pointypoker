@@ -6,6 +6,8 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
+    "clean": "rm -rf node_modules && yarn install",
+    "clean:deep": "rm -rf node_modules && rm yarn.lock && yarn install",
     "deploy": "firebase deploy --only hosting",
     "preview": "vite preview"
   },
