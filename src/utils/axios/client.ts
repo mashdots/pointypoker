@@ -17,6 +17,6 @@ type ClientConfig = {
   headers: Headers,
 }
 
-const getApiClient = (config: ClientConfig): AxiosInstance => axios.create(config);
+const createApiClient = (config: ClientConfig): AxiosInstance => axios.create(config);
 
-export default getApiClient;
+export default createApiClient;

@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import useStore from '@utils/store';
-import getApiClient from '@utils/axios';
+import createApiClient from '@utils/axios';
+import { AxiosInstance } from 'axios';
 
 type InitialAuth = {
   code: string;
@@ -19,6 +20,18 @@ type JiraAuthPayload = {
   client_id: string;
   client_secret: string;
 } & (InitialAuth | RefreshAuth);
+
+export type JiraBoardPayload = {
+  id: number;
+  name: string;
+  self: string;
+}
+
+export type JiraBoard = {
+  id: number;
+  name: string;
+  apiUrl: string;
+}
 
 export type JiraAuthData = {
   access_token: string;
@@ -37,6 +50,10 @@ export type JiraResourceData = {
   avatarUrl: string;
 }
 
+export type JiraPreferences = {
+  defaultBoard: JiraBoard;
+}
+
 /**
  * Jira service
  *
@@ -52,8 +69,10 @@ export type JiraResourceData = {
  */
 
 const useJira = () => {
-  const { access, userId, isExpired, setAccess } = useStore(({ preferences, setPreferences }) => ({
+  const [apiClient, setApiClient] = useState<AxiosInstance | null>(null);
+  const { access, resources, userId, isExpired, setAccess } = useStore(({ preferences, setPreferences }) => ({
     access: preferences?.jiraAccess,
+    resources: preferences?.jiraResources,
     isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
     setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
     userId: preferences?.user?.id,
@@ -107,7 +126,7 @@ const useJira = () => {
       (data as RefreshAuth).refresh_token = authorization;
     }
 
-    const accessClient = getApiClient({
+    const accessClient = createApiClient({
       baseURL: url,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -133,17 +152,28 @@ const useJira = () => {
     }
   }, [access, isExpired]);
 
-  const getAccessibleResources = useCallback(async () => {
-    if (access) {
-      const accessToken = await getJiraAccessToken(true);
+  const getApiClient = useCallback(async (forceRefresh?: boolean): Promise<AxiosInstance> => {
+    if (!apiClient || isExpired) {
+      const accessToken = await getJiraAccessToken(forceRefresh);
       const url = `https://${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`;
-      const client = getApiClient({
+      const client = createApiClient({
         baseURL: url,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: 'application/json',
         },
       });
+
+      setApiClient(client);
+    }
+
+    return apiClient as AxiosInstance;
+  }, [apiClient, isExpired]);
+
+
+  const getAccessibleResources = useCallback(async () => {
+    if (access) {
+      const client = await getApiClient(true);
 
       return client
         .get(`/${URL_ACTIONS.GET_RESOURCES}`)
@@ -162,6 +192,26 @@ const useJira = () => {
   /**
    * Query methods
   */
+
+  const getAllBoards = async (startAt = 0) => {
+    const client = await getApiClient();
+    const path = `/${URL_ACTIONS.JIRA_API_PREFIX}${resources?.id}/${URL_ACTIONS.BOARD_PATH}`;
+
+    return client(
+      {
+        method: 'GET',
+        url: path,
+        params: {
+          startAt,
+          maxResults: 25,
+        },
+      },
+    )
+      .then((res): JiraBoardPayload => res.data)
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
 
   const getIssuesFromEpic = () => {
     // Get issues from epic
@@ -184,9 +234,11 @@ const useJira = () => {
   };
 
   return {
+    jiraAccessibleResources: resources,
     launchJiraOAuth,
     getAccessTokenFromApi,
     getAccessibleResources,
+    getAllBoards,
     getIssuesFromEpic,
     getIssuesFromSprint,
     getIssueDetail,

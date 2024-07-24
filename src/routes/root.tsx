@@ -6,10 +6,10 @@ import '../App.css';
 import Header from '@components/header';
 import Menu from '@modules/menu';
 import { useAuth } from '@modules/user';
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import { MobileProvider } from '@utils/hooks/mobile';
 import Modal from '@modules/modal';
 import usePreferenceSync from '@modules/preferences/hooks';
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
 

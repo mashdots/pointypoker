@@ -1,3 +1,3 @@
-import getApiClient from './client';
+import createApiClient from './client';
 
-export default getApiClient;
+export default createApiClient;
