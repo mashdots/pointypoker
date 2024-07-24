@@ -107,9 +107,9 @@ const useTickets = () => {
 
         // Move the current ticket to the completed tickets array
         updateObj['completedTickets'] = arrayUnion(completedTicket);
-
-        updateRoom(roomName, updateObj);
       }
+
+      updateRoom(roomName, updateObj);
     }
   }, [roomName, currentTicket, participants]);
 

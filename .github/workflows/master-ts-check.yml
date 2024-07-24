@@ -36,7 +36,7 @@ jobs:
         VITE_FB_APP_ID: ${{ secrets.VITE_FB_APP_ID }}
         VITE_VERSION: ${{ env.VITE_VERSION }}
 
-    - name: Deploy project
+    - name: Deploy to preview channel
       uses: FirebaseExtended/action-hosting-deploy@v0
       with:
         repoToken: "${{ secrets.GITHUB_TOKEN }}"
