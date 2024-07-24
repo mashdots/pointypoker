@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { JiraAuthData, JiraResourceData } from '../integrations/jira';
+import { JiraAuthData, JiraPreferences, JiraResourceData } from '../integrations/jira';
 import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
 import { User } from '@yappy/types';
@@ -13,6 +13,8 @@ export type PreferencesType = {
     | THEME_MODES
     | User
     | JiraAuthData
+    | JiraResourceData
+    | JiraPreferences
     | undefined
     | null;
   theme?: THEMES;
@@ -22,6 +24,7 @@ export type PreferencesType = {
   user?: User | null;
   jiraAccess?: JiraAuthData;
   jiraResources?: JiraResourceData;
+  jiraPreferences?: JiraPreferences;
 }
 
 const getPrefFromLocalStorage = (key: string): string | boolean | number | THEMES | THEME_MODES | undefined => {
