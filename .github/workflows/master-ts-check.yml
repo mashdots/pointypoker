@@ -42,4 +42,5 @@ jobs:
         repoToken: "${{ secrets.GITHUB_TOKEN }}"
         firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_YAPPY_DEV_22D70 }}"
         expires: 30d
+        channelId: ${{ github.sha }}
         projectId: ${{ secrets.VITE_FB_PROJECT_ID }}
