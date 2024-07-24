@@ -4,6 +4,8 @@ export enum URL_ACTIONS {
   AUTHORIZE = 'authorize',
   OAUTH = 'oauth/token',
   GET_RESOURCES = 'oauth/token/accessible-resources',
+  JIRA_API_PREFIX = 'ex/jira/',
+  BOARD_PATH = 'rest/agile/1.0/board',
 }
 
 type UrlOptions = {
@@ -27,14 +29,23 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
     }
 
     const scopes = [
+      'offline_access',
+      'read:me',
+      'read:group:jira',
       'read:issue:jira',
       'write:issue:jira',
+      'read:field:jira',
+      'read:issue-details:jira',
+      'read:user:jira',
+      'read:project:jira',
+      'read:board-scope:jira-software',
+      'read:epic:jira-software',
       'read:issue:jira-software',
       'write:issue:jira-software',
-      'read:epic:jira-software',
-      'read:user:jira',
-      'offline_access',
+      'read:sprint:jira-software',
+      // 'read:user:jira',
     ];
+
     const params = new URLSearchParams({
       audience: `${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`,
       client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
