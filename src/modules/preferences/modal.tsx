@@ -53,7 +53,6 @@ const CategoryList = styled.ul<MobileProps>`
 
 const SettingsContainer = styled.div`
   display: flex;
-  flex: 4;
   overflow: auto;
   width: 100%;
 
