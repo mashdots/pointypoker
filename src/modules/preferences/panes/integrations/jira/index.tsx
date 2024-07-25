@@ -10,6 +10,8 @@ import Spinner from '@assets/icons/loading-circle.svg?react';
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
 import { JiraResourceData } from '@modules/integrations/jira';
+import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
+import { Separator, VerticalContainer } from '@modules/preferences/panes/common';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
@@ -78,29 +80,32 @@ const InformationWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin: 1rem 0;
-  padding: 0 1rem;
+  margin: 0.5rem 0;
+  padding: 1rem;
 
   border-radius: 0.5rem;
 
   > p {
-    font-size: 0.75rem;
+    margin: 0;
+    font-size: 0.8rem;
   }
 `;
 
 const ConnectWrapper = styled(InformationWrapper)`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${ theme.success.componentBgActive };
+    border: 2px solid ${ theme.success.borderElement };
   `};
 `;
 
 const NoticeWrapper = styled(InformationWrapper)`
   ${({ theme }: ThemedProps) => css`
-    border: 2px solid ${ theme.warning.borderElement };
+    background-color: ${ theme.warning.componentBgHover };
   `};
 `;
 
-const DisconnectInfoWrapper = styled(InformationWrapper)``;
+const DisconnectInfoWrapper = styled(InformationWrapper)`
+  padding: 0;
+`;
 
 const RevokeLink = styled.a`
   ${({ theme }: ThemedProps) => css`
@@ -117,6 +122,17 @@ const RevokeLink = styled.a`
     text-decoration-thickness: 1px;
     color: ${({ theme }: ThemedProps) => theme.error.solidBgHover};
   }
+`;
+
+const Wrapper = styled(VerticalContainer)`
+  ${ ({ theme }: ThemedProps) => css`
+    background-color: ${ theme.greyscale.componentBgActive };
+  `}
+
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  margin: 0.5rem;
 `;
 
 const JiraIntegrationCard = () => {
@@ -220,7 +236,7 @@ const JiraIntegrationCard = () => {
   );
 
   const disconnectBlock = (
-    <DisconnectInfoWrapper>
+    <DisconnectInfoWrapper key="disconnect-info">
       <p>
         The following revokes access to Jira by clearing all local token data
         and navigating you to manage your connected Atlassian apps:&nbsp;&nbsp;
@@ -252,6 +268,12 @@ const JiraIntegrationCard = () => {
       {connectInfoBlock}
       {isConfigured && resources && [
         connectSuccessBlock,
+        (
+          <Wrapper key='integration-settings'>
+            <DefaultBoardSection />
+          </Wrapper>
+        ),
+        <Separator key='separator' />,
         disconnectBlock,
       ]}
     </IntegrationCard>
