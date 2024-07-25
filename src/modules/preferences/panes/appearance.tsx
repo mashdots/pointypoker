@@ -52,6 +52,7 @@ const ColorChip = styled.span<Pick<ThemeOptionWrapperProps, 'baseColor'>>`
   display: inline-block;
   height: 2rem;
   width: 2rem;
+  min-width: 2rem;
   margin-right: 0.5rem;
 `;
 
