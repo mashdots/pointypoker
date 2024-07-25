@@ -15,6 +15,7 @@ type Props = {
   placeHolder?: string;
   value: string;
   size?: 'small' | 'medium' | 'large';
+  collapse?: boolean;
 }
 
 type InputProps = ThemedProps & {
@@ -23,12 +24,15 @@ type InputProps = ThemedProps & {
   size: number;
 }
 
-const InputWrapper = styled.div`
+const InputWrapper = styled.div<{ noPadding: boolean }>`
+  ${({ noPadding }) => css`
+    padding: ${noPadding ? '0' : '1rem'};
+  `}
+
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 1rem;
 `;
 
 const StyledInput = styled.input<InputProps>`
@@ -79,6 +83,7 @@ const TextInput = ({
   onFocus,
   onBlur,
   size,
+  collapse = false,
 }: Props) => {
   let inputAlign;
   let inputSize;
@@ -110,7 +115,7 @@ const TextInput = ({
   }
 
   return (
-    <InputWrapper>
+    <InputWrapper noPadding={collapse}>
       {icon}
       <StyledInput
         data-1pignore="true"

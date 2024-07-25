@@ -21,10 +21,18 @@ type JiraAuthPayload = {
   client_secret: string;
 } & (InitialAuth | RefreshAuth);
 
-export type JiraBoardPayload = {
+export type JiraBoardPayloadValue = {
   id: number;
   name: string;
   self: string;
+}
+
+export type JiraBoardPayload = {
+  maxResults: number;
+  startAt: number;
+  isLast: boolean;
+  total: number;
+  values: JiraBoardPayloadValue[];
 }
 
 export type JiraBoard = {
@@ -51,7 +59,7 @@ export type JiraResourceData = {
 }
 
 export type JiraPreferences = {
-  defaultBoard: JiraBoard;
+  defaultBoard: JiraBoardPayloadValue | null;
 }
 
 /**
@@ -152,28 +160,17 @@ const useJira = () => {
     }
   }, [access, isExpired]);
 
-  const getApiClient = useCallback(async (forceRefresh?: boolean): Promise<AxiosInstance> => {
-    if (!apiClient || isExpired) {
-      const accessToken = await getJiraAccessToken(forceRefresh);
-      const url = `https://${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`;
+  const getAccessibleResources = useCallback(async () => {
+    if (access) {
+      const accessToken = await getJiraAccessToken(true);
+      const url = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
       const client = createApiClient({
         baseURL: url,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${ accessToken }`,
           Accept: 'application/json',
         },
       });
-
-      setApiClient(client);
-    }
-
-    return apiClient as AxiosInstance;
-  }, [apiClient, isExpired]);
-
-
-  const getAccessibleResources = useCallback(async () => {
-    if (access) {
-      const client = await getApiClient(true);
 
       return client
         .get(`/${URL_ACTIONS.GET_RESOURCES}`)
@@ -193,8 +190,16 @@ const useJira = () => {
    * Query methods
   */
 
-  const getAllBoards = async (startAt = 0) => {
-    const client = await getApiClient();
+  const getAllBoards = async (startAt = 0, maxResults = 25) => {
+    const accessToken = await getJiraAccessToken(true);
+    const url = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
+    const client = createApiClient({
+      baseURL: url,
+      headers: {
+        Authorization: `Bearer ${ accessToken }`,
+        Accept: 'application/json',
+      },
+    });
     const path = `/${URL_ACTIONS.JIRA_API_PREFIX}${resources?.id}/${URL_ACTIONS.BOARD_PATH}`;
 
     return client(
@@ -203,7 +208,8 @@ const useJira = () => {
         url: path,
         params: {
           startAt,
-          maxResults: 25,
+          maxResults,
+          orderBy: 'name',
         },
       },
     )
