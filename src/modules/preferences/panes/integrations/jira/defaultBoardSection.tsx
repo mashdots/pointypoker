@@ -2,19 +2,13 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import PlusIcon from '@assets/icons/plus.svg?react';
-import DefaultBoardPicker from '@modules/preferences/panes/integrations/jira/defaultBoardPicker';
+import BoardImage from '@assets/icons/article.svg?react';
+import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-
-const Label = styled.label`
-  display: flex;
-  margin-bottom: 0.5rem;
-`;
-
-const Control = styled.span`
-  display: flex;
-  align-items: center;
-`;
+import { useJira } from '@modules/integrations';
+import { JiraBoardPayloadValue } from '@modules/integrations/jira';
+import { Control, Description, Label, SelectedOptionWrapper, SetupPrefWrapper } from '@modules/preferences/panes/integrations/jira/commonComponents';
 
 const CloseIcon = styled(PlusIcon)`
   cursor: pointer;
@@ -23,50 +17,68 @@ const CloseIcon = styled(PlusIcon)`
   margin-left: 0.25rem;
   transform: rotate(45deg);
   
-  > line {
-    transition: stroke 300ms;
-    stroke: ${ ({ theme }: ThemedProps) => theme.primary.textLow };
-  }
+  ${({ theme }: ThemedProps) => css`
+    > line {
+      stroke: ${theme.primary.textLow};
+    }
+  `}
 `;
 
-const DefaultBoardWrapper = styled.div`
-  ${({ theme }: ThemedProps) => css`
-  background-color: ${theme.greyscale.bgAlt};
-    color: ${theme.primary.textHigh};
-  `}
+const BoardIcon = styled(BoardImage)`
+  margin-right: 0.25rem;
+  margin-left: 0rem;
+  width: 1.5rem;
+    
+  ${ ({ theme }: ThemedProps) => css`
+    > line {
+      stroke: ${theme.primary.textHigh};
+    }
 
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0;
-  width: 100%;
-  border-radius: 0.5rem;
+    > rect {
+      stroke: ${theme.primary.textLow};
+    }
+  `}
 `;
 
 const DefaultBoardSection = () => {
-  const { defaultBoard, clearDefaultBoard } = useStore(({ preferences, setPreferences }) => ({
+  const { defaultBoard, clearDefaultBoard, setDefaultBoard } = useStore(({ preferences, setPreferences }) => ({
     defaultBoard: preferences?.jiraPreferences?.defaultBoard,
     clearDefaultBoard: () => setPreferences('jiraPreferences', { ...preferences?.jiraPreferences, defaultBoard: null }),
+    setDefaultBoard: (board: JiraBoardPayloadValue) => setPreferences('jiraPreferences', { ...preferences?.jiraPreferences, defaultBoard: board }),
   }));
+  const { getBoards } = useJira();
+  const transformer = (boards: JiraBoardPayloadValue[]) => boards.map(
+    (board) => ({ id: board.id, name: board.name, selectValue: board, shortDesc: `(${board.id})` }),
+  );
 
   const picker = !defaultBoard?.name
-    ? <DefaultBoardPicker />
+    ? (
+      <OptionPicker
+        idPrefix='board'
+        placeholder='Search for a board'
+        fetchFn={getBoards}
+        storeUpdateFn={setDefaultBoard}
+        transformFn={transformer}
+      />
+    )
     : (
-      <DefaultBoardWrapper>
+      <SelectedOptionWrapper>
         {defaultBoard.name} <CloseIcon onClick={() => clearDefaultBoard()} />
-      </DefaultBoardWrapper>
+      </SelectedOptionWrapper>
     );
 
   return (
-    <>
+    <SetupPrefWrapper>
       <Label>
-        Default Board
+        <BoardIcon /> Default Board
       </Label>
+      <Description>
+        The board typically associated with your team&apos;s work.
+      </Description>
       <Control>
         {picker}
       </Control>
-    </>
+    </SetupPrefWrapper>
   );
 };
 

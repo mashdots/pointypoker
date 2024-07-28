@@ -41,7 +41,7 @@ const TitleIcon = styled(ArticleIcon)<FocusProps>`
       stroke: ${ theme.primary[$isFocused ? 'textHigh' : 'textLow'] };
     }
 
-    > rect:nth-child(2) {
+    > rect {
       stroke: ${ theme.primary[$isFocused ? 'textHigh' : 'textLow'] };
     }
   `}
