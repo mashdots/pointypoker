@@ -6,6 +6,7 @@ export enum URL_ACTIONS {
   GET_RESOURCES = 'oauth/token/accessible-resources',
   JIRA_API_PREFIX = 'ex/jira/',
   BOARD_PATH = 'rest/agile/1.0/board',
+  FIELD_PATH = 'rest/api/3/field',
 }
 
 type UrlOptions = {
@@ -30,19 +31,25 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
 
     const scopes = [
       'offline_access',
-      'read:me',
-      'read:group:jira',
-      'read:issue:jira',
-      'write:issue:jira',
-      'read:field:jira',
-      'read:issue-details:jira',
-      'read:user:jira',
-      'read:project:jira',
+      'read:avatar:jira',
       'read:board-scope:jira-software',
-      'read:epic:jira-software',
+      'read:field:jira',
+      'read:issue:jira',
       'read:issue:jira-software',
-      'write:issue:jira-software',
+      'read:issue-details:jira',
+      'read:jira-work',
+      'read:project:jira',
+      'read:project-category:jira',
       'read:sprint:jira-software',
+      'read:field-configuration:jira',
+      // 'read:group:jira',
+      // 'write:issue:jira',
+      // 'read:user:jira',
+      // 'read:epic:jira-software',
+      // 'write:issue:jira-software',
+      // 'read:jira-work',
+      // 'read:avatar:jira',
+      // 'read:me',
       // 'read:user:jira',
     ];
 
