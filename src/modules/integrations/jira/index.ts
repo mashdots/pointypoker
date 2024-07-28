@@ -1,10 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import useStore from '@utils/store';
 import createApiClient from '@utils/axios';
-import { AxiosInstance } from 'axios';
 
 type InitialAuth = {
   code: string;
@@ -27,12 +26,34 @@ export type JiraBoardPayloadValue = {
   self: string;
 }
 
-export type JiraBoardPayload = {
+export type JiraFieldPayload = {
+  id: string;
+  name: string;
+  scope?: {
+    type: string;
+    project?: {
+      id: string;
+    }
+  },
+  schema: {
+    type: string;
+  }
+}
+
+export type BasePayload = {
   maxResults: number;
   startAt: number;
   isLast: boolean;
   total: number;
+}
+
+export type JiraBoardPayload = BasePayload & {
   values: JiraBoardPayloadValue[];
+}
+
+export type JiraField = {
+  id: string;
+  name: string;
 }
 
 export type JiraBoard = {
@@ -59,7 +80,8 @@ export type JiraResourceData = {
 }
 
 export type JiraPreferences = {
-  defaultBoard: JiraBoardPayloadValue | null;
+  defaultBoard?: JiraBoardPayloadValue | null;
+  pointField?: JiraField | null;
 }
 
 /**
@@ -77,7 +99,6 @@ export type JiraPreferences = {
  */
 
 const useJira = () => {
-  const [apiClient, setApiClient] = useState<AxiosInstance | null>(null);
   const { access, resources, userId, isExpired, setAccess } = useStore(({ preferences, setPreferences }) => ({
     access: preferences?.jiraAccess,
     resources: preferences?.jiraResources,
@@ -190,8 +211,8 @@ const useJira = () => {
    * Query methods
   */
 
-  const getAllBoards = async (startAt = 0, maxResults = 25) => {
-    const accessToken = await getJiraAccessToken(true);
+  const getBoards = async (maxResults = 25, name?: string) => {
+    const accessToken = await getJiraAccessToken();
     const url = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
     const client = createApiClient({
       baseURL: url,
@@ -207,9 +228,9 @@ const useJira = () => {
         method: 'GET',
         url: path,
         params: {
-          startAt,
           maxResults,
           orderBy: 'name',
+          name,
         },
       },
     )
@@ -219,8 +240,31 @@ const useJira = () => {
       });
   };
 
-  const getIssuesFromEpic = () => {
-    // Get issues from epic
+  const getIssueFields = async () => {
+    const accessToken = await getJiraAccessToken();
+    const url = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
+    const client = createApiClient({
+      baseURL: url,
+      headers: {
+        Authorization: `Bearer ${ accessToken }`,
+        Accept: 'application/json',
+      },
+    });
+    const path = `/${URL_ACTIONS.JIRA_API_PREFIX}${resources?.id}/${URL_ACTIONS.FIELD_PATH}`;
+
+    return client(
+      {
+        method: 'GET',
+        url: path,
+        params: {
+          orderBy: 'name',
+        },
+      },
+    )
+      .then((res): { values: JiraFieldPayload[] } => ({ values: res.data }))
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 
   const getIssuesFromSprint = () => {
@@ -244,8 +288,8 @@ const useJira = () => {
     launchJiraOAuth,
     getAccessTokenFromApi,
     getAccessibleResources,
-    getAllBoards,
-    getIssuesFromEpic,
+    getBoards,
+    getIssueFields,
     getIssuesFromSprint,
     getIssueDetail,
     assignPointsToIssue,
