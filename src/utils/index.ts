@@ -21,6 +21,7 @@ const usePrevious = <T>(value: T): T | undefined => {
   return ref.current;
 };
 
+const isDev = import.meta.env.MODE === 'development';
 
 export {
   createUserPayload,
@@ -29,4 +30,5 @@ export {
   getCookie,
   setCookie,
   usePrevious,
+  isDev,
 };
