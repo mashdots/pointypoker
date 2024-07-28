@@ -6,6 +6,7 @@ import usePreferenceSync from '../../../hooks';
 import Check from '@assets/icons/check.svg?react';
 import JiraLogo from '@assets/icons/jira-logo.svg?react';
 import Link from '@assets/icons/link-out.svg?react';
+import Copy from '@assets/icons/copy.svg?react';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
@@ -14,6 +15,8 @@ import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/de
 import { Separator, VerticalContainer } from '@modules/preferences/panes/common';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import PointFieldSection from '@modules/preferences/panes/integrations/jira/pointFieldSection';
+import { isDev } from '@utils';
 
 const spin = keyframes`
   0% {
@@ -69,6 +72,12 @@ const SuccessIcon = styled(Check)`
 `;
 
 const LinkIcon = styled(Link)`
+  height: 0.75rem;
+  width: 0.75rem;
+  margin-left: 0.25rem;
+`;
+
+const CopyIcon = styled(Copy)`
   height: 0.75rem;
   width: 0.75rem;
   margin-left: 0.25rem;
@@ -140,11 +149,13 @@ const JiraIntegrationCard = () => {
   const [isError, setIsError] = useState(false);
   const {
     isConfigured,
+    accessToken,
     resources,
     setResources,
     revokeAccess,
   } = useStore(({ preferences, setPreferences }) => ({
     isConfigured: !!preferences?.jiraAccess,
+    accessToken: preferences?.jiraAccess?.access_token,
     resources: preferences?.jiraResources,
     setResources: (resources: JiraResourceData | null) => setPreferences('jiraResources', resources),
     revokeAccess: () => {
@@ -217,11 +228,16 @@ const JiraIntegrationCard = () => {
     window.open('https://id.atlassian.com/manage-profile/apps', '_blank');
   };
 
+  const copyTokenLink = isDev ? (
+    <span style={{ cursor: 'pointer' }} onClick={() => navigator.clipboard.writeText(accessToken ?? '')}>
+      <CopyIcon />
+    </span>
+  ) : null;
 
   const connectSuccessBlock = (
     <ConnectWrapper key='success-notice'>
       <SuccessIcon />
-      <p>connected to {resources?.name}</p>
+      <p>connected to {resources?.name} {copyTokenLink}</p>
     </ConnectWrapper>
   );
 
@@ -230,7 +246,8 @@ const JiraIntegrationCard = () => {
       <p>
         By connecting to Jira, you authorize pointy poker to view and modify
         issues on your behalf. Your credentials are only stored locally and are
-        only used to communicate with Jira.
+        only used to communicate with Jira. The only ticket data stored in the
+        cloud is the ticket title, points, and the ticket number. {'<--'} Copy TBD
       </p>
     </NoticeWrapper>
   );
@@ -268,12 +285,18 @@ const JiraIntegrationCard = () => {
       {connectInfoBlock}
       {isConfigured && resources && [
         connectSuccessBlock,
+        <Separator key='separator-1' />,
+        <p key="setup-message">
+          Every Jira instance is different, so some extra configuration is
+          necessary to make things work as ✨expected✨.
+        </p>,
         (
-          <Wrapper key='integration-settings'>
+          <Wrapper key='integration-setup'>
             <DefaultBoardSection />
+            <PointFieldSection />
           </Wrapper>
         ),
-        <Separator key='separator' />,
+        <Separator key='separator-2' />,
         disconnectBlock,
       ]}
     </IntegrationCard>
