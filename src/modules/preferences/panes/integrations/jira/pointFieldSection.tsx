@@ -76,7 +76,7 @@ const PointFieldSection = () => {
         <FieldIcon /> Issue Point Field
       </Label>
       <Description>
-        The field in Jira represents the points for an issue
+        The field in Jira that represents the points for an issue
       </Description>
       <Control>
         {picker}

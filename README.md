@@ -8,6 +8,7 @@ Codename Yappy is a simple pointing poker app that allows you to create a room a
 - [Phosphor Icons](https://phosphoricons.com/)
 - [Radix UI Colors](https://www.radix-ui.com/colors)
 - [Google Fonts](https://fonts.google.com/)
+- [Firebase](https://firebase.google.com/)
 
 ## Versioning Methodology
 

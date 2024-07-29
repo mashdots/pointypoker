@@ -161,6 +161,7 @@ const JiraIntegrationCard = () => {
     revokeAccess: () => {
       setPreferences('jiraAccess', null);
       setPreferences('jiraResources', null);
+      setPreferences('jiraPreferences', null);
     },
   }));
   const { launchJiraOAuth, getAccessibleResources } = useJira();
