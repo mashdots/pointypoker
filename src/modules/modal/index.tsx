@@ -16,7 +16,7 @@ import useStore from '@utils/store';
 export enum MODAL_TYPES {
   FEEDBACK,
   PREFERENCES,
-  QUEUE,
+  JIRA,
 }
 
 type VisibleProps = {
@@ -57,7 +57,7 @@ const Container = styled.div<VisibleProps>`
     background-color: ${theme.greyscale.bgAlt};
     border-color: ${theme.primary.border};
     color: ${theme.primary.textHigh};
-    height: ${isMobile ? 90 : 50}%;
+    height: ${isMobile ? 90 : 60}%;
     min-width: ${isMobile ? '90%' : '720px'};
     width: ${isMobile ? 90 : 50}%;
     transform: translateY(${isVisible ? 1 : 3}rem);
@@ -164,9 +164,9 @@ const Modal = () => {
           contents: <PreferencesModal />,
         };
         break;
-      case MODAL_TYPES.QUEUE:
+      case MODAL_TYPES.JIRA:
         modalContent = {
-          title: 'Build a ticket queue',
+          title: 'Import from Jira',
           contents: <QueueModal />,
         };
         break;

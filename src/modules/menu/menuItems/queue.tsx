@@ -24,7 +24,7 @@ const Icon = styled(QueueIcon) <ThemedProps>`
 `;
 
 const QueueMenuItem = () => {
-  const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.QUEUE));
+  const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.JIRA));
 
   return (
     <MenuItem
