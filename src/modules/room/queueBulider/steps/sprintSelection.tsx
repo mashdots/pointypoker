@@ -4,11 +4,11 @@ import styled, { css, keyframes } from 'styled-components';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { useJira } from '@modules/integrations';
 import { JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
-import { SelectionWrapper } from '@modules/room/queueBulider/steps/common';
+import { InformationWrapper, SelectionWrapper } from '@modules/room/queueBulider/steps/common';
 import useStore from '@utils/store';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { spinAnimation } from '@components/common/animations';
+import { cardEntranceAnimation, spinAnimation } from '@components/common/animations';
 
 type Props = {
   boardId?: string | number;
@@ -19,25 +19,6 @@ type SprintOptionProps = {
   hasIssues: boolean;
   delayFactor?: number;
 } & ThemedProps;
-
-const entrance = keyframes`
-  0% {
-    opacity: 0;
-    transform: translateY(-1rem);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const SprintInformationWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-  height: 2rem;
-`;
 
 const LoadingWrapper = styled.span<{ size: number }>`
   display: flex;
@@ -81,7 +62,7 @@ const SprintOption = styled.div<SprintOptionProps>`
     background-color: ${ theme.greyscale.componentBg };
     color: ${ theme.greyscale[hasIssues ? 'textHigh' : 'textLow'] };
     border: 2px solid ${theme.greyscale[ hasIssues ? 'borderElement' : 'componentBg']};
-    animation: ${entrance} 0.25s ease-out ${delayFactor}ms forwards;
+    animation: ${cardEntranceAnimation} 0.25s ease-out ${delayFactor}ms forwards;
 
     &:hover {
       background-color: ${ theme.greyscale[ hasIssues ? 'componentBgHover' : 'componentBg' ] };
@@ -231,9 +212,9 @@ const SprintSelection = ({
 
   return (
     <SelectionWrapper isColumn style={{ height: '100%' }}>
-      <SprintInformationWrapper>
+      <InformationWrapper>
         {loadingIcon}
-      </SprintInformationWrapper>
+      </InformationWrapper>
       <SprintOptionWrapper>
         {sprintOptions}
       </SprintOptionWrapper>
