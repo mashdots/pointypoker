@@ -19,4 +19,16 @@ type ClientConfig = {
 
 const createApiClient = (config: ClientConfig): AxiosInstance => axios.create(config);
 
+const getJiraApiClient = (baseUrl: string, accessToken: string): AxiosInstance => createApiClient({
+  baseURL: baseUrl,
+  headers: {
+    Authorization: `Bearer ${ accessToken }`,
+    Accept: 'application/json',
+  },
+});
+
 export default createApiClient;
+
+export {
+  getJiraApiClient,
+};
