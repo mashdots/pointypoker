@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { JiraAuthData, JiraPreferences, JiraResourceData } from '../integrations/jira';
+import { JiraAuthData, JiraPreferences, JiraResourceData } from '@modules/integrations/jira/types';
 import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
 import { User } from '@yappy/types';

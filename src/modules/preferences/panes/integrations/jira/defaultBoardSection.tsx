@@ -7,7 +7,7 @@ import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPic
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useJira } from '@modules/integrations';
-import { JiraBoardPayloadValue } from '@modules/integrations/jira';
+import { JiraBoardPayloadValue } from '@modules/integrations/jira/types';
 import { Control, Description, Label, SelectedOptionWrapper, SetupPrefWrapper } from '@modules/preferences/panes/integrations/jira/commonComponents';
 
 const CloseIcon = styled(PlusIcon)`

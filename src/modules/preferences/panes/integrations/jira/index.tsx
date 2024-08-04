@@ -10,22 +10,14 @@ import Copy from '@assets/icons/copy.svg?react';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
-import { JiraResourceData } from '@modules/integrations/jira';
 import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
 import { Separator, VerticalContainer } from '@modules/preferences/panes/common';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import PointFieldSection from '@modules/preferences/panes/integrations/jira/pointFieldSection';
 import { isDev } from '@utils';
-
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
+import { JiraResourceData } from '@modules/integrations/jira/types';
+import { spinAnimation } from '@components/common/animations';
 
 const checkAnimation = keyframes`
   0% {
@@ -54,9 +46,8 @@ const JiraIcon = styled(JiraLogo)`
 const LoadingIcon = styled(Spinner)`
   height: 1rem;
   width: 1rem;
-  animation: ${spin} 1s linear infinite;
+  animation: ${spinAnimation} 1s linear infinite;
 `;
-
 
 const SuccessIcon = styled(Check)`
   ${ ({ theme }: ThemedProps) => css`
@@ -286,11 +277,6 @@ const JiraIntegrationCard = () => {
       {connectInfoBlock}
       {isConfigured && resources && [
         connectSuccessBlock,
-        <Separator key='separator-1' />,
-        <p key="setup-message">
-          Every Jira instance is different, so some extra configuration is
-          necessary to make things work as ✨expected✨.
-        </p>,
         (
           <Wrapper key='integration-setup'>
             <DefaultBoardSection />
