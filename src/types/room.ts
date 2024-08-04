@@ -6,6 +6,7 @@ type Participant = User & {
   inactive: boolean;
   isHost: boolean;
   joinedAt: number;
+  isObserver: boolean;
 }
 
 type Vote = string | number;
@@ -14,6 +15,13 @@ type PointOptions = {
   sequence: Array<Vote>;
   exclusions: Array<Vote>;
 };
+
+type QueuedTicket = {
+  [ key: string ]: any;
+  id: string;
+  name: string;
+  fromJira: boolean;
+}
 
 type Ticket = {
   [key: string]: any;
@@ -31,6 +39,8 @@ type Ticket = {
   averagePoints?: number;
   suggestedPoints?: number | string;
 }
+
+type TicketFromQueue = QueuedTicket & Ticket;
 
 type Room = {
   createdAt: number;
@@ -56,6 +66,8 @@ export type {
   PointOptions,
   Room,
   RoomUpdateObject,
+  QueuedTicket,
   Ticket,
+  TicketFromQueue,
   Vote,
 };

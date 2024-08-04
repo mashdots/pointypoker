@@ -1,3 +1,8 @@
+import { QueuedTicket, Ticket } from '@yappy/types/room';
+
+/**
+ * Auth
+ */
 export type InitialAuth = {
   code: string;
   redirect_uri: string;
@@ -12,50 +17,6 @@ export type JiraAuthPayload = {
   client_id: string;
   client_secret: string;
 } & (InitialAuth | RefreshAuth);
-
-export type JiraBoardPayloadValue = {
-  id: number;
-  name: string;
-  self: string;
-}
-
-export type JiraFieldPayload = {
-  id: string;
-  name: string;
-  clauseNames: string[];
-  scope?: {
-    type: string;
-    project?: {
-      id: string;
-    }
-  },
-  schema: {
-    type: string;
-  }
-}
-
-export type JiraIssueSearchPayload = {
-  expand: string;
-  id: string;
-  self: string;
-  key: string;
-  fields: {
-    [key: string]: any;
-    sprint: JiraSprint;
-  }
-}
-
-export type JiraField = {
-  id: string;
-  jqlFilter: string;
-  name: string;
-}
-
-export type JiraBoard = {
-  id: number;
-  name: string;
-  apiUrl: string;
-}
 
 export type JiraAuthData = {
   access_token: string;
@@ -74,10 +35,84 @@ export type JiraResourceData = {
   avatarUrl: string;
 }
 
-export type JiraPreferences = {
-  defaultBoard?: JiraBoardPayloadValue | null;
-  pointField?: JiraField | null;
+/**
+ * Boards
+ */
+
+export type JiraBoardPayloadValue = {
+  id: number;
+  name: string;
+  self: string;
 }
+
+export type JiraBoard = {
+  id: number;
+  name: string;
+  apiUrl: string;
+}
+
+/**
+ * Fields
+ */
+
+export type JiraFieldPayload = {
+  id: string;
+  name: string;
+  clauseNames: string[];
+  scope?: {
+    type: string;
+    project?: {
+      id: string;
+    }
+  },
+  schema: {
+    type: string;
+  }
+}
+
+export type JiraField = {
+  id: string;
+  jqlFilter: string;
+  name: string;
+}
+
+/**
+ * Issues
+ */
+
+type IssueType = {
+  avatarId: number;
+  description: string;
+  id: string;
+  iconUrl: string;
+  name: string;
+}
+
+export type JiraIssueSearchPayload = {
+  expand: string;
+  id: string;
+  self: string;
+  key: string;
+  fields: {
+    [key: string]: any;
+    sprint: JiraSprint;
+    issuetype: IssueType;
+    summary: string;
+  }
+}
+
+// Issues are tickets from Jira's API.
+// Tickets are issues that are in this app's context.
+export type JiraTicket = QueuedTicket & {
+  type: IssueType
+  sprint: JiraSprint;
+}
+
+export type JiraTicketFromQueue = JiraTicket & Ticket;
+
+/**
+ * Sprints
+ */
 
 export type JiraSprint = {
   id: number,
@@ -92,6 +127,10 @@ export type JiraSprintWithIssues = JiraSprint & {
   issues?: JiraIssueSearchPayload[];
 }
 
+/**
+ * Other Data
+ */
+
 export type BasePayload = {
   maxResults: number;
   startAt: number;
@@ -105,4 +144,9 @@ export type JiraDataPayload = BasePayload & {
 
 export type JiraIssuesDataPayload = BasePayload & {
   issues: JiraIssueSearchPayload[]
+}
+
+export type JiraPreferences = {
+  defaultBoard?: JiraBoardPayloadValue | null;
+  pointField?: JiraField | null;
 }
