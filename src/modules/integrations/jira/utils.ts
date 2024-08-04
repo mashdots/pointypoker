@@ -7,6 +7,8 @@ export enum URL_ACTIONS {
   JIRA_API_PREFIX = 'ex/jira/',
   BOARD_PATH = 'rest/agile/1.0/board',
   FIELD_PATH = 'rest/api/3/field',
+  BOARD_SPRINT_PATH = 'sprint',
+  BOARD_ISSUES_PATH = 'issue',
 }
 
 type UrlOptions = {
@@ -30,27 +32,21 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
     }
 
     const scopes = [
-      'offline_access',
-      'read:avatar:jira',
+      'offline_access', // Requests a refresh token with auth
+      'read:avatar:jira', // do we need?
+      'read:board-scope.admin:jira-software', // do we need?
       'read:board-scope:jira-software',
       'read:field:jira',
       'read:issue:jira',
       'read:issue:jira-software',
       'read:issue-details:jira',
       'read:jira-work',
+      'read:jql:jira',
       'read:project:jira',
       'read:project-category:jira',
       'read:sprint:jira-software',
       'read:field-configuration:jira',
-      // 'read:group:jira',
-      // 'write:issue:jira',
-      // 'read:user:jira',
-      // 'read:epic:jira-software',
-      // 'write:issue:jira-software',
-      // 'read:jira-work',
-      // 'read:avatar:jira',
-      // 'read:me',
-      // 'read:user:jira',
+      'write:issue:jira-software',
     ];
 
     const params = new URLSearchParams({
