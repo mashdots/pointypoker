@@ -38,7 +38,6 @@ export type JiraResourceData = {
 /**
  * Boards
  */
-
 export type JiraBoardPayloadValue = {
   id: number;
   name: string;
@@ -54,7 +53,6 @@ export type JiraBoard = {
 /**
  * Fields
  */
-
 export type JiraFieldPayload = {
   id: string;
   name: string;
@@ -79,7 +77,6 @@ export type JiraField = {
 /**
  * Issues
  */
-
 type IssueType = {
   avatarId: number;
   description: string;
@@ -103,17 +100,24 @@ export type JiraIssueSearchPayload = {
 
 // Issues are tickets from Jira's API.
 // Tickets are issues that are in this app's context.
-export type JiraTicket = QueuedTicket & {
+type JiraTicketBase = {
   type: IssueType
   sprint: JiraSprint;
 }
 
-export type JiraTicketFromQueue = JiraTicket & Ticket;
+// A ticket from Jira in the queue prior to pointing
+export type QueuedJiraTicket = QueuedTicket & JiraTicketBase;
+
+// A ticket from Jira in the queue during or after pointing
+export type JiraTicketFromQueue = QueuedJiraTicket & Ticket;
+
+// A ticket from Jira that was not previously in the queue
+export type JiraTicket = Ticket & JiraTicketBase;
+
 
 /**
  * Sprints
  */
-
 export type JiraSprint = {
   id: number,
   self: string,
@@ -130,7 +134,6 @@ export type JiraSprintWithIssues = JiraSprint & {
 /**
  * Other Data
  */
-
 export type BasePayload = {
   maxResults: number;
   startAt: number;

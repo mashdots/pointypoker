@@ -1,3 +1,4 @@
+import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import User from './user';
 import { PointingTypes } from '@modules/room/utils';
 
@@ -48,7 +49,7 @@ type Room = {
   participants: {
     [key: string]: Participant;
   };
-  ticketQueue: Array<string>;
+  ticketQueue: Array<QueuedTicket | QueuedJiraTicket>;
   currentTicket: Ticket | null;
   completedTickets: Array<Ticket>;
   // Deprecated field. Keeping it for historical data
