@@ -134,10 +134,8 @@ const ListContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 70%;
   overflow: auto;
 `;
-
 
 const QueueModal = () => {
   const { defaultBoard } = useStore(({ preferences }) => ({

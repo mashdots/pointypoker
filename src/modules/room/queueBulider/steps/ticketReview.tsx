@@ -1,17 +1,22 @@
 import React, { useCallback, useState } from 'react';
 import { arrayUnion } from 'firebase/firestore';
+import styled, { css } from 'styled-components';
 
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
-import { InformationWrapper, SelectionWrapper } from '@modules/room/queueBulider/steps/common';
-import styled, { css } from 'styled-components';
-import { JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { cardEntranceAnimation } from '@components/common/animations';
+import PrependSvg from '@assets/icons/queue-prepend.svg?react';
+import AppendSvg from '@assets/icons/queue.svg?react';
+import ReplaceSvg from '@assets/icons/arrows-counter-clockwise.svg?react';
 import { Button } from '@components/common';
-import { Room } from '@yappy/types';
-import useStore from '@utils/store';
-import { QueuedTicket, RoomUpdateObject } from '@yappy/types/room';
+import { cardEntranceAnimation } from '@components/common/animations';
+import { InformationWrapper, SelectionWrapper } from '@modules/room/queueBulider/steps/common';
+import { JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
+import { Separator } from '@modules/preferences/panes/common';
 import { updateRoom } from '@services/firebase';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useStore from '@utils/store';
+import { Room } from '@yappy/types';
+import { RoomUpdateObject } from '@yappy/types/room';
+import { useMobile } from '@utils/hooks/mobile';
 
 export enum EXISTING_QUEUE_ACTIONS {
   PREPEND,
@@ -22,6 +27,11 @@ export enum EXISTING_QUEUE_ACTIONS {
 type Props = {
   existingQueue: Room['ticketQueue'];
   issues: JiraIssueSearchPayload[];
+}
+
+type QueueControlProps = {
+  alignRight: boolean;
+  isMobile: boolean;
 }
 
 const IssuesWrapper = styled.div`
@@ -35,13 +45,14 @@ const IssuesWrapper = styled.div`
   border-radius: 0.5rem;
 `;
 
-
-const QueueControlWrapper = styled.div<{ alignRight: boolean }>`
-  ${({ alignRight }: { alignRight: boolean }) => css`
-    align-items: ${alignRight ? 'flex-end' : 'center'};
+const QueueControlWrapper = styled.div<QueueControlProps>`
+  ${({ alignRight, isMobile }: QueueControlProps) => css`
+    justify-content: ${alignRight ? 'flex-end' : 'space-between'};
+    flex-direction: ${isMobile ? 'column' : 'row'};
+    align-items: center;
   `};
+
   display: flex;
-  flex-direction: column;
   width: 80%;
 `;
 
@@ -99,6 +110,59 @@ const ArrowIcon = styled(ArrowSvg)`
   margin-left: 0.5rem;
 `;
 
+const PrependIcon = styled(PrependSvg)`
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-right: 0.5rem;
+`;
+
+const AppendIcon = styled(AppendSvg)`
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-right: 0.5rem;
+`;
+
+const ReplaceIcon = styled(ReplaceSvg)`
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-right: 0.5rem;
+`;
+
+const QueueActionWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+`;
+
+const QueueActionRadioButton = styled.div<{ isSelected: boolean }>`
+  ${({ isSelected, theme }: { isSelected: boolean } & ThemedProps) => css`
+    background-color: ${theme[isSelected ? 'info' : 'greyscale'].componentBg};
+    color: ${theme[isSelected ? 'info' : 'greyscale'].textLow};
+    border: 2px solid ${theme[isSelected ? 'info' : 'greyscale'].border};
+  `}
+
+  cursor: pointer;
+  display: flex;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+
+  transition: 
+    background-color 250ms ease-out,
+    color 250ms ease-out,
+    border 250ms ease-out;
+  
+  > label {
+    cursor: pointer;
+  }
+  > input {
+    display: none;
+  }
+`;
+
 const TicketReview = ({
   existingQueue,
   issues,
@@ -108,6 +172,8 @@ const TicketReview = ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
   }));
+  const { isMobile } = useMobile();
+  const ticketsInQueue = !!existingQueue.length;
 
   const handleAddTicketsToQueue = useCallback(
     async () => {
@@ -116,7 +182,6 @@ const TicketReview = ({
       }
 
       const updateObj: RoomUpdateObject = {};
-      let newQueue: Array<QueuedJiraTicket | QueuedTicket> = [ ...existingQueue ];
       const newIssues = issues.map(
         ({ key, fields: { summary, issuetype, sprint } }): QueuedJiraTicket => {
           return {
@@ -130,19 +195,16 @@ const TicketReview = ({
       );
 
       switch (queueAction) {
+      case EXISTING_QUEUE_ACTIONS.APPEND:
+        updateObj['ticketQueue'] = arrayUnion(...newIssues);
+        break;
       case EXISTING_QUEUE_ACTIONS.PREPEND:
-        newQueue.unshift(...newQueue);
+        updateObj['ticketQueue'] = [ ...newIssues, ...existingQueue ];
         break;
       case EXISTING_QUEUE_ACTIONS.REPLACE:
       default:
-        newQueue = [...newIssues];
+        updateObj['ticketQueue'] = [...newIssues];
         break;
-      }
-
-      if (queueAction === EXISTING_QUEUE_ACTIONS.APPEND) {
-        updateObj['ticketQueue'] = arrayUnion(...newIssues);
-      } else {
-        updateObj['ticketQueue'] = newQueue;
       }
 
       try {
@@ -171,6 +233,12 @@ const TicketReview = ({
     </IssueWrapper>
   ));
 
+  const queueActionOptions = [
+    { label: 'Replace', value: EXISTING_QUEUE_ACTIONS.REPLACE, icon: <ReplaceIcon /> },
+    { label: 'Append', value: EXISTING_QUEUE_ACTIONS.APPEND, icon: <AppendIcon /> },
+    { label: 'Prepend', value: EXISTING_QUEUE_ACTIONS.PREPEND, icon: <PrependIcon /> },
+  ];
+
   return (
     <SelectionWrapper isColumn>
       <InformationWrapper>
@@ -179,14 +247,40 @@ const TicketReview = ({
       <IssuesWrapper>
         {issueList}
       </IssuesWrapper>
-      <QueueControlWrapper alignRight={!existingQueue.length}>
+      <Separator />
+      {ticketsInQueue && (
+        <p style={{ marginBottom: 0 }}>Tickets already exist in the queue. How should we add the new tickets?</p>
+      )}
+      <QueueControlWrapper alignRight={!ticketsInQueue} isMobile={isMobile}>
+        {ticketsInQueue && (
+          <QueueActionWrapper>
+            {queueActionOptions.map(({ label, value, icon }) => (
+              <QueueActionRadioButton
+                key={value}
+                isSelected={queueAction === value}
+                onClick={() => setQueueAction(value)}
+              >
+                {icon}
+                <input
+                  type='radio'
+                  id={label}
+                  name='queueAction'
+                  value={value}
+                />
+                <label htmlFor={label}>{label}</label>
+              </QueueActionRadioButton>
+            ),
+            )}
+          </QueueActionWrapper>
+        )}
         <Button
           variation='info'
           width={12}
           textSize='small'
           onClick={handleAddTicketsToQueue}
+          isDisabled={ticketsInQueue && !queueAction}
         >
-          Add to queue
+          {ticketsInQueue ? 'Update' : 'Add to'} queue
           <ArrowIcon />
         </Button>
       </QueueControlWrapper>
