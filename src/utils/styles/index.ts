@@ -9,7 +9,7 @@ import GlobalStyles from './global';
  */
 function getWidth(value?: string | number): string {
   if (typeof value === 'number') {
-    return `${ value }px`;
+    return `${ value }rem`;
   }
 
   switch (value) {

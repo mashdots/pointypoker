@@ -9,6 +9,7 @@ import BoardSelection from '@modules/room/queueBulider/steps/boardSelection';
 import SprintSelection from '@modules/room/queueBulider/steps/sprintSelection';
 import TicketReview from '@modules/room/queueBulider/steps/ticketReview';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { useTickets } from '@modules/room/hooks';
 
 type ConfigOptionProps = {
   selectionComplete: boolean;
@@ -26,7 +27,6 @@ const EditIcon = styled(PencilSvg)`
 `;
 
 const UndoIcon = styled(UndoSvg)`
-  cursor: pointer;
   height: 1rem;
   width: 1rem;
   margin-left: 0.25rem;
@@ -104,6 +104,7 @@ const RevertWrapper = styled.div`
   height: 1rem;
 
   > p {
+    cursor: pointer;
     margin: 0;
     font-size: 0.75rem;
     ${({ theme }: ThemedProps) => css`
@@ -142,12 +143,15 @@ const QueueModal = () => {
   const { defaultBoard } = useStore(({ preferences }) => ({
     defaultBoard: preferences?.jiraPreferences?.defaultBoard,
   }));
+  const { queue } = useTickets();
   const [ overrideBoard, setOverrideBoard ] = useState<JiraBoardPayloadValue | null>(null);
   const [ selectedSprint, setSelectedSprint ] = useState<JiraSprintWithIssues | null>(null);
   const [ showOverrideUI, setShowOverrideUI ] = useState<boolean>(false);
 
+  const isAnyBoardSelected = useMemo(() => !!defaultBoard || !!overrideBoard, [ defaultBoard, overrideBoard ]);
+
   const selectionContent = useMemo(() => {
-    if (!defaultBoard || showOverrideUI) {
+    if ((!isAnyBoardSelected) || showOverrideUI) {
       return (
         <BoardSelection
           defaultBoard={defaultBoard}
@@ -161,6 +165,7 @@ const QueueModal = () => {
     if (!selectedSprint) {
       return (
         <SprintSelection
+          existingQueue={queue}
           boardId={overrideBoard?.id || defaultBoard?.id}
           setSprint={setSelectedSprint}
         />
@@ -169,7 +174,9 @@ const QueueModal = () => {
 
     if (selectedSprint?.issues) {
       return (
-        <TicketReview issues={selectedSprint.issues} />
+        <TicketReview
+          existingQueue={queue}
+          issues={selectedSprint.issues} />
       );
     }
   }, [ defaultBoard, overrideBoard, showOverrideUI, selectedSprint ]);
@@ -185,17 +192,29 @@ const QueueModal = () => {
               setOverrideBoard(null);
               setSelectedSprint(null);
             }}
-            selectionComplete={!!defaultBoard && !showOverrideUI}
+            selectionComplete={(isAnyBoardSelected) && !showOverrideUI}
           >
             <ConfigOptionLabel>
-              {showOverrideUI ? 'Pending board selection' : overrideBoard?.name ?? defaultBoard?.name}
+              {(showOverrideUI || (!isAnyBoardSelected)) ? 'Pending board selection' : overrideBoard?.name ?? defaultBoard?.name}
             </ConfigOptionLabel>
             <ConfigOptionEditIcon>
               <EditIcon />
             </ConfigOptionEditIcon>
           </ConfigOption>
           <RevertWrapper>
-            {overrideBoard && <p>Revert to default board <UndoIcon onClick={() => setOverrideBoard(null)} /></p>}
+            {overrideBoard && defaultBoard && (
+              <p
+                onClick={
+                  () => {
+                    setOverrideBoard(null);
+                    setSelectedSprint(null);
+                  }
+                }
+              >
+                Revert to default board
+                <UndoIcon />
+              </p>
+            )}
           </RevertWrapper>
         </ConfigOptionWrapper>
         <ConfigOptionWrapper>

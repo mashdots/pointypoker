@@ -88,6 +88,8 @@ const RoomSetup = () => {
       consecutiveMisses: 0,
       inactive: false,
       joinedAt: Date.now(),
+      // Update when observers are implemented
+      isObserver: false,
     };
     const newRoom: RoomType = {
       name: roomName,
@@ -152,6 +154,8 @@ const RoomSetup = () => {
           inactive: false,
           isHost: false,
           joinedAt: Date.now(),
+          // Update when observers are implemented
+          isObserver: false,
         };
 
         updateObj[`participants.${selfAsParticipant.id}`] = selfAsParticipant;

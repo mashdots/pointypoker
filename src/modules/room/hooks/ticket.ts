@@ -22,7 +22,7 @@ const useTickets = () => {
       completedTickets: room?.completedTickets,
       currentTicket: room?.currentTicket,
       participants: Object.values(room?.participants || {}),
-      queue: room?.ticketQueue,
+      queue: room?.ticketQueue ?? [],
       roomName: room?.name,
       user: preferences?.user,
     }

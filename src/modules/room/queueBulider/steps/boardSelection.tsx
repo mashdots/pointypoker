@@ -24,20 +24,22 @@ const BoardSelection = ({
   );
 
   return defaultBoard && !showOverrideUI ? null : (
-    <SelectionWrapper isColumn={showOverrideUI}>
+    <SelectionWrapper isColumn>
       Select a board
-      <OptionPicker
-        idPrefix='board'
-        placeholder='Search for a board'
-        fetchFn={getBoards}
-        storeUpdateFn={(board) => {
-          if (board.id !== defaultBoard?.id) {
-            setOverrideBoard(board);
-          }
-          setShowOverrideUI(false);
-        }}
-        transformFn={boardOptionsTransformer}
-      />
+      <div style={{ display: 'flex', width: '80%' }}>
+        <OptionPicker
+          idPrefix='board'
+          placeholder='Search for a board'
+          fetchFn={getBoards}
+          storeUpdateFn={(board) => {
+            if (board.id !== defaultBoard?.id) {
+              setOverrideBoard(board);
+            }
+            setShowOverrideUI(false);
+          }}
+          transformFn={boardOptionsTransformer}
+        />
+      </div>
     </SelectionWrapper>
   );
 };
