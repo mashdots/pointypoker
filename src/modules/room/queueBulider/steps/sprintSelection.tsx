@@ -1,22 +1,25 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Spinner from '@assets/icons/loading-circle.svg?react';
+import { cardEntranceAnimation, spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import { JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
 import { InformationWrapper, SelectionWrapper } from '@modules/room/queueBulider/steps/common';
 import useStore from '@utils/store';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { cardEntranceAnimation, spinAnimation } from '@components/common/animations';
+import { Room } from '@yappy/types';
 
 type Props = {
   boardId?: string | number;
+  existingQueue: Room[ 'ticketQueue' ];
   setSprint: (sprintData: JiraSprintWithIssues) => void;
 }
 
 type SprintOptionProps = {
   hasIssues: boolean;
+  hasNewIssuesWithIssuesInQueue: boolean;
   delayFactor?: number;
 } & ThemedProps;
 
@@ -58,11 +61,11 @@ const SprintOptionWrapper = styled.div`
 
 const SprintOption = styled.div<SprintOptionProps>`
   ${({ delayFactor, hasIssues, theme }: SprintOptionProps) => css`
-    cursor: ${hasIssues ? 'pointer' : 'default'};
+    cursor: ${ hasIssues ? 'pointer' : 'default' };
     background-color: ${ theme.greyscale.componentBg };
     color: ${ theme.greyscale[hasIssues ? 'textHigh' : 'textLow'] };
-    border: 2px solid ${theme.greyscale[ hasIssues ? 'borderElement' : 'componentBg']};
-    animation: ${cardEntranceAnimation} 0.25s ease-out ${delayFactor}ms forwards;
+    border: 2px solid ${ theme.greyscale[hasIssues ? 'borderElement' : 'componentBg'] };
+    animation: ${ cardEntranceAnimation } 0.25s ease-out ${ delayFactor }ms forwards;
 
     &:hover {
       background-color: ${ theme.greyscale[ hasIssues ? 'componentBgHover' : 'componentBg' ] };
@@ -86,10 +89,17 @@ const SprintOption = styled.div<SprintOptionProps>`
 `;
 
 const PointContainer = styled.span<SprintOptionProps>`
-  ${({ theme, hasIssues }: SprintOptionProps) => css`
-    border: 1px solid ${theme[ hasIssues ? 'success' : 'greyscale' ][ hasIssues ? 'borderElementHover' : 'componentBg' ]};
-    color: ${ theme[hasIssues ? 'success' : 'greyscale'].textLow };
-  `}
+  ${({ theme, hasIssues, hasNewIssuesWithIssuesInQueue }: SprintOptionProps) => {
+    let colorScheme = hasIssues ? 'success' : 'greyscale';
+    if (hasNewIssuesWithIssuesInQueue) {
+      colorScheme = 'info';
+    }
+
+    return css`
+      border: 1px solid ${ theme[colorScheme][ hasIssues ? 'borderElementHover' : 'componentBg' ] };
+      color: ${ theme[colorScheme].textLow };
+    `;
+  }}
 
   border-radius: 0.5rem;
   padding: 0.25rem 0.5rem;
@@ -104,6 +114,7 @@ const PointContainer = styled.span<SprintOptionProps>`
 
 const SprintSelection = ({
   boardId,
+  existingQueue,
   setSprint,
 }: Props) => {
   const previousBoardId = usePrevious(boardId);
@@ -173,35 +184,67 @@ const SprintSelection = ({
 
 
   const sprintOptions = useMemo(() => sprintData?.map((sprint, delayFactor) => {
-    const issues = issueData?.filter((issue) => issue.fields.sprint?.id === sprint.id) ?? [];
-    const hasIssues = !!issues.length;
+    const apiIssues = issueData?.filter((issue) => issue.fields.sprint?.id === sprint.id) ?? [];
+    const issuesInQueue = existingQueue.filter((ticket) => {
+      return apiIssues.some((issue) => issue.key === ticket.id);
+    });
+    const newIssueCount = apiIssues.length - issuesInQueue.length;
+    const hasIssues = !!apiIssues.length && !!newIssueCount;
 
     const handleSelectSprint = () => {
-      setSprint({
-        ...sprint,
-        issues,
-      });
+      const newIssues = apiIssues.filter((issue) => !issuesInQueue.some((ticket) => ticket?.id === issue.key));
+
+      if (newIssues.length) {
+        setSprint({
+          ...sprint,
+          issues: newIssues,
+        });
+      }
     };
 
-    const issueCount = isLoading ? (
+    const issueCountDisplay = isLoading ? (
       <LoadingWrapper size={1}>
         <LoadingIcon />
       </LoadingWrapper>
-    ) :
-      issues.length;
+    ) : newIssueCount;
+
+    let pointContainerMessage: string | JSX.Element = '';
+
+    if (isLoading) {
+      pointContainerMessage = (<>{issueCountDisplay} loading tickets</>);
+    } else {
+      if (issuesInQueue.length > 0) {
+        if (newIssueCount > 0) {
+          // Issues in queue, but there are new issues in the sprint that aren't in the queue
+          pointContainerMessage = `${ issueCountDisplay } new unpointed ticket${ issuesInQueue.length === 1 ? '' : 's' }`;
+        } else {
+          // Issues in queue, but they all match issues in sprint
+          pointContainerMessage = 'Sprint already in queue';
+        }
+      } else if (newIssueCount > 0) {
+        // No issues in queue, issues in sprint
+        pointContainerMessage = `${issueCountDisplay} unpointed ticket${apiIssues.length === 1 ? '' : 's'}`;
+      } else {
+        // No issues in queue, no issues in sprint
+        pointContainerMessage = 'No unpointed tickets';
+      }
+    }
 
     return (
       <SprintOption
         key={sprint.id}
         hasIssues={hasIssues}
+        hasNewIssuesWithIssuesInQueue={newIssueCount > 0 && issuesInQueue.length > 0}
         delayFactor={100 * delayFactor}
         onClick={handleSelectSprint}
       >
         {sprint.name}
-        <PointContainer hasIssues={hasIssues}>{issueCount} unpointed ticket{issues.length === 1 ? '' : 's'}</PointContainer>
+        <PointContainer hasIssues={hasIssues} hasNewIssuesWithIssuesInQueue={newIssueCount > 0 && issuesInQueue.length > 0}>
+          {pointContainerMessage}
+        </PointContainer>
       </SprintOption>
     );
-  }), [sprintData, issueData, isLoading]);
+  }), [sprintData, issueData, isLoading, existingQueue]);
 
   const loadingIcon = useMemo(
     () => sprintData ? 'Select a sprint' : (
@@ -211,7 +254,7 @@ const SprintSelection = ({
   );
 
   return (
-    <SelectionWrapper isColumn style={{ height: '100%' }}>
+    <SelectionWrapper isColumn>
       <InformationWrapper>
         {loadingIcon}
       </InformationWrapper>
