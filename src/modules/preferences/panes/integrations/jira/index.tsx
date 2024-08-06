@@ -191,7 +191,7 @@ const JiraIntegrationCard = () => {
         noMargin
         variation={buttonVariation as 'info' | 'warning' | 'error'}
         textSize='small'
-        width={'quarter'}
+        width='quarter'
         isDisabled={isLoading}
       >
         {buttonChildren}
