@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
+import debounce from 'lodash/debounce';
 
-import { VARIATIONS } from '@utils/styles';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
+type Props = {
+  panels: Panel[];
+  forcePanelChange?: number | null;
+};
 
 type Panel = {
   title: string;
@@ -9,10 +15,10 @@ type Panel = {
   shouldScroll?: boolean;
 }
 
-type Props = {
-  panels: Panel[];
-  width: number;
-};
+type TitleProps = ThemedProps & {
+  isSelected: boolean;
+  isSelectable: boolean;
+}
 
 type SelectorProps = {
   width: number;
@@ -25,113 +31,144 @@ type PanelWrapperProps = SelectorProps & {
 
 const Wrapper = styled.div`
   display: flex;
-  flex: 1;
   flex-direction: column;
-  border: none;
-  border-radius: 8px;
-  padding: 1rem 0 0;
+  padding: 0 0.5rem;
   width: 100%;
-`;
-
-const Selector = styled.div<SelectorProps>`
-  display: flex;
-  justify-content: space-between;
-  background-color: ${VARIATIONS.structure.borderElement};
-  position: absolute;
   height: 100%;
-  width: ${({ width }) => width - 24}px;
-  left: ${({ position }) => position}px;
-  border-radius: 4px;
-  margin: 0 12px;
-  transition: left 0.3s ease-in-out;
 `;
 
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  position: relative;
-  padding: 0.25rem 0;
+  overflow: auto;
+  margin-bottom: 0.5rem;
 `;
 
-const Title = styled.div`
-  cursor: pointer;
+const Title = styled.h2<TitleProps>`
+  ${({ isSelectable, isSelected, theme }: TitleProps) => css`
+    border-bottom: 1px solid ${ isSelected ? theme.primary.borderElement : 'transparent'};
+    color: ${ theme.primary.textLow };
+    cursor: ${ isSelectable ? 'pointer' : 'default' };
+
+    &:hover {
+      color: ${ isSelectable ? theme.primary.textHigh : theme.primary.textLow };
+    }
+  `}
+
   display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
+  text-wrap: nowrap;
+  font-size: 1.25rem;
+  margin: 0 1rem 0 0;
+  transition: all 0.3s ease-in-out;
 `;
 
-const InheritWidthHeight = styled.div<PanelWrapperProps>`
+const WidthHeightWithFallback = styled.div<PanelWrapperProps>`
   ${({ height, width }) => css`
     height ${height ? `${height}px` : '100%'};
     width ${width ? `${width}px` : '100%'};
   `}
 `;
 
-const PanelContainer = styled(InheritWidthHeight)<PanelWrapperProps>`
-  display: flex;
-  position: relative;
+const PanelContainer = styled(WidthHeightWithFallback)<PanelWrapperProps>`
+  ${({ width }: PanelWrapperProps) => css`
+    width: ${ width }px;
+  `}
+
   flex: 1;
+  position: relative;
   overflow: hidden;
-  width: 100%;
 `;
 
-const PanelController = styled(InheritWidthHeight)<PanelWrapperProps & { shouldScroll: boolean}>`
+const PanelController = styled(WidthHeightWithFallback)<PanelWrapperProps>`
+  ${({ position = 0 }: PanelWrapperProps) => css`
+    left: ${-position * 100}%;
+  `}
+
   display: flex;
-  flex: 1;
   position: absolute;
   flex-direction: row;
-  justify-content: space-between;
-  overflow: ${({ shouldScroll }) => shouldScroll ? 'scroll' : 'visible'};
+  justify-content: flex-start;
 
   transition: left 0.3s ease-in-out;
-  left: ${({ position = 0 }) => -position * 100}%;
 `;
 
-const PanelWrapper = styled(InheritWidthHeight)<PanelWrapperProps>`
+const PanelWrapper = styled(WidthHeightWithFallback)`
   display: flex;
-  flex: 1;
 `;
 
 const PANEL_FIXTURES = [
-  { title: 'Panel 1', component: <div>Panel 1</div> },
-  { title: 'Panel 2', component: <div>Panel 2</div> },
-  { title: 'Panel 3', component: <div>Panel 3</div> },
+  { title: 'panel 1', component: <div>Panel 1</div> },
+  { title: 'panel 2', component: <div>Panel 2</div> },
 ];
 
-const MultiPanel = ({ panels = PANEL_FIXTURES, width }: Props) => {
-  const [shouldScroll, setShouldScroll] = useState(false);
+const MultiPanel = ({ panels = PANEL_FIXTURES, forcePanelChange }: Props) => {
+  const [width, setWidth] = useState(0);
   const [selectedPanel, setSelectedPanel] = useState(0);
-  const titles = panels.map((panel, i) => (
-    <Title
-      key={i}
-      onClick={() => {
-        setShouldScroll(!!panel?.shouldScroll);
-        setSelectedPanel(i);
-      }}
-    >
-      {panel.title}
-    </Title>
-  ));
-  const selectorWidth = width / panels.length;
-  const panelComponents = panels.map((panel, i) => (
-    <PanelWrapper width={width} key={i}>{panel.component}</PanelWrapper>
-  ));
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const titles = panels.map((panel, i) => {
+    const isSelectable = panels.length > 1 && selectedPanel !== i;
+    return (
+      <Title
+        key={i}
+        isSelected={selectedPanel === i}
+        onClick={() => {
+          setSelectedPanel(i);
+        }}
+        isSelectable={isSelectable}
+      >
+        {panel.title}
+      </Title>
+    );
+  });
+
+  const panelComponents = useMemo(
+    () => panels.map((panel, i) => {
+      return (
+        <PanelWrapper width={width} key={i}>{panel.component}</PanelWrapper>
+      );
+    }),
+    [panels, width],
+  );
+
+  const handleSetWidth = debounce(
+    (element) => {
+      const computedWrapperStyle = getComputedStyle(element);
+
+      let finalWidth = parseFloat(computedWrapperStyle.width);
+      finalWidth -= (parseFloat(computedWrapperStyle.paddingLeft) + parseFloat(computedWrapperStyle.paddingRight));
+
+      setWidth(finalWidth);
+    },
+    500,
+  );
+
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    handleSetWidth(wrapperRef.current);
+    window.addEventListener('resize', () => handleSetWidth(wrapperRef.current));
+
+    return () => {
+      window.removeEventListener('resize', () => handleSetWidth(wrapperRef.current));
+    };
+  }, [wrapperRef.current?.clientWidth]);
+
+  useEffect(() => {
+    if (forcePanelChange && forcePanelChange !== selectedPanel) {
+      setSelectedPanel(forcePanelChange);
+    }
+  }, [forcePanelChange]);
 
   return (
-    <Wrapper>
+    <Wrapper ref={wrapperRef} id='wrapper'>
       <TitleContainer>
         {titles}
-        <Selector width={selectorWidth} position={selectorWidth * selectedPanel} />
       </TitleContainer>
       <PanelContainer width={width}>
         <PanelController
-          width={width * panels.length}
           position={selectedPanel}
-          shouldScroll={shouldScroll}
+          width={width * panels.length}
         >
           {panelComponents}
         </PanelController>

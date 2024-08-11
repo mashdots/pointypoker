@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import {
   DistributionPanel,
-  TicketHistory,
+  Tickets,
   TimerPanel,
   TitleControl,
   VoteDisplay,
@@ -75,7 +75,7 @@ const RoomPresenter = () => {
         <VotingPanel gridConfig={gridConfigs.voting} />
         <VoteDisplay gridConfig={gridConfigs.voteDisplay} />
         <VoteResults gridConfig={gridConfigs.voteResults} />
-        <TicketHistory gridConfig={gridConfigs.history} />
+        <Tickets gridConfig={gridConfigs.history} />
         <DistributionPanel gridConfig={gridConfigs.distribution} />
       </RoomDataContainer>
     </Wrapper>

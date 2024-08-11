@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { arrayUnion } from 'firebase/firestore';
+import { arrayRemove, arrayUnion } from 'firebase/firestore';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
 
@@ -8,6 +8,7 @@ import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes }
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject, Ticket } from '@yappy/types';
+import { PossibleQueuedTicket } from '@yappy/types/room';
 
 const useTickets = () => {
   const {
@@ -68,6 +69,10 @@ const useTickets = () => {
     }
   }, [roomName, currentTicket]);
 
+  const handleCreateTicketFromQueue = (queuedTicket: PossibleQueuedTicket) => {
+    handleCreateTicket(queuedTicket.name, queuedTicket);
+  };
+
   /**
    * Creates a new ticket with the provided name.
    *
@@ -76,7 +81,7 @@ const useTickets = () => {
    * points will be calculated, and the ticket will be moved to the
    * `completedTickets` array.
    */
-  const handleCreateTicket = useCallback((newTicketName = '') => {
+  const handleCreateTicket = useCallback((newTicketName = '', queuedTicket?: PossibleQueuedTicket) => {
     if (roomName && user) {
       const updateObj: RoomUpdateObject = {};
       updateObj['currentTicket'] = {
@@ -89,6 +94,8 @@ const useTickets = () => {
         timerStartAt: Date.now(),
         pointOptions: PointingTypes.fibonacci,
         votesShownAt: null,
+        fromQueue: !!queuedTicket,
+        ...(queuedTicket || {}) ,
       } as Ticket;
 
       if (currentTicket) {
@@ -107,6 +114,10 @@ const useTickets = () => {
 
         // Move the current ticket to the completed tickets array
         updateObj['completedTickets'] = arrayUnion(completedTicket);
+        if (currentTicket?.fromQueue) {
+          const currentTicketFromQueue = queue.find((ticket) => ticket.id === currentTicket.id);
+          updateObj['ticketQueue'] = arrayRemove(currentTicketFromQueue);
+        }
       }
 
       updateRoom(roomName, updateObj);
@@ -122,6 +133,7 @@ const useTickets = () => {
     voteData,
     handleUpdateCurrentTicket,
     handleCreateTicket,
+    handleCreateTicketFromQueue,
   };
 };
 

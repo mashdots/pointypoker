@@ -9,7 +9,7 @@ export const spinAnimation = keyframes`
   }
 `;
 
-export const cardEntranceAnimation = keyframes`
+export const fadeDownEntrance = keyframes`
   0% {
     opacity: 0;
     transform: translateY(-1rem);
