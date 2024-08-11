@@ -12,53 +12,56 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type IconProps = {
   $shouldGrow: boolean;
-}
+} & ThemedProps;
 
 const Wrapper = styled.div`
   display: flex;
-  flex: 1;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   height: 100%;
 `;
 
-const ResultCell = styled.div<{ showBorder?: boolean } & ThemedProps>`
-  ${({ showBorder, theme }) => {
-    if (showBorder) {
-      return css`
-        border-right: 1px solid ${theme.greyscale.borderElement};
-        padding-right: 1rem;
-      `;
-    } else {
-      return css`
-        padding-left: 1rem;
-      `;
-    }
-  }}
-
+const ResultCell = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0;
+  padding: 1rem;
 `;
 
+const VerticalDivider = styled.div`
+  ${({ theme }: ThemedProps) => css`
+    background-color: ${theme.primary.borderElement};
+  `}
+
+  width: 1px;
+  height: 50%;
+`;
 
 const SuggestIcon = styled(SuggestSvg)<IconProps>`
-  ${({ $shouldGrow }) => css`
+  ${({ $shouldGrow, theme }: IconProps) => css`
     width: ${$shouldGrow ? 2 : 1}rem;
     height: ${$shouldGrow ? 2 : 1}rem;
+
+    > line, polyline, path {
+      stroke: ${theme.primary.textLow};
+    }
   `}
 
   transition: all 500ms ease-out;
 `;
 
 const AverageIcon = styled(AverageSvg)<IconProps>`
-  ${({ $shouldGrow }) => css`
+  ${({ $shouldGrow, theme }: IconProps) => css`
     width: ${$shouldGrow ? 2 : 1}rem;
     height: ${$shouldGrow ? 2 : 1}rem;
+
+    > polyline {
+      stroke: ${theme.primary.textLow};
+    }
   `}
 
   transition: all 500ms ease-out;
@@ -83,11 +86,20 @@ const VoteResults = (props: GridPanelProps) => {
   return (
     <GridPanel config={props.gridConfig}>
       <Wrapper>
-        <ResultCell showBorder>
-          <InfoCell icon={<SuggestIcon $shouldGrow={!shouldShowVotes} />} value={shouldShowVotes ? pointSuggestion.suggestedPoints : null } label='suggested' />
-        </ResultCell>
         <ResultCell>
-          <InfoCell icon={<AverageIcon $shouldGrow={!shouldShowVotes} />} value={shouldShowVotes ? averagePointValue.average : null} label='average' />
+          <InfoCell
+            icon={<SuggestIcon $shouldGrow={!shouldShowVotes} />}
+            value={shouldShowVotes ? pointSuggestion.suggestedPoints : null }
+            label='suggested'
+          />
+        </ResultCell>
+        <VerticalDivider />
+        <ResultCell>
+          <InfoCell
+            icon={<AverageIcon $shouldGrow={!shouldShowVotes} />}
+            value={shouldShowVotes ? averagePointValue.average : null}
+            label='average'
+          />
         </ResultCell>
       </Wrapper>
     </GridPanel>

@@ -48,7 +48,7 @@ const Timer = ({ startTime, endTime = null }: Props) => {
         setTime(durationString);
       }, 1000);
     } else {
-      setTime('Add a title to start the timer');
+      setTime('0 seconds');
     }
 
     return () => {

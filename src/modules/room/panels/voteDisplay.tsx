@@ -1,21 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { useTickets } from '../hooks';
 import { isVoteCast } from '../utils';
-import CircleCheckIcon from '@assets/icons/circle-check.svg?react';
-import IdleIcon from '@assets/icons/idle.svg?react';
-import InactiveIcon from '@assets/icons/inactive.svg?react';
+import CircleCheckSvg from '@assets/icons/circle-check.svg?react';
+import CoffeeSvg from '@assets/icons/coffee.svg?react';
+import IdleSvg from '@assets/icons/idle.svg?react';
+import InactiveSvg from '@assets/icons/inactive.svg?react';
 import { Button, GridPanel } from '@components/common';
 import { GridPanelProps } from '@components/common/gridPanel';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Participant, Vote } from '@yappy/types';
+import { fadeDownEntrance } from '@components/common/animations';
 
 enum PARTICIPANT_MODES {
   ABSENT = 'absent',
   DEFAULT = 'default',
   INACTIVE = 'inactive',
+  OBSERVER = 'observer',
   REVEALED = 'revealed',
   VOTED = 'voted',
 }
@@ -23,7 +26,7 @@ enum PARTICIPANT_MODES {
 export type VoteDisplayProps = {
   name: string;
   vote?: Vote;
-} & Pick<Participant, 'inactive' | 'consecutiveMisses'>;
+} & Pick<Participant, 'inactive' | 'consecutiveMisses' | 'isObserver'>;
 
 type VoteCellProps = {
   isLast: boolean;
@@ -46,20 +49,6 @@ const Wrapper = styled.div`
   overflow: auto;
 `;
 
-const enterAnimation = keyframes`
-  0% {
-    opacity: 0;
-    filter: blur(0.125rem);
-    transform: translateY(-0.5rem);
-  }
-
-  100% {
-    opacity: 1;
-    filter: blur(0rem);
-    transform: translateY(0rem);
-  }
-`;
-
 const StyledVoteCell = styled.div<StyledVoteCellProps>`
   ${({ isIdle, isInactive, showBottomBorder, theme }: StyledVoteCellProps) => {
     let color = theme.primary.textHigh;
@@ -74,8 +63,7 @@ const StyledVoteCell = styled.div<StyledVoteCellProps>`
       color: ${color};
       border-color: ${ theme.primary.border };
       border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
-      padding: 0.75rem 2rem 0.75rem 0.75rem;
-    `;
+      `;
   }}
 
   align-items: center;
@@ -84,11 +72,18 @@ const StyledVoteCell = styled.div<StyledVoteCellProps>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 0.75rem 1rem;
   width: 100%;
-  animation: ${enterAnimation} 300ms;
+  animation: ${fadeDownEntrance} 300ms;
 `;
 
-const DisplayElementWrapper = styled.div<{ isVisible: boolean }>`
+const VoteNameWrapper = styled.span`
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const DisplayElementWrapper = styled.span<{ isVisible: boolean }>`
   ${({ isVisible }) => css`
     opacity: ${isVisible ? 1 : 0};
     transform: scale(${isVisible ? 1 : 0.5});
@@ -96,9 +91,11 @@ const DisplayElementWrapper = styled.div<{ isVisible: boolean }>`
 
   display: flex;
   transition: all 250ms;
+  width: 1.5rem;
+  margin-left: 1rem;
 `;
 
-const Check = styled(CircleCheckIcon)<ThemedProps>`
+const CheckIcon = styled(CircleCheckSvg)<ThemedProps>`
   width: 1.5rem;
 
   > polyline, line, path, circle {
@@ -106,7 +103,15 @@ const Check = styled(CircleCheckIcon)<ThemedProps>`
   }
 `;
 
-const Idle = styled(IdleIcon)<ThemedProps>`
+const CoffeeIcon = styled(CoffeeSvg)<ThemedProps>`
+  width: 1.5rem;
+
+  > line, path {
+    stroke: ${ ({ theme }: ThemedProps) => theme.info.textLow };
+  }
+`;
+
+const IdleIcon = styled(IdleSvg)<ThemedProps>`
   width: 1.5rem;
 
   > polyline, line, path, circle {
@@ -114,7 +119,7 @@ const Idle = styled(IdleIcon)<ThemedProps>`
   }
 `;
 
-const Inactive = styled(InactiveIcon)<ThemedProps>`
+const InactiveIcon = styled(InactiveSvg)<ThemedProps>`
   width: 1.5rem;
 
   > polyline, line, path, circle {
@@ -133,16 +138,19 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
     timeout = setTimeout(() => {
       switch (cellMode) {
       case PARTICIPANT_MODES.VOTED:
-        setDisplayElement(<Check />);
+        setDisplayElement(<CheckIcon />);
+        break;
+      case PARTICIPANT_MODES.OBSERVER:
+        setDisplayElement(<CoffeeIcon />);
         break;
       case PARTICIPANT_MODES.REVEALED:
         setDisplayElement(vote as Vote);
         break;
       case PARTICIPANT_MODES.ABSENT:
-        setDisplayElement(<Idle />);
+        setDisplayElement(<IdleIcon title={`${name} hasn't voted in a bit`} />);
         break;
       case PARTICIPANT_MODES.INACTIVE:
-        setDisplayElement(<Inactive />);
+        setDisplayElement(<InactiveIcon title={`${name} has left the room`} />);
         break;
       default:
         setDisplayElement(null);
@@ -162,7 +170,9 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
       isInactive={cellMode === PARTICIPANT_MODES.INACTIVE}
       isIdle={cellMode === PARTICIPANT_MODES.ABSENT}
     >
-      {name}
+      <VoteNameWrapper>
+        {name}
+      </VoteNameWrapper>
       <DisplayElementWrapper isVisible={!isTransitioning}>
         {displayElement}
       </DisplayElementWrapper>
@@ -185,7 +195,9 @@ const VoteDisplay = (props: GridPanelProps) => {
       const isLast = i === voteData.length - 1;
       let mode = PARTICIPANT_MODES.DEFAULT;
 
-      if (inactive) {
+      if (user?.isObserver) {
+        mode = PARTICIPANT_MODES.OBSERVER;
+      } else if (inactive) {
         mode = PARTICIPANT_MODES.INACTIVE;
       } else if (consecutiveMisses > 2) {
         mode = PARTICIPANT_MODES.ABSENT;
