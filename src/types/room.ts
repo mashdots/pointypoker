@@ -7,7 +7,6 @@ type Participant = User & {
   inactive: boolean;
   isHost: boolean;
   joinedAt: number;
-  isObserver: boolean;
 }
 
 type Vote = string | number;
@@ -24,6 +23,8 @@ type QueuedTicket = {
   fromJira: boolean;
 }
 
+type PossibleQueuedTicket = QueuedTicket | QueuedJiraTicket;
+
 type Ticket = {
   [key: string]: any;
   createdAt: number;
@@ -39,6 +40,7 @@ type Ticket = {
   votesShownAt: number | null;
   averagePoints?: number;
   suggestedPoints?: number | string;
+  fromQueue?: boolean;
 }
 
 type TicketFromQueue = QueuedTicket & Ticket;
@@ -49,9 +51,9 @@ type Room = {
   participants: {
     [key: string]: Participant;
   };
-  ticketQueue: Array<QueuedTicket | QueuedJiraTicket>;
+  ticketQueue: Array<PossibleQueuedTicket>;
   currentTicket: Ticket | null;
-  completedTickets: Array<Ticket>;
+  completedTickets: Array<Ticket | TicketFromQueue>;
   // Deprecated field. Keeping it for historical data
   tickets?: {
     [key: string]: Ticket;
@@ -67,6 +69,7 @@ export type {
   PointOptions,
   Room,
   RoomUpdateObject,
+  PossibleQueuedTicket,
   QueuedTicket,
   Ticket,
   TicketFromQueue,

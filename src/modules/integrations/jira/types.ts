@@ -101,8 +101,9 @@ export type JiraIssueSearchPayload = {
 // Issues are tickets from Jira's API.
 // Tickets are issues that are in this app's context.
 type JiraTicketBase = {
-  type: IssueType
+  url: string;
   sprint: JiraSprint;
+  type: IssueType
 }
 
 // A ticket from Jira in the queue prior to pointing
