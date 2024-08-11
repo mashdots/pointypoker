@@ -7,8 +7,8 @@ import PrependSvg from '@assets/icons/queue-prepend.svg?react';
 import AppendSvg from '@assets/icons/queue.svg?react';
 import ReplaceSvg from '@assets/icons/arrows-counter-clockwise.svg?react';
 import { Button } from '@components/common';
-import { cardEntranceAnimation } from '@components/common/animations';
-import { InformationWrapper, SelectionWrapper } from '@modules/room/queueBulider/steps/common';
+import { fadeDownEntrance } from '@components/common/animations';
+import { InformationWrapper, SectionWrapper } from '@modules/room/queueBulider/steps/common';
 import { JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
 import { Separator } from '@modules/preferences/panes/common';
 import { updateRoom } from '@services/firebase';
@@ -17,6 +17,7 @@ import useStore from '@utils/store';
 import { Room } from '@yappy/types';
 import { RoomUpdateObject } from '@yappy/types/room';
 import { useMobile } from '@utils/hooks/mobile';
+import { useJira } from '@modules/integrations';
 
 export enum EXISTING_QUEUE_ACTIONS {
   PREPEND,
@@ -58,7 +59,7 @@ const QueueControlWrapper = styled.div<QueueControlProps>`
 
 const IssueWrapper = styled.div<{ delayFactor: number }>`
   ${({ delayFactor, theme }: { delayFactor: number } & ThemedProps) => css`
-    animation: ${cardEntranceAnimation } 0.25s ease-out ${ delayFactor}ms forwards;
+    animation: ${fadeDownEntrance } 0.25s ease-out ${ delayFactor}ms forwards;
     background-color: ${theme.greyscale.componentBg};
     border: 2px solid ${theme.greyscale.border};
     color: ${theme.primary.textHigh};
@@ -102,6 +103,7 @@ const TicketTypeIcon = styled.img`
   height: 2rem;
   width: 2rem;
   margin-right: 0.5rem;
+  border-radius: 0.25rem;
 `;
 
 const ArrowIcon = styled(ArrowSvg)`
@@ -173,6 +175,7 @@ const TicketReview = ({
     roomName: room?.name,
   }));
   const { isMobile } = useMobile();
+  const { jiraAccessibleResources } = useJira();
   const ticketsInQueue = !!existingQueue.length;
 
   const handleAddTicketsToQueue = useCallback(
@@ -190,6 +193,7 @@ const TicketReview = ({
             type: issuetype,
             sprint,
             fromJira: true,
+            url: `${jiraAccessibleResources?.url}/browse/${key}`,
           };
         },
       );
@@ -223,15 +227,26 @@ const TicketReview = ({
       summary,
     },
     key,
-  }, delayMultiplier) => (
-    <IssueWrapper key={key} delayFactor={100 * delayMultiplier}>
-      <TicketTypeIcon src={issuetype.iconUrl} alt={issuetype.name} title={issuetype.name} />
-      <TicketInfo>
-        <Title title={summary}>{summary}</Title>
-        <TicketSprintInfo>{key}&nbsp;&nbsp;•&nbsp;&nbsp;{issuetype.name} in {sprint.name}</TicketSprintInfo>
-      </TicketInfo>
-    </IssueWrapper>
-  ));
+  }, delayMultiplier) => {
+
+    return (
+      <IssueWrapper key={key} delayFactor={100 * delayMultiplier}>
+        <TicketTypeIcon
+          src={issuetype.iconUrl}
+          alt={issuetype.name}
+          title={issuetype.name}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null;
+            currentTarget.src = 'https://v1.icons.run/64/ph/binoculars.png?color=FFFFFF&bg=e5484d';
+          }}
+        />
+        <TicketInfo>
+          <Title title={summary}>{summary}</Title>
+          <TicketSprintInfo>{key}&nbsp;&nbsp;•&nbsp;&nbsp;{issuetype.name} in {sprint.name}</TicketSprintInfo>
+        </TicketInfo>
+      </IssueWrapper>
+    );
+  });
 
   const queueActionOptions = [
     { label: 'Replace', value: EXISTING_QUEUE_ACTIONS.REPLACE, icon: <ReplaceIcon /> },
@@ -240,7 +255,7 @@ const TicketReview = ({
   ];
 
   return (
-    <SelectionWrapper isColumn>
+    <SectionWrapper>
       <InformationWrapper>
         Review tickets
       </InformationWrapper>
@@ -249,7 +264,7 @@ const TicketReview = ({
       </IssuesWrapper>
       <Separator />
       {ticketsInQueue && (
-        <p style={{ marginBottom: 0 }}>Tickets already exist in the queue. How should we add the new tickets?</p>
+        <p style={{ marginBottom: 0 }}>Tickets are already in the queue. How do you want to add the new tickets?</p>
       )}
       <QueueControlWrapper alignRight={!ticketsInQueue} isMobile={isMobile}>
         {ticketsInQueue && (
@@ -278,13 +293,13 @@ const TicketReview = ({
           width={12}
           textSize='small'
           onClick={handleAddTicketsToQueue}
-          isDisabled={ticketsInQueue && !queueAction}
+          isDisabled={ticketsInQueue && queueAction === null}
         >
           {ticketsInQueue ? 'Update' : 'Add to'} queue
           <ArrowIcon />
         </Button>
       </QueueControlWrapper>
-    </SelectionWrapper>
+    </SectionWrapper>
   );
 };
 

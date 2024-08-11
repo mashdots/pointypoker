@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import Spinner from '@assets/icons/loading-circle.svg?react';
-import { cardEntranceAnimation, spinAnimation } from '@components/common/animations';
+import { fadeDownEntrance, spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import { JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
-import { InformationWrapper, SelectionWrapper } from '@modules/room/queueBulider/steps/common';
+import { InformationWrapper, SectionWrapper } from '@modules/room/queueBulider/steps/common';
 import useStore from '@utils/store';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -65,7 +65,7 @@ const SprintOption = styled.div<SprintOptionProps>`
     background-color: ${ theme.greyscale.componentBg };
     color: ${ theme.greyscale[hasIssues ? 'textHigh' : 'textLow'] };
     border: 2px solid ${ theme.greyscale[hasIssues ? 'borderElement' : 'componentBg'] };
-    animation: ${ cardEntranceAnimation } 0.25s ease-out ${ delayFactor }ms forwards;
+    animation: ${ fadeDownEntrance } 0.25s ease-out ${ delayFactor }ms forwards;
 
     &:hover {
       background-color: ${ theme.greyscale[ hasIssues ? 'componentBgHover' : 'componentBg' ] };
@@ -254,14 +254,14 @@ const SprintSelection = ({
   );
 
   return (
-    <SelectionWrapper isColumn>
+    <SectionWrapper>
       <InformationWrapper>
         {loadingIcon}
       </InformationWrapper>
       <SprintOptionWrapper>
         {sprintOptions}
       </SprintOptionWrapper>
-    </SelectionWrapper>
+    </SectionWrapper>
   );
 };
 

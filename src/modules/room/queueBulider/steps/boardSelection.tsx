@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SelectionWrapper } from './common';
+import { SectionWrapper } from './common';
 import { useJira } from '@modules/integrations';
 import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
 import { JiraBoardPayloadValue } from '@modules/integrations/jira/types';
@@ -24,7 +24,7 @@ const BoardSelection = ({
   );
 
   return defaultBoard && !showOverrideUI ? null : (
-    <SelectionWrapper isColumn>
+    <SectionWrapper>
       Select a board
       <div style={{ display: 'flex', width: '80%' }}>
         <OptionPicker
@@ -40,7 +40,7 @@ const BoardSelection = ({
           transformFn={boardOptionsTransformer}
         />
       </div>
-    </SelectionWrapper>
+    </SectionWrapper>
   );
 };
 

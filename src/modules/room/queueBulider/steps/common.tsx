@@ -1,19 +1,19 @@
-import { cardEntranceAnimation } from '@components/common/animations';
+import { fadeDownEntrance } from '@components/common/animations';
 import styled, { css } from 'styled-components';
 
-export const SelectionWrapper = styled.div<{ isColumn?: boolean }>`
+export const SectionWrapper = styled.div<{ isColumn?: boolean }>`
   ${ ({ isColumn }: { isColumn?: boolean }) => css`
-    flex-direction: ${ isColumn ? 'column' : 'row' };
-    justify-content: ${ isColumn ? 'flex-start' : 'center' };
+  justify-content: ${ isColumn ? 'flex-start' : 'center' };
   `}
-
+  
+  flex-direction: column;
   height: 100%;
   opacity: 0;
   display: flex;
   align-items: center;
   padding: 0.5rem 0;
   border-radius: 0.5rem;
-  animation: ${cardEntranceAnimation} 250ms ease-out forwards;
+  animation: ${fadeDownEntrance} 250ms ease-out forwards;
 `;
 
 export const InformationWrapper = styled.div`
