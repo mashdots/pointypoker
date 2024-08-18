@@ -17,14 +17,15 @@ export type PreferencesType = {
     | JiraPreferences
     | undefined
     | null;
-  theme?: THEMES;
-  themeMode?: THEME_MODES;
-  themeModeController?: THEME_MODE_CONTROLLER;
-  name?: string;
-  user?: User | null;
+  isObserver?: boolean;
   jiraAccess?: JiraAuthData;
   jiraResources?: JiraResourceData;
   jiraPreferences?: JiraPreferences;
+  name?: string;
+  theme?: THEMES;
+  themeMode?: THEME_MODES;
+  themeModeController?: THEME_MODE_CONTROLLER;
+  user?: User | null;
 }
 
 const getPrefFromLocalStorage = (key: string): string | boolean | number | THEMES | THEME_MODES | undefined => {
@@ -47,9 +48,15 @@ const purgeLocalStorage = () => {
 };
 
 const usePreferenceSync = () => {
-  const { preferences, setPref } = useStore(({ preferences, setPreferences }) => (
-    { preferences, setPref: (key: string, pref: keyof PreferencesType) => setPreferences(key, pref) }
-  ));
+  const { preferences, setPref, arePrefsInitialized, setPrefsInitialized } = useStore(
+    ({ preferences, setPreferences, arePrefsInitialized, setPrefsInitialized }) => (
+      {
+        arePrefsInitialized,
+        preferences,
+        setPref: (key: string, pref: keyof PreferencesType) => setPreferences(key, pref),
+        setPrefsInitialized,
+      }
+    ));
 
   const syncPrefsToStore = () => {
     const storedPreferences = { ...localStorage };
@@ -68,14 +75,17 @@ const usePreferenceSync = () => {
   // Imports preferences from localStorage to global state
   useEffect(() => {
     syncPrefsToStore();
+    setPrefsInitialized();
   }, []);
 
   // Write to localStorage when preferences change
   useEffect(() => {
-    for (const key in preferences) {
-      writeToLocalStorage(key, preferences[key]);
+    if (arePrefsInitialized) {
+      for (const key in preferences) {
+        writeToLocalStorage(key, preferences[key]);
+      }
     }
-  }, [preferences]);
+  }, [arePrefsInitialized, preferences]);
 
   return {
     getPrefFromLocalStorage,

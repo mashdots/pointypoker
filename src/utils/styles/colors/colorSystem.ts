@@ -129,6 +129,7 @@ const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 
 const useTheme = () => {
   const {
+    arePrefsInitialized,
     selectedTheme,
     selectedThemeMode,
     setTheme,
@@ -136,8 +137,9 @@ const useTheme = () => {
     isThemeModeSetBySystem,
     setIsThemeModeSetByUser,
   } = useStore(
-    ({ preferences, setPreferences }) => (
+    ({ arePrefsInitialized, preferences, setPreferences }) => (
       {
+        arePrefsInitialized,
         selectedTheme: preferences?.theme,
         selectedThemeMode: preferences?.themeMode,
         isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
@@ -187,7 +189,7 @@ const useTheme = () => {
    * Connect the theme mode to the user's system preference.
   */
   useEffect(() => {
-    if (isThemeModeSetBySystem) {
+    if (arePrefsInitialized && isThemeModeSetBySystem) {
       setThemeModeFromEvent(darkModePreference as unknown as MediaQueryListEvent);
       darkModePreference.addEventListener('change', setThemeModeFromEvent);
     }
@@ -195,7 +197,7 @@ const useTheme = () => {
     return () => {
       darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     };
-  }, [isThemeModeSetBySystem]);
+  }, [arePrefsInitialized, isThemeModeSetBySystem]);
 
   return {
     theme,
