@@ -6,6 +6,8 @@ type Participant = User & {
   consecutiveMisses: number;
   inactive: boolean;
   isHost: boolean;
+  isJiraConfigured: boolean;
+  isObserver: boolean;
   joinedAt: number;
 }
 
@@ -16,20 +18,15 @@ type PointOptions = {
   exclusions: Array<Vote>;
 };
 
-type QueuedTicket = {
-  [ key: string ]: any;
-  id: string;
-  name: string;
-  fromJira: boolean;
-}
+type QueuedTicket = Pick<Ticket, 'id' | 'name'>
 
+// These are tickets that are in the queue.
 type PossibleQueuedTicket = QueuedTicket | QueuedJiraTicket;
 
 type Ticket = {
   [key: string]: any;
   createdAt: number;
   createdBy: string;
-  timerStartAt?: number;
   id: string;
   name?: string;
   pointOptions: PointingTypes;
@@ -40,10 +37,12 @@ type Ticket = {
   votesShownAt: number | null;
   averagePoints?: number;
   suggestedPoints?: number | string;
+  overridePoints?: number;
   fromQueue?: boolean;
 }
 
-type TicketFromQueue = QueuedTicket & Ticket;
+// These tickets were in the queue and have been set as the current ticket.
+type TicketFromQueue = PossibleQueuedTicket & Ticket;
 
 type Room = {
   createdAt: number;
@@ -52,7 +51,7 @@ type Room = {
     [key: string]: Participant;
   };
   ticketQueue: Array<PossibleQueuedTicket>;
-  currentTicket: Ticket | null;
+  currentTicket: Ticket | TicketFromQueue | null;
   completedTickets: Array<Ticket | TicketFromQueue>;
   // Deprecated field. Keeping it for historical data
   tickets?: {

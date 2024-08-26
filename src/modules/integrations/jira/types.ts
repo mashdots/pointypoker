@@ -110,7 +110,7 @@ type JiraTicketBase = {
 export type QueuedJiraTicket = QueuedTicket & JiraTicketBase;
 
 // A ticket from Jira in the queue during or after pointing
-export type JiraTicketFromQueue = QueuedJiraTicket & Ticket;
+export type JiraTicketFromQueue = Ticket & QueuedJiraTicket;
 
 // A ticket from Jira that was not previously in the queue
 export type JiraTicket = Ticket & JiraTicketBase;
