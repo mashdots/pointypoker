@@ -12,6 +12,7 @@ import {
   JiraField,
   JiraFieldPayload,
   JiraIssuesDataPayload,
+  JiraIssueSearchPayload,
   RefreshAuth,
 } from './types';
 
@@ -27,13 +28,19 @@ import {
 const API_URL = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
 
 const useJira = () => {
-  const { access, resources, userId, isExpired, setAccess } = useStore(({ preferences, setPreferences }) => ({
-    access: preferences?.jiraAccess,
-    resources: preferences?.jiraResources,
-    isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
-    setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
-    userId: preferences?.user?.id,
-  }));
+  const { access, isConfigured, isExpired, resources, userId, setAccess } = useStore(({ preferences, setPreferences }) => {
+    const { jiraAccess, jiraResources, jiraPreferences } = preferences;
+    return {
+      access: jiraAccess,
+      resources: jiraResources,
+      isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
+      isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
+      setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
+      userId: preferences?.user?.id,
+    };
+  });
+
+  const buildJiraUrl = (ticketKey: string) => `${resources?.url ?? ''}/browse/${ticketKey}`;
 
   /**
    * Auth methods
@@ -135,7 +142,7 @@ const useJira = () => {
   const getBoards = async (maxResults = 25, name?: string) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${URL_ACTIONS.JIRA_API_PREFIX}${resources?.id}/${URL_ACTIONS.BOARD_PATH}`;
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }`;
 
     return client(
       {
@@ -177,7 +184,7 @@ const useJira = () => {
   const getSprintsForBoard = async (boardId: string | number, startAt = 0) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.BOARD_PATH }/${ boardId}/${ URL_ACTIONS.BOARD_SPRINT_PATH }`;
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId}/${ URL_ACTIONS.BOARD_SPRINT_PATH }`;
 
     return client(
       {
@@ -198,7 +205,7 @@ const useJira = () => {
   const getIssuesForBoard = async (boardId: string | number, pointField?: JiraField | null, startAt = 0) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.BOARD_PATH }/${ boardId }/${ URL_ACTIONS.BOARD_ISSUES_PATH }`;
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId }/${ URL_ACTIONS.ISSUE_PATH }`;
 
     const fields = ['id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team'];
     let jql = 'Sprint IN futureSprints() AND resolution IS EMPTY';
@@ -226,19 +233,59 @@ const useJira = () => {
       });
   };
 
-  const getIssueDetail = () => {
-    // Get issue detail
+  const getIssueDetail = async (key: string, pointField?: JiraField | null) => {
+    const accessToken = await getJiraAccessToken();
+    const client = getJiraApiClient(API_URL, accessToken);
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ key }`;
+
+    const fields = [ 'id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team' ];
+
+    if (pointField) {
+      fields.push(pointField.id);
+    }
+
+    return client(
+      {
+        method: 'GET',
+        url: path,
+        params: {
+          fields: fields.join(','),
+        },
+      },
+    )
+      .then((res): JiraIssueSearchPayload => res.data)
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 
-  const assignPointsToIssue = () => {
-    // Assign points to issue
+  const writePointValue = async (issue: string, value: number) => {
+    const accessToken = await getJiraAccessToken();
+    const client = getJiraApiClient(API_URL, accessToken);
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ issue }/${ URL_ACTIONS.ESTIMATION_PATH }`;
+
+    return client(
+      {
+        method: 'PUT',
+        url: path,
+        params: {
+          value: value.toFixed(1).toString(),
+        },
+      },
+    )
+      .then((res): JiraIssueSearchPayload => res.data)
+      .catch((error) => {
+        throw new Error(error);
+      });
   };
 
-  const batchAssignPointsToIssues = () => {
+  const batchWritePointValues = () => {
     // Batch assign points to issues
   };
 
   return {
+    buildJiraUrl,
+    isConfigured,
     jiraAccessibleResources: resources,
     launchJiraOAuth,
     getAccessTokenFromApi,
@@ -248,8 +295,8 @@ const useJira = () => {
     getIssuesForBoard,
     getIssueDetail,
     getSprintsForBoard,
-    assignPointsToIssue,
-    batchAssignPointsToIssues,
+    writePointValue,
+    batchWritePointValues,
   };
 };
 

@@ -5,10 +5,12 @@ export enum URL_ACTIONS {
   OAUTH = 'oauth/token',
   GET_RESOURCES = 'oauth/token/accessible-resources',
   JIRA_API_PREFIX = 'ex/jira/',
-  BOARD_PATH = 'rest/agile/1.0/board',
+  AGILE_API_PREFIX = 'rest/agile/1.0/',
   FIELD_PATH = 'rest/api/3/field',
+  BOARD_PATH = 'board',
+  ISSUE_PATH = 'issue',
+  ESTIMATION_PATH = 'estimation',
   BOARD_SPRINT_PATH = 'sprint',
-  BOARD_ISSUES_PATH = 'issue',
 }
 
 type UrlOptions = {
