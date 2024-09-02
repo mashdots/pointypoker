@@ -316,10 +316,6 @@ const useJira = () => {
       });
   };
 
-  const batchWritePointValues = () => {
-    // Batch assign points to issues
-  };
-
   return {
     buildJiraUrl,
     isConfigured,
@@ -335,7 +331,6 @@ const useJira = () => {
     getPointFieldFromBoardId,
     getSprintsForBoard,
     writePointValue,
-    batchWritePointValues,
   };
 };
 

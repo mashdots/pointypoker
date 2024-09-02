@@ -1,5 +1,11 @@
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
+type UrlOptions = {
+  userId?: string;
+}
+
+export const ATLASSIAN_URL = 'atlassian.com';
+
 export enum URL_ACTIONS {
   AUTHORIZE = 'authorize',
   OAUTH = 'oauth/token',
@@ -14,16 +20,22 @@ export enum URL_ACTIONS {
   BOARD_SPRINT_PATH = 'sprint',
 }
 
-type UrlOptions = {
-  userId?: string;
-}
-
 export enum JIRA_SUBDOMAINS {
   API = 'api',
   AUTH = 'auth',
 }
 
-export const ATLASSIAN_URL = 'atlassian.com';
+const scopes = [
+  'offline_access', // Requests a refresh token with auth
+  'read:board-scope.admin:jira-software', // board config
+  'read:board-scope:jira-software', // boards, board issues
+  'read:issue:jira-software', // issue
+  'read:issue-details:jira', // board issues
+  'read:project:jira', // boards, board config, fields
+  'read:sprint:jira-software', // board sprints
+  'read:jira-work', // fields
+  'write:jira-work', // issue update
+];
 
 const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
   let url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}`;
@@ -33,25 +45,6 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
     if (!options?.userId) {
       throw new Error('User ID is required for this action');
     }
-
-    const scopes = [
-      'offline_access', // Requests a refresh token with auth
-      'read:avatar:jira', // do we need?
-      'read:board-scope.admin:jira-software', // do we need?
-      'read:board-scope:jira-software',
-      'read:field:jira',
-      'read:issue:jira',
-      'read:issue:jira-software',
-      'read:issue-details:jira',
-      'read:jira-work',
-      'read:jql:jira',
-      'read:project:jira',
-      'read:project-category:jira',
-      'read:sprint:jira-software',
-      'read:field-configuration:jira',
-      'write:issue:jira-software',
-      'write:jira-work',
-    ];
 
     const params = new URLSearchParams({
       audience: `${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`,
