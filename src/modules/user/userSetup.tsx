@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
 
   > form {
     width: 100%;
@@ -22,6 +23,7 @@ const Wrapper = styled.div`
 
 const Notice = styled.p<NoticeProps>`
   transition: opacity 200ms;
+  padding: 1rem;
 
   ${({ shouldShow = true, theme }) => css`
     color: ${theme.primary.textLow};
@@ -44,7 +46,7 @@ const UserSetup = () => {
   return (
     <Wrapper id='user-setup-show'>
       <h1>what do we call you?</h1>
-      <Notice>this is stored locally so you&apos;re not asked every time</Notice>
+      <Notice>this is stored locally so you&apos;re not asked every time, and in the cloud to sync with room data</Notice>
       <form onSubmit={handleSubmit} autoComplete='off' role="user name">
         <TextInput
           alignment='center'

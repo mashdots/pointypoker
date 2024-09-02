@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  width: 100%;
 `;
 
 const TicketRowList = styled.div`
