@@ -50,6 +50,18 @@ export type JiraBoard = {
   apiUrl: string;
 }
 
+export type JiraBoardConfig = {
+  estimation: {
+    field: {
+      displayName: string;
+      fieldId: string;
+    };
+    type: string;
+  };
+  name: string;
+  id: number;
+}
+
 /**
  * Fields
  */
@@ -70,7 +82,6 @@ export type JiraFieldPayload = {
 
 export type JiraField = {
   id: string;
-  jqlFilter: string;
   name: string;
 }
 
@@ -103,7 +114,9 @@ export type JiraIssueSearchPayload = {
 type JiraTicketBase = {
   url: string;
   sprint: JiraSprint;
+  estimationFieldId: string;
   type: IssueType
+  wasPointed?: boolean;
 }
 
 // A ticket from Jira in the queue prior to pointing
@@ -114,7 +127,6 @@ export type JiraTicketFromQueue = Ticket & QueuedJiraTicket;
 
 // A ticket from Jira that was not previously in the queue
 export type JiraTicket = Ticket & JiraTicketBase;
-
 
 /**
  * Sprints
