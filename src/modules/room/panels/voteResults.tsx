@@ -29,7 +29,7 @@ const ResultCell = styled.div`
   justify-content: center;
   align-items: center;
   margin: 0;
-  padding: 1rem;
+  padding: 0 1rem;
 `;
 
 const VerticalDivider = styled.div`

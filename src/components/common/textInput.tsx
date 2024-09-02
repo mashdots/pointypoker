@@ -5,6 +5,7 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
   alignment?: 'left' | 'center' | 'right';
+  disabled?: boolean;
   id: string;
   icon?: React.ReactNode;
   inputRef?: React.RefObject<HTMLInputElement>;
@@ -75,6 +76,7 @@ const StyledInput = styled.input<InputProps>`
 
 const TextInput = ({
   alignment,
+  disabled = false,
   icon,
   inputRef,
   onChange,
@@ -120,11 +122,12 @@ const TextInput = ({
       <StyledInput
         data-1pignore="true"
         autoComplete='off'
+        disabled={disabled}
         ref={inputRef}
         type='text'
         align={inputAlign}
         placeholder={placeHolder}
-        value={value ?? ''}
+        defaultValue={value ?? ''}
         onChange={onChange}
         onFocus={() => {
           onFocus?.();

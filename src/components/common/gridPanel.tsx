@@ -67,7 +67,7 @@ const GridPanel = ({
     <Container {...config}>
       {titleComponent}
       {headingElement}
-      <ChildrenWrapper id="children-wrapper">
+      <ChildrenWrapper>
         {children}
       </ChildrenWrapper>
     </Container>

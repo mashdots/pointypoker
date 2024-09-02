@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem 1rem;
 `;
 
 const Section = styled.div<SectionProps>`
@@ -74,7 +74,9 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
 `;
 
 const Header = ({ headerRef, hideMenu }: Props) => {
-  const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }));
+  const { isMenuOpen, setIsMenuOpen } = useStore(
+    ({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }),
+  );
 
   return (
     <Wrapper ref={headerRef}>

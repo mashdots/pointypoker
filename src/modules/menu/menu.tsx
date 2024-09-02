@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import debounce from 'lodash/debounce';
 
-import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, QueueMenuItem } from './menuItems';
+import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, ImportFromJiraMenuItem } from './menuItems';
 import { ThemeModeToggleRow } from '@modules/preferences';
 import { Separator } from '@modules/preferences/panes/common';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
+import { useJira } from '@modules/integrations';
 
 type Props = {
   topOffset: number;
@@ -29,7 +30,7 @@ const Container = styled.div<ContainerProps>`
   padding: 1rem;
   z-index: 100;
 
-  transition: opacity 250ms, transform 250ms;
+  transition: opacity 400ms, transform 400ms, filter 400ms;
 
   ${({ isVisible, right, top, theme }: ContainerProps) => css`
     background-color: ${theme.greyscale.componentBg};
@@ -39,6 +40,7 @@ const Container = styled.div<ContainerProps>`
     right: calc(${right}px + 1rem);
     top: calc(${top}px + 1rem);
     transform: translateY(${isVisible ? 0 : -1}rem);
+    filter: blur(${isVisible ? 0 : 1}rem);
   `}
 `;
 
@@ -56,6 +58,7 @@ const Menu = ({ topOffset }: Props) => {
       }
     ),
   );
+  const { isConfigured } = useJira();
   const [isMenuRendered, setIsMenuRendered] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [rightOffset, setRightOffset] = useState(0);
@@ -124,8 +127,8 @@ const Menu = ({ topOffset }: Props) => {
       shouldShow: !!roomName,
     },
     {
-      component: <QueueMenuItem />,
-      shouldShow: !!roomName,
+      component: <ImportFromJiraMenuItem />,
+      shouldShow: isConfigured && !!roomName,
     },
     {
       component: <LeaveRoomMenuItem />,

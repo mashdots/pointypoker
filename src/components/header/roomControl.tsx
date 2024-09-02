@@ -5,19 +5,16 @@ import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div<{ appear: boolean }>`
+  ${({ appear }) => css`
+    opacity: ${ appear ? 1 : 0 };
+  `};
+
   cursor: default;
   display: flex;
   align-items: center;
   padding-top: 0.25rem;
   padding-left: 0.5rem;
   margin-left: 0.5rem;
-
-  ${({ appear }) => css`
-    opacity: ${appear ? 1 : 0};
-    > div {
-      cursor: ${appear ? 'pointer' : 'default'};
-    }
-  `};
 `;
 
 const Separator = styled.div<ThemedProps & { appear: boolean }>`
