@@ -9,6 +9,14 @@ import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject, Ticket } from '@yappy/types';
 import { PossibleQueuedTicket } from '@yappy/types/room';
+import { JiraTicket } from '@modules/integrations/jira/types';
+
+export enum TICKET_ACTIONS {
+  SKIP,
+  NEW,
+  POINT,
+  NEXT,
+}
 
 const useTickets = () => {
   const {
@@ -29,12 +37,18 @@ const useTickets = () => {
     }
   ));
 
+  const nextTicket = useMemo(() => {
+    const currentTicketIndex = queue.findIndex((ticket) => ticket.id === currentTicket?.id);
+    return queue?.[currentTicketIndex + 1] ?? null;
+  }, [queue, currentTicket]);
+
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
-    .map(({ name, id, inactive, consecutiveMisses }): VoteDisplayProps => ({
+    .map(({ name, id, inactive, consecutiveMisses, isObserver }): VoteDisplayProps => ({
       name: name,
       vote: currentTicket?.votes[id] ?? '',
       inactive,
+      isObserver,
       consecutiveMisses,
     })),
   [participants, currentTicket],
@@ -69,8 +83,11 @@ const useTickets = () => {
     }
   }, [roomName, currentTicket]);
 
-  const handleCreateTicketFromQueue = (queuedTicket: PossibleQueuedTicket) => {
-    handleCreateTicket(queuedTicket.name, queuedTicket);
+  const handleCreatePredefinedTicket = (
+    preDefinedTicket: Partial<Ticket | JiraTicket | PossibleQueuedTicket>,
+    isFromQueue = false,
+  ) => {
+    handleCreateTicket(preDefinedTicket.name, preDefinedTicket, isFromQueue);
   };
 
   /**
@@ -81,7 +98,7 @@ const useTickets = () => {
    * points will be calculated, and the ticket will be moved to the
    * `completedTickets` array.
    */
-  const handleCreateTicket = useCallback((newTicketName = '', queuedTicket?: PossibleQueuedTicket) => {
+  const handleCreateTicket = useCallback((newTicketName = '', preDefinedTicket?: Partial<Ticket | JiraTicket | PossibleQueuedTicket>, fromQueue = false) => {
     if (roomName && user) {
       const updateObj: RoomUpdateObject = {};
       updateObj['currentTicket'] = {
@@ -91,15 +108,15 @@ const useTickets = () => {
         shouldShowVotes: false,
         votes: {},
         createdAt: Date.now(),
-        timerStartAt: Date.now(),
         pointOptions: PointingTypes.fibonacci,
         votesShownAt: null,
-        fromQueue: !!queuedTicket,
-        ...(queuedTicket || {}) ,
+        fromQueue: fromQueue,
+        ...(preDefinedTicket || {}) ,
       } as Ticket;
 
-      if (currentTicket) {
+      if (currentTicket && shouldShowVotes) {
         const completedTicket = cloneDeep(currentTicket);
+
         // If any users did not vote, increment their consecutive misses
         participants.forEach(({ id }) => {
           if (!isVoteCast(currentTicket.votes[id])) {
@@ -110,10 +127,15 @@ const useTickets = () => {
 
         // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
         completedTicket.averagePoints = calculateAverage(currentTicket).average;
-        completedTicket.suggestedPoints = calculateSuggestedPoints(currentTicket).suggestedPoints;
+
+        if (!completedTicket.suggestedPoints) {
+          completedTicket.suggestedPoints = calculateSuggestedPoints(currentTicket).suggestedPoints;
+        }
 
         // Move the current ticket to the completed tickets array
         updateObj['completedTickets'] = arrayUnion(completedTicket);
+
+        // If the ticket is in the queue, remove it from the queue
         if (currentTicket?.fromQueue) {
           const currentTicketFromQueue = queue.find((ticket) => ticket.id === currentTicket.id);
           updateObj['ticketQueue'] = arrayRemove(currentTicketFromQueue);
@@ -122,18 +144,26 @@ const useTickets = () => {
 
       updateRoom(roomName, updateObj);
     }
-  }, [roomName, currentTicket, participants]);
+  }, [roomName, currentTicket, participants, user, queue, shouldShowVotes]);
+
+  const handleGoToNextTicket = useCallback(() => {
+    if (roomName && user && nextTicket) {
+      handleCreatePredefinedTicket(nextTicket, true);
+    }
+  }, [roomName, queue, nextTicket]);
 
   return {
     areAllVotesCast,
     currentTicket,
     completedTickets,
+    nextTicket,
     queue,
     shouldShowVotes,
     voteData,
     handleUpdateCurrentTicket,
     handleCreateTicket,
-    handleCreateTicketFromQueue,
+    handleCreatePredefinedTicket,
+    handleGoToNextTicket,
   };
 };
 
