@@ -1,15 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import PencilSvg from '@assets/icons/pencil.svg?react';
 import UndoSvg from '@assets/icons/undo.svg?react';
 import useStore from '@utils/store';
-import { JiraBoardPayloadValue, JiraSprintWithIssues } from '@modules/integrations/jira/types';
+import { JiraBoardPayloadValue, JiraField, JiraSprintWithIssues } from '@modules/integrations/jira/types';
 import BoardSelection from '@modules/room/queueBulider/steps/boardSelection';
 import SprintSelection from '@modules/room/queueBulider/steps/sprintSelection';
 import TicketReview from '@modules/room/queueBulider/steps/ticketReview';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useTickets } from '@modules/room/hooks';
+import { useJira } from '@modules/integrations';
 
 type ConfigOptionProps = {
   selectionComplete: boolean;
@@ -141,11 +142,12 @@ const QueueModal = () => {
   const { defaultBoard } = useStore(({ preferences }) => ({
     defaultBoard: preferences?.jiraPreferences?.defaultBoard,
   }));
+  const { getPointFieldFromBoardId } = useJira();
   const { queue } = useTickets();
   const [ overrideBoard, setOverrideBoard ] = useState<JiraBoardPayloadValue | null>(null);
   const [ selectedSprint, setSelectedSprint ] = useState<JiraSprintWithIssues | null>(null);
   const [ showOverrideUI, setShowOverrideUI ] = useState<boolean>(false);
-
+  const [ pointField, setPointField ] = useState<JiraField | null>(null);
   const isAnyBoardSelected = useMemo(() => !!defaultBoard || !!overrideBoard, [ defaultBoard, overrideBoard ]);
 
   const selectionContent = useMemo(() => {
@@ -160,24 +162,35 @@ const QueueModal = () => {
       );
     }
 
-    if (!selectedSprint) {
+    if (!selectedSprint && pointField) {
       return (
         <SprintSelection
           existingQueue={queue}
           boardId={overrideBoard?.id || defaultBoard?.id}
           setSprint={setSelectedSprint}
+          pointField={pointField}
         />
       );
     }
 
-    if (selectedSprint?.issues) {
+    if (selectedSprint?.issues && pointField) {
       return (
         <TicketReview
           existingQueue={queue}
-          issues={selectedSprint.issues} />
+          issues={selectedSprint.issues}
+          pointField={pointField}
+        />
       );
     }
-  }, [ defaultBoard, overrideBoard, showOverrideUI, selectedSprint ]);
+  }, [ defaultBoard, overrideBoard, showOverrideUI, selectedSprint, pointField ]);
+
+  useEffect(() => {
+    if (overrideBoard || defaultBoard) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getPointFieldFromBoardId(overrideBoard?.id || defaultBoard!.id)
+        .then((pointField) => setPointField(pointField ?? null));
+    }
+  }, [ defaultBoard, overrideBoard ]);
 
   return (
     <>

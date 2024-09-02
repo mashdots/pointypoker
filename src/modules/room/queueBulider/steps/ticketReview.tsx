@@ -9,7 +9,7 @@ import ReplaceSvg from '@assets/icons/arrows-counter-clockwise.svg?react';
 import { Button } from '@components/common';
 import { fadeDownEntrance } from '@components/common/animations';
 import { InformationWrapper, SectionWrapper } from '@modules/room/queueBulider/steps/common';
-import { JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
+import { JiraField, JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
 import { Separator } from '@modules/preferences/panes/common';
 import { updateRoom } from '@services/firebase';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -18,6 +18,7 @@ import { Room } from '@yappy/types';
 import { RoomUpdateObject } from '@yappy/types/room';
 import { useMobile } from '@utils/hooks/mobile';
 import { useJira } from '@modules/integrations';
+import { useTickets } from '@modules/room/hooks';
 
 export enum EXISTING_QUEUE_ACTIONS {
   PREPEND,
@@ -28,6 +29,7 @@ export enum EXISTING_QUEUE_ACTIONS {
 type Props = {
   existingQueue: Room['ticketQueue'];
   issues: JiraIssueSearchPayload[];
+  pointField: JiraField;
 }
 
 type QueueControlProps = {
@@ -160,6 +162,7 @@ const QueueActionRadioButton = styled.div<{ isSelected: boolean }>`
   > label {
     cursor: pointer;
   }
+
   > input {
     display: none;
   }
@@ -168,14 +171,16 @@ const QueueActionRadioButton = styled.div<{ isSelected: boolean }>`
 const TicketReview = ({
   existingQueue,
   issues,
+  pointField,
 }: Props) => {
   const [queueAction, setQueueAction] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
   const { closeModal, roomName } = useStore(({ room, setCurrentModal }) => ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
   }));
+  const { currentTicket, handleCreatePredefinedTicket } = useTickets();
   const { isMobile } = useMobile();
-  const { jiraAccessibleResources } = useJira();
+  const { buildJiraUrl } = useJira();
   const ticketsInQueue = !!existingQueue.length;
 
   const handleAddTicketsToQueue = useCallback(
@@ -192,11 +197,18 @@ const TicketReview = ({
             name: summary,
             type: issuetype,
             sprint,
-            fromJira: true,
-            url: `${jiraAccessibleResources?.url}/browse/${key}`,
+            url: buildJiraUrl(key),
+            estimationFieldId: pointField.id,
           };
         },
       );
+
+      if (!currentTicket) {
+        const newCurrentTicket = newIssues[0];
+        if (newCurrentTicket) {
+          handleCreatePredefinedTicket(newCurrentTicket, true);
+        }
+      }
 
       switch (queueAction) {
       case EXISTING_QUEUE_ACTIONS.APPEND:
@@ -217,7 +229,7 @@ const TicketReview = ({
         console.error('Failed to update queue', error);
       }
     },
-    [queueAction],
+    [ queueAction, existingQueue, issues, pointField, roomName, currentTicket ],
   );
 
   const issueList = issues.map(({

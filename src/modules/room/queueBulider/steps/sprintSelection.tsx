@@ -4,9 +4,8 @@ import styled, { css } from 'styled-components';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { fadeDownEntrance, spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
-import { JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
+import { JiraField, JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
 import { InformationWrapper, SectionWrapper } from '@modules/room/queueBulider/steps/common';
-import useStore from '@utils/store';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Room } from '@yappy/types';
@@ -15,6 +14,7 @@ type Props = {
   boardId?: string | number;
   existingQueue: Room[ 'ticketQueue' ];
   setSprint: (sprintData: JiraSprintWithIssues) => void;
+  pointField: JiraField;
 }
 
 type SprintOptionProps = {
@@ -116,6 +116,7 @@ const SprintSelection = ({
   boardId,
   existingQueue,
   setSprint,
+  pointField,
 }: Props) => {
   const previousBoardId = usePrevious(boardId);
   const [isLoading, setIsLoading] = useState(false);
@@ -123,7 +124,6 @@ const SprintSelection = ({
   const [sprintData, setSprintData] = useState<JiraSprint[] | null>(null);
   const [issueData, setIssueData] = useState<JiraIssueSearchPayload[] | null>(null);
   const { getSprintsForBoard, getIssuesForBoard } = useJira();
-  const pointField = useStore(({ preferences }) => preferences?.jiraPreferences?.pointField);
 
   const handleFetchSprintData = useCallback(async () => {
     if (!boardId) {
