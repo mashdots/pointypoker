@@ -26,7 +26,7 @@ const TimerPanel = (props: GridPanelProps) => {
     <GridPanel config={props.gridConfig}>
       <Wrapper>
         <Timer
-          startTime={currentTicket?.timerStartAt}
+          startTime={currentTicket?.createdAt}
           endTime={currentTicket?.votesShownAt}
         />
       </Wrapper>
