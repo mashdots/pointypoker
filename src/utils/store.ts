@@ -16,6 +16,8 @@ type Store = {
   setIsMenuOpen: (arg: boolean) => void;
   currentModal: MODAL_TYPES | null;
   setCurrentModal: (arg: MODAL_TYPES | null) => void;
+  arePrefsInitialized: boolean;
+  setPrefsInitialized: () => void;
 }
 
 const useStore = create<Store>((set) => ({
@@ -37,6 +39,8 @@ const useStore = create<Store>((set) => ({
   setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
   currentModal: null,
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
+  arePrefsInitialized: false,
+  setPrefsInitialized: () => set(() => ({ arePrefsInitialized: true })),
 }));
 
 export default useStore;

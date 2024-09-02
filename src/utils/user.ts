@@ -6,14 +6,10 @@ export type UserPayload = {
   created: string;
 };
 
-const createUserPayload = (name: string): UserPayload => {
-  const userPayload = {
-    name,
-    id: uuid(),
-    created: new Date().toISOString(),
-  };
-
-  return userPayload;
-};
+const createUserPayload = (name: string): UserPayload => ({
+  name,
+  id: uuid(),
+  created: new Date().toISOString(),
+});
 
 export default createUserPayload;

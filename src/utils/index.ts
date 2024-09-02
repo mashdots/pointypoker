@@ -23,6 +23,8 @@ const usePrevious = <T>(value: T): T | undefined => {
 
 const isDev = import.meta.env.MODE === 'development';
 
+const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 export {
   createUserPayload,
   generateRoomName,
@@ -31,4 +33,5 @@ export {
   setCookie,
   usePrevious,
   isDev,
+  wait,
 };
