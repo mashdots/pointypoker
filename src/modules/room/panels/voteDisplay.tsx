@@ -31,7 +31,7 @@ export type VoteDisplayProps = {
 type VoteCellProps = {
   isLast: boolean;
   cellMode: PARTICIPANT_MODES;
-  voteData: Omit<VoteDisplayProps, 'inactive' | 'consecutiveMisses'>;
+  voteData: Omit<VoteDisplayProps, 'inactive' | 'consecutiveMisses' | 'isObserver'>;
 }
 
 type StyledVoteCellProps = {
@@ -187,37 +187,39 @@ const VoteDisplay = (props: GridPanelProps) => {
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
 
   const voteNodes = useMemo(
-    () => voteData.map(({ name: participantName, vote, inactive, consecutiveMisses }, i) => {
-      const userIsParticipant = participantName === user?.name;
-      const hasVoted = isVoteCast(vote);
-      const name = userIsParticipant ? 'you' : participantName;
-      const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
-      const isLast = i === voteData.length - 1;
-      let mode = PARTICIPANT_MODES.DEFAULT;
+    () => voteData.map(
+      ({ name: participantName, vote, inactive, consecutiveMisses, isObserver }, i) => {
+        const userIsParticipant = participantName === user?.name;
+        const hasVoted = isVoteCast(vote);
+        const name = userIsParticipant ? 'you' : participantName;
+        const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
+        const isLast = i === voteData.length - 1;
+        let mode = PARTICIPANT_MODES.DEFAULT;
 
-      if (user?.isObserver) {
-        mode = PARTICIPANT_MODES.OBSERVER;
-      } else if (inactive) {
-        mode = PARTICIPANT_MODES.INACTIVE;
-      } else if (consecutiveMisses > 2) {
-        mode = PARTICIPANT_MODES.ABSENT;
-      } else if (hasVoted) {
-        if (!displayVote) {
-          mode = PARTICIPANT_MODES.VOTED;
-        } else {
-          mode = PARTICIPANT_MODES.REVEALED;
+        if (isObserver) {
+          mode = PARTICIPANT_MODES.OBSERVER;
+        } else if (inactive) {
+          mode = PARTICIPANT_MODES.INACTIVE;
+        } else if (consecutiveMisses > 2) {
+          mode = PARTICIPANT_MODES.ABSENT;
+        } else if (hasVoted) {
+          if (!displayVote) {
+            mode = PARTICIPANT_MODES.VOTED;
+          } else {
+            mode = PARTICIPANT_MODES.REVEALED;
+          }
         }
-      }
 
-      return (
-        <VoteCell
-          key={i}
-          cellMode={mode}
-          isLast={isLast}
-          voteData={{ name, vote }}
-        />
-      );
-    }),
+        return (
+          <VoteCell
+            key={i}
+            cellMode={mode}
+            isLast={isLast}
+            voteData={{ name, vote }}
+          />
+        );
+      },
+    ),
     [shouldShowVotes, user, voteData],
   );
 

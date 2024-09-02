@@ -226,7 +226,7 @@ const TicketReview = ({
       try {
         await updateRoom(roomName, updateObj, closeModal);
       } catch (error) {
-        console.error('Failed to update queue', error);
+        console.error('Doh!', error);
       }
     },
     [ queueAction, existingQueue, issues, pointField, roomName, currentTicket ],

@@ -290,7 +290,7 @@ const useJira = () => {
         });
       }
     } catch (error) {
-      console.error('Error fetching point field', error);
+      console.error('WHOOPS', error);
     }
   };
 

@@ -67,7 +67,7 @@ const usePreferenceSync = () => {
         pref = JSON.parse(storedPreferences[ key ]);
         setPref(key, pref);
       } catch (error) {
-        console.error('Error parsing stored preference:', key, storedPreferences[ key ]);
+        console.error('YIKES:', key, storedPreferences[ key ]);
       }
     }
   };

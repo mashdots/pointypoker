@@ -120,7 +120,7 @@ const SprintSelection = ({
 }: Props) => {
   const previousBoardId = usePrevious(boardId);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  // const [isError, setIsError] = useState(false);
   const [sprintData, setSprintData] = useState<JiraSprint[] | null>(null);
   const [issueData, setIssueData] = useState<JiraIssueSearchPayload[] | null>(null);
   const { getSprintsForBoard, getIssuesForBoard } = useJira();
@@ -131,13 +131,13 @@ const SprintSelection = ({
     }
 
     setIsLoading(true);
-    setIsError(false);
+    // setIsError(false);
 
     try {
       const sprints = await getSprintsForBoard(boardId);
       setSprintData(sprints.values as JiraSprint[]);
     } catch (error) {
-      setIsError(true);
+      // setIsError(true);
     }
 
   }, [boardId]);
@@ -147,7 +147,7 @@ const SprintSelection = ({
       return;
     }
 
-    setIsError(false);
+    // setIsError(false);
 
     try {
       const issues = await getIssuesForBoard(boardId as string, pointField, startAt);
@@ -164,12 +164,14 @@ const SprintSelection = ({
       });
 
       if (startAt < issues.total) {
-        return handleFetchIssueData(startAt + issues.maxResults);
+        handleFetchIssueData(startAt + issues.maxResults);
+        return;
       }
 
       setIsLoading(false);
     } catch (error) {
-      setIsError(true);
+      console.error('Ahhh shit', error);
+      // setIsError(true);
     }
   }, [boardId]);
 

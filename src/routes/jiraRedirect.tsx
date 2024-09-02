@@ -5,7 +5,7 @@ import LoadingIcon from '@assets/icons/loading-circle.svg?react';
 import Check from '@assets/icons/check.svg?react';
 import Error from '@assets/icons/plus.svg?react';
 import { useJira } from '@modules/integrations';
-import { JiraAuthData } from '@modules/integrations/jira';
+import { JiraAuthData } from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
