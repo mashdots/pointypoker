@@ -5,12 +5,12 @@ import {
   DistributionPanel,
   Tickets,
   TimerPanel,
-  TitleControl,
   VoteDisplay,
   VoteResults,
   VotingPanel,
 } from './panels';
 import { useMobile } from '@utils/hooks/mobile';
+import TicketController from '@modules/room/panels/ticketController';
 
 type RoomDataContainerProps = {
   showNarrow: boolean;
@@ -69,7 +69,7 @@ const RoomPresenter = () => {
 
   return (
     <Wrapper>
-      <TitleControl />
+      <TicketController />
       <RoomDataContainer showNarrow={isMobile}>
         <TimerPanel gridConfig={gridConfigs.timer} />
         <VotingPanel gridConfig={gridConfigs.voting} />

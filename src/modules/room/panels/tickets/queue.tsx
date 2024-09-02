@@ -6,6 +6,7 @@ import LinkSvg from '@assets/icons/link-out.svg?react';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { fadeDownEntrance } from '@components/common/animations';
 import { PossibleQueuedTicket } from '@yappy/types/room';
+import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 
 type IssueWrapperProps = ThemedProps & {
   delayFactor: number,
@@ -26,7 +27,7 @@ const IssueWrapper = styled.div<IssueWrapperProps>`
     return css`
       animation: ${ fadeDownEntrance } 0.25s ease-out ${ delayFactor }ms forwards;
       background-color: ${ theme[themeColor].componentBg };
-      border-left: 2px ${ isCurrentTicket ? 'solid' : 'none' } ${ theme.primary.border };
+      border-left: 4px ${ isCurrentTicket ? 'solid' : 'none' } ${ theme.primary.border };
       border-bottom: 1px ${ isCurrentTicket ? 'none' : 'solid' } ${ theme.greyscale.border };
       color: ${ theme.primary.textHigh };
       cursor: ${ isSelectable ? 'pointer' : 'default' };
@@ -123,22 +124,27 @@ const TitleLinkIcon = styled(LinkSvg)`
  * More work will be done later to fully support non-JIRA tickets.
  */
 const Queue = () => {
-  const { currentTicket, handleCreateTicketFromQueue, queue, shouldShowVotes } = useTickets();
+  const {
+    currentTicket,
+    handleCreatePredefinedTicket,
+    queue,
+  } = useTickets();
 
   const handleSelectIssue = (ticket: PossibleQueuedTicket) => {
-    handleCreateTicketFromQueue(ticket);
+    handleCreatePredefinedTicket(ticket, true);
   };
 
   const issues = queue.map((issue, delayMultiplier) => {
+    // Currently queues only support tickets from JIRA
     const {
       id,
       name,
       type,
       sprint,
       url,
-    } = issue;
+    } = issue as QueuedJiraTicket;
     const isCurrentTicket = currentTicket?.id === id;
-    const canSelectIssue = (!currentTicket || shouldShowVotes) && !isCurrentTicket;
+    const canSelectIssue = !currentTicket || !isCurrentTicket;
     const clickableProps = canSelectIssue ? {
       onClick: () => handleSelectIssue(issue),
       title: 'Click to select this ticket',
