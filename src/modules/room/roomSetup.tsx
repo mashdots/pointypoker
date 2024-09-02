@@ -60,8 +60,9 @@ let timeout: number | undefined;
 
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
-  const { roomData, user, setRoom } = useStore(
+  const { isObserver, roomData, setRoom, user } = useStore(
     ({ preferences, room, setRoom }) => ({
+      isObserver: preferences?.isObserver ?? false,
       user: preferences?.user,
       roomData: room,
       setRoom,
@@ -89,7 +90,7 @@ const RoomSetup = () => {
       inactive: false,
       joinedAt: Date.now(),
       // Update when observers are implemented
-      isObserver: false,
+      isObserver,
     };
     const newRoom: RoomType = {
       name: roomName,
@@ -154,8 +155,7 @@ const RoomSetup = () => {
           inactive: false,
           isHost: false,
           joinedAt: Date.now(),
-          // Update when observers are implemented
-          isObserver: false,
+          isObserver,
         };
 
         updateObj[`participants.${selfAsParticipant.id}`] = selfAsParticipant;

@@ -6,7 +6,6 @@ type Participant = User & {
   consecutiveMisses: number;
   inactive: boolean;
   isHost: boolean;
-  isJiraConfigured: boolean;
   isObserver: boolean;
   joinedAt: number;
 }
