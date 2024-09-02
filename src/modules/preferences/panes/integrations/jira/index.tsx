@@ -5,7 +5,7 @@ import IntegrationCard from '../integrationCard';
 import usePreferenceSync from '../../../hooks';
 import Check from '@assets/icons/check.svg?react';
 import JiraLogo from '@assets/icons/jira-logo.svg?react';
-import Link from '@assets/icons/link-out.svg?react';
+import LinkSvg from '@assets/icons/link-out.svg?react';
 import Copy from '@assets/icons/copy.svg?react';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { Button } from '@components/common';
@@ -14,7 +14,6 @@ import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/de
 import { Separator, VerticalContainer } from '@modules/preferences/panes/common';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import PointFieldSection from '@modules/preferences/panes/integrations/jira/pointFieldSection';
 import { isDev } from '@utils';
 import { JiraResourceData } from '@modules/integrations/jira/types';
 import { spinAnimation } from '@components/common/animations';
@@ -62,7 +61,7 @@ const SuccessIcon = styled(Check)`
   animation: ${ checkAnimation } 300ms;
 `;
 
-const LinkIcon = styled(Link)`
+const LinkIcon = styled(LinkSvg)`
   height: 0.75rem;
   width: 0.75rem;
   margin-left: 0.25rem;
@@ -233,16 +232,16 @@ const JiraIntegrationCard = () => {
     </ConnectWrapper>
   );
 
-  const connectInfoBlock = (
+  const connectInfoBlock = !isConfigured ? (
     <NoticeWrapper>
       <p>
-        By connecting to Jira, you authorize pointy poker to view and modify
-        issues on your behalf. Your credentials are only stored locally and are
-        only used to communicate with Jira. The only ticket data stored in the
-        cloud is the ticket title, points, and the ticket number. {'<--'} Copy TBD
+        When you connect pointy poker to Jira, your credentials are stored
+        locally and are only used to communicate with Jira. Some ticket data is
+        stored in the for syncing between participants, including the title,
+        points, and the ticket number.
       </p>
     </NoticeWrapper>
-  );
+  ) : null;
 
   const disconnectBlock = (
     <DisconnectInfoWrapper key="disconnect-info">
@@ -280,7 +279,6 @@ const JiraIntegrationCard = () => {
         (
           <Wrapper key='integration-setup'>
             <DefaultBoardSection />
-            <PointFieldSection />
           </Wrapper>
         ),
         <Separator key='separator-2' />,

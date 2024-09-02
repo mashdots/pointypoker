@@ -6,7 +6,8 @@ export enum URL_ACTIONS {
   GET_RESOURCES = 'oauth/token/accessible-resources',
   JIRA_API_PREFIX = 'ex/jira/',
   AGILE_API_PREFIX = 'rest/agile/1.0/',
-  FIELD_PATH = 'rest/api/3/field',
+  API_2_PREFIX = 'rest/api/2/',
+  FIELD_PATH = 'field',
   BOARD_PATH = 'board',
   ISSUE_PATH = 'issue',
   ESTIMATION_PATH = 'estimation',
@@ -49,6 +50,7 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
       'read:sprint:jira-software',
       'read:field-configuration:jira',
       'write:issue:jira-software',
+      'write:jira-work',
     ];
 
     const params = new URLSearchParams({

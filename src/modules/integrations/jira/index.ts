@@ -8,6 +8,7 @@ import {
   InitialAuth,
   JiraAuthData,
   JiraAuthPayload,
+  JiraBoardConfig,
   JiraDataPayload,
   JiraField,
   JiraFieldPayload,
@@ -161,10 +162,27 @@ const useJira = () => {
       });
   };
 
+  const getBoardConfiguration = async (boardId: string | number) => {
+    const accessToken = await getJiraAccessToken();
+    const client = getJiraApiClient(API_URL, accessToken);
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId }/configuration`;
+
+    return client(
+      {
+        method: 'GET',
+        url: path,
+      },
+    )
+      .then((res): JiraBoardConfig => res.data)
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+
   const getIssueFields = async () => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${URL_ACTIONS.JIRA_API_PREFIX}${resources?.id}/${URL_ACTIONS.FIELD_PATH}`;
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.API_2_PREFIX}${URL_ACTIONS.FIELD_PATH}`;
 
     return client(
       {
@@ -175,7 +193,7 @@ const useJira = () => {
         },
       },
     )
-      .then((res): { values: JiraFieldPayload[] } => ({ values: res.data }))
+      .then((res): JiraFieldPayload[] => res.data)
       .catch((error) => {
         throw new Error(error);
       });
@@ -211,7 +229,7 @@ const useJira = () => {
     let jql = 'Sprint IN futureSprints() AND resolution IS EMPTY';
 
     if (pointField) {
-      jql += ` AND ${ pointField.jqlFilter } = EMPTY`;
+      jql += ` AND ${ pointField.name } = EMPTY`;
       fields.push(pointField.id);
     }
 
@@ -259,21 +277,40 @@ const useJira = () => {
       });
   };
 
-  const writePointValue = async (issue: string, value: number) => {
+  const getPointFieldFromBoardId = async (boardId: number) => {
+    try {
+      const boardConfig = await getBoardConfiguration(boardId);
+      const issueFields = await getIssueFields();
+      const estimationField = issueFields.find((field) => field.id === boardConfig.estimation.field.fieldId);
+
+      if (estimationField) {
+        return ({
+          id: estimationField.id,
+          name: estimationField.name,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching point field', error);
+    }
+  };
+
+  const writePointValue = async (issue: string, value: number, fieldId: string) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ issue }/${ URL_ACTIONS.ESTIMATION_PATH }`;
-
+    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.API_2_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ issue }`;
+    console.log('fieldId', fieldId);
     return client(
       {
         method: 'PUT',
         url: path,
-        params: {
-          value: value.toFixed(1).toString(),
+        data: {
+          fields: {
+            [ fieldId ]: value,
+          },
         },
       },
     )
-      .then((res): JiraIssueSearchPayload => res.data)
+      .then((res) => res.data)
       .catch((error) => {
         throw new Error(error);
       });
@@ -291,9 +328,11 @@ const useJira = () => {
     getAccessTokenFromApi,
     getAccessibleResources,
     getBoards,
+    getBoardConfiguration,
     getIssueFields,
     getIssuesForBoard,
     getIssueDetail,
+    getPointFieldFromBoardId,
     getSprintsForBoard,
     writePointValue,
     batchWritePointValues,
