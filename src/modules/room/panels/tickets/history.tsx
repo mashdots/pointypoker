@@ -98,7 +98,7 @@ const History = () => {
 
     return (
       <TicketRow key={id} showBottomBorder={!isLast}>
-        <NameCell>{nameComponent || '(no title)'}</NameCell>
+        <NameCell title={title ?? name}>{nameComponent || '(no title)'}</NameCell>
         <PointCell>{suggestedPoints}</PointCell>
       </TicketRow>
     );
