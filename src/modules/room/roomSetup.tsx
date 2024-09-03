@@ -95,6 +95,7 @@ const RoomSetup = () => {
     const newRoom: RoomType = {
       name: roomName,
       createdAt: Date.now(),
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
       participants: {
         [self.id]: self,
       },

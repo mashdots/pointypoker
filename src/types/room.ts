@@ -45,6 +45,7 @@ type TicketFromQueue = PossibleQueuedTicket & Ticket;
 
 type Room = {
   createdAt: number;
+  expiresAt: number;
   name: string;
   participants: {
     [key: string]: Participant;
