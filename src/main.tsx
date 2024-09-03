@@ -8,6 +8,7 @@ import {
 import './index.css';
 import {
   JiraRedirect,
+  Privacy,
   Root,
   Switcher,
 } from './routes';
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: JIRA_REDIRECT_PATH,
         element: <JiraRedirect />,
+      },
+      {
+        path: '/privacy',
+        element: <Privacy />,
       },
     ],
   },
