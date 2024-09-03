@@ -1,3 +1,18 @@
-<svg viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<path d="M29.762 1.004h-14.443c0 0 0 0 0 0 0 3.599 2.918 6.517 6.517 6.517 0 0 0 0 0 0h2.66v2.571c0.003 3.591 2.91 6.502 6.498 6.512h0.001v-14.343c0-0.002 0-0.003 0-0.005 0-0.685-0.55-1.241-1.232-1.251h-0.001zM22.616 8.198h-14.443c0.001 3.599 2.918 6.516 6.517 6.516h2.66v2.572c0.003 3.598 2.919 6.513 6.517 6.516h0v-14.352c0-0.691-0.56-1.251-1.251-1.251v0zM15.464 15.391h-14.46c0.002 3.6 2.921 6.517 6.521 6.517 0.006 0 0.012 0 0.018-0h2.661v2.57c0 0 0 0 0 0 0 3.598 2.916 6.515 6.514 6.517h0v-14.348c0-0.694-0.562-1.256-1.256-1.256v0z" />
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 71.81 71.81">
+  <defs>
+    <style>.cls-1{fill:#2684ff;}.cls-2{fill:url(#New_Gradient_Swatch_1);}.cls-3{fill:url(#New_Gradient_Swatch_1-2);}</style>
+    <linearGradient id="New_Gradient_Swatch_1" x1="53.96" y1="17.29" x2="39.25" y2="32.46" gradientUnits="userSpaceOnUse">
+      <stop offset="0.18" stop-color="#0052cc"/>
+      <stop offset="1" stop-color="#2684ff"/>
+    </linearGradient>
+    <linearGradient id="New_Gradient_Swatch_1-2" x1="37.83" y1="34.62" x2="20.82" y2="51.16" xlink:href="#New_Gradient_Swatch_1"/>
+  </defs>
+  <title>Jira-icon-blue</title>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Blue">
+      <path class="cls-1" d="M68.81,0H34.23A15.61,15.61,0,0,0,49.84,15.61h6.37v6.15A15.61,15.61,0,0,0,71.81,37.36V3A3,3,0,0,0,68.81,0Z"/>
+      <path class="cls-2" d="M51.7,17.23H17.12A15.61,15.61,0,0,0,32.72,32.83h6.37V39A15.61,15.61,0,0,0,54.7,54.59V20.23A3,3,0,0,0,51.7,17.23Z"/>
+      <path class="cls-3" d="M34.58,34.45H0A15.61,15.61,0,0,0,15.61,50.06H22v6.15A15.61,15.61,0,0,0,37.58,71.81V37.45A3,3,0,0,0,34.58,34.45Z"/>
+    </g>
+  </g>
 </svg>

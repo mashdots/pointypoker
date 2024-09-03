@@ -31,11 +31,6 @@ const checkAnimation = keyframes`
 `;
 
 const JiraIcon = styled(JiraLogo)`
-  ${({ theme }: ThemedProps) => css`
-    > path {
-      fill: ${ theme.info.solidBg };
-    }
-  `}
 
   height: 2rem;
   width: 2rem;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import MenuItem from './menuItem';
 import { MODAL_TYPES } from '@modules/modal';
@@ -10,12 +10,6 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 const Icon = styled(JiraSvg)<ThemedProps>`
   width: 1.5rem;
   margin-right: 1rem;
-
-  ${({ theme }: ThemedProps) => css`
-    > path {
-      fill: ${ theme.info.solidBg };
-    }
-  `}
 `;
 
 const ImportFromJiraMenuItem = () => {
