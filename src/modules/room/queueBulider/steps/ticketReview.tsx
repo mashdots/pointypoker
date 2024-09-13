@@ -176,9 +176,10 @@ const TicketReview = ({
   selectedBoardId,
 }: Props) => {
   const [queueAction, setQueueAction] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
-  const { closeModal, roomName } = useStore(({ room, setCurrentModal }) => ({
+  const { closeModal, roomName, addIssuesToRepository } = useStore(({ room, setCurrentModal, addIssuesToRepository }) => ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
+    addIssuesToRepository,
   }));
   const { currentTicket, handleCreatePredefinedTicket } = useTickets();
   const { isMobile } = useMobile();
@@ -193,10 +194,10 @@ const TicketReview = ({
 
       const updateObj: RoomUpdateObject = {};
       const newIssues = issues.map(
-        ({ key, fields: { summary, issuetype, sprint } }): QueuedJiraTicket => {
+        ({ key, fields: { issuetype, sprint } }): QueuedJiraTicket => {
           return {
             id: key,
-            name: summary,
+            name: key,
             type: issuetype,
             sprint,
             url: buildJiraUrl(key),
@@ -225,6 +226,8 @@ const TicketReview = ({
         updateObj['ticketQueue'] = [...newIssues];
         break;
       }
+
+      addIssuesToRepository(issues);
 
       try {
         await updateRoom(roomName, updateObj, closeModal);

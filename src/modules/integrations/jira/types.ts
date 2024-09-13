@@ -106,6 +106,7 @@ export type JiraIssueSearchPayload = {
     sprint: JiraSprint;
     issuetype: IssueType;
     summary: string;
+    description: string;
   }
 }
 

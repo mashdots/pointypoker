@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
@@ -14,8 +14,10 @@ import {
   JiraFieldPayload,
   JiraIssuesDataPayload,
   JiraIssueSearchPayload,
+  QueuedJiraTicket,
   RefreshAuth,
 } from './types';
+import { useTickets } from '@modules/room/hooks';
 
 /**
  * Jira service
@@ -29,17 +31,25 @@ import {
 const API_URL = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
 
 const useJira = () => {
-  const { access, isConfigured, isExpired, resources, userId, setAccess } = useStore(({ preferences, setPreferences }) => {
-    const { jiraAccess, jiraResources, jiraPreferences } = preferences;
-    return {
-      access: jiraAccess,
-      resources: jiraResources,
-      isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
-      isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
-      setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
-      userId: preferences?.user?.id,
-    };
-  });
+  const {
+    access,
+    isConfigured,
+    isExpired,
+    resources,
+    userId,
+    setAccess,
+  } = useStore(
+    ({ preferences, setPreferences }) => {
+      const { jiraAccess, jiraResources, jiraPreferences } = preferences;
+      return {
+        access: jiraAccess,
+        resources: jiraResources,
+        isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
+        isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
+        setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
+        userId: preferences?.user?.id,
+      };
+    });
 
   const buildJiraUrl = (ticketKey: string) => `${resources?.url ?? ''}/browse/${ticketKey}`;
 
@@ -220,17 +230,21 @@ const useJira = () => {
       });
   };
 
-  const getIssuesForBoard = async (boardId: string | number, pointField?: JiraField | null, startAt = 0) => {
+  const getIssuesForBoard = async (boardId: string | number, pointField?: JiraField | null, startAt = 0, issueList?: string[]) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId }/${ URL_ACTIONS.ISSUE_PATH }`;
 
-    const fields = ['id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team'];
+    const fields = ['id', 'key', 'sprint', 'summary', 'description', 'issuetype', 'components', 'team'];
     let jql = 'Sprint IN futureSprints() AND resolution IS EMPTY';
 
     if (pointField) {
       jql += ` AND ${ pointField.name } = EMPTY`;
       fields.push(pointField.id);
+    }
+
+    if (issueList) {
+      jql = ` AND key IN (${ issueList.join(',') })`;
     }
 
     return client(
@@ -256,7 +270,7 @@ const useJira = () => {
     const client = getJiraApiClient(API_URL, accessToken);
     const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ key }`;
 
-    const fields = [ 'id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team' ];
+    const fields = [ 'id', 'key', 'sprint', 'summary', 'description', 'issuetype', 'components', 'team' ];
 
     if (pointField) {
       fields.push(pointField.id);
@@ -334,4 +348,50 @@ const useJira = () => {
   };
 };
 
+
+const useReconcileJiraTicketData = () => {
+  const {
+    issueRepository,
+    addIssuesToRepository,
+  } = useStore(
+    ({ issueRepository, addIssuesToRepository }) => (
+      {
+        issueRepository,
+        addIssuesToRepository,
+      }
+    ),
+  );
+  const { isConfigured, getIssuesForBoard } =  useJira();
+  const { queue } = useTickets();
+
+  useEffect(() => {
+    if (isConfigured) {
+      const queueTicketsWithoutData = queue
+        .filter((ticket) => !issueRepository.some((issue) => issue.id === ticket.id))
+        .reduce((acc, ticket) => {
+          // create sub arrays based on different selectedBoardIds
+          const boardId = (ticket as QueuedJiraTicket)?.currentBoardId ?? (ticket as QueuedJiraTicket).sprint?.originBoardId;
+          if (!acc[ boardId ]) {
+            acc[ boardId ] = [];
+          }
+          acc[ boardId ].push(ticket.id);
+          return acc;
+        }, {} as Record<string, string[]>);
+
+      if (queueTicketsWithoutData.length) {
+        Object.entries(queueTicketsWithoutData)
+          .forEach(([ boardId, ticketIds ]) => {
+            getIssuesForBoard(boardId, null, 0, ticketIds)
+              .then((issues) => {
+                addIssuesToRepository(issues.issues);
+              });
+          });
+      }
+    }
+  }, [ isConfigured, queue ]);
+
+};
+
+
 export default useJira;
+export { useReconcileJiraTicketData };

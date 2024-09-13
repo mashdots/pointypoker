@@ -1,7 +1,8 @@
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
 
 import { PreferencesType } from '@modules/preferences/hooks';
 import { MODAL_TYPES } from '@modules/modal';
+import jiraSlice, { JiraStore } from '@modules/integrations/jira/store';
 import { Room } from '@yappy/types';
 
 type Store = {
@@ -20,7 +21,7 @@ type Store = {
   setPrefsInitialized: () => void;
 }
 
-const useStore = create<Store>((set) => ({
+const defaultSlice: StateCreator<Store> = (set) => ({
   preferences: {},
   setPreferences: (key, newPreferences) => set((state) => (
     {
@@ -41,6 +42,11 @@ const useStore = create<Store>((set) => ({
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
   arePrefsInitialized: false,
   setPrefsInitialized: () => set(() => ({ arePrefsInitialized: true })),
+});
+
+const useStore = create<Store & JiraStore>((...a) => ({
+  ...defaultSlice(...a),
+  ...jiraSlice(...a),
 }));
 
 export default useStore;

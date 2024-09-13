@@ -7,6 +7,7 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { fadeDownEntrance } from '@components/common/animations';
 import { PossibleQueuedTicket } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
+import { useReconcileJiraTicketData } from '@modules/integrations/jira';
 
 type IssueWrapperProps = ThemedProps & {
   delayFactor: number,
@@ -129,6 +130,7 @@ const Queue = () => {
     handleCreatePredefinedTicket,
     queue,
   } = useTickets();
+  useReconcileJiraTicketData();
 
   const handleSelectIssue = (ticket: PossibleQueuedTicket) => {
     handleCreatePredefinedTicket(ticket, true);
