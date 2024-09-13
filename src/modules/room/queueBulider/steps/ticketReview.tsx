@@ -30,6 +30,7 @@ type Props = {
   existingQueue: Room['ticketQueue'];
   issues: JiraIssueSearchPayload[];
   pointField: JiraField;
+  selectedBoardId: number;
 }
 
 type QueueControlProps = {
@@ -172,6 +173,7 @@ const TicketReview = ({
   existingQueue,
   issues,
   pointField,
+  selectedBoardId,
 }: Props) => {
   const [queueAction, setQueueAction] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
   const { closeModal, roomName } = useStore(({ room, setCurrentModal }) => ({
@@ -199,6 +201,7 @@ const TicketReview = ({
             sprint,
             url: buildJiraUrl(key),
             estimationFieldId: pointField.id,
+            currentBoardId: selectedBoardId,
           };
         },
       );

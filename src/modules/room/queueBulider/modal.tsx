@@ -179,6 +179,7 @@ const QueueModal = () => {
           existingQueue={queue}
           issues={selectedSprint.issues}
           pointField={pointField}
+          selectedBoardId={overrideBoard?.id || defaultBoard!.id}
         />
       );
     }

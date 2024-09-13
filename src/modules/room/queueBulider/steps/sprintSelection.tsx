@@ -120,7 +120,6 @@ const SprintSelection = ({
 }: Props) => {
   const previousBoardId = usePrevious(boardId);
   const [isLoading, setIsLoading] = useState(false);
-  // const [isError, setIsError] = useState(false);
   const [sprintData, setSprintData] = useState<JiraSprint[] | null>(null);
   const [issueData, setIssueData] = useState<JiraIssueSearchPayload[] | null>(null);
   const { getSprintsForBoard, getIssuesForBoard } = useJira();

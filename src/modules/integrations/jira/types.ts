@@ -117,6 +117,7 @@ type JiraTicketBase = {
   estimationFieldId: string;
   type: IssueType
   wasPointed?: boolean;
+  currentBoardId?: number;
 }
 
 // A ticket from Jira in the queue prior to pointing
