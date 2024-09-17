@@ -48,8 +48,6 @@ const VisibilityControl = styled.div<{ isVisible: boolean }>`
       }
     `}
 
-    transition: all 250ms;
-
   > a {
     text-decoration: none;
 
@@ -59,6 +57,11 @@ const VisibilityControl = styled.div<{ isVisible: boolean }>`
       text-decoration-thickness: 1px;
     }
   }
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: all 250ms;
 `;
 
 let timeoutOne: number;

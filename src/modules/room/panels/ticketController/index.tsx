@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
 import Title from './title';
@@ -10,6 +10,7 @@ import { Ticket } from '@yappy/types';
 import { TicketFromQueue } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import Subtitles from '@modules/room/panels/ticketController/subtitles';
+import { useMobile } from '@utils/hooks/mobile';
 
 type TicketControlFormat = {
   iconSrc?: string;
@@ -32,9 +33,13 @@ const PrimaryContainer = styled.div`
   margin-bottom: 0.25rem;
 `;
 
-const InformationDisplay = styled.div`
+const InformationDisplay = styled.div<{ isMobile: boolean }>`
+  ${({ isMobile }) => css`
+    flex-direction: ${isMobile ? 'column' : 'row'};
+  `}
+
+  align-items: center;
   display: flex;
-  flex-direction: row;
   flex: 1;
 `;
 
@@ -48,7 +53,7 @@ const TicketController = () => {
   const { currentTicket } = useTickets();
   const [triggerFocus, setTriggerFocus] = useState<string | null>(null);
   const [actionSubtitle, setActionSubtitle] = useState<string | null>(null);
-
+  const { isMobile } = useMobile();
   const { title, subTitle, iconSrc, url } = useMemo((): TicketControlFormat => {
     const { id, name, url, type, sprint } = currentTicket ?? ({} as Ticket | TicketFromQueue);
     const possibleName = name ?? '';
@@ -85,9 +90,9 @@ const TicketController = () => {
         <Title value={title} shouldFocus={triggerFocus} />
         <Controls triggerFocus={setTriggerFocus} setSubtitle={setActionSubtitle} />
       </PrimaryContainer>
-      <InformationDisplay>
-        <Padding />
-        <Subtitles flex={1} content={subTitle} url={url} />
+      <InformationDisplay isMobile={isMobile}>
+        {!isMobile && <Padding />}
+        <Subtitles flex={isMobile ? 0 : 1} content={subTitle} url={url} />
         <Subtitles content={actionSubtitle} />
       </InformationDisplay>
     </Wrapper>

@@ -17,6 +17,7 @@ import {
 import getApp from '.';
 import { PossibleFirebaseCollections } from './constants';
 import { Ticket, Participant, Room, User } from '@yappy/types';
+import PIIReport from '@yappy/types/piiReport';
 
 type PossibleFirebaseTypes = Room | Participant | Ticket;
 
@@ -144,6 +145,30 @@ const createUser = async (
   callback(result);
 };
 
+const createPIIReport = async (
+  data: PIIReport,
+): Promise<void> => {
+  const result: ResultType = {
+    data: [],
+    error: false,
+    message: null,
+  };
+
+  try {
+    const db = getDataClient();
+
+    if (db) {
+      await setDoc(doc(db, PossibleFirebaseCollections.PII_REPORTS, data.id), data);
+      result.data = data as PIIReport;
+    } else {
+      throw new Error('Failed to get data client.');
+    }
+  } catch (error) {
+    result.error = true;
+    result.message = `There was a problem creating ${ data.id } in the ${ PossibleFirebaseCollections.PII_REPORTS } collection`, error;
+  }
+};
+
 /** Room Management */
 
 const createRoom = async (
@@ -263,6 +288,7 @@ const addTicket = async (
 
 export {
   addTicket,
+  createPIIReport,
   createRoom,
   createUser,
   getAllDocsFromCollection,

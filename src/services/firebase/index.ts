@@ -2,6 +2,7 @@ import { FirebaseApp, initializeApp } from 'firebase/app';
 
 import {
   addTicket,
+  createPIIReport,
   createRoom,
   createUser,
   getAllDocsFromCollection,
@@ -36,6 +37,7 @@ export default getApp;
 
 export {
   addTicket,
+  createPIIReport,
   createRoom,
   createUser,
   getAllDocsFromCollection,

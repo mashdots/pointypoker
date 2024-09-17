@@ -8,7 +8,7 @@ import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes }
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject, Ticket } from '@yappy/types';
-import { PossibleQueuedTicket } from '@yappy/types/room';
+import { PossibleQueuedTicket, TicketFromQueue } from '@yappy/types/room';
 import { JiraTicket } from '@modules/integrations/jira/types';
 
 export enum TICKET_ACTIONS {
@@ -16,6 +16,7 @@ export enum TICKET_ACTIONS {
   NEW,
   POINT,
   NEXT,
+  REPORT_PII,
 }
 
 const useTickets = () => {
@@ -79,9 +80,20 @@ const useTickets = () => {
         updateObj['currentTicket.votesShownAt'] = Date.now();
       }
 
+      if (currentTicket.fromQueue) {
+        const clonedQueue = cloneDeep(queue);
+        const indexInQueue = clonedQueue.findIndex((ticket) => ticket.id === currentTicket.id);
+
+        if (indexInQueue !== -1) {
+          // @ts-expect-error - indexInQueue at this point will always be a valid index. If the field doesn't exist, it will be created.
+          clonedQueue[indexInQueue][field] = value;
+          updateObj['ticketQueue'] = clonedQueue;
+        }
+      }
+
       updateRoom(roomName, updateObj, callback);
     }
-  }, [roomName, currentTicket]);
+  }, [roomName, currentTicket, queue]);
 
   const handleCreatePredefinedTicket = (
     preDefinedTicket: Partial<Ticket | JiraTicket | PossibleQueuedTicket>,

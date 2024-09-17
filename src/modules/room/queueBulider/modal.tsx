@@ -11,6 +11,7 @@ import TicketReview from '@modules/room/queueBulider/steps/ticketReview';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useTickets } from '@modules/room/hooks';
 import { useJira } from '@modules/integrations';
+import { scaleEntrance } from '@components/common/animations';
 
 type ConfigOptionProps = {
   selectionComplete: boolean;
@@ -75,13 +76,15 @@ const ConfigOptionWrapper = styled.div`
 const ConfigOption = styled.div<ConfigOptionProps>`
   ${({ selectionComplete, theme }: ConfigOptionProps) => css`
     border: 2px ${selectionComplete ? 'solid' : 'dashed' } ${ theme.greyscale[ selectionComplete ? 'borderElementHover' : 'border'] };
+    cursor: ${ selectionComplete ? 'pointer' : 'default' };
+  `};
 
+  ${({ selectionComplete, theme }: ConfigOptionProps) => selectionComplete && css`
     &:hover {
       background-color: ${ theme.greyscale.componentBgHover };
     }
-  `};
-
-  cursor: pointer;
+  `}
+  
   display: flex;
   width: 100%;
   height: 3rem;
@@ -129,6 +132,7 @@ const ConfigOptionEditIcon = styled.span`
   width: 1.5rem;
   height: 1.5rem;
   margin-left: 0.5rem;
+  animation: ${scaleEntrance} 300ms;
 `;
 
 const ListContentWrapper = styled.div`
@@ -186,12 +190,12 @@ const QueueModal = () => {
   }, [ defaultBoard, overrideBoard, showOverrideUI, selectedSprint, pointField ]);
 
   useEffect(() => {
-    if (overrideBoard || defaultBoard) {
+    if (isAnyBoardSelected) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       getPointFieldFromBoardId(overrideBoard?.id || defaultBoard!.id)
         .then((pointField) => setPointField(pointField ?? null));
     }
-  }, [ defaultBoard, overrideBoard ]);
+  }, [ isAnyBoardSelected ]);
 
   return (
     <>
@@ -209,9 +213,11 @@ const QueueModal = () => {
             <ConfigOptionLabel>
               {(showOverrideUI || (!isAnyBoardSelected)) ? 'Pending board selection' : overrideBoard?.name ?? defaultBoard?.name}
             </ConfigOptionLabel>
-            <ConfigOptionEditIcon>
-              <EditIcon />
-            </ConfigOptionEditIcon>
+            {isAnyBoardSelected && (
+              <ConfigOptionEditIcon>
+                <EditIcon />
+              </ConfigOptionEditIcon>
+            )}
           </ConfigOption>
           <RevertWrapper>
             {overrideBoard && defaultBoard && (
@@ -238,13 +244,15 @@ const QueueModal = () => {
             <ConfigOptionLabel>
               {selectedSprint?.name ?? 'Pending sprint selection'}
             </ConfigOptionLabel>
-            <ConfigOptionEditIcon>
-              <EditIcon
-                onClick={() => {
-                  setSelectedSprint(null);
-                }}
-              />
-            </ConfigOptionEditIcon>
+            {selectedSprint && (
+              <ConfigOptionEditIcon>
+                <EditIcon
+                  onClick={() => {
+                    setSelectedSprint(null);
+                  }}
+                />
+              </ConfigOptionEditIcon>
+            )}
           </ConfigOption>
           <RevertWrapper />
         </ConfigOptionWrapper>

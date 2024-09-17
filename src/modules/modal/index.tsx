@@ -8,15 +8,16 @@ import styled, { css } from 'styled-components';
 
 import PlusIcon from '@assets/icons/plus.svg?react';
 import { PreferencesModal } from '@modules/preferences';
-import { QueueModal } from '@modules/room';
+import { QueueModal, ReportPIIModal } from '@modules/room';
 import { useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
 
 export enum MODAL_TYPES {
   FEEDBACK,
-  PREFERENCES,
   JIRA,
+  PII,
+  PREFERENCES,
 }
 
 type VisibleProps = {
@@ -70,7 +71,7 @@ const Container = styled.div<VisibleProps>`
   border-radius: 0.5rem;
   border-style: solid;
   border-width: 2px;
-  padding: 1rem;
+  padding: 2rem;
 
   z-index: 100;
 
@@ -168,6 +169,12 @@ const Modal = () => {
         modalContent = {
           title: 'Import from Jira',
           contents: <QueueModal />,
+        };
+        break;
+      case MODAL_TYPES.PII:
+        modalContent = {
+          title: 'Report PII',
+          contents: <ReportPIIModal />,
         };
         break;
       default:

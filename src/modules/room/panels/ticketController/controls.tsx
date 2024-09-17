@@ -3,11 +3,13 @@ import styled, { css } from 'styled-components';
 
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
 import ArrowEnhanceSvg from '@assets/icons/arrow-right-enhance.svg?react';
-import SkipSvg from '@assets/icons/skip.svg?react';
+import CircleCheckSvg from '@assets/icons/circle-check.svg?react';
 import PlusSvg from '@assets/icons/plus.svg?react';
 import PlusEnahnceSvg from '@assets/icons/plus-enhance.svg?react';
+import ReportSvg from '@assets/icons/megaphone.svg?react';
+import MoreSvg from '@assets/icons/more.svg?react';
 import PointSvg from '@assets/icons/pencil-circle.svg?react';
-import CircleCheckSvg from '@assets/icons/circle-check.svg?react';
+import SkipSvg from '@assets/icons/skip.svg?react';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { useTickets } from '@modules/room/hooks';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -18,13 +20,20 @@ import { calculateSuggestedPoints } from '@modules/room/utils';
 import { RoomUpdateObject } from '@yappy/types';
 import { updateRoom } from '@services/firebase';
 import { wait } from '@utils';
+import { MODAL_TYPES } from '@modules/modal';
+import useStore from '@utils/store';
+import { useMobile } from '@utils/hooks/mobile';
+
+enum EXTRA_ACTIONS {
+  EXPAND_BUTTONS = 'EXPAND_BUTTONS',
+}
 
 type Props = {
   triggerFocus: (id: string) => void,
   setSubtitle: (content: string) => void,
 };
 
-type ButtonCollectionProps = {
+type ButtonProps = {
   actions: TICKET_ACTIONS[],
   component: JSX.Element,
   disabled?: boolean,
@@ -38,7 +47,16 @@ type ActionButtonProps = {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+  width: fit-content;
+`;
+
+const DynamicButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  overflow: hidden;
   align-items: center;
+  transition: all 250ms ease-out;
 `;
 
 const LoadingIcon = styled(Spinner)`
@@ -47,6 +65,14 @@ const LoadingIcon = styled(Spinner)`
   animation: ${ spinAnimation } 1s linear infinite;
 `;
 
+const MoreIcon = styled(MoreSvg)<ThemedProps>`
+  height: 2rem;
+  width: 2rem;
+
+  > circle {
+    stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.textLow };
+  }
+`;
 
 const SuccessIcon = styled(CircleCheckSvg)<ThemedProps>`
   height: 2rem;
@@ -64,8 +90,12 @@ const SkipIcon = styled(SkipSvg)`
   
 
   ${({ theme }: ThemedProps) => css`
-    > polyline, path, circle {
+    > polyline, path {
       stroke: ${theme.error.textLow};
+    }
+
+    > circle {
+      stroke: ${theme.greyscale.textLow};
     }
   `};
 `;
@@ -141,6 +171,17 @@ const PointNewIcon = styled(PlusEnahnceSvg)`
   `};
 `;
 
+const ReportIcon = styled(ReportSvg)`
+  width: 2rem;
+  transition: stroke 250ms ease-out;
+  
+  ${({ theme }: ThemedProps) => css`
+    > path {
+      stroke: ${ theme.error.textLow };
+    }
+  `};
+`;
+
 const ButtonWrapper = styled.div`
   margin-left: 0.5rem;
   animation: ${ scaleEntrance } 300ms;
@@ -173,19 +214,20 @@ const ActionButton = styled.button<ActionButtonProps>`
   transition: background-color 350ms cubic-bezier(0.39, 0.575, 0.565, 1);
 `;
 
-/**
- * Possible buttons:
- * - Point and new (requires Jira configuration)
- * - new
- * - Next (requires tickets in the queue)
- * - Point and next (requires Jira configuration and tickets in the queue)
- */
 
 const Controls = ({ triggerFocus, setSubtitle }: Props) => {
   const { currentTicket, queue, shouldShowVotes, handleGoToNextTicket } = useTickets();
   const { isConfigured, writePointValue } = useJira();
+  const { isMobile } = useMobile();
   const [loadingIndex, setLoadingIndex ] = useState<number | null>(null);
   const [successIndex, setSuccessIndex ] = useState<number | null>(null);
+  const [showAllButtons, setShowAllButtons] = useState(false);
+  const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.PII));
+
+  const collapsedButtonCount = useMemo(
+    () => isMobile ? 2 : 3,
+    [ isMobile ],
+  );
 
   const handleAction = useCallback(
     (actions: TICKET_ACTIONS[], index: number) => {
@@ -227,16 +269,22 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
           handleGoToNextTicket();
           break;
 
+        case TICKET_ACTIONS.REPORT_PII:
+          // Open a modal to report PII
+          openModal();
+          break;
+
         default:
           break;
         }
       });
+      setShowAllButtons(false);
     },
     [currentTicket, queue],
   );
 
   const buildCaption = useCallback(
-    (actions: TICKET_ACTIONS[]) => {
+    (actions: Array<TICKET_ACTIONS | EXTRA_ACTIONS>) => {
       let message = '';
 
       if (
@@ -249,6 +297,10 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
         message += 'everyone should vote before you can ';
       }
 
+      if (actions.includes(EXTRA_ACTIONS.EXPAND_BUTTONS)) {
+        return 'see more options';
+      }
+
       message += actions.map((action) => {
         switch (action) {
         case TICKET_ACTIONS.SKIP:
@@ -259,6 +311,8 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
           return 'point this';
         case TICKET_ACTIONS.NEXT:
           return 'start the next';
+        case TICKET_ACTIONS.REPORT_PII:
+          return 'report PII for this';
         default:
           return '';
         }
@@ -269,7 +323,12 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
     [shouldShowVotes],
   );
 
-  const buttons: Array<ButtonCollectionProps> = [
+  const buttonOptions: Array<ButtonProps> = [
+    {
+      component: <ReportIcon />,
+      shouldShow: isConfigured && currentTicket?.url,
+      actions: [TICKET_ACTIONS.REPORT_PII],
+    },
     {
       component: <SkipIcon />,
       shouldShow: queue.length > 0 && !!currentTicket,
@@ -307,40 +366,74 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
   ];
 
   const buttonComponents = useMemo(
-    () => buttons.map(({ component, disabled, shouldShow, actions }, index) => {
-      if (!shouldShow) {
-        return null;
-      }
+    () => buttonOptions
+      .filter(bo => bo.shouldShow)
+      .map(({ component, disabled, actions }: ButtonProps, index: number) => {
+        const caption = buildCaption(actions);
+        let icon = component;
 
-      const caption = buildCaption(actions);
-      let icon = component;
+        if (loadingIndex === index) {
+          icon = <LoadingIcon />;
+        } else if (successIndex === index) {
+          icon = <SuccessIcon />;
+        }
 
-      if (loadingIndex === index) {
-        icon = <LoadingIcon />;
-      } else if (successIndex === index) {
-        icon = <SuccessIcon />;
-      }
-
-      return (
-        <ButtonWrapper
-          key={index}
-          onMouseEnter={() => setSubtitle(caption)}
-        >
-          <ActionButton
-            disabled={!!disabled && !loadingIndex}
-            onClick={() => handleAction(actions, index)}
+        return (
+          <ButtonWrapper
+            key={index}
+            onMouseEnter={() => setSubtitle(caption)}
           >
-            {icon}
-          </ActionButton>
-        </ButtonWrapper>
-      );
-    }),
-    [ buttons, currentTicket ],
+            <ActionButton
+              disabled={!!disabled && !loadingIndex}
+              onClick={() => handleAction(actions, index)}
+            >
+              {icon}
+            </ActionButton>
+          </ButtonWrapper>
+        );
+      }),
+    [ buttonOptions, loadingIndex, successIndex, currentTicket, queue ],
+  );
+
+  const dynamicWidth = useMemo(
+    () => {
+      if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
+        return 3 * collapsedButtonCount;
+      }
+
+      return buttonOptions.filter(b => b.shouldShow).length * 3;
+    },
+    [buttonComponents, collapsedButtonCount],
+  );
+
+  const moreButton = useMemo(
+    () => {
+      if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
+        return (
+          <ButtonWrapper
+            onMouseEnter={() => setSubtitle(buildCaption([ EXTRA_ACTIONS.EXPAND_BUTTONS ]))}
+          >
+            <ActionButton
+              disabled={false}
+              onClick={() => setShowAllButtons(true)}
+            >
+              <MoreIcon />
+            </ActionButton>
+          </ButtonWrapper>
+        );
+      }
+
+      return null;
+    },
+    [ showAllButtons, buttonComponents, collapsedButtonCount ],
   );
 
   return (
     <Wrapper onMouseLeave={() => setSubtitle(' ')}>
-      {buttonComponents}
+      {moreButton}
+      <DynamicButtonContainer style={{ width: `${dynamicWidth}rem` }}>
+        {buttonComponents}
+      </DynamicButtonContainer>
     </Wrapper>
   );
 };
