@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 
-import CategoryCard, { GenericPrefCardProps } from './categoryCard';
-import { SettingsRow, VerticalContainer } from './common';
+import { VerticalContainer } from '../common';
 import { TextInput } from '@components/common';
-import Icon from '@assets/icons/settings-general.svg?react';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { User, RoomUpdateObject } from '@yappy/types';
-
 
 let timeout: number;
 
@@ -19,7 +15,7 @@ const UserNameUpdateForm = () => {
     updateUserName: (name: string) => {
       if (preferences?.user) {
         const updatedUser: User = { ...preferences.user, name };
-        setPreferences('user', updatedUser );
+        setPreferences('user', updatedUser);
       }
     },
     roomName: room?.name,
@@ -41,7 +37,7 @@ const UserNameUpdateForm = () => {
 
           if (roomName && userInRoom) {
             const updateObj: RoomUpdateObject = {};
-            updateObj[`participants.${userId}.name`] = value;
+            updateObj[ `participants.${ userId }.name` ] = value;
 
             updateRoom(roomName, updateObj);
           }
@@ -61,31 +57,4 @@ const UserNameUpdateForm = () => {
   );
 };
 
-const GeneralPreferences = () => {
-  return (
-    <div>
-      <h2>General</h2>
-      <SettingsRow>
-        <UserNameUpdateForm />
-      </SettingsRow>
-    </div>
-  );
-};
-
-const GeneralPrefsIcon = styled(Icon)`
-  height: 2rem;
-  width: 2rem;
-  margin-bottom: 0.5rem;
-`;
-
-const GeneralPreferencesCard = ({ onClick, isActive }: GenericPrefCardProps) => (
-  <CategoryCard
-    key="general-card"
-    onClick={onClick}
-    icon={<GeneralPrefsIcon />}
-    isActive={isActive}
-    title='General'
-  />
-);
-
-export { GeneralPreferences, GeneralPreferencesCard };
+export default UserNameUpdateForm;
