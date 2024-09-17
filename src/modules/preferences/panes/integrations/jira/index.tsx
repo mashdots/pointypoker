@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import IntegrationCard from '../integrationCard';
 import usePreferenceSync from '../../../hooks';
@@ -118,6 +119,23 @@ const RevokeLink = styled.a`
   }
 `;
 
+const InfoLink = styled(Link)`
+  ${({ theme }: ThemedProps) => css`
+    color: ${ theme.info.textLow };
+  `};
+
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    color: ${({ theme }: ThemedProps) => theme.info.solidBgHover};
+  }
+`;
+
 const Wrapper = styled(VerticalContainer)`
   ${ ({ theme }: ThemedProps) => css`
     background-color: ${ theme.greyscale.componentBgActive };
@@ -230,10 +248,19 @@ const JiraIntegrationCard = () => {
   const connectInfoBlock = !isConfigured ? (
     <NoticeWrapper>
       <p>
-        When you connect pointy poker to Jira, your credentials are stored
-        locally and are only used to communicate with Jira. Some ticket data is
-        stored in the for syncing between participants, including the title,
-        points, and the ticket number.
+        When you connect pointy poker to Jira, Oauth tokens are
+        stored locally and are only used to communicate with Jira. Some ticket
+        data is stored in the database for syncing between participants,
+        including the title, points, sprint information, and the ticket number.
+        For information on how your data is used, visit the&nbsp;
+        <InfoLink
+          to='/privacy'
+          aria-label='Privacy policy'
+          target='_blank'
+        >
+          privacy policy
+          <LinkIcon />
+        </InfoLink>.
       </p>
     </NoticeWrapper>
   ) : null;

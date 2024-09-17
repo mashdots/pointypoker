@@ -44,7 +44,7 @@ const Privacy = () => {
       <Container>
         <h1>Privacy Policy</h1>
         <p>
-        Updated September 2, 2024
+        Updated September 17, 2024
         </p>
         <Section>
           <h3>1. Personal information we collect</h3>
@@ -55,11 +55,11 @@ const Privacy = () => {
           2. How we use the information we collect
           </h3>
           <p>
-          Any personal information collected is used only for the website&apos;s function, namely to help other session participants identify votes you cast on any issue estimation. This is accomplished by storing the data in each session data collection (identified as a &quot;room&quot;) within our data storage system, Firebase.
+            No data is ever nor will ever be shared with third parties for marketing purposes. Any personal information collected is used only for the website&apos;s function, namely to help other session participants identify votes you cast on any issue estimation. This is accomplished by storing the data in each session data collection (identified as a &quot;room&quot;) within our data storage system, Firebase.
+          </p>
 
+          <p>
             Firebase is owned by Google. You can read their privacy policy at <a href="https://policies.google.com/privacy" target='_blank' rel="noreferrer">https://policies.google.com/privacy</a> and Firebase&apos;s privacy documentation at <a href="https://firebase.google.com/support/privacy/" target='_blank' rel="noreferrer">https://firebase.google.com/support/privacy/</a>.
-
-          No data is ever nor will ever be shared with third parties.
           </p>
         </Section>
         <Section>
@@ -67,7 +67,10 @@ const Privacy = () => {
           3. Third-Party Integrations
           </h3>
           <p>
-          Currently, the only integration available to Pointy Poker users is the ability to connect to Jira. This connection is facilitated through Atlassian&apos;s Oauth 2.0 (3LO) system. No personally identifiable data is downloaded through this integration. Authorization tokens, refresh tokens, or anything related to your Jira account is stored in Local Storage and is only accessible by pages on pointypoker.dev. Furthermore, any said information is not used for any purpose other than reading and writing board, sprint, issue, or field data in Jira.
+            Currently, the only integration available to Pointy Poker users is for Jira. This connection is facilitated through Atlassian&apos;s Oauth 2.0 (3LO) system. Authorization tokens, refresh tokens, or anything related to your Jira account are stored in Local Storage and are only accessible by pages on pointypoker.dev. Furthermore, any said information is not used for any purpose other than reading and writing board, sprint, issue, or field data in Jira.
+          </p>
+          <p>
+            No personally identifiable data is intentionally downloaded through this integration, although ticket summaries may contain PII. If you find a ticket summary that contains PII, you can report it which will purge the data from the database.
           </p>
         </Section>
         <Section>
@@ -83,7 +86,7 @@ const Privacy = () => {
           5. Security
           </h3>
           <p>
-          While no organization can guarantee perfect security, we are continuously implementing and updating administrative, technical, and physical security measures to help protect your information against unlawful or unauthorized access, loss, destruction, or alteration.
+          While no organization can guarantee perfect security, we are continuously implementing and updating administrative, technical, and physical security measures to help protect your information against unlawful or unauthorized access, loss, destruction, or alteration. As it stands, data stored in Firebase is encrypted at rest.
           </p>
         </Section>
         <Section>
@@ -91,7 +94,7 @@ const Privacy = () => {
           6. Changes to this policy
           </h3>
           <p>
-          We reserve the right to modify this Privacy Policy at any time in accordance with applicable law. If we do so, we will post the revised Privacy Policy and update the “Last Updated” date at the top.
+          We reserve the right to modify this Privacy Policy at any time in accordance with applicable law. If we do so, update this page and the &quot;Updated&quot; date at the top.
           </p>
         </Section>
         <Section>
