@@ -36,20 +36,20 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
   border-radius: 0.25rem;
   height: 2rem;
   width: 100%;
-  cursor: pointer;
   font-size: 1.25rem;
-
-  transition: 
-    border-color 250ms ease-out,
-    background-color 250ms ease-out;
   
-  ${({ selected, theme }) => css`
-    background-color: ${selected ? theme.primary.solidBg : theme.greyscale.componentBg};
-    color: ${selected ? theme.primary.textHigh : theme.greyscale.textHigh};
+  transition: 
+  border-color 250ms ease-out,
+  background-color 250ms ease-out;
+  
+  ${({ selected, theme, disabled }) => css`
+      background-color: ${selected ? theme.primary.solidBg : theme.greyscale.componentBg};
+      color: ${selected ? theme.primary.textHigh : theme.greyscale.textHigh};
+      cursor: ${disabled ? 'not-allowed' : 'pointer'};
   `}
 
   :hover {
-    ${({ selected, theme }) => css`
+    ${({ selected, theme, disabled }) => !disabled && css`
       background-color: ${ theme.primary[selected ? 'borderElementHover' : 'componentBgHover'] };
       border-color: ${ theme.primary[selected ? 'transparent' : 'borderElementHover'] };
     `}
@@ -62,10 +62,27 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
   }
 `;
 
+const DisabledContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  > p {
+    ${({ theme }) => css`
+      color: ${theme.greyscale.textLow};
+    `}
+
+    font-size: 1.25rem;
+  }
+  
+`;
+
 const VotingPanel = ({ gridConfig }: GridPanelProps) => {
-  const { user, isModalOpen, isTitleInputFocused } = useStore(
+  const { user, isModalOpen, isTitleInputFocused, isObserver } = useStore(
     ({ preferences, isTitleInputFocused, currentModal }) => (
-      { user: preferences?.user, isTitleInputFocused, isModalOpen: !!currentModal }
+      { user: preferences?.user, isTitleInputFocused, isModalOpen: !!currentModal, isObserver: preferences?.isObserver }
     ));
   const { currentTicket, handleUpdateCurrentTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
@@ -81,7 +98,7 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
               handleUpdateCurrentTicket(`votes.${user.id}`, option);
             }
           }}
-          disabled={!currentTicket}
+          disabled={!currentTicket || isObserver}
         >
           {option}
         </VoteButton>
@@ -107,12 +124,19 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
 
   return (
     <GridPanel config={gridConfig}>
-      <VoteButtonsContainer>
-        {generateVoteButtons(voteOptions.sequence)}
-      </VoteButtonsContainer>
-      <VoteButtonsContainer>
-        {generateVoteButtons(voteOptions.exclusions)}
-      </VoteButtonsContainer>
+      {isObserver ? (
+        <DisabledContainer><p>voting is disabled when you are observing</p></DisabledContainer>
+      ) : (
+        <>
+          <VoteButtonsContainer>
+            {generateVoteButtons(voteOptions.sequence)}
+          </VoteButtonsContainer>
+          <VoteButtonsContainer>
+            {generateVoteButtons(voteOptions.exclusions)}
+          </VoteButtonsContainer>
+        </>
+      )
+      }
     </GridPanel>
   );
 };
