@@ -39,6 +39,7 @@ const Wrapper = styled.div<MobileProps>`
 const CategoryList = styled.ul<MobileProps>`
   ${({ isMobile, theme }: MobileProps & ThemedProps) => css`
     background-color: ${theme.primary.componentBg};
+    border: 2px solid ${theme.primary.bgAlt};
     flex-direction: ${isMobile ? 'row' : 'column'};
   `};
 
@@ -55,6 +56,7 @@ const SettingsContainer = styled.div`
   display: flex;
   overflow: auto;
   width: 100%;
+  padding: 0 0.5rem;
 
   > div {
     width: 100%;

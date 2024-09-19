@@ -8,20 +8,25 @@ import CoffeeSvg from '@assets/icons/coffee.svg?react';
 import IdleSvg from '@assets/icons/idle.svg?react';
 import InactiveSvg from '@assets/icons/inactive.svg?react';
 import { Button, GridPanel } from '@components/common';
+import { fadeDownEntrance } from '@components/common/animations';
 import { GridPanelProps } from '@components/common/gridPanel';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Participant, Vote } from '@yappy/types';
-import { fadeDownEntrance } from '@components/common/animations';
 
-enum PARTICIPANT_MODES {
+enum NON_PARTICIPANT_MODES {
   ABSENT = 'absent',
-  DEFAULT = 'default',
   INACTIVE = 'inactive',
   OBSERVER = 'observer',
-  REVEALED = 'revealed',
-  VOTED = 'voted',
 }
+
+enum PARTICIPANT_MODES {
+  DEFAULT = 'default',
+  VOTED = 'voted',
+  REVEALED = 'revealed',
+}
+
+type userModes = NON_PARTICIPANT_MODES | PARTICIPANT_MODES;
 
 export type VoteDisplayProps = {
   name: string;
@@ -30,7 +35,7 @@ export type VoteDisplayProps = {
 
 type VoteCellProps = {
   isLast: boolean;
-  cellMode: PARTICIPANT_MODES;
+  cellMode: userModes;
   voteData: Omit<VoteDisplayProps, 'inactive' | 'consecutiveMisses' | 'isObserver'>;
 }
 
@@ -39,6 +44,8 @@ type StyledVoteCellProps = {
   isIdle?: boolean;
   isInactive?: boolean;
 } & ThemedProps;
+
+const ICON_SIZE = 1.5;
 
 const Wrapper = styled.div`
   display: flex;
@@ -90,13 +97,14 @@ const DisplayElementWrapper = styled.span<{ isVisible: boolean }>`
   `}
 
   display: flex;
+  justify-content: center;
   transition: all 250ms;
-  width: 1.5rem;
+  width: ${ICON_SIZE}rem;
   margin-left: 1rem;
 `;
 
 const CheckIcon = styled(CircleCheckSvg)<ThemedProps>`
-  width: 1.5rem;
+  width: ${ICON_SIZE}rem;
 
   > polyline, line, path, circle {
     stroke: ${ ({ theme }: ThemedProps) => theme.success.textLow };
@@ -104,7 +112,7 @@ const CheckIcon = styled(CircleCheckSvg)<ThemedProps>`
 `;
 
 const CoffeeIcon = styled(CoffeeSvg)<ThemedProps>`
-  width: 1.5rem;
+  width: ${ICON_SIZE}rem;
 
   > line, path {
     stroke: ${ ({ theme }: ThemedProps) => theme.info.textLow };
@@ -112,7 +120,7 @@ const CoffeeIcon = styled(CoffeeSvg)<ThemedProps>`
 `;
 
 const IdleIcon = styled(IdleSvg)<ThemedProps>`
-  width: 1.5rem;
+  width: ${ICON_SIZE}rem;
 
   > polyline, line, path, circle {
     stroke: ${ ({ theme }: ThemedProps) => theme.warning.textLow };
@@ -120,7 +128,7 @@ const IdleIcon = styled(IdleSvg)<ThemedProps>`
 `;
 
 const InactiveIcon = styled(InactiveSvg)<ThemedProps>`
-  width: 1.5rem;
+  width: ${ICON_SIZE}rem;
 
   > polyline, line, path, circle {
     stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.textLow };
@@ -138,18 +146,18 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
     timeout = setTimeout(() => {
       switch (cellMode) {
       case PARTICIPANT_MODES.VOTED:
-        setDisplayElement(<CheckIcon />);
-        break;
-      case PARTICIPANT_MODES.OBSERVER:
-        setDisplayElement(<CoffeeIcon />);
+        setDisplayElement(<CheckIcon title={`${name} voted!`} />);
         break;
       case PARTICIPANT_MODES.REVEALED:
         setDisplayElement(vote as Vote);
         break;
-      case PARTICIPANT_MODES.ABSENT:
+      case NON_PARTICIPANT_MODES.OBSERVER:
+        setDisplayElement(<CoffeeIcon title={`${name} is just watching`} />);
+        break;
+      case NON_PARTICIPANT_MODES.ABSENT:
         setDisplayElement(<IdleIcon title={`${name} hasn't voted in a bit`} />);
         break;
-      case PARTICIPANT_MODES.INACTIVE:
+      case NON_PARTICIPANT_MODES.INACTIVE:
         setDisplayElement(<InactiveIcon title={`${name} has left the room`} />);
         break;
       default:
@@ -167,8 +175,8 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
   return (
     <StyledVoteCell
       showBottomBorder={!isLast}
-      isInactive={cellMode === PARTICIPANT_MODES.INACTIVE}
-      isIdle={cellMode === PARTICIPANT_MODES.ABSENT}
+      isInactive={cellMode === NON_PARTICIPANT_MODES.INACTIVE}
+      isIdle={cellMode === NON_PARTICIPANT_MODES.ABSENT}
     >
       <VoteNameWrapper>
         {name}
@@ -194,14 +202,14 @@ const VoteDisplay = (props: GridPanelProps) => {
         const name = userIsParticipant ? 'you' : participantName;
         const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
         const isLast = i === voteData.length - 1;
-        let mode = PARTICIPANT_MODES.DEFAULT;
+        let mode: userModes = PARTICIPANT_MODES.DEFAULT;
 
         if (isObserver) {
-          mode = PARTICIPANT_MODES.OBSERVER;
+          mode = NON_PARTICIPANT_MODES.OBSERVER;
         } else if (inactive) {
-          mode = PARTICIPANT_MODES.INACTIVE;
+          mode = NON_PARTICIPANT_MODES.INACTIVE;
         } else if (consecutiveMisses > 2) {
-          mode = PARTICIPANT_MODES.ABSENT;
+          mode = NON_PARTICIPANT_MODES.ABSENT;
         } else if (hasVoted) {
           if (!displayVote) {
             mode = PARTICIPANT_MODES.VOTED;

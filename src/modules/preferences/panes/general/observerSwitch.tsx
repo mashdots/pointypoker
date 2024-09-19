@@ -4,11 +4,13 @@ import { SettingsRow, VerticalContainer } from '../common';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject } from '@yappy/types';
+import { CheckBox } from '@components/common';
 
 let timeout: number;
 
 const ObserverSwitch = () => {
-  const { userId, updateIsObserver, roomName, roomData } = useStore(({ preferences, setPreferences, room }) => ({
+  const { isObserver, userId, updateIsObserver, roomName, roomData } = useStore(({ preferences, setPreferences, room }) => ({
+    isObserver: preferences?.isObserver ?? false,
     userId: preferences?.user?.id,
     updateIsObserver: (is: boolean) => {
       setPreferences('isObserver', is);
@@ -16,7 +18,7 @@ const ObserverSwitch = () => {
     roomName: room?.name,
     roomData: room,
   }));
-  const [ value, setValue ] = useState(false);
+  const [ value, setValue ] = useState(isObserver);
 
   useEffect(() => {
     clearTimeout(timeout);
@@ -43,10 +45,7 @@ const ObserverSwitch = () => {
   return (
     <VerticalContainer style={{ width: '100%' }}>
       <SettingsRow>
-        <label>
-        Observer Mode
-        </label>
-        <input type='checkbox' id="observer-switch" checked={value} onChange={(e) => setValue(e.target.checked)} />
+        <CheckBox id="observer-switch" checked={value} onChange={(e) => setValue(e.target.checked)} label="Observer Mode" />
       </SettingsRow>
     </VerticalContainer>
   );

@@ -8,7 +8,7 @@ import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes }
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject, Ticket } from '@yappy/types';
-import { PossibleQueuedTicket, TicketFromQueue } from '@yappy/types/room';
+import { PossibleQueuedTicket } from '@yappy/types/room';
 import { JiraTicket } from '@modules/integrations/jira/types';
 
 export enum TICKET_ACTIONS {
@@ -57,7 +57,7 @@ const useTickets = () => {
 
   const areAllVotesCast = useMemo(
     () => participants
-      .filter(({ inactive,consecutiveMisses }) => !inactive && consecutiveMisses < 3)
+      .filter(({ inactive, consecutiveMisses, isObserver }) => !inactive && consecutiveMisses < 3 && !isObserver)
       .every(({ id }) => isVoteCast(currentTicket?.votes[id])),
     [participants, currentTicket?.votes],
   );
