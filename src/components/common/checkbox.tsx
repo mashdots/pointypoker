@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import CheckSvg from '@assets/svg/check.svg';
 import { scaleEntrance } from '@components/common/animations';
 
 type Props = {
@@ -30,7 +29,6 @@ const StyledCheckBox = styled.input`
 
 
     &:checked {
-      content: ${CheckSvg};
       background-color: ${theme.primary.solidBg};
     }
 
