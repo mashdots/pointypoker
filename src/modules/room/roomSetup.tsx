@@ -89,7 +89,6 @@ const RoomSetup = () => {
       consecutiveMisses: 0,
       inactive: false,
       joinedAt: Date.now(),
-      // Update when observers are implemented
       isObserver,
     };
     const newRoom: RoomType = {

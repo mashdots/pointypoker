@@ -298,7 +298,7 @@ const useJira = () => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.API_2_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ issue }`;
-    console.log('fieldId', fieldId);
+
     return client(
       {
         method: 'PUT',

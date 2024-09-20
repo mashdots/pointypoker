@@ -90,7 +90,6 @@ const ReportPIIModal = () => {
     );
   };
 
-  console.log('currentTicket', currentTicket);
   return (
     <Wrapper>
       <ReviewContainer>

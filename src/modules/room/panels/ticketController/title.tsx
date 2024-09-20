@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
@@ -78,17 +78,16 @@ let timeout: number;
 
 const Title = ({ shouldFocus, value }: Props) => {
   const {
-    currentTicket,
     handleCreateTicket,
     handleCreatePredefinedTicket,
     shouldShowVotes,
   } = useTickets();
   const [isLoading, setIsLoading] = useState(false);
-  const [finalValue, setFinalValue] = useState('');
   const [canEdit, setCanEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const setIsFocused = useStore(({ setTitleInputFocus }) => setTitleInputFocus);
   const { buildJiraUrl, isConfigured: isJiraConfigured, getIssueDetail, getPointFieldFromBoardId } = useJira();
+  const deferredValue = useDeferredValue(value);
 
   const handleCreateNewJiraTicket = async (ticketName: string) => {
     try {
@@ -139,16 +138,16 @@ const Title = ({ shouldFocus, value }: Props) => {
       handleCreateTicket(newTicketName);
       setIsLoading(false);
     }, 1000);
-  }, [ currentTicket, shouldShowVotes ]);
+  }, [ isJiraConfigured ]);
 
   const displayComponent = canEdit ? (
-    <Wrapper>
+    <>
       {isLoading && <LoadingIcon />}
       <TextInput
         collapse
         inputRef={inputRef}
         id='ticket-title'
-        value={finalValue}
+        value={deferredValue}
         onChange={handleChange}
         placeHolder='ticket number or title'
         onFocus={() => {
@@ -159,19 +158,29 @@ const Title = ({ shouldFocus, value }: Props) => {
         }}
         onBlur={() => setIsFocused(false)}
       />
-    </Wrapper>
-  ) : <NotTheTextInput hasTitle={!!finalValue} onClick={() => setCanEdit(true)}>{finalValue || 'ticket number or title'}</NotTheTextInput>;
+    </>
+  ) : (
+    <>
+      <NotTheTextInput
+        hasTitle={!!deferredValue}
+        onClick={() => setCanEdit(true)}
+      >
+        {deferredValue || 'ticket number or title'}
+      </NotTheTextInput>
+    </>
+  );
 
   useEffect(() => {
-    if (!value || value !== finalValue) {
+    if (!value || value !== deferredValue) {
       setCanEdit(false);
-      setFinalValue(value);
     }
-  }, [ value, finalValue ]);
+  }, [ value, deferredValue ]);
 
   useEffect(() => {
     if (canEdit) {
       inputRef.current?.select();
+    } else {
+      setIsFocused(false);
     }
   }, [canEdit]);
 
@@ -180,9 +189,9 @@ const Title = ({ shouldFocus, value }: Props) => {
   }, [shouldFocus]);
 
   return (
-    <>
+    <Wrapper>
       {displayComponent}
-    </>
+    </Wrapper>
   );
 };
 
