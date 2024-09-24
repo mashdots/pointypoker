@@ -1,4 +1,4 @@
-import React, { useCallback, useDeferredValue, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
@@ -87,7 +87,6 @@ const Title = ({ shouldFocus, value }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const setIsFocused = useStore(({ setTitleInputFocus }) => setTitleInputFocus);
   const { buildJiraUrl, isConfigured: isJiraConfigured, getIssueDetail, getPointFieldFromBoardId } = useJira();
-  const deferredValue = useDeferredValue(value);
 
   const handleCreateNewJiraTicket = async (ticketName: string) => {
     try {
@@ -147,7 +146,7 @@ const Title = ({ shouldFocus, value }: Props) => {
         collapse
         inputRef={inputRef}
         id='ticket-title'
-        value={deferredValue}
+        value={value}
         onChange={handleChange}
         placeHolder='ticket number or title'
         onFocus={() => {
@@ -162,19 +161,17 @@ const Title = ({ shouldFocus, value }: Props) => {
   ) : (
     <>
       <NotTheTextInput
-        hasTitle={!!deferredValue}
+        hasTitle={!!value}
         onClick={() => setCanEdit(true)}
       >
-        {deferredValue || 'ticket number or title'}
+        {value || 'ticket number or title'}
       </NotTheTextInput>
     </>
   );
 
   useEffect(() => {
-    if (!value || value !== deferredValue) {
-      setCanEdit(false);
-    }
-  }, [ value, deferredValue ]);
+    setCanEdit(false);
+  }, [ value ]);
 
   useEffect(() => {
     if (canEdit) {
