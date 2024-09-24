@@ -46,7 +46,7 @@ const InformationDisplay = styled.div<{ isMobile: boolean }>`
 const Padding = styled.span`
   display: flex;
   height: 1rem;
-  width: 4rem;
+  width: 5rem;
 `;
 
 const TicketController = () => {
