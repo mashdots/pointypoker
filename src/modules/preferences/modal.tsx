@@ -14,7 +14,7 @@ import { useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type MobileProps = {
-  isMobile: boolean;
+  isNarrow: boolean;
 };
 
 type Panes = {
@@ -23,11 +23,11 @@ type Panes = {
 }
 
 const Wrapper = styled.div<MobileProps>`
-  ${({ isMobile }) => css`
-    flex-direction: ${isMobile ? 'column' : 'row'};
+  ${({ isNarrow }) => css`
+    flex-direction: ${isNarrow ? 'column' : 'row'};
   `}
 
-  ${({ isMobile }) => !isMobile && css`
+  ${({ isNarrow }) => !isNarrow && css`
     height: 100%;
   `}
 
@@ -37,10 +37,10 @@ const Wrapper = styled.div<MobileProps>`
 `;
 
 const CategoryList = styled.ul<MobileProps>`
-  ${({ isMobile, theme }: MobileProps & ThemedProps) => css`
+  ${({ isNarrow, theme }: MobileProps & ThemedProps) => css`
     background-color: ${theme.primary.componentBg};
     border: 2px solid ${theme.primary.bgAlt};
-    flex-direction: ${isMobile ? 'row' : 'column'};
+    flex-direction: ${isNarrow ? 'row' : 'column'};
   `};
 
   display: flex;
@@ -69,7 +69,7 @@ const SettingsDisplay = styled.div`
 `;
 
 const PreferencesModal = () => {
-  const { isMobile } = useMobile();
+  const { isNarrow } = useMobile();
   const [currentCategory, setCurrentCategory] = useState(0);
 
   const panes: Panes[] = [
@@ -88,8 +88,8 @@ const PreferencesModal = () => {
   ];
 
   return (
-    <Wrapper isMobile={isMobile}>
-      <CategoryList isMobile={isMobile}>
+    <Wrapper isNarrow={isNarrow}>
+      <CategoryList isNarrow={isNarrow}>
         {panes.map(({ categoryCard }, index) => (
           categoryCard(
             {

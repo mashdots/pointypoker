@@ -56,7 +56,7 @@ const CategoryCard = ({ icon, title, onClick, isActive }: Props) => (
     aria-label={title}
     isActive={isActive}
     onClick={onClick}
-    isNarrow={useMobile().isMobile}
+    isNarrow={useMobile().isNarrow}
   >
     {icon}
     <Title>{title}</Title>

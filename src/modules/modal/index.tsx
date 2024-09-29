@@ -22,7 +22,7 @@ export enum MODAL_TYPES {
 
 type VisibleProps = {
   isVisible: boolean;
-  isMobile: boolean;
+  isNarrow: boolean;
 } & ThemedProps;
 
 type ModalContentProps = {
@@ -32,10 +32,10 @@ type ModalContentProps = {
 }
 
 const BackDrop = styled.div<VisibleProps>`
-  ${({ isMobile, isVisible, theme }: VisibleProps) => css`
+  ${({ isNarrow, isVisible, theme }: VisibleProps) => css`
     background-color: ${theme.transparent.componentBg};
     opacity: ${isVisible ? 1 : 0};
-    backdrop-filter: blur(${isMobile ? 0 : 2}px);
+    backdrop-filter: blur(${isNarrow ? 0 : 2}px);
   `}
     
   align-items: center;
@@ -54,13 +54,13 @@ const BackDrop = styled.div<VisibleProps>`
 `;
 
 const Container = styled.div<VisibleProps>`
-  ${({ isMobile, isVisible, theme }: VisibleProps) => css`
+  ${({ isNarrow, isVisible, theme }: VisibleProps) => css`
     background-color: ${theme.greyscale.bgAlt};
     border-color: ${theme.primary.border};
     color: ${theme.primary.textHigh};
-    height: ${isMobile ? 90 : 60}%;
-    min-width: ${isMobile ? '90%' : '720px'};
-    width: ${isMobile ? 90 : 50}%;
+    height: ${isNarrow ? 90 : 60}%;
+    min-width: ${isNarrow ? '90%' : '720px'};
+    width: ${isNarrow ? 90 : 50}%;
     transform: translateY(${isVisible ? 1 : 3}rem);
   `}
 
@@ -129,7 +129,7 @@ let timer: number;
 
 const Modal = () => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { isMobile } = useMobile();
+  const { isNarrow } = useMobile();
   const [ renderedModal, setRenderedModal ] = useState<ModalContentProps | null>(null);
   const [ isModalVisible, setIsModalVisible ] = useState(false);
   const { closeModal, isOpen, modalType } = useStore(({ currentModal, setCurrentModal }) => ({
@@ -206,11 +206,11 @@ const Modal = () => {
   }, [ isOpen ]);
 
   return renderedModal ? (
-    <BackDrop isMobile={isMobile} isVisible={isModalVisible}>
+    <BackDrop isNarrow={isNarrow} isVisible={isModalVisible}>
       <Container
         id="modalContainer"
         ref={modalRef}
-        isMobile={isMobile}
+        isNarrow={isNarrow}
         isVisible={isModalVisible}
       >
         <HeaderWrapper>

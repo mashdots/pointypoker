@@ -33,9 +33,9 @@ const PrimaryContainer = styled.div`
   margin-bottom: 0.25rem;
 `;
 
-const InformationDisplay = styled.div<{ isMobile: boolean }>`
-  ${({ isMobile }) => css`
-    flex-direction: ${isMobile ? 'column' : 'row'};
+const InformationDisplay = styled.div<{ isNarrow: boolean }>`
+  ${({ isNarrow }) => css`
+    flex-direction: ${isNarrow ? 'column' : 'row'};
   `}
 
   align-items: center;
@@ -53,7 +53,7 @@ const TicketController = () => {
   const { currentTicket } = useTickets();
   const [triggerFocus, setTriggerFocus] = useState<string | null>(null);
   const [actionSubtitle, setActionSubtitle] = useState<string | null>(null);
-  const { isMobile } = useMobile();
+  const { isNarrow } = useMobile();
   const { title, subTitle, iconSrc, url } = useMemo((): TicketControlFormat => {
     const { id, name, url, type, sprint } = currentTicket ?? ({} as Ticket | TicketFromQueue);
     const possibleName = name ?? '';
@@ -90,9 +90,9 @@ const TicketController = () => {
         <Title value={title} shouldFocus={triggerFocus} />
         <Controls triggerFocus={setTriggerFocus} setSubtitle={setActionSubtitle} />
       </PrimaryContainer>
-      <InformationDisplay isMobile={isMobile}>
-        {!isMobile && <Padding />}
-        <Subtitles flex={isMobile ? 0 : 1} content={subTitle} url={url} />
+      <InformationDisplay isNarrow={isNarrow}>
+        {!isNarrow && <Padding />}
+        <Subtitles flex={isNarrow ? 0 : 1} content={subTitle} url={url} />
         <Subtitles content={actionSubtitle} />
       </InformationDisplay>
     </Wrapper>

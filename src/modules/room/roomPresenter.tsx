@@ -37,7 +37,6 @@ const RoomDataContainer = styled.div<RoomDataContainerProps>`
   padding: 1rem;
   grid-row-gap: 1.25rem;
   grid-column-gap: 1.25rem;
-  overflow: scroll;
 `;
 
 const getGridConfig = (showNarrow: boolean) => {
@@ -63,14 +62,14 @@ const getGridConfig = (showNarrow: boolean) => {
 };
 
 const RoomPresenter = () => {
-  const { isMobile } = useMobile();
+  const { isNarrow } = useMobile();
 
-  const gridConfigs = getGridConfig(isMobile);
+  const gridConfigs = getGridConfig(isNarrow);
 
   return (
     <Wrapper>
       <TicketController />
-      <RoomDataContainer showNarrow={isMobile}>
+      <RoomDataContainer showNarrow={isNarrow}>
         <TimerPanel gridConfig={gridConfigs.timer} />
         <VotingPanel gridConfig={gridConfigs.voting} />
         <VoteDisplay gridConfig={gridConfigs.voteDisplay} />

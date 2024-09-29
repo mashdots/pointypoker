@@ -218,15 +218,15 @@ const ActionButton = styled.button<ActionButtonProps>`
 const Controls = ({ triggerFocus, setSubtitle }: Props) => {
   const { currentTicket, queue, shouldShowVotes, handleGoToNextTicket } = useTickets();
   const { isConfigured, writePointValue } = useJira();
-  const { isMobile } = useMobile();
+  const { isNarrow } = useMobile();
   const [loadingIndex, setLoadingIndex ] = useState<number | null>(null);
   const [successIndex, setSuccessIndex ] = useState<number | null>(null);
   const [showAllButtons, setShowAllButtons] = useState(false);
   const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.PII));
 
   const collapsedButtonCount = useMemo(
-    () => isMobile ? 2 : 3,
-    [ isMobile ],
+    () => isNarrow ? 2 : 3,
+    [ isNarrow ],
   );
 
   const handleAction = useCallback(

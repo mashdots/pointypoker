@@ -35,7 +35,7 @@ type Props = {
 
 type QueueControlProps = {
   alignRight: boolean;
-  isMobile: boolean;
+  isNarrow: boolean;
 }
 
 const IssuesWrapper = styled.div`
@@ -50,9 +50,9 @@ const IssuesWrapper = styled.div`
 `;
 
 const QueueControlWrapper = styled.div<QueueControlProps>`
-  ${({ alignRight, isMobile }: QueueControlProps) => css`
+  ${({ alignRight, isNarrow }: QueueControlProps) => css`
     justify-content: ${alignRight ? 'flex-end' : 'space-between'};
-    flex-direction: ${isMobile ? 'column' : 'row'};
+    flex-direction: ${isNarrow ? 'column' : 'row'};
     align-items: center;
   `};
 
@@ -181,7 +181,7 @@ const TicketReview = ({
     roomName: room?.name,
   }));
   const { currentTicket, handleCreatePredefinedTicket } = useTickets();
-  const { isMobile } = useMobile();
+  const { isNarrow } = useMobile();
   const { buildJiraUrl } = useJira();
   const ticketsInQueue = !!existingQueue.length;
 
@@ -281,7 +281,7 @@ const TicketReview = ({
       {ticketsInQueue && (
         <p style={{ marginBottom: 0 }}>Tickets are already in the queue. How do you want to add the new tickets?</p>
       )}
-      <QueueControlWrapper alignRight={!ticketsInQueue} isMobile={isMobile}>
+      <QueueControlWrapper alignRight={!ticketsInQueue} isNarrow={isNarrow}>
         {ticketsInQueue && (
           <QueueActionWrapper>
             {queueActionOptions.map(({ label, value, icon }) => (
