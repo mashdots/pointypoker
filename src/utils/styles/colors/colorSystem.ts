@@ -73,20 +73,36 @@ export type ThemeOption = {
   color: string;
 };
 
-const variationPropertiesList = [
-  'bg',
-  'bgAlt',
-  'componentBg',
-  'componentBgHover',
-  'componentBgActive',
-  'border',
-  'borderElement',
-  'borderElementHover',
-  'solidBg',
-  'solidBgHover',
-  'textLow',
-  'textHigh',
-];
+const variationPropertiesList: { dark: string[], light: string[] } = {
+  dark: [
+    'bg',
+    'bgAlt',
+    'componentBg',
+    'componentBgHover',
+    'componentBgActive',
+    'border',
+    'borderElement',
+    'borderElementHover',
+    'solidBg',
+    'solidBgHover',
+    'textLow',
+    'textHigh',
+  ],
+  light: [
+    'bg',
+    'bgAlt',
+    'componentBg',
+    'componentBgHover',
+    'componentBgActive',
+    'border',
+    'borderElement',
+    'borderElementHover',
+    'solidBg',
+    'solidBgHover',
+    'textLow',
+    'textHigh',
+  ],
+};
 
 /**
  * Builds the expected color association structure for a given color scheme and mode.
@@ -95,8 +111,9 @@ const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode
   const transparentModifier = isTransparent ? 'A' : '';
   const combinedColor: ColorReference = `${color}${mode}${transparentModifier}`;
   const colorAssociation = {} as ColorAssociation;
+  const propertyListMode = mode === 'Dark' ? 'dark' : 'light';
 
-  variationPropertiesList.forEach((variationProperty, i) => {
+  variationPropertiesList[propertyListMode].forEach((variationProperty, i) => {
     colorAssociation[variationProperty] = (colors[combinedColor] as SubColorReference)[`${color}${transparentModifier}${i + 1}`];
   });
 
