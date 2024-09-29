@@ -34,15 +34,17 @@ const InputWrapper = styled.div<{ noPadding: boolean }>`
   flex-direction: row;
   align-items: center;
   width: 100%;
+  flex: 1;
 `;
 
 const StyledInput = styled.input<InputProps>`
-  ${({ align, size, theme }) => css`
-    background-color: ${ theme.primary.border };
+  ${({ align, size, theme }: InputProps & ThemedProps) => css`
+    background-color: ${ theme.primary.bgAlt };
     border-color: ${ theme.primary.border};
     color: ${ theme.primary.textLow };
     text-align: ${align};
     font-size: ${size}rem;
+    box-shadow: inset 0 0 0.5rem ${ theme.primary.bg };
   `}
 
   padding: 0.5rem 1rem;
@@ -52,23 +54,22 @@ const StyledInput = styled.input<InputProps>`
   /* These prevent the awful highlight around the text input */
   outline-width: 0px;
   outline-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
   border-radius: 0.5rem;
 
   transition: all 200ms;
 
   :hover {
-    ${({ theme }) => css`
-      background-color: ${ theme.primary.componentBgHover };
+    ${({ theme }: ThemedProps) => css`
+      border-color: ${theme.primary.borderElementHover };
     `}
   }
   
   :focus {
-    ${({ theme }) => css`
+    ${({ theme }: ThemedProps) => css`
       color: ${theme.primary.textHigh };
-      background-color: ${theme.primary.componentBgActive };
-      border-color: ${theme.primary.textHigh };
+      border-color: ${theme.primary.borderElement };
     `}
   }
 `;

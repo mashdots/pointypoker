@@ -74,13 +74,19 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
 `;
 
 const Header = ({ headerRef, hideMenu }: Props) => {
-  const { isMenuOpen, setIsMenuOpen } = useStore(
-    ({ isMenuOpen, setIsMenuOpen }) => ({ isMenuOpen, setIsMenuOpen }),
+  const { isMenuOpen, setIsMenuOpen, hasUser } = useStore(
+    ({ isMenuOpen, setIsMenuOpen, preferences }) => (
+      {
+        isMenuOpen,
+        setIsMenuOpen,
+        hasUser: !!preferences?.user,
+      }
+    ),
   );
 
   return (
     <Wrapper ref={headerRef}>
-      <Section flex={6} align='left'>
+      <Section flex={6} align='left' style={{ opacity: hasUser ? 1 : 0, transition: 'all 300ms ease-out' }}>
         <Logo />
         <RoomControl />
       </Section>

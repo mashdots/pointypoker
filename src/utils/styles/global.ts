@@ -9,11 +9,6 @@ const GlobalStyles = createGlobalStyle<ThemedProps>`
     font-size: 16px;
   }
 
-  #root {
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-
   body {
     ${({ theme }: ThemedProps) => css`
       background-color: ${ theme.greyscale.bg };
