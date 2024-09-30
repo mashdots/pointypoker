@@ -26,15 +26,15 @@ const IssueWrapper = styled.div<IssueWrapperProps>`
     const themeColor = isCurrentTicket ? 'primary' : 'greyscale';
     return css`
       animation: ${ fadeDownEntrance } 0.25s ease-out ${ delayFactor }ms forwards;
-      background-color: ${ theme[themeColor].componentBg };
-      border-left: 4px ${ isCurrentTicket ? 'solid' : 'none' } ${ theme.primary.border };
-      border-bottom: 1px ${ isCurrentTicket ? 'none' : 'solid' } ${ theme.greyscale.border };
-      color: ${ theme.primary.textHigh };
+      background-color: ${ theme[themeColor].accent3 };
+      border-left: 4px ${ isCurrentTicket ? 'solid' : 'none' } ${ theme.primary.accent6 };
+      border-bottom: 1px ${ isCurrentTicket ? 'none' : 'solid' } ${ theme.greyscale.accent6 };
+      color: ${ theme.primary.accent12 };
       cursor: ${ isSelectable ? 'pointer' : 'default' };
 
       :hover {
-        background-color: ${ theme[themeColor].componentBgHover };
-        border-color: ${ theme[themeColor].borderElementHover };
+        background-color: ${ theme[themeColor].accent4 };
+        border-color: ${ theme[themeColor].accent8 };
       }
     `;
   }};
@@ -77,7 +77,7 @@ const Title = styled.span`
 
 const TicketSprintInfo = styled.p`
   ${ ({ theme }: ThemedProps) => css`
-    color: ${ theme.greyscale.textLow };
+    color: ${ theme.greyscale.accent11 };
   `};
 
   font-size: 0.75rem;
@@ -93,7 +93,7 @@ const TicketSprintInfo = styled.p`
 const TicketId = styled(TicketSprintInfo)`
   ${ ({ theme }: ThemedProps) => css`
     :hover {
-      color: ${ theme.info.textLow };
+      color: ${ theme.info.accent11 };
     }
   `};
 
@@ -115,7 +115,7 @@ const TitleLinkIcon = styled(LinkSvg)`
   transition: all 300ms;
 
   > polyline, line, path {
-    stroke: ${ ({ theme }) => theme.info.textLow };
+    stroke: ${ ({ theme }) => theme.info.accent11 };
   }
 `;
 

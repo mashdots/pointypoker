@@ -38,7 +38,7 @@ const OptionWrapper = styled.div`
 
 const OptionItem = styled.div`
   ${ ({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.componentBg };
+    background-color: ${ theme.greyscale.accent3 };
   `}
 
   cursor: pointer;
@@ -52,7 +52,7 @@ const OptionItem = styled.div`
   
   > span {
     ${({ theme }: ThemedProps) => css`
-      color: ${ theme.greyscale.textLow };
+      color: ${ theme.greyscale.accent11 };
     `}
 
     font-size: 0.8rem;
@@ -61,14 +61,14 @@ const OptionItem = styled.div`
   
   :hover {
     ${ ({ theme }: ThemedProps) => css`
-      background-color: ${ theme.primary.componentBgHover };
+      background-color: ${ theme.primary.accent4 };
     `}
   }
 `;
 
 const StatusItem = styled.div`
   ${ ({ theme }: ThemedProps) => css`
-    color: ${ theme.greyscale.textLow };
+    color: ${ theme.greyscale.accent11 };
   `}
 
   padding: 0.5rem 2rem;

@@ -34,7 +34,7 @@ const ResultCell = styled.div`
 
 const VerticalDivider = styled.div`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${theme.primary.borderElement};
+    background-color: ${theme.primary.accent7};
   `}
 
   width: 1px;
@@ -47,7 +47,7 @@ const SuggestIcon = styled(SuggestSvg)<IconProps>`
     height: ${$shouldGrow ? 2 : 1}rem;
 
     > line, polyline, path {
-      stroke: ${theme.primary.textLow};
+      stroke: ${theme.primary.accent11};
     }
   `}
 
@@ -60,7 +60,7 @@ const AverageIcon = styled(AverageSvg)<IconProps>`
     height: ${$shouldGrow ? 2 : 1}rem;
 
     > polyline {
-      stroke: ${theme.primary.textLow};
+      stroke: ${theme.primary.accent11};
     }
   `}
 

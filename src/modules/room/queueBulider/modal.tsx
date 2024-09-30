@@ -12,6 +12,7 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useTickets } from '@modules/room/hooks';
 import { useJira } from '@modules/integrations';
 import { scaleEntrance } from '@components/common/animations';
+import ModeSelection, { ImportModeSelection } from '@modules/room/queueBulider/steps/modeSelection';
 
 type ConfigOptionProps = {
   selectionComplete: boolean;
@@ -23,7 +24,7 @@ const EditIcon = styled(PencilSvg)`
   
   ${ ({ theme }: ThemedProps) => css`
     > line, path {
-      stroke: ${ theme.primary.textLow };
+      stroke: ${ theme.primary.accent11 };
     }
   `}
 `;
@@ -35,15 +36,15 @@ const UndoIcon = styled(UndoSvg)`
   
   ${ ({ theme }: ThemedProps) => css`
     > path, polyline {
-      stroke: ${ theme.primary.textLow };
+      stroke: ${ theme.primary.accent11 };
     }
   `}
 `;
 
 const ConfigWrapper = styled.div`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.componentBg };
-    color: ${ theme.primary.textHigh} ;
+    background-color: ${ theme.greyscale.accent3 };
+    color: ${ theme.primary.accent12} ;
   `}
 
   display: flex;
@@ -68,20 +69,20 @@ const ConfigOptionWrapper = styled.div`
     margin: 0;
     font-size: 1rem;
     ${({ theme }: ThemedProps) => css`
-      color: ${ theme.greyscale.textLow };
+      color: ${ theme.greyscale.accent11 };
     `}
   }
 `;
 
 const ConfigOption = styled.div<ConfigOptionProps>`
   ${({ selectionComplete, theme }: ConfigOptionProps) => css`
-    border: 2px ${selectionComplete ? 'solid' : 'dashed' } ${ theme.greyscale[ selectionComplete ? 'borderElementHover' : 'border'] };
+    border: 2px ${selectionComplete ? 'solid' : 'dashed' } ${ theme.greyscale[ selectionComplete ? 'accent8' : 'border'] };
     cursor: ${ selectionComplete ? 'pointer' : 'default' };
   `};
 
   ${({ selectionComplete, theme }: ConfigOptionProps) => selectionComplete && css`
     &:hover {
-      background-color: ${ theme.greyscale.componentBgHover };
+      background-color: ${ theme.greyscale.accent4 };
     }
   `}
   
@@ -112,7 +113,7 @@ const RevertWrapper = styled.div`
     margin: 0;
     font-size: 0.75rem;
     ${({ theme }: ThemedProps) => css`
-      color: ${ theme.greyscale.textLow };
+      color: ${ theme.greyscale.accent11 };
     `}
   }
 `;
@@ -148,6 +149,7 @@ const QueueModal = () => {
   }));
   const { getPointFieldFromBoardId } = useJira();
   const { queue } = useTickets();
+  const [ importModeSelection, setImportModeSelection ] = useState<ImportModeSelection | null>(null);
   const [ overrideBoard, setOverrideBoard ] = useState<JiraBoardPayloadValue | null>(null);
   const [ selectedSprint, setSelectedSprint ] = useState<JiraSprintWithIssues | null>(null);
   const [ showOverrideUI, setShowOverrideUI ] = useState<boolean>(false);
@@ -155,6 +157,14 @@ const QueueModal = () => {
   const isAnyBoardSelected = useMemo(() => !!defaultBoard || !!overrideBoard, [ defaultBoard, overrideBoard ]);
 
   const selectionContent = useMemo(() => {
+    // if (!importModeSelection) {
+    //   return (
+    //     <ModeSelection
+    //       handleModeSelection={setImportModeSelection}
+    //     />
+    //   );
+    // }
+
     if ((!isAnyBoardSelected) || showOverrideUI) {
       return (
         <BoardSelection

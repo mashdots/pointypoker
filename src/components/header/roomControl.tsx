@@ -24,7 +24,7 @@ const Separator = styled.div<ThemedProps & { appear: boolean }>`
 
   ${({ appear, theme }) => css`
     height: ${appear ? 1.5 : 0}rem;
-    background-color: ${theme.primary.textLow}; 
+    background-color: ${theme.primary.accent11}; 
   `}
 `;
 

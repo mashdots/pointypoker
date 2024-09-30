@@ -63,9 +63,9 @@ const QueueControlWrapper = styled.div<QueueControlProps>`
 const IssueWrapper = styled.div<{ delayFactor: number }>`
   ${({ delayFactor, theme }: { delayFactor: number } & ThemedProps) => css`
     animation: ${fadeDownEntrance } 0.25s ease-out ${ delayFactor}ms forwards;
-    background-color: ${theme.greyscale.componentBg};
-    border: 2px solid ${theme.greyscale.border};
-    color: ${theme.primary.textHigh};
+    background-color: ${theme.greyscale.accent3};
+    border: 2px solid ${theme.greyscale.accent6};
+    color: ${theme.primary.accent12};
   `};
     
   border-radius: 0.5rem;
@@ -95,7 +95,7 @@ const Title = styled.h4`
 
 const TicketSprintInfo = styled.p`
   ${({ theme }: ThemedProps) => css`
-    color: ${theme.greyscale.textLow};
+    color: ${theme.greyscale.accent11};
   `};
 
   font-size: 0.75rem;
@@ -143,9 +143,9 @@ const QueueActionWrapper = styled.div`
 
 const QueueActionRadioButton = styled.div<{ isSelected: boolean }>`
   ${({ isSelected, theme }: { isSelected: boolean } & ThemedProps) => css`
-    background-color: ${theme[isSelected ? 'info' : 'greyscale'].componentBg};
-    color: ${theme[isSelected ? 'info' : 'greyscale'].textLow};
-    border: 2px solid ${theme[isSelected ? 'info' : 'greyscale'].border};
+    background-color: ${theme[isSelected ? 'info' : 'greyscale'].accent3};
+    color: ${theme[isSelected ? 'info' : 'greyscale'].accent11};
+    border: 2px solid ${theme[isSelected ? 'info' : 'greyscale'].accent6};
   `}
 
   cursor: pointer;
@@ -308,7 +308,7 @@ const TicketReview = ({
           width={12}
           textSize='small'
           onClick={handleAddTicketsToQueue}
-          isDisabled={ticketsInQueue && queueAction === null}
+          disabled={ticketsInQueue && queueAction === null}
         >
           {ticketsInQueue ? 'Update' : 'Add to'} queue
           <ArrowIcon />

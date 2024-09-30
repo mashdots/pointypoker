@@ -43,21 +43,21 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
   background-color 250ms ease-out;
   
   ${({ selected, theme, disabled }) => css`
-      background-color: ${selected ? theme.primary.solidBg : theme.greyscale.componentBg};
-      color: ${selected ? theme.primary.textHigh : theme.greyscale.textHigh};
+      background-color: ${selected ? theme.primary.accent9 : theme.greyscale.accent3};
+      color: ${selected ? theme.primary.accent12 : theme.greyscale.accent12};
       cursor: ${disabled ? 'not-allowed' : 'pointer'};
   `}
 
   :hover {
     ${({ selected, theme, disabled }) => !disabled && css`
-      background-color: ${ theme.primary[selected ? 'borderElementHover' : 'componentBgHover'] };
-      border-color: ${ theme.primary[selected ? 'transparent' : 'borderElementHover'] };
+      background-color: ${ theme.primary[selected ? 'accent8' : 'accent4'] };
+      border-color: ${ theme.primary[selected ? 'transparent' : 'accent8'] };
     `}
   }
 
   :active {
     ${({ selected, theme }) => !selected && css`
-      background-color: ${ theme.primary.textLow };
+      background-color: ${ theme.primary.accent11 };
     `}
   }
 `;
@@ -71,7 +71,7 @@ const DisabledContainer = styled.div`
 
   > p {
     ${({ theme }) => css`
-      color: ${theme.greyscale.textLow};
+      color: ${theme.greyscale.accent11};
     `}
 
     font-size: 1.25rem;

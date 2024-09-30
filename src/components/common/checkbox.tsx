@@ -19,8 +19,8 @@ const Wrapper = styled.div`
 
 const StyledCheckBox = styled.input`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${theme.primary.componentBg};
-    border: 1px solid ${theme.primary.border};
+    background-color: ${theme.primary.accent3};
+    border: 1px solid ${theme.primary.accent6};
     border-radius: 0.25rem;
     cursor: pointer;
     margin-right: 1rem;
@@ -29,7 +29,7 @@ const StyledCheckBox = styled.input`
 
 
     &:checked {
-      background-color: ${theme.primary.solidBg};
+      background-color: ${theme.primary.accent9};
     }
 
     &:checked:after {

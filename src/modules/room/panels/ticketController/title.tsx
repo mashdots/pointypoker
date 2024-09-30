@@ -33,9 +33,9 @@ const Wrapper = styled.div`
 
 const NotTheTextInput = styled.div <{ hasTitle: boolean }>`
   ${({ hasTitle, theme }: { hasTitle: boolean } & ThemedProps) => css`
-    background-color: ${ theme.primary.border };
-    border-color: ${ theme.primary.border };
-    color: ${ theme.primary[ hasTitle ? 'textHigh' : 'textLow'] };
+    background-color: ${ theme.primary.accent6 };
+    border-color: ${ theme.primary.accent6 };
+    color: ${ theme.primary[ hasTitle ? 'accent12' : 'accent11'] };
     text-align: start;
     font-size: 1.5rem;
 
@@ -45,7 +45,7 @@ const NotTheTextInput = styled.div <{ hasTitle: boolean }>`
     outline-offset: 0px;
     
     :hover {
-      background-color: ${ theme.primary.componentBgHover };
+      background-color: ${ theme.primary.accent4 };
     }
   `}
 

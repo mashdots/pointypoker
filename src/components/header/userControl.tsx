@@ -7,7 +7,7 @@ import useStore from '@utils/store';
 const Wrapper = styled.div<ThemedProps>`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.primary.textHigh};
+  color: ${({ theme }) => theme.primary.accent12};
 `;
 
 const UserControl = () => {

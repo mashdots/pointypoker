@@ -33,7 +33,7 @@ type ModalContentProps = {
 
 const BackDrop = styled.div<VisibleProps>`
   ${({ isNarrow, isVisible, theme }: VisibleProps) => css`
-    background-color: ${theme.transparent.componentBg};
+    background-color: ${theme.transparent.accent3};
     opacity: ${isVisible ? 1 : 0};
     backdrop-filter: blur(${isNarrow ? 0 : 2}px);
   `}
@@ -55,9 +55,9 @@ const BackDrop = styled.div<VisibleProps>`
 
 const Container = styled.div<VisibleProps>`
   ${({ isNarrow, isVisible, theme }: VisibleProps) => css`
-    background-color: ${theme.greyscale.bgAlt};
-    border-color: ${theme.primary.border};
-    color: ${theme.primary.textHigh};
+    background-color: ${theme.greyscale.accent2};
+    border-color: ${theme.primary.accent6};
+    color: ${theme.primary.accent12};
     height: ${isNarrow ? 90 : 60}%;
     min-width: ${isNarrow ? '90%' : '720px'};
     width: ${isNarrow ? 90 : 50}%;
@@ -101,7 +101,7 @@ const Title = styled.h2`
 
 const Subtitle = styled.h4`
   ${({ theme }: ThemedProps) => css`
-    color: ${theme.primary.textLow};
+    color: ${theme.primary.accent11};
   `}
 
   margin: 0 1rem;
@@ -115,12 +115,12 @@ const CloseIcon = styled(PlusIcon)`
   
   > line {
     transition: stroke 300ms;
-    stroke: ${({ theme }: ThemedProps) => theme.primary.textLow};
+    stroke: ${({ theme }: ThemedProps) => theme.primary.accent11};
   }
 
   &:hover {
     > line {
-      stroke: ${({ theme }: ThemedProps) => theme.primary.textHigh};
+      stroke: ${({ theme }: ThemedProps) => theme.primary.accent12};
     }
   }
 `;

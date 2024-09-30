@@ -14,7 +14,7 @@ const Icon = styled(SettingsIcon)<ThemedProps>`
 
   ${ ({ theme }: ThemedProps) => css`
     > path, circle {
-      stroke: ${ theme.greyscale.textLow };
+      stroke: ${ theme.greyscale.accent11 };
     }
   `}
 `;

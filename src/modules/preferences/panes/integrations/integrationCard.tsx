@@ -18,9 +18,9 @@ type WrapperProps = {
 
 const Wrapper = styled.div<WrapperProps>`
   ${ ({ isActive, theme }: WrapperProps & ThemedProps) => css`
-    background-color: ${theme.greyscale.componentBg};
+    background-color: ${theme.greyscale.accent3};
     border-width: ${ isActive ? 2 : 0 }px;
-    border-color: ${ theme.primary.borderElement };
+    border-color: ${ theme.primary.accent7 };
   `};
 
   border-style: solid;
@@ -56,7 +56,7 @@ const HeaderTextContainer = styled.span`
 
 const SubtitleText = styled.p`
   ${ ({ theme }: ThemedProps) => css`
-    color: ${ theme.greyscale.textLow };
+    color: ${ theme.greyscale.accent11 };
   `}
 
   margin-left: 1rem;

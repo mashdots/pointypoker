@@ -36,8 +36,8 @@ const enterAnimation = keyframes`
 
 const TicketHeader = styled.div`
   ${({ theme }: ThemedProps) => css`
-    color: ${ theme.primary.textHigh };
-    background-color: ${ theme.greyscale.componentBg };
+    color: ${ theme.primary.accent12 };
+    background-color: ${ theme.greyscale.accent3 };
   `}
 
     display: flex;
@@ -51,8 +51,8 @@ const TicketHeader = styled.div`
 
 const TicketRow = styled.div <TicketRowProps>`
   ${({ showBottomBorder, theme }: TicketRowProps) => css`
-    color: ${ theme.primary.textHigh };
-    border-color: ${ theme.primary.border };
+    color: ${ theme.primary.accent12 };
+    border-color: ${ theme.primary.accent6 };
     border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
   `}
 
@@ -78,7 +78,7 @@ const NameCell = styled.div`
 
 const PointCell = styled.div`
   ${({ theme }: ThemedProps) => css`
-    color: ${ theme.primary.textLow };
+    color: ${ theme.primary.accent11 };
   `}
 
   display: flex;

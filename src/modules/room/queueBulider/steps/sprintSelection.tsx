@@ -41,7 +41,7 @@ const LoadingWrapper = styled.span<{ size: number }>`
 const LoadingIcon = styled(Spinner)`
   ${({ theme }: ThemedProps) => css`
     > polyline, circle {
-      stroke: ${theme.greyscale.textLow};
+      stroke: ${theme.greyscale.accent11};
     }
   `}
 
@@ -62,13 +62,13 @@ const SprintOptionWrapper = styled.div`
 const SprintOption = styled.div<SprintOptionProps>`
   ${({ delayFactor, hasIssues, theme }: SprintOptionProps) => css`
     cursor: ${ hasIssues ? 'pointer' : 'default' };
-    background-color: ${ theme.greyscale.componentBg };
-    color: ${ theme.greyscale[hasIssues ? 'textHigh' : 'textLow'] };
-    border: 2px solid ${ theme.greyscale[hasIssues ? 'borderElement' : 'componentBg'] };
+    background-color: ${ theme.greyscale.accent3 };
+    color: ${ theme.greyscale[hasIssues ? 'accent12' : 'accent11'] };
+    border: 2px solid ${ theme.greyscale[hasIssues ? 'accent7' : 'accent3'] };
     animation: ${ fadeDownEntrance } 0.25s ease-out ${ delayFactor }ms forwards;
 
     &:hover {
-      background-color: ${ theme.greyscale[ hasIssues ? 'componentBgHover' : 'componentBg' ] };
+      background-color: ${ theme.greyscale[ hasIssues ? 'accent4' : 'accent3' ] };
     }
   `}
 
@@ -96,8 +96,8 @@ const PointContainer = styled.span<SprintOptionProps>`
     }
 
     return css`
-      border: 1px solid ${ theme[colorScheme][ hasIssues ? 'borderElementHover' : 'componentBg' ] };
-      color: ${ theme[colorScheme].textLow };
+      border: 1px solid ${ theme[colorScheme][ hasIssues ? 'accent8' : 'accent3' ] };
+      color: ${ theme[colorScheme].accent11 };
     `;
   }}
 

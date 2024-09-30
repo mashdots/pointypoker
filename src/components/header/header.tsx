@@ -43,7 +43,7 @@ const Section = styled.div<SectionProps>`
 const MenuButton = styled(MenuIcon)<MenuIconProps>`
   ${({ theme, isOpen }: MenuIconProps) => isOpen ? css`
     > line {
-      stroke: ${theme.primary.textHigh};
+      stroke: ${theme.primary.accent12};
     }
 
     > line:nth-child(3) {
@@ -59,7 +59,7 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
     }
   ` : css`
     > line {
-      stroke: ${theme.primary.textLow};
+      stroke: ${theme.primary.accent11};
     }
     `}
     

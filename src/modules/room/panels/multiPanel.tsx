@@ -48,12 +48,12 @@ const TitleContainer = styled.div`
 
 const Title = styled.h2<TitleProps>`
   ${({ isSelectable, isSelected, theme }: TitleProps) => css`
-    border-bottom: 1px solid ${ isSelected ? theme.primary.borderElement : 'transparent'};
-    color: ${ theme.primary.textLow };
+    border-bottom: 1px solid ${ isSelected ? theme.primary.accent7 : 'transparent'};
+    color: ${ theme.primary.accent11 };
     cursor: ${ isSelectable ? 'pointer' : 'default' };
 
     &:hover {
-      color: ${ isSelectable ? theme.primary.textHigh : theme.primary.textLow };
+      color: ${ isSelectable ? theme.primary.accent12 : theme.primary.accent11 };
     }
   `}
 

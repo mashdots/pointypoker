@@ -7,11 +7,11 @@ const Wrapper = styled.div<ThemedProps>`
   cursor: default;
   font-family: 'Lexend', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.5rem;
-  color: ${({ theme }) => theme.primary.textHigh};
+  color: ${({ theme }) => theme.primary.accent12};
 `;
 
 const FirstLetter = styled.span<ThemedProps>`
-  color: ${({ theme }) => theme.primary.textLow};
+  color: ${({ theme }) => theme.primary.accent11};
 `;
 
 const Logo = () => {

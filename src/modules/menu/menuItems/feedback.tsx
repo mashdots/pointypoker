@@ -12,7 +12,7 @@ const Icon = styled(FeedbackIcon) <ThemedProps>`
 
   ${ ({ theme }: ThemedProps) => css`
     > line, path, polyline {
-      stroke: ${ theme.greyscale.textLow };
+      stroke: ${ theme.greyscale.accent11 };
     }
   `}
 `;

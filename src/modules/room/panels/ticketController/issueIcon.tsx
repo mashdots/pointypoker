@@ -32,7 +32,7 @@ const Wrapper = styled.div<WrapperProps>`
 const DefaultIcon = styled(ArticleSvg)`
   ${ ({ theme }: ThemedProps) => css`
     > line, rect {
-      stroke: ${ theme.primary.textLow};
+      stroke: ${ theme.primary.accent11};
     }
   `}
   

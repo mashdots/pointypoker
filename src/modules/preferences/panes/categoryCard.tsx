@@ -20,7 +20,7 @@ export type GenericPrefCardProps = Pick<Props, 'onClick' | 'isActive'>;
 
 const Wrapper = styled.li<WrapperProps>`
   ${({ isActive, theme }: WrapperProps) => isActive && css`
-    background-color: ${theme.primary.componentBgActive};
+    background-color: ${theme.primary.accent5};
   `}
 
   ${({ isNarrow }) => isNarrow
@@ -42,7 +42,7 @@ const Wrapper = styled.li<WrapperProps>`
 
   &:hover {
     ${({ isActive, theme }: WrapperProps) => !isActive && css`
-      background-color: ${theme.greyscale.componentBgHover};
+      background-color: ${theme.greyscale.accent4};
     `}
   }
 `;

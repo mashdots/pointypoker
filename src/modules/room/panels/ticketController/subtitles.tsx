@@ -19,7 +19,7 @@ const LinkIcon = styled(LinkSvg)`
 
 const Wrapper = styled.div<Props>`
   ${({ theme }: Props & ThemedProps) => css`
-    color: ${theme.primary.textLow};
+    color: ${theme.primary.accent11};
   `}
 
   ${({ flex }: Props) => flex && css`
@@ -44,7 +44,7 @@ const VisibilityControl = styled.div<{ isVisible: boolean }>`
       filter: blur(${isVisible ? 0 : 0.25}rem);
 
       > a {
-        color: ${theme.info.textLow};
+        color: ${theme.info.accent11};
       }
     `}
 

@@ -40,7 +40,7 @@ const Wrapper = styled.div<ColorOverrides & { position?: 'left' | 'right' }>`
   
   input:checked + #slider {
     ${({ onBg, theme }: ColorOverrides & ThemedProps) => {
-    const finalColor = onBg ? get(theme, onBg) : theme.success.solidBg;
+    const finalColor = onBg ? get(theme, onBg) : theme.success.accent9;
 
     return css`
         background-color: ${finalColor};
@@ -53,8 +53,8 @@ const Wrapper = styled.div<ColorOverrides & { position?: 'left' | 'right' }>`
 
 const Slider = styled.div <Pick<Props, 'isOn'> & ColorOverrides>`
   ${({ isOn, offBg, theme }: Pick<Props, 'isOn'> & ThemedProps & ColorOverrides) => css`
-    background-color: ${ offBg ? get(theme, offBg) : theme.primary.componentBg };
-    border: 1px solid ${ isOn ? theme.primary.borderElement : theme.primary.textHigh };
+    background-color: ${ offBg ? get(theme, offBg) : theme.primary.accent3 };
+    border: 1px solid ${ isOn ? theme.primary.accent7 : theme.primary.accent12 };
 
     > span {
       transition: transform 0.25s cubic-bezier(.54, 1.60, .5, 1);
@@ -75,8 +75,8 @@ const Slider = styled.div <Pick<Props, 'isOn'> & ColorOverrides>`
 
 const ToggleKnob = styled.span`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${ theme.primary.componentBg };
-    outline: 1px solid ${ theme.primary.borderElement };
+    background-color: ${ theme.primary.accent3 };
+    outline: 1px solid ${ theme.primary.accent7 };
   `}
 
   content: '';

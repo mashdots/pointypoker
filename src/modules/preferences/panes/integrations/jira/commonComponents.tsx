@@ -19,7 +19,7 @@ const Label = styled.label`
 
 const Description = styled.span`
   ${({ theme }: ThemedProps) => css`
-    color: ${ theme.greyscale.textLow };
+    color: ${ theme.greyscale.accent11 };
   `}
 
   display: flex;
@@ -36,14 +36,14 @@ const CloseIcon = styled(PlusIcon)`
   
   > line {
     transition: stroke 300ms;
-    stroke: ${ ({ theme }: ThemedProps) => theme.primary.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.primary.accent11 };
   }
 `;
 
 const SelectedOptionWrapper = styled.div`
   ${ ({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.bgAlt };
-    color: ${ theme.primary.textHigh };
+    background-color: ${ theme.greyscale.accent2 };
+    color: ${ theme.primary.accent12 };
   `}
 
   display: flex;

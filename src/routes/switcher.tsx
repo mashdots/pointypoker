@@ -23,11 +23,10 @@ const Wrapper = styled.div<WrapperProps>`
 `;
 
 /**
- * This is a new hybrid module that handles:
+ * This is a hybrid module that handles:
  *
  * - User setup
  * - Room setup
- * - Room facilitation
  *
  * Depending on certain conditions, it will render the appropriate module needed
  * to set up the user, set up the room, or facilitate the room.
@@ -47,11 +46,11 @@ const Switcher = () => {
 
   useEffect(() => {
     setIsTransitioning(true);
+
     setTimeout(() => {
       setChildComponent(getChildComponent());
       setIsTransitioning(false);
     }, 300);
-
   }, [user]);
 
   return <Wrapper shouldShow={!isTransitioning}>{childComponent}</Wrapper>;

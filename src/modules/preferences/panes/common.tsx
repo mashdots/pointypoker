@@ -4,7 +4,7 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 export const Separator = styled.span`
   ${ ({ theme }: ThemedProps) => css`
-    background-color: ${ theme.primary.border };
+    background-color: ${ theme.primary.accent6 };
   `}
 
     display: inline-block;

@@ -37,7 +37,7 @@ const StatContainer = styled.div`
 
 const StatLabel = styled.div`
   ${ ({ theme }: ThemedProps) => css`
-    border-top: 1px solid ${ theme.greyscale.borderElement };
+    border-top: 1px solid ${ theme.greyscale.accent7 };
   `}
 
   display: flex;
@@ -49,7 +49,10 @@ const StatLabel = styled.div`
 
 const StatDisplayWrapper = styled.div`
   ${ ({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.borderElement };
+    background-color: ${ theme.greyscale.accent7 };
+    border-top: 2px solid ${ theme.greyscale.accent6 };
+    border-left: 1px solid ${ theme.greyscale.accent6 };
+    border-right: 1px solid ${ theme.greyscale.accent6 };
   `}
 
   display: flex;
@@ -59,17 +62,18 @@ const StatDisplayWrapper = styled.div`
   
   height: 100%;
   width: 1.5rem;
-  border-top-left-radius: 0.125rem;
-  border-top-right-radius: 0.125rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 
   overflow: hidden;
 `;
 
 const StatDisplay = styled.div<StatDisplayProps>`
   ${ ({ animationDuration, percentage, revealVotes, theme }: StatDisplayProps & ThemedProps) => css`
-    background-color: ${ theme.info.solidBg };
+    background-color: ${ theme.info.accent9 };
     height: ${ revealVotes ? percentage : 0 }%;
     transition: height ${ animationDuration }ms ease-out;
+    border-top: ${ revealVotes && percentage ? 2 : 0 }px solid ${ theme.info.accent10 };
   `}
 
   display: flex;
@@ -77,6 +81,8 @@ const StatDisplay = styled.div<StatDisplayProps>`
   bottom: 0;
   flex: 1;
   width: 100%;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 `;
 
 

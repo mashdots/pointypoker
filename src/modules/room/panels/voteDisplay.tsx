@@ -58,17 +58,17 @@ const Wrapper = styled.div`
 
 const StyledVoteCell = styled.div<StyledVoteCellProps>`
   ${({ isIdle, isInactive, showBottomBorder, theme }: StyledVoteCellProps) => {
-    let color = theme.primary.textHigh;
+    let color = theme.primary.accent12;
 
     if (isIdle) {
-      color = theme.warning.textLow;
+      color = theme.warning.accent11;
     } else if (isInactive) {
-      color = theme.greyscale.textLow;
+      color = theme.greyscale.accent11;
     }
 
     return css`
       color: ${color};
-      border-color: ${ theme.primary.border };
+      border-color: ${ theme.primary.accent6 };
       border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
       `;
   }}
@@ -107,7 +107,7 @@ const CheckIcon = styled(CircleCheckSvg)<ThemedProps>`
   width: ${ICON_SIZE}rem;
 
   > polyline, line, path, circle {
-    stroke: ${ ({ theme }: ThemedProps) => theme.success.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.success.accent11 };
   }
 `;
 
@@ -115,7 +115,7 @@ const CoffeeIcon = styled(CoffeeSvg)<ThemedProps>`
   width: ${ICON_SIZE}rem;
 
   > line, path {
-    stroke: ${ ({ theme }: ThemedProps) => theme.info.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.info.accent11 };
   }
 `;
 
@@ -123,7 +123,7 @@ const IdleIcon = styled(IdleSvg)<ThemedProps>`
   width: ${ICON_SIZE}rem;
 
   > polyline, line, path, circle {
-    stroke: ${ ({ theme }: ThemedProps) => theme.warning.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.warning.accent11 };
   }
 `;
 
@@ -131,7 +131,7 @@ const InactiveIcon = styled(InactiveSvg)<ThemedProps>`
   width: ${ICON_SIZE}rem;
 
   > polyline, line, path, circle {
-    stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.accent11 };
   }
 `;
 
@@ -239,7 +239,7 @@ const VoteDisplay = (props: GridPanelProps) => {
       onClick={() => {
         handleUpdateCurrentTicket('shouldShowVotes', true);
       }}
-      isDisabled={shouldShowVotes || !hasAnyoneVoted}
+      disabled={shouldShowVotes || !hasAnyoneVoted}
       textSize='small'
     >
       show votes

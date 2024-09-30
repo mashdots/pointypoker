@@ -26,8 +26,8 @@ const ThemeOptionContainer = styled.div`
 
 const ThemeOptionWrapper = styled.label<ThemeOptionWrapperProps>`
   ${({ isActive, theme }: ThemeOptionWrapperProps) => css`
-    background-color: ${isActive ? theme.primary.componentBg : theme.transparent.bg};
-    border-color: ${isActive ? theme.primary.border : theme.transparent.bg};
+    background-color: ${isActive ? theme.primary.accent3 : theme.transparent.accent1};
+    border-color: ${isActive ? theme.primary.accent6 : theme.transparent.accent1};
   `}
   
   border-width: 2px;
@@ -122,7 +122,7 @@ const AppearancePreferences = () => {
 const AppearancePrefsIcon = styled(Icon)`
   ${({ theme }: ThemedProps) => css`
     > circle {
-      fill: ${theme.primary.textLow};
+      fill: ${theme.primary.accent11};
     }
   `};
 

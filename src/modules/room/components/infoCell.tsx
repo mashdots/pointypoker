@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   width: 100%;
   
   border: none;
-  color: ${ VARIATIONS.structure.textLow };
+  color: ${ VARIATIONS.structure.accent11 };
 `;
 
 const ContentContainer = styled.div`

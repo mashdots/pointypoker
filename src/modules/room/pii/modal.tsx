@@ -27,7 +27,7 @@ const ReviewContainer = styled.div`
 
 const TicketData = styled.div`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${theme.primary.componentBg};
+    background-color: ${theme.primary.accent3};
   `};
 
   border-radius: 1rem;

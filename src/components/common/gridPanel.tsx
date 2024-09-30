@@ -35,8 +35,8 @@ const Container = styled.div<ThemedProps & GridConfiguration>`
     grid-row-start: ${rowStart};
     grid-row-end: ${rowEnd};
 
-    border-color: ${theme.primary.border };
-    background-color: ${ theme.transparent.bg};
+    border-color: ${theme.primary.accent6 };
+    background-color: ${ theme.transparent.accent1};
   `}
 `;
 
@@ -46,7 +46,7 @@ const Title = styled.h2`
   padding: 0 0.5rem;
   
   ${ ({ theme }: ThemedProps) => css`
-    color: ${ theme.primary.textLow };
+    color: ${ theme.primary.accent11 };
   `}
 `;
 

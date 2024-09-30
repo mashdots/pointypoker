@@ -47,7 +47,7 @@ const LoadingIcon = styled(Spinner)`
 const SuccessIcon = styled(Check)`
   ${ ({ theme }: ThemedProps) => css`
     > polyline {
-      stroke: ${ theme.success.solidBg };
+      stroke: ${ theme.success.accent9 };
     }
   `}
   height: 1rem;
@@ -88,13 +88,13 @@ const InformationWrapper = styled.div`
 
 const ConnectWrapper = styled(InformationWrapper)`
   ${({ theme }: ThemedProps) => css`
-    border: 2px solid ${ theme.success.borderElement };
+    border: 2px solid ${ theme.success.accent7 };
   `};
 `;
 
 const NoticeWrapper = styled(InformationWrapper)`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${ theme.warning.componentBgHover };
+    background-color: ${ theme.warning.accent4 };
   `};
 `;
 
@@ -104,7 +104,7 @@ const DisconnectInfoWrapper = styled(InformationWrapper)`
 
 const RevokeLink = styled.a`
   ${({ theme }: ThemedProps) => css`
-    color: ${ theme.error.textLow };
+    color: ${ theme.error.accent11 };
   `};
 
   cursor: pointer;
@@ -115,13 +115,13 @@ const RevokeLink = styled.a`
     text-decoration: underline;
     text-decoration-style: dashed;
     text-decoration-thickness: 1px;
-    color: ${({ theme }: ThemedProps) => theme.error.solidBgHover};
+    color: ${({ theme }: ThemedProps) => theme.error.accent10};
   }
 `;
 
 const InfoLink = styled(Link)`
   ${({ theme }: ThemedProps) => css`
-    color: ${ theme.info.textLow };
+    color: ${ theme.info.accent11 };
   `};
 
   cursor: pointer;
@@ -132,13 +132,13 @@ const InfoLink = styled(Link)`
     text-decoration: underline;
     text-decoration-style: dashed;
     text-decoration-thickness: 1px;
-    color: ${({ theme }: ThemedProps) => theme.info.solidBgHover};
+    color: ${({ theme }: ThemedProps) => theme.info.accent10};
   }
 `;
 
 const Wrapper = styled(VerticalContainer)`
   ${ ({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.componentBgActive };
+    background-color: ${ theme.greyscale.accent5 };
   `}
 
   border-radius: 0.5rem;
@@ -204,7 +204,7 @@ const JiraIntegrationCard = () => {
         variation={buttonVariation as 'info' | 'warning' | 'error'}
         textSize='small'
         width='quarter'
-        isDisabled={isLoading}
+        disabled={isLoading}
       >
         {buttonChildren}
       </Button>

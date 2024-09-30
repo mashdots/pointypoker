@@ -24,10 +24,10 @@ type CardProps = {
 const Icon = styled(LogoSvg)`
   ${({ theme }: ThemedProps) => css`
     > path {
-      fill: ${theme.primary.textLow};
+      fill: ${theme.primary.accent11};
     }
 
-    filter: drop-shadow(0 0.125rem 0.125rem ${theme.primary.bg});
+    filter: drop-shadow(0 0.125rem 0.125rem ${theme.primary.accent1});
   `}
 
   width: 5rem;
@@ -42,8 +42,8 @@ const ArrowIcon = styled(ArrowSvg)`
 
 const Card = styled.div<CardProps>`
   ${({ scroll, theme }: CardProps) => css`
-    background-color: ${theme.primary.componentBg};
-    border-color: ${theme.primary.border};
+    background-color: ${theme.primary.accent3};
+    border-color: ${theme.primary.accent6};
     overflow: ${scroll ? 'auto' : 'hidden'};
   `};
 
@@ -54,7 +54,7 @@ const Card = styled.div<CardProps>`
   ${({ overrideHeight }: CardProps) => overrideHeight && css`
     height: ${overrideHeight}rem !important;
   `}
-  
+
   border-width: 1px;
   border-style: solid;
   display: flex;
@@ -62,7 +62,6 @@ const Card = styled.div<CardProps>`
   justify-content: flex-start;
   align-items: center;
   border-radius: 1rem;
-  padding: 1rem;
   width: 90%;
   height: 30rem;
   transition: all 300ms ease-out;
@@ -75,6 +74,7 @@ const Wrapper = styled.div`
   align-items: center;
   width: 80%;
   height: 100%;
+  padding: 1rem;
 
   > form {
     width: 100%;
@@ -114,21 +114,13 @@ const FormWrapper = styled.div`
   > p {
     font-weight: 100;
     margin-bottom: 0;
-    margin-left: 1rem;
   }
-`;
-
-const ButtonWrapper = styled.div<{ shouldShow?: boolean }>`
-  ${({ shouldShow = true }) => css`
-    max-width: ${shouldShow ? 26 : 0}rem;
-  `};
-
-  overflow: hidden;
-  transition: max-width 300ms ease-out;
 `;
 
 const Form = styled.form`
   display: flex;
+  align-items: center;
+  padding: 1rem 0;
 `;
 
 const UserSetup = () => {
@@ -161,10 +153,19 @@ const UserSetup = () => {
               onChange={({ target }) => setName(target.value)}
               placeHolder='your name'
               value={name}
+              collapse
             />
-            <ButtonWrapper >
-              <Button width={4} variation='info' textSize='small' type='submit' style={{ padding: '0.75rem 0' }} ><ArrowIcon /></Button>
-            </ButtonWrapper>
+            <Button
+              style={{ margin: '0 0 0 0.75rem' }}
+              textSize='small'
+              type='submit'
+              variation='info'
+              width={3}
+              round
+              refresh
+            >
+              <ArrowIcon />
+            </Button>
           </Form>
         </FormWrapper>
       </Wrapper>

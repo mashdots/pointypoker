@@ -39,16 +39,15 @@ const InputWrapper = styled.div<{ noPadding: boolean }>`
 
 const StyledInput = styled.input<InputProps>`
   ${({ align, size, theme }: InputProps & ThemedProps) => css`
-    background-color: ${ theme.primary.bgAlt };
-    border-color: ${ theme.primary.border};
-    color: ${ theme.primary.textLow };
+    background-color: ${ theme.primary.accent2 };
+    border-color: ${ theme.primary.accent6};
+    color: ${ theme.primary.accent11 };
     text-align: ${align};
     font-size: ${size}rem;
-    box-shadow: inset 0 0 0.5rem ${ theme.primary.bg };
+    box-shadow: inset 0 0 0.5rem ${ theme.primary.accent1 };
   `}
 
   padding: 0.5rem 1rem;
-  margin-bottom: 2px;
   width: 100%;
 
   /* These prevent the awful highlight around the text input */
@@ -56,20 +55,20 @@ const StyledInput = styled.input<InputProps>`
   outline-style: solid;
   border-width: 1px;
   border-style: solid;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
 
   transition: all 200ms;
 
   :hover {
     ${({ theme }: ThemedProps) => css`
-      border-color: ${theme.primary.borderElementHover };
+      border-color: ${theme.primary.accent8 };
     `}
   }
   
   :focus {
     ${({ theme }: ThemedProps) => css`
-      color: ${theme.primary.textHigh };
-      border-color: ${theme.primary.borderElement };
+      color: ${theme.primary.accent12 };
+      border-color: ${theme.primary.accent7 };
     `}
   }
 `;

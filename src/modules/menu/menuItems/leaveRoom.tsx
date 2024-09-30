@@ -16,10 +16,10 @@ const Icon = styled(DoorIcon)<ThemedProps>`
 
   ${ ({ theme }: ThemedProps) => css`
     > line, path {
-      stroke: ${ theme.error.textLow };
+      stroke: ${ theme.error.accent11 };
     }
     > circle {
-      fill: ${ theme.error.textLow };
+      fill: ${ theme.error.accent11 };
     }
   `}
 `;

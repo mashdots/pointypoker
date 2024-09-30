@@ -33,9 +33,9 @@ const Container = styled.div<ContainerProps>`
   transition: opacity 400ms, transform 400ms, filter 400ms;
 
   ${({ isVisible, right, top, theme }: ContainerProps) => css`
-    background-color: ${theme.greyscale.componentBg};
-    border-color: ${theme.primary.border};
-    color: ${theme.primary.textHigh};
+    background-color: ${theme.greyscale.accent3};
+    border-color: ${theme.primary.accent6};
+    color: ${theme.primary.accent12};
     opacity: ${isVisible ? 1 : 0};
     right: calc(${right}px + 1rem);
     top: calc(${top}px + 1rem);

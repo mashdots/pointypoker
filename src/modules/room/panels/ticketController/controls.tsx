@@ -70,7 +70,7 @@ const MoreIcon = styled(MoreSvg)<ThemedProps>`
   width: 2rem;
 
   > circle {
-    stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.greyscale.accent11 };
   }
 `;
 
@@ -79,7 +79,7 @@ const SuccessIcon = styled(CircleCheckSvg)<ThemedProps>`
   width: 2rem;
 
   > polyline, line, path, circle {
-    stroke: ${ ({ theme }: ThemedProps) => theme.success.textLow };
+    stroke: ${ ({ theme }: ThemedProps) => theme.success.accent11 };
   }
 `;
 
@@ -91,11 +91,11 @@ const SkipIcon = styled(SkipSvg)`
 
   ${({ theme }: ThemedProps) => css`
     > polyline, path {
-      stroke: ${theme.error.textLow};
+      stroke: ${theme.error.accent11};
     }
 
     > circle {
-      stroke: ${theme.greyscale.textLow};
+      stroke: ${theme.greyscale.accent11};
     }
   `};
 `;
@@ -108,7 +108,7 @@ const NextIcon = styled(ArrowSvg)`
 
   ${({ theme }: ThemedProps) => css`
     > polyline, line {
-      stroke: ${ theme.success.textLow };
+      stroke: ${ theme.success.accent11 };
     }
   `};
 `;
@@ -121,10 +121,10 @@ const PointIcon = styled(PointSvg)`
 
   ${({ theme }: ThemedProps) => css`
     > circle {
-      stroke: ${ theme.info.textLow };
+      stroke: ${ theme.info.accent11 };
     }
     > polyline, path, line {
-      stroke: ${ theme.warning.textLow };
+      stroke: ${ theme.warning.accent11 };
     }
   `};
 `;
@@ -136,11 +136,11 @@ const PointNextIcon = styled(ArrowEnhanceSvg)`
 
   ${({ theme }: ThemedProps) => css`
     > polyline, line {
-      stroke: ${ theme.success.textLow };
+      stroke: ${ theme.success.accent11 };
     }
     
     > polyline:last-child {
-      stroke: ${ theme.info.textLow };
+      stroke: ${ theme.info.accent11 };
     }
   `};
 `;
@@ -151,7 +151,7 @@ const NewIcon = styled(PlusSvg)`
   
   ${({ theme }: ThemedProps) => css`
     > line {
-      stroke: ${ theme.warning.textLow };
+      stroke: ${ theme.warning.accent11 };
     }
   `};
 `;
@@ -162,11 +162,11 @@ const PointNewIcon = styled(PlusEnahnceSvg)`
   
   ${({ theme }: ThemedProps) => css`
     > line {
-      stroke: ${ theme.warning.textLow };
+      stroke: ${ theme.warning.accent11 };
     }
 
     > polyline {
-      stroke: ${ theme.info.textLow };
+      stroke: ${ theme.info.accent11 };
     }
   `};
 `;
@@ -177,7 +177,7 @@ const ReportIcon = styled(ReportSvg)`
   
   ${({ theme }: ThemedProps) => css`
     > path {
-      stroke: ${ theme.error.textLow };
+      stroke: ${ theme.error.accent11 };
     }
   `};
 `;
@@ -193,13 +193,13 @@ const ActionButton = styled.button<ActionButtonProps>`
     background-color: transparent;
 
     :hover {
-      background-color: ${ disabled ? 'transparent' : theme.greyscale.componentBgHover };
+      background-color: ${ disabled ? 'transparent' : theme.greyscale.accent4 };
     }
 
     > svg {
       > polyline, line, path, circle, polyline:last-child {
         ${ disabled && css`
-          stroke: ${ theme.greyscale.textLow };;
+          stroke: ${ theme.greyscale.accent11 };;
         `}
       }
     }

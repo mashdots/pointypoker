@@ -38,8 +38,8 @@ const Wrapper = styled.div<MobileProps>`
 
 const CategoryList = styled.ul<MobileProps>`
   ${({ isNarrow, theme }: MobileProps & ThemedProps) => css`
-    background-color: ${theme.primary.componentBg};
-    border: 2px solid ${theme.primary.bgAlt};
+    background-color: ${theme.primary.accent3};
+    border: 2px solid ${theme.primary.accent2};
     flex-direction: ${isNarrow ? 'row' : 'column'};
   `};
 

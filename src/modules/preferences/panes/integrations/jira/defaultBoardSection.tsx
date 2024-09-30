@@ -19,7 +19,7 @@ const CloseIcon = styled(PlusIcon)`
   
   ${({ theme }: ThemedProps) => css`
     > line {
-      stroke: ${theme.primary.textLow};
+      stroke: ${theme.primary.accent11};
     }
   `}
 `;
@@ -31,11 +31,11 @@ const BoardIcon = styled(BoardImage)`
     
   ${ ({ theme }: ThemedProps) => css`
     > line {
-      stroke: ${theme.primary.textHigh};
+      stroke: ${theme.primary.accent12};
     }
 
     > rect {
-      stroke: ${theme.primary.textLow};
+      stroke: ${theme.primary.accent11};
     }
   `}
 `;

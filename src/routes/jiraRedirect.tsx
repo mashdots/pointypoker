@@ -68,7 +68,7 @@ const LoadingIndicator = styled(LoadingIcon)`
 const SuccessIcon = styled(Check)`
   ${({ theme }: ThemedProps) => css`
     > polyline {
-      stroke: ${theme.success.solidBg};
+      stroke: ${theme.success.accent9};
     }
   `}
   height: 4rem;
@@ -80,7 +80,7 @@ const SuccessIcon = styled(Check)`
 const ErrorIcon = styled(Error)`
   ${({ theme }: ThemedProps) => css`
     > line {
-      stroke: ${theme.error.solidBg};
+      stroke: ${theme.error.accent9};
     }
   `}
   height: 4rem;
@@ -92,7 +92,7 @@ const ErrorIcon = styled(Error)`
 
 const Text = styled.p`
   ${({ theme }: ThemedProps) => css`
-    color: ${theme.greyscale.textHigh};
+    color: ${theme.greyscale.accent12};
   `}
 
   font-size: 1.5rem;
@@ -101,7 +101,7 @@ const Text = styled.p`
 
 const UnderText = styled.p`
   ${({ theme }: ThemedProps) => css`
-    color: ${theme.greyscale.textLow};
+    color: ${theme.greyscale.accent11};
   `}
 
   font-size: 1rem;

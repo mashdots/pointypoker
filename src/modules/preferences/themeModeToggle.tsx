@@ -20,7 +20,7 @@ const ToggleWrapper = styled.span`
 const DarkMode = styled(DarkModeIcon)`
   ${({ theme }: ThemedProps) => css`
     > path {
-      fill: ${theme.primary.textHigh};
+      fill: ${theme.primary.accent12};
     }
   `}
   width: 1rem;
@@ -29,7 +29,7 @@ const DarkMode = styled(DarkModeIcon)`
 const LightMode = styled(LightModeIcon)`
   ${({ theme }: ThemedProps) => css`
     > path {
-      fill: ${ theme.primary.bgAlt };
+      fill: ${ theme.primary.accent2 };
     }
   `}
   width: 1rem;
@@ -38,8 +38,8 @@ const LightMode = styled(LightModeIcon)`
 export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) => {
   const { themeMode, toggleThemeMode } = useTheme();
   const colorOverrides = {
-    onBg: 'success.solidBg',
-    offBg: 'info.solidBg',
+    onBg: 'success.accent9',
+    offBg: 'info.accent9',
   };
 
   return (

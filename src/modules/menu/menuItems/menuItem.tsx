@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   transition: background-color 300ms;
 
   &:hover {
-    background-color: ${({ theme }: ThemedProps) => theme.primary.componentBgHover};
+    background-color: ${({ theme }: ThemedProps) => theme.primary.accent4};
   }
 `;
 
