@@ -29,6 +29,7 @@ const Wrapper = styled.div`
   flex: 1;
   padding: 0 1rem;
   position: relative;
+  width: 0;
 `;
 
 const NotTheTextInput = styled.div <{ hasTitle: boolean }>`
@@ -102,7 +103,7 @@ const Title = ({ shouldFocus, value }: Props) => {
       };
 
       handleCreatePredefinedTicket(newTicket);
-
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
       handleCreateTicket(ticketName);
