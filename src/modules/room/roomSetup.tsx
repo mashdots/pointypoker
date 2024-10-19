@@ -10,6 +10,7 @@ import { createRoom, updateRoom, watchRoom } from '@services/firebase';
 import { generateRoomName, usePrevious } from '@utils';
 import useStore from '@utils/store';
 import { Participant, Room as RoomType, RoomUpdateObject } from '@yappy/types';
+import SessionPresenter from '@modules/room/sessionPresenter';
 
 type HeightAdjusted = {
   heightDiff: number;
@@ -20,11 +21,6 @@ type RoomControl = {
 }
 
 const Container = styled.div<HeightAdjusted>`
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   height: ${({ heightDiff }) => `calc(100vh - ${heightDiff || 0}px)`};
   width: 100%;
   overflow: hidden;
@@ -42,6 +38,14 @@ const SetupWrapper = styled.div<RoomControl>`
 
   transition: opacity 250ms ease-out;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h1 {
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
 `;
 
 const RoomWrapper = styled.div<RoomControl>`
@@ -208,13 +212,14 @@ const RoomSetup = () => {
 
   const conditionalComponent = isRoomRendered ? (
     <RoomWrapper isRoomOpen={isRoomOpen}>
-      <RoomPresenter />
+      {/* <RoomPresenter /> */}
+      <SessionPresenter />
     </RoomWrapper>
   ) : (
     <SetupWrapper isRoomOpen={isRoomOpen}>
       <h1>ready to start?</h1>
       <ButtonContainer>
-        <Button variation='info' width='full' onClick={handleCreateRoom}>
+        <Button variation='info' width='full' onClick={handleCreateRoom} refresh>
           start a session
         </Button>
       </ButtonContainer>

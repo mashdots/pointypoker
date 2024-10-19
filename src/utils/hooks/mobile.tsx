@@ -1,10 +1,10 @@
 import { useMediaQuery } from 'react-responsive';
 
-type MobileProviderContext = {
-  isNarrow: boolean,
-};
+export type NarrowProps = {
+  isNarrow: boolean;
+}
 
-const useMobile = (): MobileProviderContext => {
+const useMobile = (): NarrowProps => {
   const isNarrow = useMediaQuery({ maxWidth: 812 });
 
   return {

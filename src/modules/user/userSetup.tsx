@@ -1,24 +1,14 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { useAuth } from './useAuth';
 import LogoSvg from '@assets/pointy-poker.svg?react';
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
-import { Button, TextInput } from '@components/common';
+import LinkSvg from '@assets/icons/link-out.svg?react';
+import { Button, Card, TextInput } from '@components/common';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import Logo from '@components/header/logo';
 import { useMobile } from '@utils/hooks/mobile';
-
-
-type NarrowProps = {
-  isNarrow?: boolean;
-}
-
-type CardProps = {
-  overrideWidth?: number,
-  overrideHeight?: number,
-  scroll?: boolean,
-} & NarrowProps & ThemedProps;
 
 
 const Icon = styled(LogoSvg)`
@@ -35,36 +25,38 @@ const Icon = styled(LogoSvg)`
   margin-bottom: 1rem;
 `;
 
-const ArrowIcon = styled(ArrowSvg)`
+const ArrowIcon = styled(ArrowSvg)<{ disabled: boolean }>`
+  ${({ theme, disabled }: ThemedProps & { disabled: boolean }) => css`
+    > line, polyline {
+      stroke: ${disabled ? theme.greyscale.accent11 : theme.primary.accent12};
+    }
+  `}
+
   height: 1.5rem;
   width: 1.5rem;
 `;
 
-const Card = styled.div<CardProps>`
-  ${({ scroll, theme }: CardProps) => css`
-    background-color: ${theme.primary.accent3};
-    border-color: ${theme.primary.accent6};
-    overflow: ${scroll ? 'auto' : 'hidden'};
+const LinkIcon = styled(LinkSvg)`
+  height: 0.75rem;
+  width: 0.75rem;
+  margin-left: 0.25rem;
+`;
+
+const InfoLink = styled(Link)`
+  ${ ({ theme }: ThemedProps) => css`
+    color: ${ theme.info.accent11 };
   `};
 
-  ${ ({ overrideWidth, isNarrow }: CardProps) => !isNarrow && overrideWidth && css`
-    width: ${overrideWidth}rem !important;
-  `}
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 100;
 
-  ${({ overrideHeight }: CardProps) => overrideHeight && css`
-    height: ${overrideHeight}rem !important;
-  `}
-
-  border-width: 1px;
-  border-style: solid;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  border-radius: 1rem;
-  width: 90%;
-  height: 30rem;
-  transition: all 300ms ease-out;
+  &:hover {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    color: ${ ({ theme }: ThemedProps) => theme.info.accent10 };
+  }
 `;
 
 const Wrapper = styled.div`
@@ -89,15 +81,8 @@ const HeaderWrapper = styled.div`
   margin: 2rem 0;
 `;
 
-const Header = styled.h2<NarrowProps>`
-  ${({ isNarrow }: NarrowProps) => css`
-    flex-direction: ${isNarrow ? 'column' : 'row'};
-  `}
-  
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  display: flex;
+const Header = styled.h2`
+  font-weight: 300;
 `;
 
 const FormWrapper = styled.div`
@@ -112,7 +97,7 @@ const FormWrapper = styled.div`
   }
 
   > p {
-    font-weight: 100;
+    font-weight: 300;
     margin-bottom: 0;
   }
 `;
@@ -137,15 +122,14 @@ const UserSetup = () => {
   };
 
   return (
-    <Card isNarrow={isNarrow} overrideHeight={24} overrideWidth={40}>
+    <Card isNarrow={isNarrow} overrideWidth='70%'>
       <Wrapper>
         <HeaderWrapper>
           <Icon />
-          <Header isNarrow={isNarrow}>welcome to&nbsp;<Logo /></Header>
+          <Header>welcome to pointy poker</Header>
         </HeaderWrapper>
         <FormWrapper>
           <p>what do we call you?</p>
-          {/* <Notice>this is stored locally so you&apos;re not asked every time, and in the cloud to sync with room data</Notice> */}
           <Form onSubmit={handleSubmit} autoComplete='off' role="user name">
             <TextInput
               alignment='left'
@@ -156,18 +140,28 @@ const UserSetup = () => {
               collapse
             />
             <Button
+              disabled={!name}
+              refresh
+              round
               style={{ margin: '0 0 0 0.75rem' }}
               textSize='small'
               type='submit'
               variation='info'
-              width={3}
-              round
-              refresh
             >
-              <ArrowIcon />
+              <ArrowIcon disabled={!name} />
             </Button>
           </Form>
         </FormWrapper>
+        <p>
+          <InfoLink
+            to='/privacy'
+            aria-label='Privacy policy'
+            target='_blank'
+          >
+            privacy
+            <LinkIcon />
+          </InfoLink>
+        </p>
       </Wrapper>
     </Card>
   );

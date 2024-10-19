@@ -11,7 +11,7 @@ const GlobalStyles = createGlobalStyle<ThemedProps>`
 
   body {
     ${({ theme }: ThemedProps) => css`
-      background-color: ${ theme.greyscale.accent1 };
+      background-color: ${ theme.greyscale.accent2 };
       color: ${ theme.primary.accent11 };
     `}
 

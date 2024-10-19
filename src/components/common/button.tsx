@@ -1,38 +1,41 @@
-import React, { HTMLAttributes } from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Theme, ThemedProps } from '@utils/styles/colors/colorSystem';
 import { getWidth } from '@utils/styles';
 
 type Props = {
-  children: any;
-  isDisabled?: boolean;
-  onClick?: (arg?: any) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   width?: 'quarter' | 'third' | 'half' | 'full' | number;
   textSize?: 'small' | 'medium' | 'large';
-  variation?: 'primary' | 'success' | 'warning' | 'error' | 'info';
+  variation?: keyof Theme;
   noMargin?: boolean;
+  round?: boolean;
+  refresh?: boolean; // Temporary to use new design
   buttonRef?: React.RefObject<HTMLButtonElement>;
-} & HTMLAttributes<HTMLButtonElement>;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = ThemedProps & {
-  configuredWidth: string;
-  isDisabled?: boolean;
+  configuredWidth?: string;
   textSize: number;
-  variation: 'primary' | 'success' | 'warning' | 'error' | 'info';
+  variation: keyof Theme;
   noMargin?: boolean;
-}
+  round?: boolean;
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
 const StyledButton = styled.button<WrapperProps>`
-  ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }: WrapperProps) => css`
-    background-color: ${theme[isDisabled ? 'greyscale' : variation].componentBg};
-    border-bottom-color: ${theme[isDisabled ? 'greyscale' : variation].borderElement} !important;
-    border-bottom-width: ${isDisabled ? 0 : 2}px !important;
-    color: ${theme[ isDisabled ? 'greyscale' : variation ].textLow };
-    cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
+  ${({ disabled, noMargin, round, textSize, theme, variation }: WrapperProps) => css`
+    background-color: ${theme[disabled ? 'greyscale' : variation].accent3};
+    border-bottom-color: ${theme[disabled ? 'greyscale' : variation].accent7} !important;
+    border-bottom-width: ${disabled ? 0 : 2}px !important;
+    color: ${theme[ disabled ? 'greyscale' : variation ].accent11 };
+    cursor: ${disabled ? 'not-allowed' : 'pointer' };
     font-size: ${textSize}rem;
     margin-top: ${noMargin ? 0 : 1}rem;
+    border-radius: ${round ? 500 : 1}rem;
+  `}
+
+  ${({ configuredWidth }: WrapperProps) => configuredWidth && css`
     width: ${configuredWidth};
   `}
 
@@ -45,40 +48,83 @@ const StyledButton = styled.button<WrapperProps>`
 
   border: none;
   border-bottom-style: solid;
-  border-radius: 1rem;
 
   transition: all 250ms ease-out;
 
   :hover {
-    ${ ({ isDisabled, noMargin, theme, variation }: WrapperProps) => !isDisabled && css`
-      color: ${theme[variation].textHigh};
-      background-color: ${ theme[variation].componentBgHover };
-      border-bottom-color: ${theme[ isDisabled ? 'greyscale' : variation ].borderElementHover} !important;
+    ${ ({ disabled, noMargin, theme, variation }: WrapperProps) => !disabled && css`
+      color: ${theme[variation].accent12};
+      background-color: ${ theme[variation].accent4 };
+      border-bottom-color: ${theme[ disabled ? 'greyscale' : variation ].accent8} !important;
       border-bottom-width: 4px !important;
       margin-top: calc(${noMargin ? 0 : 1}rem - 2px);
     `}
   }
   
   :active {
-    ${ ({ isDisabled, noMargin, theme, variation }: WrapperProps) => !isDisabled && css`
-      background-color: ${ theme[variation].componentBgActive };
+    ${ ({ disabled, noMargin, theme, variation }: WrapperProps) => !disabled && css`
+      background-color: ${ theme[variation].accent5 };
       border-bottom-width: 1px;
       margin-top: calc(${noMargin ? 0 : 1}rem + 1px);
     `}
   }
 `;
 
+const SkeuButton = styled.button<WrapperProps>`
+  ${({ round, textSize, theme, variation }: WrapperProps) => css`
+    background-color: ${theme[variation].accent7};
+    border-radius: ${round ? 500 : 0.5}rem;
+    border-color: ${theme[variation].accent8} !important;
+    box-shadow: 0 0.125rem 0.25rem ${theme.primary.accent1};
+    font-size: ${textSize}rem;
+    padding: 0.5rem ${round ? 0.5 : 1.75}rem;
+
+
+    ${({ configuredWidth }: WrapperProps) => configuredWidth && css`
+      width: ${ configuredWidth };
+    `}
+
+
+    :disabled {
+      cursor: not-allowed;
+      background-color: ${theme.greyscale.accent8 };
+      border-color: ${ theme.greyscale.accent8} !important;
+      box-shadow: 0 0 0.125rem ${theme.greyscale.accent2};
+    }
+
+    :hover:not(:disabled) {
+      background-color: ${theme[variation].accent8};
+      border-color: ${theme[variation].accent9} !important;
+    }
+  `}
+
+  appearance: button;
+  cursor: pointer;
+  display: flex;
+  border-width: 1px;
+  border-style: solid;
+
+
+  transition: all 250ms ease-out;
+`;
+
 const Button = ({
   children,
-  isDisabled,
+  disabled,
   onClick,
   width,
   textSize = 'medium',
   variation = 'primary',
   buttonRef,
+  round = false,
+  refresh = false,
   ...rest
 }: Props) => {
-  const widthValue = getWidth(width);
+  let widthValue;
+
+  if (width) {
+    widthValue = getWidth(width);
+  }
   let buttonFontSize: number;
 
   switch (textSize) {
@@ -93,19 +139,36 @@ const Button = ({
     buttonFontSize = 2;
   }
 
+  if (!refresh) {
+    return (
+      <StyledButton
+        ref={buttonRef}
+        configuredWidth={widthValue}
+        disabled={disabled}
+        onClick={onClick}
+        textSize={buttonFontSize}
+        variation={variation}
+        round={round}
+        {...rest}
+      >
+        {children}
+      </StyledButton>
+    );
+  }
+
   return (
-    <StyledButton
-      ref={buttonRef}
-      configuredWidth={widthValue}
-      disabled={isDisabled}
-      isDisabled={isDisabled}
+    <SkeuButton
+      disabled={disabled}
       onClick={onClick}
-      textSize={buttonFontSize}
+      ref={buttonRef}
+      round={round}
       variation={variation}
+      textSize={buttonFontSize}
+      configuredWidth={widthValue}
       {...rest}
     >
       {children}
-    </StyledButton>
+    </SkeuButton>
   );
 };
 

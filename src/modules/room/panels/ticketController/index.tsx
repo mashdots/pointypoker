@@ -10,7 +10,7 @@ import { Ticket } from '@yappy/types';
 import { TicketFromQueue } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import Subtitles from '@modules/room/panels/ticketController/subtitles';
-import { useMobile } from '@utils/hooks/mobile';
+import { NarrowProps, useMobile } from '@utils/hooks/mobile';
 
 type TicketControlFormat = {
   iconSrc?: string;
@@ -33,7 +33,7 @@ const PrimaryContainer = styled.div`
   margin-bottom: 0.25rem;
 `;
 
-const InformationDisplay = styled.div<{ isNarrow: boolean }>`
+const InformationDisplay = styled.div<NarrowProps>`
   ${({ isNarrow }) => css`
     flex-direction: ${isNarrow ? 'column' : 'row'};
   `}

@@ -16,7 +16,7 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
 import { Room } from '@yappy/types';
 import { RoomUpdateObject } from '@yappy/types/room';
-import { useMobile } from '@utils/hooks/mobile';
+import { NarrowProps, useMobile } from '@utils/hooks/mobile';
 import { useJira } from '@modules/integrations';
 import { useTickets } from '@modules/room/hooks';
 
@@ -35,8 +35,7 @@ type Props = {
 
 type QueueControlProps = {
   alignRight: boolean;
-  isNarrow: boolean;
-}
+} & NarrowProps;
 
 const IssuesWrapper = styled.div`
   display: flex;

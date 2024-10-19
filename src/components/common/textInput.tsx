@@ -40,7 +40,7 @@ const InputWrapper = styled.div<{ noPadding: boolean }>`
 const StyledInput = styled.input<InputProps>`
   ${({ align, size, theme }: InputProps & ThemedProps) => css`
     background-color: ${ theme.primary.accent2 };
-    border-color: ${ theme.primary.accent6};
+    border-color: ${ theme.primary.accent7};
     color: ${ theme.primary.accent11 };
     text-align: ${align};
     font-size: ${size}rem;
@@ -68,7 +68,10 @@ const StyledInput = styled.input<InputProps>`
   :focus {
     ${({ theme }: ThemedProps) => css`
       color: ${theme.primary.accent12 };
-      border-color: ${theme.primary.accent7 };
+      border-color: ${theme.greyscale.accent7 };
+      outline-width: 1px;
+      outline-offset: -3px;
+      outline-color: ${theme.primary.accent10 };
     `}
   }
 `;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { getIcon } from '@components/icons';
-import { VARIATIONS } from '@utils/styles';
+import { VARIATIONS } from '@utils/styles/colors/legacyColors';
 
 export type InfoCellProps = {
   icon?: string | JSX.Element;

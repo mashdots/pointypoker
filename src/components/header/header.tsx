@@ -16,6 +16,7 @@ type Props = {
 type SectionProps = {
   align: 'left' | 'right';
   flex: number;
+  shouldShow?: boolean;
 }
 
 type MenuIconProps = {
@@ -26,43 +27,54 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 0.5rem 1rem 1rem;
+  padding: 0.5rem 1rem 0;
 `;
 
 const Section = styled.div<SectionProps>`
-  display: flex;
-  align-items: center;
+  ${({ align, flex, shouldShow }: SectionProps) => css`
+    flex: ${ flex };
 
-  ${({ align, flex }) => css`
-    flex: ${flex};
-
-    justify-content: ${align === 'left' ? 'flex-start' : 'flex-end'};
+    justify-content: ${ align === 'left' ? 'flex-start' : 'flex-end' };
+    opacity: ${ shouldShow ? 1 : 0 };
   `}
+
+  align-items: center;
+  display: flex;
+  transition: all 300ms ease-out;
 `;
 
 const MenuButton = styled(MenuIcon)<MenuIconProps>`
-  ${({ theme, isOpen }: MenuIconProps) => isOpen ? css`
-    > line {
-      stroke: ${theme.primary.accent12};
-    }
+  ${({ theme, isOpen }: MenuIconProps) => isOpen
+    ? css`
+      > line {
+        stroke: ${theme.primary.accent11};
+      }
 
-    > line:nth-child(3) {
-      transform: rotate(-45deg) translateY(124px) translateX(-120px);
-    }
+      > line:nth-child(3) {
+        transform: rotate(-45deg) translateY(124px) translateX(-120px);
+      }
 
-    > line:nth-child(2){
-      opacity: 0;
-    }
+      > line:nth-child(2){
+        opacity: 0;
+      }
 
-    > line:nth-child(4) {
-      transform: rotate(45deg) translateY(-200px) translateX(64px);
-    }
-  ` : css`
-    > line {
-      stroke: ${theme.primary.accent11};
-    }
+      > line:nth-child(4) {
+        transform: rotate(45deg) translateY(-200px) translateX(64px);
+      }
+    `
+    : css`
+      > line {
+        stroke: ${theme.primary.accent12};
+      }
     `}
     
+  ${({ theme }: MenuIconProps) => css`
+      :hover {
+        > line {
+          stroke: ${theme.primary.accent11};
+        }
+      }
+  `}
   cursor: pointer;
   margin-left: 1rem;
   overflow: visible;
@@ -86,11 +98,11 @@ const Header = ({ headerRef, hideMenu }: Props) => {
 
   return (
     <Wrapper ref={headerRef}>
-      <Section flex={6} align='left' style={{ opacity: hasUser ? 1 : 0, transition: 'all 300ms ease-out' }}>
+      <Section flex={6} align='left' shouldShow={hasUser}>
         <Logo />
         <RoomControl />
       </Section>
-      <Section flex={1} align='right'>
+      <Section flex={1} align='right' shouldShow={hasUser}>
         <UserControl />
         {!hideMenu && <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isOpen={isMenuOpen} />}
       </Section>

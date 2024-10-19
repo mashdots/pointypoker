@@ -1,4 +1,3 @@
-import { VARIATIONS } from './colors/legacyColors';
 import GlobalStyles from './global';
 
 /**
@@ -27,6 +26,5 @@ function getWidth(value?: string | number): string {
 
 export {
   GlobalStyles,
-  VARIATIONS,
   getWidth,
 };

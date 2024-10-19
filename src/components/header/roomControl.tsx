@@ -18,7 +18,7 @@ const Wrapper = styled.div<{ appear: boolean }>`
 `;
 
 const Separator = styled.div<ThemedProps & { appear: boolean }>`
-  width: 0.125rem;
+  width: 1px;
   margin-right: 0.5rem;
   transition: all 300ms ease-out;
 

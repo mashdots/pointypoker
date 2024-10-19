@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { useMobile } from '@utils/hooks/mobile';
+import { NarrowProps, useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
@@ -13,8 +13,7 @@ type Props = {
 
 type WrapperProps = {
   isActive: boolean;
-  isNarrow: boolean;
-} & ThemedProps;
+} & ThemedProps & NarrowProps;
 
 export type GenericPrefCardProps = Pick<Props, 'onClick' | 'isActive'>;
 

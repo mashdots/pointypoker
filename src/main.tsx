@@ -21,19 +21,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Switcher />,
+        element: <Switcher />, // TODO: Redesign
       },
       {
         path: '/:roomName',
-        element: <Switcher />,
+        element: <Switcher />, // TODO: Redesign
       },
       {
         path: JIRA_REDIRECT_PATH,
-        element: <JiraRedirect />,
+        element: <JiraRedirect />, // TODO: Redesign
       },
       {
         path: '/privacy',
-        element: <Privacy />,
+        element: <Privacy />, // TODO: Redesign
       },
     ],
   },

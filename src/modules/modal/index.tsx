@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components';
 import PlusIcon from '@assets/icons/plus.svg?react';
 import { PreferencesModal } from '@modules/preferences';
 import { QueueModal, ReportPIIModal } from '@modules/room';
-import { useMobile } from '@utils/hooks/mobile';
+import { NarrowProps, useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
 
@@ -22,8 +22,7 @@ export enum MODAL_TYPES {
 
 type VisibleProps = {
   isVisible: boolean;
-  isNarrow: boolean;
-} & ThemedProps;
+} & ThemedProps & NarrowProps;
 
 type ModalContentProps = {
   title: string;
