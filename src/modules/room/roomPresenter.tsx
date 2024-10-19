@@ -37,7 +37,6 @@ const RoomDataContainer = styled.div<RoomDataContainerProps>`
   padding: 1rem;
   grid-row-gap: 1.25rem;
   grid-column-gap: 1.25rem;
-  overflow: scroll;
 `;
 
 const getGridConfig = (showNarrow: boolean) => {
