@@ -1,61 +1,73 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Card } from '@components/common';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import CurrentTicket from './modules/currentTicket';
+import TicketList from './modules/ticketList';
+import VoteComponents from './modules/votes';
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-`;
+import { HorizontalPaddingProps, useMobile } from '@utils/hooks/mobile';
 
-const SidePanelWrapper = styled.div`
+const Wrapper = styled.div<HorizontalPaddingProps>`
+  ${({ noHorizontalPadding }: HorizontalPaddingProps) => css`
+    padding: 2rem ${ !noHorizontalPadding ? 0 : 2 }rem;
+  `}
+
   display: flex;
   flex-direction: column;
-  flex: 1;
-  height: calc(100% - 8rem);
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  transition: all 300ms ease-out;
 `;
 
-const SidePanel = styled.div`
-  ${({ theme }: ThemedProps ) => css`
-    border-color: ${ theme.primary.accent7 };
-    border-top-width: 1px;
-    border-left-width: 1px;
-    border-bottom-width: 1px;
-  `};
-  
-  border-style: solid;
-  border-top-left-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  border-right: none;
-  padding: 1rem;
+const Flex = styled.div<{ flex?: number }>`
+  ${ ({ flex = 1 }) => css`
+    flex: ${ flex };
+  `}
+
   display: flex;
+`;
+
+const FullHeightFlex = styled(Flex)`
   height: 100%;
 `;
 
-const CardWrapper = styled.div`
-  display: flex;
-  flex: 3;
-  height: calc(100% - 2rem);
+const ContentRow = styled(Flex)`
+  width: 100%;
+  justify-content: center;
+  padding: 0 0.5rem;
 `;
 
+const CurrentTicketContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding-bottom: 3rem;
+`;
+
+// youarecutemydude
+
 const SessionPresenter = () => {
+  const { isBelowMaxWidth } = useMobile();
+
   return (
-    <Wrapper>
-      <SidePanelWrapper>
-        <SidePanel>
-          <h3>SidePanel</h3>
-        </SidePanel>
-      </SidePanelWrapper>
-      <CardWrapper>
-        <Card colorTheme='greyscale' isNarrow={false} overrideHeight='100%' overrideWidth='100%'>
-          <h1>SessionPresenter</h1>
-        </Card>
-      </CardWrapper>
+    <Wrapper id='sessionpresenter' noHorizontalPadding={isBelowMaxWidth}>
+      <ContentRow id='current' flex={2} key='current-ticket'>
+        <CurrentTicketContainer>
+          <FullHeightFlex flex={2}>
+            <CurrentTicket />
+          </FullHeightFlex>
+          <FullHeightFlex>
+            <VoteComponents />
+          </FullHeightFlex>
+        </CurrentTicketContainer>
+      </ContentRow>
+      <ContentRow flex={3} key='all-other-tickets'>
+        <TicketList />
+      </ContentRow>
     </Wrapper>
   );
 };
