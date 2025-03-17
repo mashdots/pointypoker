@@ -1,12 +1,10 @@
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
 
-import { PreferencesType } from '@modules/preferences/hooks';
 import { MODAL_TYPES } from '@modules/modal';
 import { Room } from '@yappy/types';
+import { preferencesSlice, PreferencesSliceType } from '@utils/store/slices';
 
-type Store = {
-  preferences: PreferencesType;
-  setPreferences: (key: keyof PreferencesType, arg: PreferencesType[keyof PreferencesType] ) => void;
+type GeneralSlice = {
   room: Room | null;
   setRoom: (arg: Room | null) => void;
   clearRoom: () => void;
@@ -20,16 +18,13 @@ type Store = {
   setPrefsInitialized: () => void;
 }
 
-const useStore = create<Store>((set) => ({
-  preferences: {},
-  setPreferences: (key, newPreferences) => set((state) => (
-    {
-      preferences: {
-        ...state.preferences,
-        [ key ]: newPreferences,
-      },
-    }
-  )),
+type Store = GeneralSlice & PreferencesSliceType;
+
+/**
+ * This slice contains state and actions that have yet to be reorganized into
+ * their own relevant slices.
+ */
+const generalSlice: StateCreator<GeneralSlice> = (set) => ({
   room: null,
   setRoom: (newRoom) => set(() => ({ room: newRoom })),
   clearRoom: () => set(() => ({ room: null })),
@@ -41,6 +36,11 @@ const useStore = create<Store>((set) => ({
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
   arePrefsInitialized: false,
   setPrefsInitialized: () => set(() => ({ arePrefsInitialized: true })),
+});
+
+const useStore = create<Store>((...actions) => ({
+  ...generalSlice(...actions),
+  ...preferencesSlice(...actions),
 }));
 
 export default useStore;

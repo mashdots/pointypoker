@@ -19,8 +19,9 @@ function getWidth(value?: string | number): string {
   case 'half':
     return '50%';
   case 'full':
-  default:
     return '100%';
+  default:
+    return 'fit-content';
   }
 }
 
