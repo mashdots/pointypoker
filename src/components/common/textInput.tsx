@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -11,7 +11,7 @@ type Props = {
   inputRef?: React.RefObject<HTMLInputElement>;
   isLoading?: boolean;
   onBlur?: () => void;
-  onChange: (arg: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (arg: string) => void;
   onFocus?: () => void;
   placeHolder?: string;
   value: string;
@@ -119,6 +119,10 @@ const TextInput = ({
     break;
   }
 
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
   return (
     <InputWrapper noPadding={collapse}>
       {icon}
@@ -131,7 +135,7 @@ const TextInput = ({
         align={inputAlign}
         placeholder={placeHolder}
         defaultValue={value ?? ''}
-        onChange={onChange}
+        onChange={handleOnChange}
         onFocus={() => {
           onFocus?.();
         }}

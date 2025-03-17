@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Theme, ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -10,15 +10,30 @@ type CardProps = {
   overrideHeight?: string,
   scroll?: boolean,
   colorTheme?: keyof Theme,
-} & NarrowProps & React.HTMLAttributes<HTMLDivElement>;
+  direction?: 'row' | 'column',
+  align?: 'center' | 'left' | 'right' | 'flex-start' | 'flex-end',
+  vAlign?: 'center' | 'left' | 'right' | 'flex-start' | 'flex-end',
+} & Partial<NarrowProps> & React.HTMLAttributes<HTMLDivElement>;
 
-const CardWrapper = styled.div<CardProps>`
+const Wrapper = styled.div<CardProps>`
   ${ ({ scroll, theme, colorTheme = 'primary' }: CardProps & ThemedProps) => css`
     background-color: ${ theme[colorTheme].accent4 };
     border-color: ${ theme[colorTheme].accent7 };
     overflow: ${ scroll ? 'auto' : 'hidden' };
     box-shadow: 0 0.25rem 0.5rem ${ theme[colorTheme].accent1 };
   `};
+
+  ${({ align, direction, vAlign }: CardProps) => css`
+    flex-direction: ${ direction || 'column' };
+    
+    ${direction === 'row' ? css`
+      justify-content: ${ align };
+      align-items: ${ vAlign };
+    ` : css`
+      justify-content: ${ vAlign };
+      align-items: ${ align };
+    `}
+  `}
 
   ${ ({ overrideWidth, isNarrow }: CardProps) => !isNarrow && overrideWidth && css`
     width: ${ overrideWidth } !important;
@@ -31,26 +46,57 @@ const CardWrapper = styled.div<CardProps>`
   border-width: 1px;
   border-style: solid;
   display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
   border-radius: 1rem;
   width: 90%;
   transition: all 300ms ease-out;
 `;
 
-const Card = ({ children, overrideWidth, overrideHeight, scroll, isNarrow, colorTheme }: CardProps) => {
+const convertAlignmentToFlex = (alignment: CardProps['align']) => {
+  switch (alignment) {
+  case 'center':
+    return 'center';
+  case 'right':
+    return 'flex-end';
+  default:
+    return 'flex-start';
+  }
+};
+
+const Card = ({
+  children,
+  colorTheme,
+  direction,
+  isNarrow,
+  overrideHeight,
+  overrideWidth,
+  scroll,
+  align,
+  vAlign,
+  ...rest
+}: CardProps) => {
+  const finalAlign = convertAlignmentToFlex(align);
+  const finalVAlign = convertAlignmentToFlex(vAlign);
+  const ref = useRef<HTMLDivElement>(null);
+
   return (
-    <CardWrapper
+    <Wrapper
+      ref={ref}
       overrideWidth={overrideWidth}
       overrideHeight={overrideHeight}
       scroll={scroll}
       isNarrow={isNarrow}
       colorTheme={colorTheme}
+      direction={direction}
+      align={finalAlign}
+      vAlign={finalVAlign}
+      className='card'
+      {...rest}
     >
       {children}
-    </CardWrapper>
+    </Wrapper>
   );
 };
 
 export default Card;
+// ohheyiloveyousomuchmydude

@@ -13,6 +13,7 @@ type Props = {
   round?: boolean;
   refresh?: boolean; // Temporary to use new design
   buttonRef?: React.RefObject<HTMLButtonElement>;
+  loading?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 type WrapperProps = ThemedProps & {
@@ -21,9 +22,10 @@ type WrapperProps = ThemedProps & {
   variation: keyof Theme;
   noMargin?: boolean;
   round?: boolean;
+  isLoading?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
-const StyledButton = styled.button<WrapperProps>`
+const StyledButton = styled.button`
   ${({ disabled, noMargin, round, textSize, theme, variation }: WrapperProps) => css`
     background-color: ${theme[disabled ? 'greyscale' : variation].accent3};
     border-bottom-color: ${theme[disabled ? 'greyscale' : variation].accent7} !important;
@@ -70,11 +72,11 @@ const StyledButton = styled.button<WrapperProps>`
   }
 `;
 
-const SkeuButton = styled.button<WrapperProps>`
-  ${({ round, textSize, theme, variation }: WrapperProps) => css`
-    background-color: ${theme[variation].accent7};
+const SkeuButton = styled.button`
+  ${({ round, textSize, theme, variation, isLoading }: WrapperProps) => css`
+    background-color: ${theme[isLoading ? 'greyscale' : variation].accent7};
     border-radius: ${round ? 500 : 0.5}rem;
-    border-color: ${theme[variation].accent8} !important;
+    border-color: ${theme[ isLoading ? 'greyscale' : variation].accent8} !important;
     box-shadow: 0 0.125rem 0.25rem ${theme.primary.accent1};
     font-size: ${textSize}rem;
     padding: 0.5rem ${round ? 0.5 : 1.75}rem;
@@ -87,15 +89,17 @@ const SkeuButton = styled.button<WrapperProps>`
 
     :disabled {
       cursor: not-allowed;
-      background-color: ${theme.greyscale.accent8 };
+      background-color: ${theme.greyscale.accent8} !important;
       border-color: ${ theme.greyscale.accent8} !important;
       box-shadow: 0 0 0.125rem ${theme.greyscale.accent2};
     }
 
     :hover:not(:disabled) {
-      background-color: ${theme[variation].accent8};
+      background-color: ${theme[variation].accent8} !important;
       border-color: ${theme[variation].accent9} !important;
     }
+
+    transition: all 250ms ease-out;
   `}
 
   appearance: button;
@@ -103,9 +107,6 @@ const SkeuButton = styled.button<WrapperProps>`
   display: flex;
   border-width: 1px;
   border-style: solid;
-
-
-  transition: all 250ms ease-out;
 `;
 
 const Button = ({
@@ -118,13 +119,10 @@ const Button = ({
   buttonRef,
   round = false,
   refresh = false,
+  loading = false,
   ...rest
 }: Props) => {
-  let widthValue;
-
-  if (width) {
-    widthValue = getWidth(width);
-  }
+  const widthValue = getWidth(width);
   let buttonFontSize: number;
 
   switch (textSize) {
@@ -158,13 +156,14 @@ const Button = ({
 
   return (
     <SkeuButton
-      disabled={disabled}
+      disabled={disabled || loading}
       onClick={onClick}
       ref={buttonRef}
       round={round}
       variation={variation}
       textSize={buttonFontSize}
       configuredWidth={widthValue}
+      isLoading={loading}
       {...rest}
     >
       {children}
