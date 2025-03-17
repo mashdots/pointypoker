@@ -1,4 +1,4 @@
-import { QueuedJiraTicket } from '@modules/integrations/jira/types';
+import { JiraTicket, QueuedJiraTicket } from '@modules/integrations/jira/types';
 import User from './user';
 import { PointingTypes } from '@modules/room/utils';
 
@@ -28,6 +28,7 @@ type Ticket = {
   createdBy: string;
   id: string;
   name?: string;
+  // Deprecated field. Keeping it for historical data
   pointOptions: PointingTypes;
   shouldShowVotes: boolean;
   votes: {
@@ -51,7 +52,7 @@ type Room = {
     [key: string]: Participant;
   };
   ticketQueue: Array<PossibleQueuedTicket>;
-  currentTicket: Ticket | TicketFromQueue | null;
+  currentTicket: Ticket | TicketFromQueue | JiraTicket | null;
   completedTickets: Array<Ticket | TicketFromQueue>;
   // Deprecated field. Keeping it for historical data
   tickets?: {

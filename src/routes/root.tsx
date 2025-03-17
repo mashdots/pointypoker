@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
-import { Outlet, useOutletContext, useLocation } from 'react-router-dom';
+import styled, { css, ThemeProvider } from 'styled-components';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import '../App.css';
 import Header from '@components/header';
@@ -12,23 +12,27 @@ import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
 
-type ContextType = {
-  refHeight: number;
-};
+type HeightAdjusted = {
+  heightDiff: number;
+}
 
-const Container = styled.div`
+const Container = styled.div<HeightAdjusted>`
+  ${({ heightDiff }) => css`
+    height: calc(100vh - ${ heightDiff + 1 || 0 }px);
+  `}
+
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   max-width: 80rem;
-  height: 100vh;
+  overflow: hidden;
   margin: 0 auto;
 `;
 
 const ChildrenWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   flex: 1;
 `;
 
@@ -44,21 +48,17 @@ const Root = (): JSX.Element => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container>
-        <GlobalStyles/>
-        <Header headerRef={headerRef} hideMenu={!shouldShowMenu} />
+      <GlobalStyles/>
+      <Header headerRef={headerRef} hideMenu={!shouldShowMenu} />
+      <Container heightDiff={headerHeight}>
         <Modal />
         {shouldShowMenu && <Menu topOffset={headerHeight ?? 0} />}
         <ChildrenWrapper>
-          <Outlet context={{ refHeight: headerHeight ?? 0 } satisfies ContextType} />
+          <Outlet />
         </ChildrenWrapper>
       </Container>
     </ThemeProvider>
   );
 };
-
-export function useHeaderHeight() {
-  return useOutletContext<ContextType>();
-}
 
 export default Root;
