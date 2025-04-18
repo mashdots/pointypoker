@@ -6,7 +6,7 @@ import CategoryCard, { GenericPrefCardProps } from '../categoryCard';
 import { SettingsRow } from '../common';
 
 import Icon from '@assets/icons/settings-general.svg?react';
-import ObserverSwitch from '@modules/preferences/panes/general/observerSwitch';
+import ObserverSwitch from './observerSwitch';
 
 const GeneralPreferences = () => {
   return (

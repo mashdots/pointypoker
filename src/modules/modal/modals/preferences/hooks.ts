@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 
 import { JiraAuthData, JiraPreferences, JiraResourceData } from '@modules/integrations/jira/types';
 import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '@utils/styles/colors/colorSystem';
+
 import useStore from '@utils/store';
 import { User } from '@yappy/types';
+import { UiPreferencesType } from '@yappy/types/ui';
 
 export type PreferencesType = {
   [ key: string ]: string
@@ -15,6 +17,7 @@ export type PreferencesType = {
     | JiraAuthData
     | JiraResourceData
     | JiraPreferences
+    | UiPreferencesType
     | undefined
     | null;
   isObserver?: boolean;
@@ -25,6 +28,7 @@ export type PreferencesType = {
   theme?: THEMES;
   themeMode?: THEME_MODES;
   themeModeController?: THEME_MODE_CONTROLLER;
+  uiPreferences?: UiPreferencesType;
   user?: User | null;
 }
 

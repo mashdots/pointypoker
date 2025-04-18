@@ -15,7 +15,7 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Panes = {
   categoryCard: (props: GenericPrefCardProps) => JSX.Element;
-  pane: React.ReactNode;
+  pane: JSX.Element;
 }
 
 const Wrapper = styled.div<NarrowProps>`

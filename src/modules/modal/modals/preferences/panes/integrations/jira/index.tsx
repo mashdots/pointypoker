@@ -11,10 +11,10 @@ import Copy from '@assets/icons/copy.svg?react';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
-import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
-import { Separator, VerticalContainer } from '@modules/preferences/panes/common';
+import DefaultBoardSection from '@modules/modal/modals/preferences/panes/integrations/jira/defaultBoardSection';
+import { Separator, VerticalContainer } from '@modules/modal/modals/preferences/panes/common';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Theme, ThemedProps } from '@utils/styles/colors/colorSystem';
 import { isDev } from '@utils';
 import { JiraResourceData } from '@modules/integrations/jira/types';
 import { spinAnimation } from '@components/common/animations';
@@ -182,7 +182,7 @@ const JiraIntegrationCard = () => {
     }
 
     let buttonChildren: string | JSX.Element = 'Connect';
-    let buttonVariation = 'info';
+    let buttonVariation: keyof Theme = 'info';
 
     if (isError) {
       buttonChildren =  isConfigured ? 'Reconnect' : 'Retry connection';
@@ -201,7 +201,7 @@ const JiraIntegrationCard = () => {
           addEventListener('storage', eventListenerMethod);
         }}
         noMargin
-        variation={buttonVariation as 'info' | 'warning' | 'error'}
+        variation={buttonVariation}
         textSize='small'
         width='quarter'
         disabled={isLoading}

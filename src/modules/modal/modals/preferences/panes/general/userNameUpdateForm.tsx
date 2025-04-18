@@ -52,7 +52,7 @@ const UserNameUpdateForm = () => {
       <label>
         Name
       </label>
-      <TextInput size='small' id="name-update" value={value ?? ''} onChange={(e) => setValue(e.target.value)} alignment='left' />
+      <TextInput size='small' id="name-update" value={value ?? ''} onChange={setValue} alignment='left' />
     </VerticalContainer>
   );
 };

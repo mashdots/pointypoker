@@ -3,12 +3,12 @@ import styled, { css } from 'styled-components';
 
 import PlusIcon from '@assets/icons/plus.svg?react';
 import BoardImage from '@assets/icons/article.svg?react';
-import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
+import OptionPicker from '@modules/modal/modals/preferences/panes/integrations/jira/optionPicker';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useJira } from '@modules/integrations';
 import { JiraBoardPayloadValue } from '@modules/integrations/jira/types';
-import { Control, Description, Label, SelectedOptionWrapper, SetupPrefWrapper } from '@modules/preferences/panes/integrations/jira/commonComponents';
+import { Control, Description, Label, SelectedOptionWrapper, SetupPrefWrapper } from '@modules/modal/modals/preferences/panes/integrations/jira/commonComponents';
 
 const CloseIcon = styled(PlusIcon)`
   cursor: pointer;

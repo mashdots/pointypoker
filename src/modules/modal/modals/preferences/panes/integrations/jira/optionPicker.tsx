@@ -164,7 +164,7 @@ const OptionPicker = ({
         alignment='left'
         placeHolder={placeholder}
         value={filter}
-        onChange={(e) => setFilter(e.target.value)}
+        onChange={setFilter}
         size='small'
         collapse
       />
