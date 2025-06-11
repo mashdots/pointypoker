@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 
-import { PreferencesType } from '@modules/preferences/hooks';
+import { PreferencesType } from '@modules/modal/modals/preferences/hooks';
 
 export interface PreferencesSliceType {
   preferences: PreferencesType;

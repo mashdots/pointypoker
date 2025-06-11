@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import RoomPresenter from './roomPresenter';
 import Button from '@components/common/button';
-import { useHeaderHeight } from '@routes/root';
+// import { useHeaderHeight } from '@routes/root';
 import { createRoom, updateRoom, watchRoom } from '@services/firebase';
 import { generateRoomName, usePrevious } from '@utils';
 import useStore from '@utils/store';
@@ -63,7 +63,7 @@ const RoomWrapper = styled.div<RoomControl>`
 let timeout: number | undefined;
 
 const RoomSetup = () => {
-  const { refHeight } = useHeaderHeight();
+  // const { refHeight } = useHeaderHeight();
   const { isObserver, roomData, setRoom, user } = useStore(
     ({ preferences, room, setRoom }) => ({
       isObserver: preferences?.isObserver ?? false,
@@ -227,7 +227,7 @@ const RoomSetup = () => {
   );
 
   return (
-    <Container heightDiff={refHeight}>
+    <Container>
       {conditionalComponent}
     </Container>
   );

@@ -1,0 +1,7 @@
+export enum MODAL_TYPES {
+  FEEDBACK,
+  JIRA,
+  PII,
+  PREFERENCES,
+  TICKET,
+}
