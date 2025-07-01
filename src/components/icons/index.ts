@@ -1,3 +1,2 @@
-import getIcon from './icon';
-
-export { getIcon };
+export { default as SuggestIcon } from './SuggestIcon';
+export { default as AverageIcon } from './AverageIcon';

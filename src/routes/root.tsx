@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Outlet, useOutletContext, useLocation } from 'react-router-dom';
 
 import '../App.css';
-import Header from '@components/header';
+import Header from '@components/Header';
 import Menu from '@modules/menu';
 import { useAuth } from '@modules/user';
 import Modal from '@modules/modal';

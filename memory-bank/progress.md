@@ -9,6 +9,7 @@
 - **User Authentication:** A complete user authentication and session management system.
 - **Voting System:** The core voting mechanism for story pointing.
 - **Jira Integration:** The ability to import stories from Jira.
+- **Architectural Rules:** Established and documented rules for the file system architecture.
 
 ## What's Left to Build
 

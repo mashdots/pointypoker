@@ -12,6 +12,10 @@
 - **Observer Pattern:** Firebase's real-time database listeners are used to update the UI automatically when data changes.
 - **Modular Design:** The codebase is organized into modules by feature (e.g., `room`, `user`, `integrations`) to promote separation of concerns.
 
+## Architectural Rules
+
+For detailed rules on file system structure, component organization, and naming conventions, please refer to the [Architectural Rules](./architectural-rules.md) document.
+
 ## Critical Implementation Paths
 
 - **Room Management:** The `src/modules/room` directory contains the core logic for creating, joining, and managing pointing sessions.

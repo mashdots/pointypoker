@@ -13,11 +13,12 @@ The current focus is on building out the core functionality of the application, 
 - Develop the user authentication system.
 - Build the ticket pointing and voting UI.
 - Integrate with the Jira API to import stories.
+- Established and documented architectural rules for the file system.
+- Refactored the `src/components` directory to align with the new architectural rules.
 
 ## Next Steps
 
-1. Refactor components for better reusability and maintainability.
-2. Centralize type definitions for better type safety across the application.
+1. Centralize type definitions for better type safety across the application.
 3. Simplify types for tickets, building on base ticket types and extending them as needed.
 4. Change how issue type icons are saved so users who don't have API access can reliably see them.
 5. Create an improved JIRA import wizard that allows users to import from an epic instead of a sprint.
