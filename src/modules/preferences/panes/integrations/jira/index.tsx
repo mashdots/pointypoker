@@ -1,151 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
-import { Link } from 'react-router-dom';
 
 import IntegrationCard from '../integrationCard';
 import usePreferenceSync from '../../../hooks';
-import Check from '@assets/icons/check.svg?react';
-import JiraLogo from '@assets/icons/jira-logo.svg?react';
-import LinkSvg from '@assets/icons/link-out.svg?react';
-import Copy from '@assets/icons/copy.svg?react';
-import Spinner from '@assets/icons/loading-circle.svg?react';
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
 import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
-import { Separator, VerticalContainer } from '@modules/preferences/panes/common';
+import { Separator } from '@modules/preferences/panes/common';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { isDev } from '@utils';
 import { JiraResourceData } from '@modules/integrations/jira/types';
-import { spinAnimation } from '@components/common/animations';
-
-const checkAnimation = keyframes`
-  0% {
-    opacity: 0;
-    transform: rotate(-45deg) scale(0);
-  }
-
-  100% {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
-  }
-`;
-
-const JiraIcon = styled(JiraLogo)`
-
-  height: 2rem;
-  width: 2rem;
-  margin-right: 0.5rem;
-`;
-
-const LoadingIcon = styled(Spinner)`
-  height: 1rem;
-  width: 1rem;
-  animation: ${spinAnimation} 1s linear infinite;
-`;
-
-const SuccessIcon = styled(Check)`
-  ${ ({ theme }: ThemedProps) => css`
-    > polyline {
-      stroke: ${ theme.success.accent9 };
-    }
-  `}
-  height: 1rem;
-  width: 1rem;
-  margin-right: 0.5rem;
-
-  animation: ${ checkAnimation } 300ms;
-`;
-
-const LinkIcon = styled(LinkSvg)`
-  height: 0.75rem;
-  width: 0.75rem;
-  margin-left: 0.25rem;
-`;
-
-const CopyIcon = styled(Copy)`
-  height: 0.75rem;
-  width: 0.75rem;
-  margin-left: 0.25rem;
-`;
-
-const InformationWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 1rem;
-
-  border-radius: 0.5rem;
-
-  > p {
-    margin: 0;
-    font-size: 0.8rem;
-  }
-`;
-
-const ConnectWrapper = styled(InformationWrapper)`
-  ${({ theme }: ThemedProps) => css`
-    border: 2px solid ${ theme.success.accent7 };
-  `};
-`;
-
-const NoticeWrapper = styled(InformationWrapper)`
-  ${({ theme }: ThemedProps) => css`
-    background-color: ${ theme.warning.accent4 };
-  `};
-`;
-
-const DisconnectInfoWrapper = styled(InformationWrapper)`
-  padding: 0;
-`;
-
-const RevokeLink = styled.a`
-  ${({ theme }: ThemedProps) => css`
-    color: ${ theme.error.accent11 };
-  `};
-
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-
-  &:hover {
-    text-decoration: underline;
-    text-decoration-style: dashed;
-    text-decoration-thickness: 1px;
-    color: ${({ theme }: ThemedProps) => theme.error.accent10};
-  }
-`;
-
-const InfoLink = styled(Link)`
-  ${({ theme }: ThemedProps) => css`
-    color: ${ theme.info.accent11 };
-  `};
-
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-
-  &:hover {
-    text-decoration: underline;
-    text-decoration-style: dashed;
-    text-decoration-thickness: 1px;
-    color: ${({ theme }: ThemedProps) => theme.info.accent10};
-  }
-`;
-
-const Wrapper = styled(VerticalContainer)`
-  ${ ({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.accent5 };
-  `}
-
-  border-radius: 0.5rem;
-  padding: 1rem;
-  width: 100%;
-  margin: 0.5rem;
-`;
+import {
+  ConnectWrapper,
+  CopyIcon,
+  DisconnectInfoWrapper,
+  InfoLink,
+  JiraIcon,
+  LinkIcon,
+  LoadingIcon,
+  NoticeWrapper,
+  RevokeLink,
+  SuccessIcon,
+  Wrapper,
+} from './components';
 
 const JiraIntegrationCard = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -204,7 +80,7 @@ const JiraIntegrationCard = () => {
         variation={buttonVariation as 'info' | 'warning' | 'error'}
         textSize='small'
         width='quarter'
-        disabled={isLoading}
+        isDisabled={isLoading}
       >
         {buttonChildren}
       </Button>

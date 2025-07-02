@@ -6,7 +6,7 @@ import GridPanel, { GridPanelProps } from '@components/common/gridPanel';
 import Queue from './queue';
 import { useTickets } from '@modules/room/hooks';
 
-const Tickets = ({ gridConfig }: GridPanelProps) => {
+const Tickets = ({ config }: GridPanelProps) => {
   const { queue } = useTickets();
   const panels = [
     { title: 'history', component: <History /> },
@@ -17,7 +17,7 @@ const Tickets = ({ gridConfig }: GridPanelProps) => {
   }
 
   return (
-    <GridPanel config={gridConfig}>
+    <GridPanel config={config}>
       <MultiPanel panels={panels} forcePanelChange={panels.length - 1} />
     </GridPanel>
   );

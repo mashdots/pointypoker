@@ -5,7 +5,7 @@ import Spinner from '@assets/icons/loading-circle.svg?react';
 import { fadeDownEntrance, spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import { JiraField, JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
-import { InformationWrapper, SectionWrapper } from '@modules/room/queueBulider/steps/common';
+import { InformationWrapper, SectionWrapper } from './common';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Room } from '@yappy/types';

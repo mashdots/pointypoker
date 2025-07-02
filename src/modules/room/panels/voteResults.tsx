@@ -67,7 +67,7 @@ const AverageIcon = styled(AverageSvg)<IconProps>`
   transition: all 500ms ease-out;
 `;
 
-const VoteResults = (props: GridPanelProps) => {
+const VoteResults = ({ config }: GridPanelProps) => {
   const {
     currentTicket,
     shouldShowVotes,
@@ -84,7 +84,7 @@ const VoteResults = (props: GridPanelProps) => {
   );
 
   return (
-    <GridPanel config={props.gridConfig}>
+    <GridPanel config={config}>
       <Wrapper>
         <ResultCell>
           <InfoCell

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
-import Consensus from './consensus';
+import Consensus from './Consensus';
 import { useTickets } from '../../hooks';
 import { getPointOptions, isVoteCast } from '../../utils';
 import { GridPanel } from '@components/common';
@@ -140,7 +140,7 @@ const DistributionPanel = (props: GridPanelProps) => {
 
   const component = hasConsensus ? <Consensus /> : voteStats;
   return (
-    <GridPanel config={props.gridConfig} title='distribution'>
+    <GridPanel config={props.config} title='distribution'>
       <Wrapper>
         {component}
       </Wrapper>

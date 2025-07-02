@@ -6,7 +6,6 @@ import { parseURL } from 'whatwg-url';
 import { useTickets } from '../hooks';
 import { getTicketNumberFromUrl } from '../utils';
 import GridPanel, { GridPanelProps } from '@components/common/gridPanel';
-import { getIcon } from '@components/icons';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Ticket } from '@yappy/types';
 
@@ -88,7 +87,7 @@ const PointCell = styled.div`
   align-items: center;
 `;
 
-const TicketHistory = ({ gridConfig }: Props) => {
+const TicketHistory = ({ config }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const { completedTickets } = useTickets();
   const ticketRows = useMemo(() => completedTickets?.map(({
@@ -115,13 +114,13 @@ const TicketHistory = ({ gridConfig }: Props) => {
   const header = (
     <TicketHeader ref={headerRef}>
       <NameCell>ticket</NameCell>
-      <PointCell>{getIcon('suggest')}</PointCell>
-      <PointCell>{getIcon('average')}</PointCell>
+      <PointCell>suggested</PointCell>
+      <PointCell>average</PointCell>
     </TicketHeader>
   );
 
   return (
-    <GridPanel config={gridConfig} title='history' headingElement={header}>
+    <GridPanel config={config} title='history' headingElement={header}>
       <TicketRowList>
         {ticketRows}
       </TicketRowList>

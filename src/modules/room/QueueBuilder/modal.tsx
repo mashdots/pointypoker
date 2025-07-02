@@ -5,14 +5,14 @@ import PencilSvg from '@assets/icons/pencil.svg?react';
 import UndoSvg from '@assets/icons/undo.svg?react';
 import useStore from '@utils/store';
 import { JiraBoardPayloadValue, JiraField, JiraSprintWithIssues } from '@modules/integrations/jira/types';
-import BoardSelection from '@modules/room/queueBulider/steps/boardSelection';
-import SprintSelection from '@modules/room/queueBulider/steps/sprintSelection';
-import TicketReview from '@modules/room/queueBulider/steps/ticketReview';
+import BoardSelection from './steps/boardSelection';
+import SprintSelection from './steps/sprintSelection';
+import TicketReview from './steps/ticketReview';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useTickets } from '@modules/room/hooks';
 import { useJira } from '@modules/integrations';
 import { scaleEntrance } from '@components/common/animations';
-import ModeSelection, { ImportModeSelection } from '@modules/room/queueBulider/steps/modeSelection';
+// import ModeSelection, { ImportModeSelection } from './steps/modeSelection';
 
 type ConfigOptionProps = {
   selectionComplete: boolean;
@@ -149,7 +149,7 @@ const QueueModal = () => {
   }));
   const { getPointFieldFromBoardId } = useJira();
   const { queue } = useTickets();
-  const [ importModeSelection, setImportModeSelection ] = useState<ImportModeSelection | null>(null);
+  // const [ importModeSelection, setImportModeSelection ] = useState<ImportModeSelection | null>(null);
   const [ overrideBoard, setOverrideBoard ] = useState<JiraBoardPayloadValue | null>(null);
   const [ selectedSprint, setSelectedSprint ] = useState<JiraSprintWithIssues | null>(null);
   const [ showOverrideUI, setShowOverrideUI ] = useState<boolean>(false);

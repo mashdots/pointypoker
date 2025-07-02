@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { GridConfiguration } from './types';
 
-type Props = {
+export type GridPanelProps = {
   title?: string;
   config: GridConfiguration;
   children: React.ReactNode;
@@ -50,7 +50,7 @@ const GridPanel = ({
   children,
   title,
   headingElement,
-}: Props) => {
+}: GridPanelProps) => {
   const titleComponent = title ? <Title>{title.toLowerCase()}</Title> : null;
 
   return (

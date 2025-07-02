@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const TimerPanel = (props: GridPanelProps) => {
+const TimerPanel = ({ config }: GridPanelProps) => {
   const { currentTicket, shouldShowVotes, handleUpdateCurrentTicket } = useTickets();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const TimerPanel = (props: GridPanelProps) => {
   }, [ shouldShowVotes ]);
 
   return (
-    <GridPanel config={props.gridConfig}>
+    <GridPanel config={config}>
       <Wrapper>
         <Timer
           startTime={currentTicket?.createdAt}

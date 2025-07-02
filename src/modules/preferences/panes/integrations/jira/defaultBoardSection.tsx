@@ -1,44 +1,17 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-
-import PlusIcon from '@assets/icons/plus.svg?react';
-import BoardImage from '@assets/icons/article.svg?react';
 import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useJira } from '@modules/integrations';
 import { JiraBoardPayloadValue } from '@modules/integrations/jira/types';
-import { Control, Description, Label, SelectedOptionWrapper, SetupPrefWrapper } from '@modules/preferences/panes/integrations/jira/commonComponents';
-
-const CloseIcon = styled(PlusIcon)`
-  cursor: pointer;
-  height: 1.5rem;
-  width: 1.5rem;
-  margin-left: 0.25rem;
-  transform: rotate(45deg);
-  
-  ${({ theme }: ThemedProps) => css`
-    > line {
-      stroke: ${theme.primary.accent11};
-    }
-  `}
-`;
-
-const BoardIcon = styled(BoardImage)`
-  margin-right: 0.25rem;
-  margin-left: 0rem;
-  width: 1.5rem;
-    
-  ${ ({ theme }: ThemedProps) => css`
-    > line {
-      stroke: ${theme.primary.accent12};
-    }
-
-    > rect {
-      stroke: ${theme.primary.accent11};
-    }
-  `}
-`;
+import {
+  BoardIcon,
+  CloseIcon,
+  Control,
+  Description,
+  Label,
+  SelectedOptionWrapper,
+  SetupPrefWrapper,
+} from './components';
 
 const DefaultBoardSection = () => {
   const { defaultBoard, clearDefaultBoard, setDefaultBoard } = useStore(({ preferences, setPreferences }) => ({

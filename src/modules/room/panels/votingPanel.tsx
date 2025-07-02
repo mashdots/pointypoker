@@ -79,7 +79,7 @@ const DisabledContainer = styled.div`
   
 `;
 
-const VotingPanel = ({ gridConfig }: GridPanelProps) => {
+const VotingPanel = ({ config }: GridPanelProps) => {
   const { user, isModalOpen, isTitleInputFocused, isObserver } = useStore(
     ({ preferences, isTitleInputFocused, currentModal }) => (
       { user: preferences?.user, isTitleInputFocused, isModalOpen: !!currentModal, isObserver: preferences?.isObserver }
@@ -123,7 +123,7 @@ const VotingPanel = ({ gridConfig }: GridPanelProps) => {
   }, [currentTicket, isTitleInputFocused]);
 
   return (
-    <GridPanel config={gridConfig}>
+    <GridPanel config={config}>
       {isObserver ? (
         <DisabledContainer><p>voting is disabled when you are observing</p></DisabledContainer>
       ) : (

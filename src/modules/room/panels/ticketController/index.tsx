@@ -2,14 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
-import Title from './title';
-import Controls from './controls';
-import IssueIcon from './issueIcon';
+import Title from './Title';
+import Controls from './Controls';
+import IssueIcon from './IssueIcon';
 import { useTickets } from '@modules/room/hooks';
 import { Ticket } from '@yappy/types';
 import { TicketFromQueue } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
-import Subtitles from '@modules/room/panels/ticketController/subtitles';
+import Subtitles from './Subtitles';
 import { useMobile } from '@utils/hooks/mobile';
 
 type TicketControlFormat = {

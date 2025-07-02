@@ -14,7 +14,7 @@ The current focus is on building out the core functionality of the application, 
 - Build the ticket pointing and voting UI.
 - Integrate with the Jira API to import stories.
 - Established and documented architectural rules for the file system, including a new rule for types and constants.
-- Refactored the `src/components` directory to align with the new architectural rules.
+- Refactored the entire `src` directory to align with the new architectural rules.
 
 ## Next Steps
 

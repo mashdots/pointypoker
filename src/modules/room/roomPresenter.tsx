@@ -10,7 +10,7 @@ import {
   VotingPanel,
 } from './panels';
 import { useMobile } from '@utils/hooks/mobile';
-import TicketController from '@modules/room/panels/ticketController';
+import TicketController from '@modules/room/panels/TicketController';
 
 type RoomDataContainerProps = {
   showNarrow: boolean;
@@ -70,12 +70,12 @@ const RoomPresenter = () => {
     <Wrapper>
       <TicketController />
       <RoomDataContainer showNarrow={isNarrow}>
-        <TimerPanel gridConfig={gridConfigs.timer} />
-        <VotingPanel gridConfig={gridConfigs.voting} />
-        <VoteDisplay gridConfig={gridConfigs.voteDisplay} />
-        <VoteResults gridConfig={gridConfigs.voteResults} />
-        <Tickets gridConfig={gridConfigs.history} />
-        <DistributionPanel gridConfig={gridConfigs.distribution} />
+        <TimerPanel config={gridConfigs.timer}>{null}</TimerPanel>
+        <VotingPanel config={gridConfigs.voting}>{null}</VotingPanel>
+        <VoteDisplay config={gridConfigs.voteDisplay}>{null}</VoteDisplay>
+        <VoteResults config={gridConfigs.voteResults}>{null}</VoteResults>
+        <Tickets config={gridConfigs.history}>{null}</Tickets>
+        <DistributionPanel config={gridConfigs.distribution}>{null}</DistributionPanel>
       </RoomDataContainer>
     </Wrapper>
   );

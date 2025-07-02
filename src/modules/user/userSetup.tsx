@@ -6,7 +6,7 @@ import LogoSvg from '@assets/pointy-poker.svg?react';
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
 import { Button, TextInput } from '@components/common';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import Logo from '@components/Header/logo';
+import Logo from '@components/Header/Logo';
 import { useMobile } from '@utils/hooks/mobile';
 
 
@@ -161,8 +161,6 @@ const UserSetup = () => {
               type='submit'
               variation='info'
               width={3}
-              round
-              refresh
             >
               <ArrowIcon />
             </Button>

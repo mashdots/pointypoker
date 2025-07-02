@@ -188,7 +188,7 @@ const VoteCell = ({ voteData, cellMode, isLast }: VoteCellProps) => {
   );
 };
 
-const VoteDisplay = (props: GridPanelProps) => {
+const VoteDisplay = ({ config }: GridPanelProps) => {
   const user = useStore(({ preferences }) => preferences?.user);
   const { shouldShowVotes, voteData, handleUpdateCurrentTicket } = useTickets();
 
@@ -239,7 +239,7 @@ const VoteDisplay = (props: GridPanelProps) => {
       onClick={() => {
         handleUpdateCurrentTicket('shouldShowVotes', true);
       }}
-      disabled={shouldShowVotes || !hasAnyoneVoted}
+      isDisabled={shouldShowVotes || !hasAnyoneVoted}
       textSize='small'
     >
       show votes
@@ -248,7 +248,7 @@ const VoteDisplay = (props: GridPanelProps) => {
 
   return (
     <GridPanel
-      config={props.gridConfig}
+      config={config}
       headingElement={showVotesButton}
       title='votes'
     >

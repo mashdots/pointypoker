@@ -5,7 +5,6 @@ import { parseURL } from 'whatwg-url';
 
 import { useTickets } from '../../hooks';
 import { getTicketNumberFromUrl } from '../../utils';
-import { getIcon } from '@components/icons';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { fadeDownEntrance } from '@components/common/animations';
 
@@ -108,7 +107,7 @@ const History = () => {
   const header = (
     <TicketHeader ref={headerRef}>
       <NameCell>ticket</NameCell>
-      <PointCell title="Suggested points">{getIcon('suggest')}</PointCell>
+      <PointCell title="Suggested points">suggested</PointCell>
     </TicketHeader>
   );
 

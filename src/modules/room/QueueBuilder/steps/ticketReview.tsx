@@ -8,7 +8,7 @@ import AppendSvg from '@assets/icons/queue.svg?react';
 import ReplaceSvg from '@assets/icons/arrows-counter-clockwise.svg?react';
 import { Button } from '@components/common';
 import { fadeDownEntrance } from '@components/common/animations';
-import { InformationWrapper, SectionWrapper } from '@modules/room/queueBulider/steps/common';
+import { InformationWrapper, SectionWrapper } from './common';
 import { JiraField, JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
 import { Separator } from '@modules/preferences/panes/common';
 import { updateRoom } from '@services/firebase';
@@ -308,7 +308,7 @@ const TicketReview = ({
           width={12}
           textSize='small'
           onClick={handleAddTicketsToQueue}
-          disabled={ticketsInQueue && queueAction === null}
+          isDisabled={ticketsInQueue && queueAction === null}
         >
           {ticketsInQueue ? 'Update' : 'Add to'} queue
           <ArrowIcon />

@@ -1,4 +1,4 @@
-import { DistributionPanel } from './distribution';
+import { DistributionPanel } from './Distribution';
 import MultiPanel from './multiPanel';
 import Tickets from './tickets';
 import TimerPanel from './timerPanel';
@@ -15,4 +15,3 @@ export {
   VotingPanel,
   VoteResults,
 };
-
