@@ -2,17 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-
-export type GridConfiguration = {
-  columnStart: number;
-  columnEnd: number;
-  rowStart: number;
-  rowEnd: number;
-};
-
-export type GridPanelProps = {
-  gridConfig: GridConfiguration;
-};
+import { GridConfiguration } from './types';
 
 type Props = {
   title?: string;

@@ -8,3 +8,4 @@ This document outlines the rules for the file system architecture of this projec
   - The root folder should be the first common folder between the two components
 - Each folder should contain an index file that should only contain exports for the folder
 - Folder names should be capitalized if they're specifically for a primary component
+- Types and constants should be put into types or constants files when used by more than one component and then placed in the folder that is the common root of shared components.
