@@ -19,5 +19,5 @@ For detailed rules on file system structure, component organization, and naming 
 ## Critical Implementation Paths
 
 - **Room Management:** The `src/modules/room` directory contains the core logic for creating, joining, and managing pointing sessions.
-- **Jira Integration:** The `src/modules/integrations/jira` directory handles the logic for connecting to Jira and importing tickets.
+- **Jira Integration:** The `src/modules/integrations/jira` directory handles the logic for connecting to Jira and importing tickets. This includes a `buildUrl` utility in `src/modules/integrations/jira/utils.ts` that centralizes the construction of all Jira API URLs, promoting consistency and maintainability.
 - **Authentication:** The `src/modules/user` and `src/services/firebase/auth.ts` files manage user authentication and session management.

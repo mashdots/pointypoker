@@ -1,23 +1,36 @@
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 type UrlOptions = {
+  boardId?: string | number;
+  issueId?: string;
+  resourceId?: string;
   userId?: string;
-}
+};
 
 export const ATLASSIAN_URL = 'atlassian.com';
 
+const JIRA_PRE_PATH = '/ex/jira';
+
+enum API_SPACE {
+  AGILE_1 = 'rest/agile/1.0',
+  API_2 = 'rest/api/2',
+}
+
 export enum URL_ACTIONS {
+  // OAUTH
   AUTHORIZE = 'authorize',
   OAUTH = 'oauth/token',
   GET_RESOURCES = 'oauth/token/accessible-resources',
-  JIRA_API_PREFIX = 'ex/jira/',
-  AGILE_API_PREFIX = 'rest/agile/1.0/',
-  API_2_PREFIX = 'rest/api/2/',
-  FIELD_PATH = 'field',
-  BOARD_PATH = 'board',
-  ISSUE_PATH = 'issue',
-  ESTIMATION_PATH = 'estimation',
-  BOARD_SPRINT_PATH = 'sprint',
+
+  // JIRA AGILE API
+  GET_BOARDS = 'get-boards',
+  GET_BOARD_CONFIGURATION = 'get-board-configuration',
+  GET_SPRINTS = 'get-sprints',
+  GET_ISSUES_NO_JQL = 'get-issues-no-jql',
+
+  // JIRA API V2
+  GET_FIELDS = 'get-fields',
+  ISSUE = 'issue',
 }
 
 export enum JIRA_SUBDOMAINS {
@@ -38,11 +51,13 @@ const scopes = [
 ];
 
 const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
-  let url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}`;
+  const { boardId, issueId, resourceId, userId } = options || {};
+  let url = '';
 
   switch (action) {
+  // OAUTH
   case URL_ACTIONS.AUTHORIZE: {
-    if (!options?.userId) {
+    if (!userId) {
       throw new Error('User ID is required for this action');
     }
 
@@ -51,19 +66,43 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
       client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
       scope: scopes.join(' '),
       redirect_uri: `${window.location.origin}${JIRA_REDIRECT_PATH}`,
-      state: options.userId,
+      state: userId,
       response_type: 'code',
       prompt: 'consent',
     });
 
-    url += `/${ URL_ACTIONS.AUTHORIZE }?${params.toString()}`;
+    console.log('Jira authorize URL params:', import.meta.env.VITE_JIRA_CLIENT_ID);
+
+    url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.AUTHORIZE}?${params.toString()}`;
     break;
   }
   case URL_ACTIONS.OAUTH:
-    url += `/${ URL_ACTIONS.OAUTH }`;
+    url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.OAUTH}`;
     break;
   case URL_ACTIONS.GET_RESOURCES:
-    url += `/${ URL_ACTIONS.GET_RESOURCES }`;
+    url = `https://${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}/${URL_ACTIONS.GET_RESOURCES}`;
+    break;
+
+    // JIRA AGILE API
+  case URL_ACTIONS.GET_BOARDS:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board`;
+    break;
+  case URL_ACTIONS.GET_BOARD_CONFIGURATION:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/configuration`;
+    break;
+  case URL_ACTIONS.GET_SPRINTS:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/sprint`;
+    break;
+  case URL_ACTIONS.GET_ISSUES_NO_JQL:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/issue`;
+    break;
+
+    // JIRA API V2
+  case URL_ACTIONS.GET_FIELDS:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/field`;
+    break;
+  case URL_ACTIONS.ISSUE:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/issue/${issueId}`;
     break;
   default:
     return '';

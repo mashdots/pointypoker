@@ -143,7 +143,7 @@ const useJira = () => {
   const getBoards = async (maxResults = 25, name?: string) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }`;
+    const path = buildUrl(URL_ACTIONS.GET_BOARDS, { resourceId: resources?.id });
 
     return client(
       {
@@ -165,7 +165,7 @@ const useJira = () => {
   const getBoardConfiguration = async (boardId: string | number) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId }/configuration`;
+    const path = buildUrl(URL_ACTIONS.GET_BOARD_CONFIGURATION, { resourceId: resources?.id, boardId });
 
     return client(
       {
@@ -182,7 +182,7 @@ const useJira = () => {
   const getIssueFields = async () => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.API_2_PREFIX}${URL_ACTIONS.FIELD_PATH}`;
+    const path = buildUrl(URL_ACTIONS.GET_FIELDS, { resourceId: resources?.id });
 
     return client(
       {
@@ -202,7 +202,7 @@ const useJira = () => {
   const getSprintsForBoard = async (boardId: string | number, startAt = 0) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId}/${ URL_ACTIONS.BOARD_SPRINT_PATH }`;
+    const path = buildUrl(URL_ACTIONS.GET_SPRINTS, { resourceId: resources?.id, boardId });
 
     return client(
       {
@@ -223,7 +223,7 @@ const useJira = () => {
   const getIssuesForBoard = async (boardId: string | number, pointField?: JiraField | null, startAt = 0) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.BOARD_PATH }/${ boardId }/${ URL_ACTIONS.ISSUE_PATH }`;
+    const path = buildUrl(URL_ACTIONS.GET_ISSUES_NO_JQL, { resourceId: resources?.id, boardId });
 
     const fields = ['id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team'];
     let jql = 'Sprint IN futureSprints() AND resolution IS EMPTY';
@@ -254,7 +254,7 @@ const useJira = () => {
   const getIssueDetail = async (key: string, pointField?: JiraField | null) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.AGILE_API_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ key }`;
+    const path = buildUrl(URL_ACTIONS.ISSUE, { resourceId: resources?.id, issueId: key });
 
     const fields = [ 'id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team' ];
 
@@ -297,7 +297,7 @@ const useJira = () => {
   const writePointValue = async (issue: string, value: number, fieldId: string) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = `/${ URL_ACTIONS.JIRA_API_PREFIX }${ resources?.id }/${ URL_ACTIONS.API_2_PREFIX }${ URL_ACTIONS.ISSUE_PATH }/${ issue }`;
+    const path = buildUrl(URL_ACTIONS.ISSUE, { resourceId: resources?.id, issueId: issue });
 
     return client(
       {
