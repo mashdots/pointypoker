@@ -53,7 +53,7 @@ const ConfigWrapper = styled.div`
   justify-content: center;
   padding: 0.5rem;
   border-radius: 0.5rem;
-  margin: 0.5rem;
+  margin: 0.5rem 0;
 `;
 
 const ConfigOptionWrapper = styled.div`
@@ -76,7 +76,7 @@ const ConfigOptionWrapper = styled.div`
 
 const ConfigOption = styled.div<ConfigOptionProps>`
   ${({ selectionComplete, theme }: ConfigOptionProps) => css`
-    border: 2px ${selectionComplete ? 'solid' : 'dashed' } ${ theme.greyscale[ selectionComplete ? 'accent8' : 'border'] };
+    border: 1px ${selectionComplete ? 'solid' : 'dashed' } ${ theme.greyscale[ selectionComplete ? 'accent8' : 'border'] };
     cursor: ${ selectionComplete ? 'pointer' : 'default' };
   `};
 

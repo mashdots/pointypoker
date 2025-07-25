@@ -197,7 +197,9 @@ const TicketReview = ({
           return {
             id: key,
             name: summary,
-            type: issuetype,
+            type: {
+              ...issuetype,
+            },
             sprint,
             url: buildJiraUrl(key),
             estimationFieldId: pointField.id,
@@ -243,17 +245,14 @@ const TicketReview = ({
     },
     key,
   }, delayMultiplier) => {
+    const { icon, name } = issuetype;
 
     return (
       <IssueWrapper key={key} delayFactor={100 * delayMultiplier}>
         <TicketTypeIcon
-          src={issuetype.iconUrl}
-          alt={issuetype.name}
-          title={issuetype.name}
-          onError={({ currentTarget }) => {
-            currentTarget.onerror = null;
-            currentTarget.src = 'https://v1.icons.run/64/ph/binoculars.png?color=FFFFFF&bg=e5484d';
-          }}
+          src={icon.blobData}
+          alt={name}
+          title={name}
         />
         <TicketInfo>
           <Title title={summary}>{summary}</Title>

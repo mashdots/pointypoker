@@ -79,10 +79,6 @@ const IssueIcon = ({ src = '', ticketUrl }: Props) => {
       <Icon
         src={icon}
         alt='Ticket icon'
-        onError={({ currentTarget }) => {
-          currentTarget.onerror = null;
-          currentTarget.src = 'https://v1.icons.run/64/ph/binoculars.png?color=FFFFFF&bg=e5484d';
-        }}
       />
     </a>
   ) : <DefaultIcon />;

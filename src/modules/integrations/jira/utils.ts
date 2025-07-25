@@ -1,6 +1,7 @@
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 type UrlOptions = {
+  avatarId?: number;
   boardId?: string | number;
   issueId?: string;
   resourceId?: string;
@@ -31,6 +32,7 @@ export enum URL_ACTIONS {
   // JIRA API V2
   GET_FIELDS = 'get-fields',
   ISSUE = 'issue',
+  GET_AVATAR = 'get-avatar',
 }
 
 export enum JIRA_SUBDOMAINS {
@@ -38,7 +40,7 @@ export enum JIRA_SUBDOMAINS {
   AUTH = 'auth',
 }
 
-const scopes = [
+export const scopes = [
   'offline_access', // Requests a refresh token with auth
   'read:board-scope.admin:jira-software', // board config
   'read:board-scope:jira-software', // boards, board issues
@@ -48,10 +50,11 @@ const scopes = [
   'read:sprint:jira-software', // board sprints
   'read:jira-work', // fields
   'write:jira-work', // issue update
+  'manage:jira-configuration', // enables icon fetching
 ];
 
 const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
-  const { boardId, issueId, resourceId, userId } = options || {};
+  const { avatarId, boardId, issueId, resourceId, userId } = options || {};
   let url = '';
 
   switch (action) {
@@ -103,6 +106,9 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
     break;
   case URL_ACTIONS.ISSUE:
     url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/issue/${issueId}`;
+    break;
+  case URL_ACTIONS.GET_AVATAR:
+    url = `${ JIRA_PRE_PATH }/${ resourceId }/${ API_SPACE.API_2 }/universal_avatar/view/type/issuetype/avatar/${avatarId}`;
     break;
   default:
     return '';

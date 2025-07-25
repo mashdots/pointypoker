@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
+import cloneDeep from 'lodash/cloneDeep';
 
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { fadeDownEntrance, spinAnimation } from '@components/common/animations';
@@ -62,13 +63,15 @@ const SprintOptionWrapper = styled.div`
 const SprintOption = styled.div<SprintOptionProps>`
   ${({ delayFactor, hasIssues, theme }: SprintOptionProps) => css`
     cursor: ${ hasIssues ? 'pointer' : 'default' };
-    background-color: ${ theme.greyscale.accent3 };
+    background-color: ${ theme.greyscale[ hasIssues ? 'accent3' : 'accent2' ] };
     color: ${ theme.greyscale[hasIssues ? 'accent12' : 'accent11'] };
-    border: 2px solid ${ theme.greyscale[hasIssues ? 'accent7' : 'accent3'] };
+    border-width: 1px;
+    border-style: solid;
+    border-color: ${ theme.greyscale[hasIssues ? 'accent7' : 'accent3'] };
     animation: ${ fadeDownEntrance } 0.25s ease-out ${ delayFactor }ms forwards;
-
+    
     &:hover {
-      background-color: ${ theme.greyscale[ hasIssues ? 'accent4' : 'accent3' ] };
+      border-color: ${ theme.greyscale[hasIssues ? 'accent12' : 'accent3'] };
     }
   `}
 
@@ -96,8 +99,10 @@ const PointContainer = styled.span<SprintOptionProps>`
     }
 
     return css`
-      border: 1px solid ${ theme[colorScheme][ hasIssues ? 'accent8' : 'accent3' ] };
-      color: ${ theme[colorScheme].accent11 };
+      border: 1px solid ${ theme[colorScheme][ hasIssues ? 'accent8' : 'accent2' ] };
+      color: ${ theme[colorScheme][hasIssues ? 'accent9' : 'accent11'] };
+      background-color: ${ theme[ colorScheme ][hasIssues ? 'accent2' : 'none'] };
+      font-size: 0.75rem;
     `;
   }}
 
@@ -109,7 +114,7 @@ const PointContainer = styled.span<SprintOptionProps>`
 
   transition: 
     color 0.25s ease-out,
-    border 0.25s ease-out;
+    border 0.125s ease-out;
 `;
 
 const SprintSelection = ({
@@ -122,7 +127,7 @@ const SprintSelection = ({
   const [isLoading, setIsLoading] = useState(false);
   const [sprintData, setSprintData] = useState<JiraSprint[] | null>(null);
   const [issueData, setIssueData] = useState<JiraIssueSearchPayload[] | null>(null);
-  const { getSprintsForBoard, getIssuesForBoard } = useJira();
+  const { getSprintsForBoard, getIssuesForBoard, getAvatars } = useJira();
 
   const handleFetchSprintData = useCallback(async () => {
     if (!boardId) {
@@ -140,6 +145,44 @@ const SprintSelection = ({
     }
 
   }, [boardId]);
+
+  const handleGetAvatars = useCallback(async () => {
+    if (!issueData?.length) {
+      return [];
+    }
+
+    const avatarData = issueData?.reduce((acc: { [key: string]: number }, issue) => {
+      const { issuetype } = issue.fields;
+      if (!acc[issuetype.name]) {
+        acc[issuetype.name] =  issuetype.avatarId;
+      }
+      return acc;
+    }, {});
+
+    try {
+      const avatars = await getAvatars(avatarData);
+      console.log('Avatars fetched:', avatars);
+
+      setIssueData((existingIssueData) => {
+        if (!existingIssueData) {
+          return [];
+        }
+
+        return existingIssueData.map((issue) => {
+          const updatedIssue = cloneDeep(issue);
+          const { issuetype } = updatedIssue.fields;
+          const iconData = avatars[issuetype.name];
+          updatedIssue.fields.issuetype.icon = { ...iconData };
+
+          return { ...updatedIssue };
+        });
+      });
+    } catch (error) {
+      console.error('Error fetching avatars:', error);
+    }
+
+    setIsLoading(false);
+  }, [issueData?.length]);
 
   const handleFetchIssueData = useCallback(async (startAt = 0) => {
     if (!boardId) {
@@ -166,8 +209,6 @@ const SprintSelection = ({
         handleFetchIssueData(startAt + issues.maxResults);
         return;
       }
-
-      setIsLoading(false);
     } catch (error) {
       console.error('Ahhh shit', error);
       // setIsError(true);
@@ -183,6 +224,11 @@ const SprintSelection = ({
     }
   }, [boardId]);
 
+  useEffect(() => {
+    if (issueData?.length) {
+      handleGetAvatars();
+    }
+  }, [issueData?.length]);
 
   const sprintOptions = useMemo(() => sprintData?.map((sprint, delayFactor) => {
     const apiIssues = issueData?.filter((issue) => issue.fields.sprint?.id === sprint.id) ?? [];
@@ -214,7 +260,7 @@ const SprintSelection = ({
     if (isLoading) {
       pointContainerMessage = (<>{issueCountDisplay} loading tickets</>);
     } else {
-      if (issuesInQueue.length > 0) {
+      if (issuesInQueue.length) {
         if (newIssueCount > 0) {
           // Issues in queue, but there are new issues in the sprint that aren't in the queue
           pointContainerMessage = `${ issueCountDisplay } new unpointed ticket${ issuesInQueue.length === 1 ? '' : 's' }`;

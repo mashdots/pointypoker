@@ -159,13 +159,9 @@ const Queue = () => {
         {...clickableProps}
       >
         <TicketTypeIcon
-          src={type.iconUrl}
+          src={type.icon.blobData}
           alt={type.name}
           title={type.name}
-          onError={({ currentTarget }) => {
-            currentTarget.onerror = null;
-            currentTarget.src = 'https://v1.icons.run/64/ph/binoculars.png?color=FFFFFF&bg=e5484d';
-          }}
         />
         <TicketInfo>
           <TicketId

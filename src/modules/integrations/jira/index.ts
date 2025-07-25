@@ -4,6 +4,8 @@ import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import useStore from '@utils/store';
 import createApiClient, { getJiraApiClient } from '@utils/axios';
+import { blobToBase64 } from '@utils/room';
+
 import {
   InitialAuth,
   JiraAuthData,
@@ -277,6 +279,41 @@ const useJira = () => {
       });
   };
 
+  const getAvatars = async (avatarData: { [key: string]: number }) => {
+    const accessToken = await getJiraAccessToken();
+    const client = getJiraApiClient(API_URL, accessToken);
+    const promises = Object.entries(avatarData).map(([issueType, avatarId]) => {
+      const path = buildUrl(URL_ACTIONS.GET_AVATAR, { resourceId: resources?.id, avatarId });
+
+      return client(
+        {
+          method: 'GET',
+          url: path,
+          responseType: 'blob',
+          params: {
+            size: 'large',
+          },
+        },
+      )
+        .then(async (res) => {
+          const base64Data = await blobToBase64(res.data);
+          return { blobData: base64Data, contentType: res.data.type };
+        })
+        .then((data) => ({
+          [ issueType ]: { ...data },
+        }))
+        .catch((error) => {
+          throw new Error(error);
+        });
+    });
+
+    // Combine all promises into a single object
+    return Promise.all(promises)
+      .then(
+        (results) => results.reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+      );
+  };
+
   const getPointFieldFromBoardId = async (boardId: number) => {
     try {
       const boardConfig = await getBoardConfiguration(boardId);
@@ -323,6 +360,7 @@ const useJira = () => {
     launchJiraOAuth,
     getAccessTokenFromApi,
     getAccessibleResources,
+    getAvatars,
     getBoards,
     getBoardConfiguration,
     getIssueFields,

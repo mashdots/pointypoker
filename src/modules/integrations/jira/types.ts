@@ -91,9 +91,13 @@ export type JiraField = {
 type IssueType = {
   avatarId: number;
   description: string;
-  id: string;
   iconUrl: string;
+  id: string;
   name: string;
+  icon: {
+    contentType: string;
+    blobData: string;
+  }
 }
 
 export type JiraIssueSearchPayload = {

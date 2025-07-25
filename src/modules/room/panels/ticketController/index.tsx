@@ -68,7 +68,7 @@ const TicketController = () => {
 
       ticketData.subTitle = `${ id } • ${type.name} ${sprintName ? 'in' : ''} ${ sprintName }`;
       ticketData.url = url;
-      ticketData.iconSrc = (type as QueuedJiraTicket[ 'type' ]).iconUrl;
+      ticketData.iconSrc = type.icon.blobData;
 
       // parseURL will return null if the name is not a URL
     } else if (parseURL(possibleName)) {
