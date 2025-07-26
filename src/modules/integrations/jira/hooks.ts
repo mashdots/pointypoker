@@ -3,7 +3,6 @@ import useStore from '@utils/store';
 import { jiraPermissionScopes } from './utils';
 import { MODAL_TYPES } from '@modules/modal';
 
-// DON"T FORGET TO FIX THE SCOPES IN POINTY POKER
 const useJiraScopeCheck = () => {
   const { storedJiraPermissionsScope, revokeAccess, openReAuthenticationModal } = useStore(({ preferences, setPreferences, setCurrentModal }) => ({
     storedJiraPermissionsScope: preferences.jiraAccess?.scope.split(' ').sort(),
