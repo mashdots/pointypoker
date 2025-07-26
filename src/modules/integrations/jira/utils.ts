@@ -74,8 +74,6 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
       prompt: 'consent',
     });
 
-    console.log('Jira authorize URL params:', import.meta.env.VITE_JIRA_CLIENT_ID);
-
     url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.AUTHORIZE}?${params.toString()}`;
     break;
   }

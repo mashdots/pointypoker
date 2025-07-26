@@ -161,7 +161,6 @@ const SprintSelection = ({
 
     try {
       const avatars = await getAvatars(avatarData);
-      console.log('Avatars fetched:', avatars);
 
       setIssueData((existingIssueData) => {
         if (!existingIssueData) {
