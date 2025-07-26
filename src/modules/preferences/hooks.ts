@@ -18,9 +18,9 @@ export type PreferencesType = {
     | undefined
     | null;
   isObserver?: boolean;
-  jiraAccess?: JiraAuthData;
-  jiraResources?: JiraResourceData;
-  jiraPreferences?: JiraPreferences;
+  jiraAccess?: JiraAuthData | null;
+  jiraResources?: JiraResourceData | null;
+  jiraPreferences?: JiraPreferences | null;
   name?: string;
   theme?: THEMES;
   themeMode?: THEME_MODES;

@@ -8,7 +8,7 @@
 - **Room Management:** Full implementation of room creation, joining, and management.
 - **User Authentication:** A complete user authentication and session management system.
 - **Voting System:** The core voting mechanism for story pointing.
-- **Jira Integration:** The ability to import stories from Jira. The integration has been refactored to use a centralized `buildUrl` utility for all API calls, improving maintainability. Avatars for issue types are now correctly handled for both SVG and PNG formats.
+- **Jira Integration:** The ability to import stories from Jira. The integration has been refactored to use a centralized `buildUrl` utility for all API calls, improving maintainability. Avatars for issue types are now correctly handled for both SVG and PNG formats. A scope-check was added to ensure users have the correct permissions, prompting re-authentication when necessary.
 - **Architectural Rules:** Established and documented rules for the file system architecture. The codebase has been refactored to follow these rules.
 
 ## What's Left to Build

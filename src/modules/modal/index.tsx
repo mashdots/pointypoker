@@ -9,6 +9,7 @@ import styled, { css } from 'styled-components';
 import PlusIcon from '@assets/icons/plus.svg?react';
 import { PreferencesModal } from '@modules/preferences';
 import { QueueModal, ReportPIIModal } from '@modules/room';
+import { JiraReauthModal } from '@modules/modal/jiraReauth';
 import { useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
@@ -16,6 +17,7 @@ import useStore from '@utils/store';
 export enum MODAL_TYPES {
   FEEDBACK,
   JIRA,
+  JIRA_REAUTH,
   PII,
   PREFERENCES,
 }
@@ -169,6 +171,12 @@ const Modal = () => {
         modalContent = {
           title: 'Import from Jira',
           contents: <QueueModal />,
+        };
+        break;
+      case MODAL_TYPES.JIRA_REAUTH:
+        modalContent = {
+          title: 'Jira Integration Update',
+          contents: <JiraReauthModal />,
         };
         break;
       case MODAL_TYPES.PII:

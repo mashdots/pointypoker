@@ -40,7 +40,7 @@ export enum JIRA_SUBDOMAINS {
   AUTH = 'auth',
 }
 
-export const scopes = [
+export const jiraPermissionScopes = [
   'offline_access', // Requests a refresh token with auth
   'read:board-scope.admin:jira-software', // board config
   'read:board-scope:jira-software', // boards, board issues
@@ -67,7 +67,7 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
     const params = new URLSearchParams({
       audience: `${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`,
       client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
-      scope: scopes.join(' '),
+      scope: jiraPermissionScopes.join(' '),
       redirect_uri: `${window.location.origin}${JIRA_REDIRECT_PATH}`,
       state: userId,
       response_type: 'code',

@@ -17,6 +17,7 @@ The current focus is on building out the core functionality of the application, 
 - Refactored the entire `src` directory to align with the new architectural rules.
 - Refactored the Jira integration to centralize API URL construction in a `buildUrl` utility, improving maintainability and consistency.
 - Fixed an issue where Jira issue type icons (avatars) were not rendering correctly by dynamically handling both SVG and PNG image formats.
+- Implemented a check to ensure users have the correct OAuth scopes for Jira integration, prompting them to re-authenticate if their scopes are outdated. This prevents potential API errors and ensures a smooth user experience when permissions change.
 
 ## Next Steps
 

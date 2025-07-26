@@ -8,6 +8,7 @@ import Menu from '@modules/menu';
 import { useAuth } from '@modules/user';
 import Modal from '@modules/modal';
 import usePreferenceSync from '@modules/preferences/hooks';
+import useJiraScopeCheck from '@modules/integrations/jira/hooks';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
@@ -35,6 +36,7 @@ const ChildrenWrapper = styled.div`
 const Root = (): JSX.Element => {
   usePreferenceSync();
   useAuth();
+  useJiraScopeCheck();
 
   const { theme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
