@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import Logo from './Logo';
-import RoomControl from './RoomControl';
-import UserControl from './UserControl';
+import Logo from './logo';
+import RoomControl from './roomControl';
+import UserControl from './userControl';
 import MenuIcon from '@assets/icons/menu.svg?react';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
