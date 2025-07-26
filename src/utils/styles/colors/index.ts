@@ -9,29 +9,41 @@ import { VARIATIONS } from './legacyColors';
 export interface VariationProperties {
   [ key: string ]: string;
   // 1 - App background
-  bg: string;
+  // accent1: string;
+  accent1: string;
   // 2 - Subtle background
-  bgAlt: string;
+  // accent2: string;
+  accent2: string;
   // 3 - Component backgrounds: normal state
-  componentBg: string;
+  // accent3: string;
+  accent3: string;
   // 4 - Component backgrounds: hover state
-  componentBgHover: string;
+  // accent4: string;
+  accent4: string;
   // 5 - Component backgrounds: pressed / selected state
-  componentBgActive: string;
+  // accent5: string;
+  accent5: string;
   // 6 - Borders: Subtle borders for non-interactive components
-  border: string;
+  // accent6: string;
+  accent6: string;
   // 7 - Borders: Borders for interactive elements
-  borderElement: string;
+  // accent7: string;
+  accent7: string;
   // 8 - Borders: Borders for interactive elements in hover state
-  borderElementHover: string;
+  // accent8: string;
+  accent8: string;
   // 9 - Solid backgrounds
-  solidBg: string;
+  // accent9: string;
+  accent9: string;
   // 10 - Hovered solid backgrounds
-  solidBgHover: string;
+  // accent10: string;
+  accent10: string;
   // 11 - Low-contrast text
-  textLow: string;
+  // accent11: string;
+  accent11: string;
   // 12 - High-contrast text
-  textHigh: string;
+  // accent12: string;
+  accent12: string;
 }
 
 export default useTheme;

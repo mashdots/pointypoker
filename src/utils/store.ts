@@ -37,7 +37,7 @@ const useStore = create<Store>((set) => ({
   setTitleInputFocus: (isFocused) => set(() => ({ isTitleInputFocused: isFocused })),
   isMenuOpen: false,
   setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
-  currentModal: MODAL_TYPES.JIRA_REAUTH,
+  currentModal: null,
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
   arePrefsInitialized: false,
   setPrefsInitialized: () => set(() => ({ arePrefsInitialized: true })),

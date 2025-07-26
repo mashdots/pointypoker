@@ -26,10 +26,10 @@ type WrapperProps = ThemedProps & {
 
 const StyledButton = styled.button<WrapperProps>`
   ${({ configuredWidth, isDisabled, noMargin, textSize, theme, variation }: WrapperProps) => css`
-    background-color: ${theme[isDisabled ? 'greyscale' : variation].componentBg};
-    border-bottom-color: ${theme[isDisabled ? 'greyscale' : variation].borderElement} !important;
+    background-color: ${theme[isDisabled ? 'greyscale' : variation].accent3};
+    border-bottom-color: ${theme[isDisabled ? 'greyscale' : variation].accent7} !important;
     border-bottom-width: ${isDisabled ? 0 : 2}px !important;
-    color: ${theme[ isDisabled ? 'greyscale' : variation ].textLow };
+    color: ${theme[ isDisabled ? 'greyscale' : variation ].accent11 };
     cursor: ${isDisabled ? 'not-allowed' : 'pointer' };
     font-size: ${textSize}rem;
     margin-top: ${noMargin ? 0 : 1}rem;
@@ -51,9 +51,9 @@ const StyledButton = styled.button<WrapperProps>`
 
   :hover {
     ${ ({ isDisabled, noMargin, theme, variation }: WrapperProps) => !isDisabled && css`
-      color: ${theme[variation].textHigh};
-      background-color: ${ theme[variation].componentBgHover };
-      border-bottom-color: ${theme[ isDisabled ? 'greyscale' : variation ].borderElementHover} !important;
+      color: ${theme[variation].accent12};
+      background-color: ${ theme[variation].accent4 };
+      border-bottom-color: ${theme[ isDisabled ? 'greyscale' : variation ].accent8} !important;
       border-bottom-width: 4px !important;
       margin-top: calc(${noMargin ? 0 : 1}rem - 2px);
     `}
@@ -61,7 +61,7 @@ const StyledButton = styled.button<WrapperProps>`
   
   :active {
     ${ ({ isDisabled, noMargin, theme, variation }: WrapperProps) => !isDisabled && css`
-      background-color: ${ theme[variation].componentBgActive };
+      background-color: ${ theme[variation].accent5 };
       border-bottom-width: 1px;
       margin-top: calc(${noMargin ? 0 : 1}rem + 1px);
     `}
