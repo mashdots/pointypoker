@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
-import { ThemeReference } from '../colorSystem';
+import { ThemeColors } from '../colorSystem';
 
-const strawberry: ThemeReference = {
+const strawberry: ThemeColors = {
   primary: THEME_COLORS.CRIMSON,
   greyscale: THEME_COLORS.MAUVE,
   success: THEME_COLORS.GREEN,

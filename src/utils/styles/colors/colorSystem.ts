@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import * as colors from '@radix-ui/colors';
 
-import { VariationProperties as ColorAssociation } from '.';
+import { VariationProperties as ColorAccents } from '.';
 import * as themes from './themes';
 import useStore from '../../store';
 
@@ -32,36 +32,42 @@ const ACTUAL_THEME_MODES = {
   [THEME_MODES.DARK]: 'Dark',
 };
 
-type ColorReference = keyof typeof colors;
-/**
- * So we can properly calculate the color associations based on whether or not the theme is dark, we need to omit color
- * references that are already dark, 'A', or 'DarkA' alternatives.
- */
-type LightColorReference = Exclude<
-  ColorReference,
-  'blackA' | 'whiteA' | `${ keyof typeof colors }Dark` | `${ keyof typeof colors }DarkA` | `${ keyof typeof colors }A`
->;
+type ColorCollectionType = keyof typeof colors;
+type Hue = Exclude<
+  ColorCollectionType,
+  'blackA'
+    | 'blackP3A'
+    | 'whiteA'
+    | 'whiteP3A'
+    | `${ keyof typeof colors }Dark`
+    | `${ keyof typeof colors }DarkA`
+    | `${ keyof typeof colors }A`
+    | `${ keyof typeof colors }P3`
+    | `${ keyof typeof colors }P3A`
+    | `${ keyof typeof colors }DarkP3`
+    | `${ keyof typeof colors }DarkP3A`
+  >;
 type SubColorReference = { [ key: string ]: string };
 
-export type ThemeReference = {
-  [ key: string ]: LightColorReference;
-  primary: LightColorReference;
-  greyscale: LightColorReference;
-  success: LightColorReference;
-  warning: LightColorReference;
-  error: LightColorReference;
-  info: LightColorReference;
+export type ThemeColors = {
+  [ key: string ]: Hue;
+  primary: Hue;
+  greyscale: Hue;
+  success: Hue;
+  warning: Hue;
+  error: Hue;
+  info: Hue;
 };
 
 export type Theme = {
-  [ key: string ]: ColorAssociation;
-  primary: ColorAssociation;
-  greyscale: ColorAssociation;
-  transparent: ColorAssociation;
-  success: ColorAssociation;
-  warning: ColorAssociation;
-  error: ColorAssociation;
-  info: ColorAssociation;
+  [ key: string ]: ColorAccents;
+  primary: ColorAccents;
+  greyscale: ColorAccents;
+  transparent: ColorAccents;
+  success: ColorAccents;
+  warning: ColorAccents;
+  error: ColorAccents;
+  info: ColorAccents;
 };
 
 export type ThemedProps = {
@@ -73,7 +79,7 @@ export type ThemeOption = {
   color: string;
 };
 
-const variationPropertiesList: { dark: string[], light: string[] } = {
+const variationPropertiesList: { dark: Array<keyof ColorAccents>, light: Array<keyof ColorAccents> } = {
   dark: [
     'accent1',
     'accent2',
@@ -107,10 +113,10 @@ const variationPropertiesList: { dark: string[], light: string[] } = {
 /**
  * Builds the expected color association structure for a given color scheme and mode.
  */
-const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode, isTransparent = false): ColorAssociation => {
+const buildColorAssociation = (color: Hue, mode: ActualThemeMode, isTransparent = false): ColorAccents => {
   const transparentModifier = isTransparent ? 'A' : '';
-  const combinedColor: ColorReference = `${color}${mode}${transparentModifier}`;
-  const colorAssociation = {} as ColorAssociation;
+  const combinedColor: ColorCollectionType = `${color}${mode}${transparentModifier}`;
+  const colorAssociation = {} as ColorAccents;
   const propertyListMode = mode === 'Dark' ? 'dark' : 'light';
 
   variationPropertiesList[propertyListMode].forEach((variationProperty, i) => {
@@ -120,16 +126,16 @@ const buildColorAssociation = (color: LightColorReference, mode: ActualThemeMode
   return colorAssociation;
 };
 
-const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
+const buildTheme = (theme: ThemeColors, mode: THEME_MODES): Theme => {
   const finalColorMode = ACTUAL_THEME_MODES[mode] as ActualThemeMode;
   const builtTheme = {} as Theme;
 
   for (const key in theme) {
-    if (['primary', 'greyscale', 'success', 'warning', 'error', 'info'].includes(key) && theme[key]) {
-      builtTheme[key] = buildColorAssociation(theme[key] as LightColorReference, finalColorMode);
+    if (['primary', 'greyscale', 'success', 'warning', 'error', 'info'].includes(key)) {
+      builtTheme[key] = buildColorAssociation(theme[key] as Hue, finalColorMode);
 
       if (key === 'greyscale') {
-        builtTheme.transparent = buildColorAssociation(theme[key] as LightColorReference, finalColorMode, true);
+        builtTheme.transparent = buildColorAssociation(theme[key] as Hue, finalColorMode, true);
       }
 
     } else {
@@ -137,9 +143,7 @@ const buildTheme = (theme: ThemeReference, mode: THEME_MODES): Theme => {
     }
   }
 
-  return {
-    ...builtTheme,
-  };
+  return builtTheme;
 };
 
 const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');

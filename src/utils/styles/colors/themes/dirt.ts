@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
-import { ThemeReference } from '../colorSystem';
+import { ThemeColors } from '../colorSystem';
 
-const dirt: ThemeReference = {
+const dirt: ThemeColors = {
   primary: THEME_COLORS.BROWN,
   greyscale: THEME_COLORS.SAND,
   success: THEME_COLORS.GREEN,

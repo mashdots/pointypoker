@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
-import { ThemeReference } from '../colorSystem';
+import { ThemeColors } from '../colorSystem';
 
-const mint: ThemeReference = {
+const mint: ThemeColors = {
   primary: THEME_COLORS.TEAL,
   greyscale: THEME_COLORS.SAGE,
   success: THEME_COLORS.GRASS,

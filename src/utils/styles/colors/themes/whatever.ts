@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
-import { ThemeReference } from '../colorSystem';
+import { ThemeColors } from '../colorSystem';
 
-const whatever: ThemeReference = {
+const whatever: ThemeColors = {
   primary: THEME_COLORS.GRAY,
   greyscale: THEME_COLORS.GRAY,
   success: THEME_COLORS.GREEN,

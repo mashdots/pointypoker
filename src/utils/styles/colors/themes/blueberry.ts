@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
-import { ThemeReference } from '../colorSystem';
+import { ThemeColors } from '../colorSystem';
 
-const blueberry: ThemeReference = {
+const blueberry: ThemeColors = {
   primary: THEME_COLORS.INDIGO,
   greyscale: THEME_COLORS.SLATE,
   success: THEME_COLORS.GREEN,

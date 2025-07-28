@@ -1,7 +1,7 @@
 import { THEME_COLORS } from './definitions';
-import { ThemeReference } from '../colorSystem';
+import { ThemeColors } from '../colorSystem';
 
-const grape: ThemeReference = {
+const grape: ThemeColors = {
   primary: THEME_COLORS.PURPLE,
   greyscale: THEME_COLORS.MAUVE,
   success: THEME_COLORS.GREEN,
