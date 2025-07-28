@@ -1,22 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
-import styled, { css } from 'styled-components';
+import { AnimatePresence } from 'motion/react';
+import { div as AnimatedWrapper } from 'motion/react-client';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import RoomPresenter from './roomPresenter';
 import Button from '@components/common/button';
 import { useHeaderHeight } from '@routes/root';
 import { createRoom, updateRoom, watchRoom } from '@services/firebase';
-import { generateRoomName, usePrevious } from '@utils';
+import { generateRoomName } from '@utils';
 import useStore from '@utils/store';
 import { Participant, Room as RoomType, RoomUpdateObject } from '@yappy/types';
 
 type HeightAdjusted = {
   heightDiff: number;
-}
-
-type RoomControl = {
-  isRoomOpen: boolean;
 }
 
 const Container = styled.div<HeightAdjusted>`
@@ -35,28 +33,18 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const SetupWrapper = styled.div<RoomControl>`
-  ${({ isRoomOpen }) => css`
-    opacity: ${ isRoomOpen ? 0 : 1 };
-  `}
-
-  transition: opacity 250ms ease-out;
+const SetupWrapper = styled.div`
+  /* transition: opacity 250ms ease-out; */
   text-align: center;
 `;
 
-const RoomWrapper = styled.div<RoomControl>`
+const RoomWrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
 
-  transition: all 250ms ease-out;
-  
-  ${({ isRoomOpen }) => css`
-    opacity: ${isRoomOpen ? 1 : 0};
-  `}
+  /* transition: all 250ms ease-out; */
 `;
-
-let timeout: number | undefined;
 
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
@@ -70,9 +58,6 @@ const RoomSetup = () => {
   );
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
   const [isRoomOpen, setIsRoomOpen] = useState(false);
-  const [isRoomRendered, setIsRoomRendered] = useState(false);
-  const wasRendered = usePrevious(isRoomRendered);
-  const wasOpen = usePrevious(isRoomOpen);
   const navigate = useNavigate();
   const roomFromPath = useMemo(() => window.location.pathname.slice(1), [window.location.pathname]);
 
@@ -124,7 +109,7 @@ const RoomSetup = () => {
           if (!isEqual(result.data, roomData)) {
             const { data } = result;
             setRoom(data as RoomType);
-            setIsRoomRendered(true);
+            setIsRoomOpen(true);
             document.title = `pointy poker - ${ (data as RoomType).name}`;
           }
         } else {
@@ -184,46 +169,35 @@ const RoomSetup = () => {
     document.title = 'pointy poker';
   }, []);
 
-  /**
-   * Over-engineered logic to make the room component slide in and out
-   */
-  useEffect(() => {
-    clearTimeout(timeout);
-    if (isRoomRendered && !isRoomOpen && !wasRendered) {
-      setTimeout(() => {
-        setIsRoomOpen(true);
-      }, 100);
-    }
-
-    if (isRoomRendered && !isRoomOpen && wasOpen) {
-      setTimeout(() => {
-        setIsRoomRendered(false);
-      }, 250);
-    }
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [isRoomOpen, isRoomRendered]);
-
-  const conditionalComponent = isRoomRendered ? (
-    <RoomWrapper isRoomOpen={isRoomOpen}>
-      <RoomPresenter />
-    </RoomWrapper>
-  ) : (
-    <SetupWrapper isRoomOpen={isRoomOpen}>
-      <h1>ready to start?</h1>
-      <ButtonContainer>
-        <Button variation='info' width='full' onClick={handleCreateRoom}>
-          start a session
-        </Button>
-      </ButtonContainer>
-    </SetupWrapper>
-  );
-
   return (
     <Container heightDiff={refHeight}>
-      {conditionalComponent}
+      <AnimatePresence mode='wait'>
+        <AnimatedWrapper
+          key={isRoomOpen ? 'room' : 'setup'}
+          style={isRoomOpen ? { width: '100%', height: '100%' } : {}}
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: isRoomOpen ? -12 : 12 }}
+          transition={{ type: 'tween', duration: 0.25 }}
+        >
+          {
+            isRoomOpen ? (
+              <RoomWrapper>
+                <RoomPresenter />
+              </RoomWrapper>
+            ) : (
+              <SetupWrapper>
+                <h1>ready to start?</h1>
+                <ButtonContainer>
+                  <Button variation='info' width='full' onClick={handleCreateRoom}>
+                  start a session
+                  </Button>
+                </ButtonContainer>
+              </SetupWrapper>
+            )
+          }
+        </AnimatedWrapper>
+      </AnimatePresence>
     </Container>
   );
 };
