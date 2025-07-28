@@ -9,8 +9,9 @@ import {
   VoteResults,
   VotingPanel,
 } from './panels';
-import { useMobile } from '@utils/hooks/mobile';
+import useJiraScopeCheck from '@modules/integrations/jira/hooks';
 import TicketController from '@modules/room/panels/TicketController';
+import { useMobile } from '@utils/hooks/mobile';
 
 type RoomDataContainerProps = {
   showNarrow: boolean;
@@ -63,6 +64,7 @@ const getGridConfig = (showNarrow: boolean) => {
 
 const RoomPresenter = () => {
   const { isNarrow } = useMobile();
+  useJiraScopeCheck();
 
   const gridConfigs = getGridConfig(isNarrow);
 

@@ -8,7 +8,6 @@ const useJiraScopeCheck = () => {
     storedJiraPermissionsScope: preferences.jiraAccess?.scope.split(' ').sort(),
     revokeAccess: () => {
       setPreferences('jiraAccess', null);
-      setPreferences('jiraResources', null);
     },
     openReAuthenticationModal: () => setCurrentModal(MODAL_TYPES.JIRA_REAUTH),
   }));

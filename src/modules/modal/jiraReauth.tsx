@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Button from '@components/common/button';
-import useJira from '@modules/integrations/jira';
+import JiraIntegrationCard from '@modules/preferences/panes/integrations/jira';
+import { NoticeWrapper } from '@modules/preferences/panes/integrations/jira/components';
 
 const Container = styled.div`
   display: flex;
@@ -13,19 +13,11 @@ const Container = styled.div`
   text-align: center;
 `;
 
-const Message = styled.p`
-  margin-bottom: 2rem;
-`;
-
-export const JiraReauthModal = () => {
-  const { launchJiraOAuth } = useJira();
-
-  return (
-    <Container>
-      <Message>
+export const JiraReauthModal = () => (
+  <Container>
+    <NoticeWrapper>
         There&apos;s been an update to the Jira integration. Please reauthorize to continue using it.
-      </Message>
-      <Button variation='info' textSize='small' width='half' onClick={launchJiraOAuth}>ugh, fine</Button>
-    </Container>
-  );
-};
+    </NoticeWrapper>
+    <JiraIntegrationCard />
+  </Container>
+);
