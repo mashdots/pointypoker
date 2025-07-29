@@ -11,6 +11,7 @@ import { TicketFromQueue } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import Subtitles from './subtitles';
 import { useMobile } from '@utils/hooks/mobile';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type TicketControlFormat = {
   iconSrc?: string;
@@ -33,7 +34,7 @@ const PrimaryContainer = styled.div`
   margin-bottom: 0.25rem;
 `;
 
-const InformationDisplay = styled.div<{ isNarrow: boolean }>`
+const InformationDisplay = styled.div<ThemedProps>`
   ${({ isNarrow }) => css`
     flex-direction: ${isNarrow ? 'column' : 'row'};
   `}

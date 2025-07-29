@@ -9,16 +9,11 @@ import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import Logo from '@components/Header/logo';
 import { useMobile } from '@utils/hooks/mobile';
 
-
-type NarrowProps = {
-  isNarrow?: boolean;
-}
-
 type CardProps = {
   overrideWidth?: number,
   overrideHeight?: number,
   scroll?: boolean,
-} & NarrowProps & ThemedProps;
+} & ThemedProps;
 
 
 const Icon = styled(LogoSvg)`
@@ -89,8 +84,8 @@ const HeaderWrapper = styled.div`
   margin: 2rem 0;
 `;
 
-const Header = styled.h2<NarrowProps>`
-  ${({ isNarrow }: NarrowProps) => css`
+const Header = styled.h2<ThemedProps>`
+  ${({ isNarrow }) => css`
     flex-direction: ${isNarrow ? 'column' : 'row'};
   `}
   

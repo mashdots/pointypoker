@@ -13,16 +13,12 @@ import { GenericPrefCardProps } from './panes/categoryCard';
 import { useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
-type MobileProps = {
-  isNarrow: boolean;
-};
-
 type Panes = {
   categoryCard: (props: GenericPrefCardProps) => JSX.Element;
   pane: React.ReactNode;
 }
 
-const Wrapper = styled.div<MobileProps>`
+const Wrapper = styled.div<ThemedProps>`
   ${({ isNarrow }) => css`
     flex-direction: ${isNarrow ? 'column' : 'row'};
   `}
@@ -36,8 +32,8 @@ const Wrapper = styled.div<MobileProps>`
   overflow: hidden;
 `;
 
-const CategoryList = styled.ul<MobileProps>`
-  ${({ isNarrow, theme }: MobileProps & ThemedProps) => css`
+const CategoryList = styled.ul <ThemedProps>`
+  ${({ isNarrow, theme }) => css`
     background-color: ${theme.primary.accent3};
     border: 2px solid ${theme.primary.accent2};
     flex-direction: ${isNarrow ? 'row' : 'column'};

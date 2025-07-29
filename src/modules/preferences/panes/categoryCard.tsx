@@ -13,7 +13,6 @@ type Props = {
 
 type WrapperProps = {
   isActive: boolean;
-  isNarrow: boolean;
 } & ThemedProps;
 
 export type GenericPrefCardProps = Pick<Props, 'onClick' | 'isActive'>;

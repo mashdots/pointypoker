@@ -35,7 +35,6 @@ type Props = {
 
 type QueueControlProps = {
   alignRight: boolean;
-  isNarrow: boolean;
 }
 
 const IssuesWrapper = styled.div`
@@ -49,8 +48,8 @@ const IssuesWrapper = styled.div`
   border-radius: 0.5rem;
 `;
 
-const QueueControlWrapper = styled.div<QueueControlProps>`
-  ${({ alignRight, isNarrow }: QueueControlProps) => css`
+const QueueControlWrapper = styled.div<QueueControlProps & ThemedProps>`
+  ${({ alignRight, isNarrow }) => css`
     justify-content: ${alignRight ? 'flex-end' : 'space-between'};
     flex-direction: ${isNarrow ? 'column' : 'row'};
     align-items: center;

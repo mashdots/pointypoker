@@ -24,7 +24,6 @@ export enum MODAL_TYPES {
 
 type VisibleProps = {
   isVisible: boolean;
-  isNarrow: boolean;
 } & ThemedProps;
 
 type ModalContentProps = {

@@ -72,10 +72,11 @@ export type Theme = {
 
 export type ThemedProps = {
   theme: Theme;
+  isNarrow?: boolean;
 };
 
 export type ThemeOption = {
-  theme: string,
+  theme: THEMES,
   color: string;
 };
 
