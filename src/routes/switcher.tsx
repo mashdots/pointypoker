@@ -1,26 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React from 'react';
+import { AnimatePresence } from 'motion/react';
+import { div as AnimatedWrapper } from 'motion/react-client';
 
 import { UserSetup } from '@modules/user';
 import { RoomSetup } from '@modules/room';
 import useStore from '@utils/store';
-
-type WrapperProps = {
-  shouldShow: boolean;
-};
-
-const Wrapper = styled.div<WrapperProps>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  transition: all 300ms ease-in-out;
-
-  ${({ shouldShow }) => css`
-    opacity: ${shouldShow ? 1 : 0};
-  `}
-`;
 
 /**
  * This is a hybrid module that handles:
@@ -33,27 +17,27 @@ const Wrapper = styled.div<WrapperProps>`
  */
 const Switcher = () => {
   const user = useStore(({ preferences }) => preferences?.user);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [childComponent, setChildComponent] = useState<React.ReactNode>(null);
 
-  const getChildComponent = useCallback(() => {
-    if (!user) {
-      return <UserSetup />;
-    }
-
-    return <RoomSetup />;
-  }, [user]);
-
-  useEffect(() => {
-    setIsTransitioning(true);
-
-    setTimeout(() => {
-      setChildComponent(getChildComponent());
-      setIsTransitioning(false);
-    }, 300);
-  }, [user]);
-
-  return <Wrapper shouldShow={!isTransitioning}>{childComponent}</Wrapper>;
+  return (
+    <AnimatePresence mode="wait">
+      <AnimatedWrapper
+        key={!user ? 'user' : 'room'}
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -10, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
+        {!user ? <UserSetup /> : <RoomSetup />}
+      </AnimatedWrapper>
+    </AnimatePresence>
+  );
 };
 
 export default Switcher;
