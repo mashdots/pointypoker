@@ -31,6 +31,7 @@ export enum URL_ACTIONS {
 
   // JIRA API V2
   GET_FIELDS = 'get-fields',
+  GET_ISSUES_JQL = 'get-issues-jql',
   ISSUE = 'issue',
   GET_AVATAR = 'get-avatar',
 }
@@ -99,6 +100,10 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
     break;
 
     // JIRA API V2
+  case URL_ACTIONS.GET_ISSUES_JQL:
+    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/search/jql`;
+    break;
+
   case URL_ACTIONS.GET_FIELDS:
     url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/field`;
     break;

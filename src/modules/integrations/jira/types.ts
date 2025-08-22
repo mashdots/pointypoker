@@ -100,11 +100,26 @@ type IssueType = {
   }
 }
 
+type IssueChangelog = {
+  histories: Array<{
+    created: string;
+    items: Array<{
+      field: string;
+      fieldtype: string;
+      from?: string;
+      fromString?: string;
+      to?: string;
+      toString?: string;
+    }>;
+  }>;
+}
+
 export type JiraIssueSearchPayload = {
   expand: string;
   id: string;
   self: string;
   key: string;
+  changelog?: IssueChangelog;
   fields: {
     [key: string]: any;
     sprint: JiraSprint;

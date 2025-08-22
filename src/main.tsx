@@ -13,6 +13,7 @@ import {
   Switcher,
 } from './routes';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+import Velocity from '@routes/velocity';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/privacy',
         element: <Privacy />,
+      },
+      {
+        path: 'velocity',
+        element: <Velocity />,
       },
     ],
   },

@@ -201,7 +201,12 @@ const useJira = () => {
       });
   };
 
-  const getSprintsForBoard = async (boardId: string | number, startAt = 0) => {
+  const getSprintsForBoard = async (boardId: string | number, options?: {
+    startAt?: number | undefined,
+    maxResults?: number | undefined,
+    state?: 'future' | 'active' | 'closed'
+  }) => {
+    const { startAt = 0, state = 'future', maxResults = 100 } = options || {};
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_SPRINTS, { resourceId: resources?.id, boardId });
@@ -211,8 +216,9 @@ const useJira = () => {
         method: 'GET',
         url: path,
         params: {
-          state: 'future',
+          state,
           startAt,
+          maxResults,
         },
       },
     )
@@ -244,6 +250,36 @@ const useJira = () => {
           maxResults: 100,
           startAt,
           fields: fields.join(','),
+        },
+      },
+    )
+      .then((res): JiraIssuesDataPayload => res.data)
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+
+  const getIssuesForSprints = async (boardId: string | number, sprintIds: number[], options?: {
+    startAt?: number,
+  }) => {
+    const { startAt = 0 } = options ?? {};
+    const accessToken = await getJiraAccessToken();
+    const client = getJiraApiClient(API_URL, accessToken);
+    const path = buildUrl(URL_ACTIONS.GET_ISSUES_JQL, { resourceId: resources?.id, boardId });
+
+    // const fields = ['id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team'];
+    const jql = `Sprint IN (${sprintIds.join(', ')}) AND assignee WAS currentUser()`;
+
+    return client(
+      {
+        method: 'GET',
+        url: path,
+        params: {
+          jql,
+          maxResults: 100,
+          startAt,
+          fields: '*all',
+          expand: 'changelog',
         },
       },
     )
@@ -364,6 +400,7 @@ const useJira = () => {
     getBoards,
     getBoardConfiguration,
     getIssueFields,
+    getIssuesForSprints,
     getIssuesForBoard,
     getIssueDetail,
     getPointFieldFromBoardId,
