@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import Logo from './logo';
-import RoomControl from './roomControl';
+import RoomName from './roomName';
 import UserControl from './userControl';
 import MenuIcon from '@assets/icons/menu.svg?react';
 import useStore from '@utils/store';
@@ -88,7 +88,7 @@ const Header = ({ headerRef, hideMenu }: Props) => {
     <Wrapper ref={headerRef}>
       <Section flex={6} align='left' style={{ opacity: hasUser ? 1 : 0, transition: 'all 300ms ease-out' }}>
         <Logo />
-        <RoomControl />
+        <RoomName />
       </Section>
       <Section flex={1} align='right'>
         <UserControl />

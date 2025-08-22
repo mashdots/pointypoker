@@ -28,17 +28,15 @@ const Separator = styled.div<ThemedProps & { appear: boolean }>`
   `}
 `;
 
-const RoomControl = () => {
-  const { isInRoom, roomName } = useStore((state) => ({
-    isInRoom: !!state.room,
-    roomName: state?.room?.name,
-  }));
+const RoomName = () => {
+  const roomName = useStore(({ room }) => (room?.name.replace('-', ' ')));
+
   return (
-    <Wrapper appear={isInRoom}>
-      <Separator appear={isInRoom} />
+    <Wrapper appear={!!roomName}>
+      <Separator appear={!!roomName} />
       {roomName}
     </Wrapper>
   );
 };
 
-export default RoomControl;
+export default RoomName;
