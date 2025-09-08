@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
+import { AnimatePresence } from 'motion/react';
+import { div as Wrapper } from 'motion/react-client';
 
 import ArticleSvg from '@assets/icons/article.svg?react';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -8,26 +10,6 @@ type Props = {
   src?: string;
   ticketUrl?: string;
 }
-
-type WrapperProps = {
-  isVisible: boolean;
-}
-
-const Wrapper = styled.div<WrapperProps>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 3rem;
-  width: 3rem;
-  margin: 0 0.5rem;
-  transition: all 250ms;
-
-  ${ ({ isVisible }: WrapperProps) => css`
-    opacity: ${ isVisible ? 1 : 0 };
-    transform: scale(${ isVisible ? 1 : 0.75 });
-    filter: blur(${isVisible ? 0 : 0.5}rem);
-  `}
-`;
 
 const DefaultIcon = styled(ArticleSvg)`
   ${ ({ theme }: ThemedProps) => css`
@@ -45,49 +27,34 @@ const Icon = styled.img`
   border-radius: 0.25rem;
 `;
 
-let timeout: number;
-
-const IssueIcon = ({ src = '', ticketUrl }: Props) => {
-  const [ isIconVisible, setIsIconVisible ] = useState(false);
-  const [ icon, setIcon ] = useState<string | null>(null);
-
-  /**
-   * Over-engineered logic to make the icon animate in and out
-  */
-  useEffect(() => {
-    clearTimeout(timeout);
-
-    if (src !== icon) {
-      setIsIconVisible(false);
-
-      timeout = setTimeout(() => {
-        setIcon(src ?? '');
-      }, 200);
-    }
-
-    timeout = setTimeout(() => {
-      setIsIconVisible(true);
-    }, 300);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [ src, icon ]);
-
-  const iconComponent = icon ? (
-    <a href={ticketUrl} target='_blank' rel="noreferrer">
-      <Icon
-        src={icon}
-        alt='Ticket icon'
-      />
-    </a>
-  ) : <DefaultIcon />;
-
-  return (
-    <Wrapper isVisible={isIconVisible} >
-      {iconComponent}
+const IssueIcon = ({ src = '', ticketUrl }: Props) =>  (
+  <AnimatePresence mode='wait'>
+    <Wrapper
+      key={src || 'default'}
+      initial={{ opacity: 0, scale: 0.75, filter: 'blur(0.5rem)' }}
+      animate={{ opacity: 1, scale: 1, filter: 'blur(0rem)' }}
+      exit={{ opacity: 0, scale: 0.75, filter: 'blur(0.5rem)' }}
+      transition={{ duration: 0.25 }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '3rem',
+        width: '3rem',
+        margin: '0 0.5rem',
+      }}
+    >
+      {src ? (
+        <a href={ticketUrl} target='_blank' rel="noreferrer">
+          <Icon
+            src={src}
+            alt='Ticket icon'
+          />
+        </a>
+      ) : <DefaultIcon />}
     </Wrapper>
-  );
-};
+  </AnimatePresence>
+);
+
 
 export default IssueIcon;

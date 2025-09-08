@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { LinkIcon, Wrapper, VisibilityControl } from './components';
+import React from 'react';
+import { AnimatePresence } from 'motion/react';
+import { div as Wrapper } from 'motion/react-client';
+import styled, { css } from 'styled-components';
+
+import { LinkIcon } from './components';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
   flex?: number;
@@ -8,8 +13,19 @@ type Props = {
   url?: string;
 }
 
-let timeoutOne: number;
-let timeoutTwo: number;
+const StyledLink = styled.a`
+  ${ ({ theme }: ThemedProps) => css`
+    color: ${ theme.info.accent11 };
+  `}
+
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    }
+`;
 
 const Subtitles = ({
   flex,
@@ -17,42 +33,31 @@ const Subtitles = ({
   content,
   url,
 }: Props) => {
-  const [ displayedContent, setDisplayedContent ] = useState<string | null>(null);
-  const [ isVisible, setIsVisible ] = useState(false);
-
-  /**
-   * Over-engineered logic to make the icon animate in and out
-  */
-  useEffect(() => {
-    if (content && content !== displayedContent) {
-      clearTimeout(timeoutOne);
-      setIsVisible(false);
-
-      timeoutOne = setTimeout(() => {
-        setDisplayedContent(content ?? '');
-      }, 200);
-    }
-
-    timeoutTwo = setTimeout(() => {
-      setIsVisible(true);
-    }, 300);
-
-    return () => {
-      clearTimeout(timeoutOne);
-      clearTimeout(timeoutTwo);
-    };
-  }, [ content ]);
-
-  const finalContent = url ? (
-    <a href={url} target="_blank" rel="noreferrer"><LinkIcon />{displayedContent}</a>
-  ) : displayedContent;
 
   return (
-    <Wrapper flex={flex} width={width}>
-      <VisibilityControl isVisible={isVisible}>
-        {finalContent}
-      </VisibilityControl>
-    </Wrapper>
+    <AnimatePresence mode='wait'>
+      <Wrapper
+        key={content || 'default-content'}
+        initial={{ opacity: 0, filter: 'blur(0.25rem)' }}
+        animate={{ opacity: 1, filter: 'blur(0rem)' }}
+        exit={{ opacity: 0, filter: 'blur(0.25rem)' }}
+        transition={{ duration: 0.25 }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '0 1rem',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          flex,
+          width,
+        }}
+      >
+        {url ? (
+          <StyledLink href={url} target="_blank" rel="noreferrer"><LinkIcon />{content ?? ''}</StyledLink>
+        ) : content}
+      </Wrapper>
+    </AnimatePresence>
   );
 };
 
