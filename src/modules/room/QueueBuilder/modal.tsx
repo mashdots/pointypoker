@@ -43,7 +43,6 @@ const UndoIcon = styled(UndoSvg)`
 
 const ConfigWrapper = styled.div`
   ${({ theme }: ThemedProps) => css`
-    background-color: ${ theme.greyscale.accent3 };
     color: ${ theme.primary.accent12} ;
   `}
 
@@ -54,6 +53,7 @@ const ConfigWrapper = styled.div`
   padding: 0.5rem;
   border-radius: 0.5rem;
   margin: 0.5rem 0;
+  width: 100%;
 `;
 
 const ConfigOptionWrapper = styled.div`
@@ -141,6 +141,7 @@ const ListContentWrapper = styled.div`
   align-items: center;
   justify-content: center;
   overflow: auto;
+  width: 100%;
 `;
 
 const QueueModal = () => {

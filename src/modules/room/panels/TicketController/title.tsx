@@ -74,7 +74,6 @@ let timeout: number;
  * - A display component that shows the "name" of the ticket.
  *
  * The text input will only be visible if someone wants to create a new ticket or edit the name of a ticket that is not a JIRA ticket
- *
  */
 
 const Title = ({ shouldFocus, value }: Props) => {

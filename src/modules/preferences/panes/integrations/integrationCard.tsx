@@ -19,7 +19,7 @@ type WrapperProps = {
 const Wrapper = styled.div<WrapperProps>`
   ${ ({ isActive, theme }: WrapperProps & ThemedProps) => css`
     background-color: ${theme.greyscale.accent3};
-    border-width: ${ isActive ? 2 : 0 }px;
+    border-width: ${ isActive ? 1 : 0 }px;
     border-color: ${ theme.primary.accent7 };
   `};
 

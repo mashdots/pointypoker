@@ -34,8 +34,8 @@ const Wrapper = styled.div<ThemedProps>`
 
 const CategoryList = styled.ul <ThemedProps>`
   ${({ isNarrow, theme }) => css`
-    background-color: ${theme.primary.accent3};
-    border: 2px solid ${theme.primary.accent2};
+    background-color: ${theme.transparent.accent2};
+    border: 1px solid ${theme.primary.accent2};
     flex-direction: ${isNarrow ? 'row' : 'column'};
   `};
 

@@ -1,18 +1,21 @@
 import React, {
+  MouseEventHandler,
   useCallback,
-  useEffect,
+  useMemo,
   useRef,
-  useState,
 } from 'react';
 import styled, { css } from 'styled-components';
+import { AnimatePresence } from 'motion/react';
+import { div as AnimatedContainer } from 'motion/react-client';
 
 import PlusIcon from '@assets/icons/plus.svg?react';
 import { PreferencesModal } from '@modules/preferences';
 import { QueueModal, ReportPIIModal } from '@modules/room';
 import { JiraReauthModal } from '@modules/modal/jiraReauth';
 import { useMobile } from '@utils/hooks/mobile';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
+import Card from '@components/common/card';
 
 export enum MODAL_TYPES {
   FEEDBACK,
@@ -20,70 +23,31 @@ export enum MODAL_TYPES {
   JIRA_REAUTH,
   PII,
   PREFERENCES,
+  TICKET_SEARCH,
 }
 
-type VisibleProps = {
-  isVisible: boolean;
-} & ThemedProps;
-
-type ModalContentProps = {
-  title: string;
-  subtitle?: string;
-  contents: React.ReactNode;
+export type SizeProps = {
+  width: string;
+  height: string;
+  narrowWidth: string;
+  narrowHeight: string;
+  minWidth: string;
+  narrowMinWidth: string;
 }
 
-const BackDrop = styled.div<VisibleProps>`
-  ${({ isNarrow, isVisible, theme }: VisibleProps) => css`
-    background-color: ${theme.transparent.accent3};
-    opacity: ${isVisible ? 1 : 0};
-    backdrop-filter: blur(${isNarrow ? 0 : 2}px);
-  `}
-    
-  align-items: center;
-  display: flex;
-  justify-content: center;
+const DEFAULT_SIZE_CONFIG: SizeProps = {
+  height: '60%',
+  width: '50%',
+  narrowHeight: '90%',
+  narrowWidth: '90%',
+  minWidth: '720px',
+  narrowMinWidth: '90%',
+};
 
-  position: fixed;
-  left: 0;
-  top: 0;
-
-  height: 100vh;
-  width: 100vw;
-  z-index: 100;
-
-  transition: opacity 300ms;
-`;
-
-const Container = styled.div<VisibleProps>`
-  ${({ isNarrow, isVisible, theme }: VisibleProps) => css`
-    background-color: ${theme.greyscale.accent2};
-    border-color: ${theme.primary.accent6};
-    color: ${theme.primary.accent12};
-    height: ${isNarrow ? 90 : 60}%;
-    min-width: ${isNarrow ? '90%' : '720px'};
-    width: ${isNarrow ? 90 : 50}%;
-    transform: translateY(${isVisible ? 1 : 3}rem);
-  `}
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  border-radius: 0.5rem;
-  border-style: solid;
-  border-width: 2px;
-  padding: 2rem;
-
-  z-index: 100;
-
-  transition: 
-    transform 300ms,
-    width 300ms,
-    height 300ms;
-`;
 
 const HeaderWrapper = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   margin-top: 0;
@@ -126,111 +90,141 @@ const CloseIcon = styled(PlusIcon)`
   }
 `;
 
-let timer: number;
-
 const Modal = () => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { isNarrow } = useMobile();
-  const [ renderedModal, setRenderedModal ] = useState<ModalContentProps | null>(null);
-  const [ isModalVisible, setIsModalVisible ] = useState(false);
-  const { closeModal, isOpen, modalType } = useStore(({ currentModal, setCurrentModal }) => ({
+  const { closeModal, modalType } = useStore(({ currentModal, setCurrentModal }) => ({
     closeModal: () => setCurrentModal(null),
-    isOpen: currentModal !== null,
     modalType: currentModal,
   }));
 
+  const sizeConfig = useMemo<SizeProps>(() => DEFAULT_SIZE_CONFIG, []);
+
+  const { theme } = useTheme();
+
+  const modal = useMemo(() => {
+    switch (modalType) {
+    case MODAL_TYPES.FEEDBACK:
+      return {
+        title: 'Feedback',
+        contents: <div>Feedback</div>,
+      };
+    case MODAL_TYPES.PREFERENCES:
+      return {
+        title: 'Preferences',
+        subtitle: 'Changes save automatically',
+        contents: <PreferencesModal />,
+      };
+    case MODAL_TYPES.JIRA:
+      return {
+        title: 'Import from Jira',
+        contents: <QueueModal />,
+      };
+    case MODAL_TYPES.JIRA_REAUTH:
+      return {
+        title: 'Jira Integration Update',
+        contents: <JiraReauthModal />,
+      };
+    case MODAL_TYPES.PII:
+      return {
+        title: 'Report PII',
+        contents: <ReportPIIModal />,
+      };
+    default:
+      return null;
+    }
+  }, [ modalType ]);
+
+  const entryAndExitAnimationStyle = {
+    opacity: 0,
+    filter: 'blur(1rem)',
+    transform: 'perspective(500px) rotateX(-10deg) translateZ(-90px) translateY(20px)',
+  };
+
   // If the user clicks outside the Modal, close it
-  const handleBackdropClick = useCallback((event: MouseEvent) => {
-    if (modalRef.current && !event.composedPath().includes(modalRef.current)) {
-      closeModal();
+  const handleBackdropClick: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+    if (modalRef.current) {
+      const { clientX, clientY } = event;
+      const { top, right, bottom, left } = modalRef.current.getBoundingClientRect();
+
+      if (
+        clientY < top ||
+        clientY > bottom ||
+        clientX < left ||
+        clientX > right
+      ) {
+        closeModal();
+      }
     }
   }, [ closeModal, modalRef.current ]);
 
-  useEffect(() => {
-    clearTimeout(timer);
+  return (
+    <AnimatePresence>
+      {
+        modal ? (
+          <AnimatedContainer
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleBackdropClick}
+            transition={{ duration: 0.25 }}
+            style={{
+              backgroundColor: theme.transparent.accent1,
+              backdropFilter: 'blur(0.25rem)',
+              alignItems: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              position: 'fixed',
+              left: 0,
+              top: 0,
+              height: '100vh',
+              width: '100vw',
+              zIndex: 100,
+            }}
+          >
+            <AnimatedContainer
+              initial={{
+                ...entryAndExitAnimationStyle,
+                height: isNarrow ? sizeConfig.narrowHeight : sizeConfig.height,
+                width: isNarrow ? sizeConfig.narrowWidth : sizeConfig.width,
+              }}
+              animate={{
+                opacity: 1,
+                filter: 'blur(0rem)',
+                transform: 'perspective(500px) rotateX(0deg) translateZ(0px) translateY(0px)',
+                height: isNarrow ? sizeConfig.narrowHeight : sizeConfig.height,
+                width: isNarrow ? sizeConfig.narrowWidth : sizeConfig.width,
+              }}
+              exit={entryAndExitAnimationStyle}
+              transition={{ duration: 0.25 }}
+              ref={modalRef}
+              style={{
+                minWidth: isNarrow ? sizeConfig.narrowMinWidth : sizeConfig.minWidth,
+                backdropFilter: 'blur(0.75rem)',
+              }}
+            >
+              <Card
+                colorTheme='transparent'
+                overrideWidth='100%'
+                overrideHeight='100%'
+                style={{ padding: '1rem' }}
+              >
+                <HeaderWrapper>
+                  <TitlesWrapper>
+                    <Title>{modal.title}</Title>
+                    {modal.subtitle ? <Subtitle>{modal.subtitle}</Subtitle> : null}
+                  </TitlesWrapper>
+                  <CloseIcon onClick={closeModal} theme={theme} />
+                </HeaderWrapper>
+                {modal.contents}
+              </Card>
+            </AnimatedContainer>
+          </AnimatedContainer>
 
-    if (isOpen) {
-      let modalContent: ModalContentProps;
-
-      switch (modalType) {
-      case MODAL_TYPES.FEEDBACK:
-        modalContent = {
-          title: 'Feedback',
-          contents: <div>Feedback</div>,
-        };
-        break;
-      case MODAL_TYPES.PREFERENCES:
-        modalContent = {
-          title: 'Preferences',
-          subtitle: 'Changes save automatically',
-          contents: <PreferencesModal />,
-        };
-        break;
-      case MODAL_TYPES.JIRA:
-        modalContent = {
-          title: 'Import from Jira',
-          contents: <QueueModal />,
-        };
-        break;
-      case MODAL_TYPES.JIRA_REAUTH:
-        modalContent = {
-          title: 'Jira Integration Update',
-          contents: <JiraReauthModal />,
-        };
-        break;
-      case MODAL_TYPES.PII:
-        modalContent = {
-          title: 'Report PII',
-          contents: <ReportPIIModal />,
-        };
-        break;
-      default:
-        modalContent = {
-          title: 'Modal',
-          contents: <div>Modal</div>,
-        };
+        ) : null
       }
-
-      document.addEventListener('click', handleBackdropClick);
-      setRenderedModal(modalContent);
-
-      timer = setTimeout(() => {
-        setIsModalVisible(true);
-      }, 100);
-    } else {
-      document.removeEventListener('click', handleBackdropClick);
-      setIsModalVisible(false);
-
-      timer = setTimeout(() => {
-        setRenderedModal(null);
-      }, 300);
-    }
-
-    return () => {
-      document.removeEventListener('click', handleBackdropClick);
-      clearTimeout(timer);
-    };
-  }, [ isOpen ]);
-
-  return renderedModal ? (
-    <BackDrop isNarrow={isNarrow} isVisible={isModalVisible}>
-      <Container
-        id="modalContainer"
-        ref={modalRef}
-        isNarrow={isNarrow}
-        isVisible={isModalVisible}
-      >
-        <HeaderWrapper>
-          <TitlesWrapper>
-            <Title>{renderedModal.title}</Title>
-            <Subtitle>{renderedModal?.subtitle}</Subtitle>
-          </TitlesWrapper>
-          <CloseIcon onClick={closeModal} />
-        </HeaderWrapper>
-        {renderedModal.contents}
-      </Container>
-    </BackDrop>
-  ): null;
+    </AnimatePresence>
+  );
 };
 
 export default Modal;

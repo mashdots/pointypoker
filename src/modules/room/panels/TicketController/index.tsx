@@ -14,7 +14,7 @@ import { useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type TicketControlFormat = {
-  iconSrc?: string;
+  icon?: string;
   subTitle?: string;
   title: string;
   url?: string;
@@ -55,29 +55,30 @@ const TicketController = () => {
   const [triggerFocus, setTriggerFocus] = useState<string | null>(null);
   const [actionSubtitle, setActionSubtitle] = useState<string | null>(null);
   const { isNarrow } = useMobile();
-  const { title, subTitle, iconSrc, url } = useMemo((): TicketControlFormat => {
-    const { id, name, url, type, sprint } = currentTicket ?? ({} as Ticket | TicketFromQueue);
-    const possibleName = name ?? '';
-    const ticketData: TicketControlFormat = {
-      title: possibleName,
-      subTitle: ' ',
-    };
+
+  const { title, subTitle, icon, url } = useMemo((): TicketControlFormat => {
+    const { id, name, url: ticketUrl, type, sprint } = currentTicket ?? ({} as Ticket | TicketFromQueue);
+
+    const title = name ?? '';
+    let subTitle;
+    let url;
+    let icon;
 
     // URL will only exist if the ticket was a queued Jira ticket.
-    if (url) {
+    if (ticketUrl) {
       const { name: sprintName } = sprint as QueuedJiraTicket['sprint'] ?? { name: '' };
 
-      ticketData.subTitle = `${ id } • ${type.name} ${sprintName ? 'in' : ''} ${ sprintName }`;
-      ticketData.url = url;
-      ticketData.iconSrc = type.icon.blobData;
+      subTitle = `${ id } • ${type.name} ${sprintName ? 'in' : ''} ${ sprintName }`;
+      url = ticketUrl;
+      icon = type.icon.blobData;
 
       // parseURL will return null if the name is not a URL
-    } else if (parseURL(possibleName)) {
-      ticketData.subTitle = 'Click here to visit link';
-      ticketData.url = possibleName;
+    } else if (parseURL(title)) {
+      subTitle = 'Click here to visit link';
+      url = title;
     }
 
-    return ticketData;
+    return { title, subTitle, icon, url };
   }, [ currentTicket ]);
 
   useEffect(() => {
@@ -87,7 +88,7 @@ const TicketController = () => {
   return (
     <Wrapper>
       <PrimaryContainer>
-        <IssueIcon src={iconSrc} ticketUrl={url} />
+        <IssueIcon src={icon} ticketUrl={url} />
         <Title value={title} shouldFocus={triggerFocus} />
         <Controls triggerFocus={setTriggerFocus} setSubtitle={setActionSubtitle} />
       </PrimaryContainer>

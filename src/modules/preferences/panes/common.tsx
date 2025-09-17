@@ -8,7 +8,7 @@ export const Separator = styled.span`
   `}
 
     display: inline-block;
-    height: 2px;
+    height: 1px;
     width: 100%;
     margin-top: 1rem;
 `;

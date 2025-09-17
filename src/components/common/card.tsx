@@ -3,26 +3,36 @@ import styled, { css } from 'styled-components';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 export type CardProps = {
-  overrideWidth?: number;
-  overrideHeight?: number;
+  overrideWidth?: number | string;
+  overrideHeight?: number | string;
   scroll?: boolean;
 } & ThemedProps;
 
 const Card = styled.div<CardProps>`
-  ${ ({ scroll, theme }: CardProps) => css`
-    background-color: ${ theme.primary.accent3 };
-    border-color: ${ theme.primary.accent6 };
-    overflow: ${ scroll ? 'auto' : 'hidden' };
-  `};
+  ${ ({ colorTheme, scroll, theme, isNarrow, overrideHeight, overrideWidth }: CardProps) => {
+    const finalTheme = colorTheme ?? 'primary';
 
-  ${ ({ overrideWidth, isNarrow }: CardProps) => !isNarrow && overrideWidth && css`
-    width: ${ overrideWidth }rem !important;
-  `}
+    let finalWidth = '90%';
+    let finalHeight = '30rem';
 
-  ${ ({ overrideHeight }: CardProps) => overrideHeight && css`
-    height: ${ overrideHeight }rem !important;
-  `}
+    if (!isNarrow && overrideWidth) {
+      finalWidth = typeof overrideWidth === 'string' ? overrideWidth : `${overrideWidth}rem`;
+    }
 
+    if (overrideHeight) {
+      finalHeight = typeof overrideHeight === 'string' ? overrideHeight : `${overrideHeight}rem`;
+    }
+
+    return css`
+      background-color: ${ theme[finalTheme].accent3 };
+      border-color: ${ theme[finalTheme].accent6 };
+      overflow: ${ scroll ? 'auto' : 'hidden' };
+      width: ${ finalWidth };
+      height: ${ finalHeight };
+    `;
+  }};
+
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
   border-width: 1px;
   border-style: solid;
   display: flex;
@@ -30,8 +40,6 @@ const Card = styled.div<CardProps>`
   justify-content: flex-start;
   align-items: center;
   border-radius: 1rem;
-  width: 90%;
-  height: 30rem;
   transition: all 300ms ease-out;
 `;
 

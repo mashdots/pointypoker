@@ -26,18 +26,18 @@ const ThemeOptionContainer = styled.div`
 
 const ThemeOptionWrapper = styled.label<ThemeOptionWrapperProps>`
   ${({ isActive, theme }: ThemeOptionWrapperProps) => css`
-    background-color: ${isActive ? theme.primary.accent3 : theme.transparent.accent1};
-    border-color: ${isActive ? theme.primary.accent6 : theme.transparent.accent1};
+    background-color: ${isActive ? theme.primary.accent4 : theme.transparent.accent1};
+    border-color: ${isActive ? theme.primary.accent8 : theme.transparent.accent1};
   `}
   
-  border-width: 2px;
+  border-width: 1px;
   cursor: pointer;
   border-style: solid;
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
-  width: 45%;
-  margin: 0.25rem 0.25rem 0.25rem 0;
+  width: 35%;
+  margin: 0.25rem 1rem 0.25rem 0;
   padding: 0.5rem;
 
   transition: background-color 300ms, border-width 300ms;

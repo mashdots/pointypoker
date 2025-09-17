@@ -4,7 +4,7 @@ import InformationWrapper from './informationWrapper';
 
 const ConnectWrapper = styled(InformationWrapper)`
   ${({ theme }: ThemedProps) => css`
-    border: 2px solid ${ theme.success.accent7 };
+    border: 1px solid ${ theme.success.accent7 };
   `};
 `;
 
