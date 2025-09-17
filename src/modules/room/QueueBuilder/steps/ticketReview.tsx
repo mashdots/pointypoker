@@ -179,7 +179,7 @@ const TicketReview = ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
   }));
-  const { currentTicket, handleCreatePredefinedTicket } = useTickets();
+  const { currentTicket, handleCreatePredefinedTicket, shouldShowVotes } = useTickets();
   const { isNarrow } = useMobile();
   const { buildJiraUrl } = useJira();
   const ticketsInQueue = !!existingQueue.length;
@@ -207,7 +207,7 @@ const TicketReview = ({
         },
       );
 
-      if (!currentTicket) {
+      if (!currentTicket || !shouldShowVotes) {
         const newCurrentTicket = newIssues[0];
         if (newCurrentTicket) {
           handleCreatePredefinedTicket(newCurrentTicket, true);

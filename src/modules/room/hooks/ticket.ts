@@ -126,22 +126,26 @@ const useTickets = () => {
         ...(preDefinedTicket || {}) ,
       } as Ticket;
 
-      if (currentTicket && shouldShowVotes) {
+      if (currentTicket) {
         const completedTicket = cloneDeep(currentTicket);
 
+        if (shouldShowVotes) {
         // If any users did not vote, increment their consecutive misses
-        participants.forEach(({ id }) => {
-          if (!isVoteCast(currentTicket.votes[id])) {
-            const currentConsecutiveMisses = participants.find((participant) => participant.id === id)?.consecutiveMisses || 0;
-            updateObj[`participants.${ id }.consecutiveMisses`] = currentConsecutiveMisses + 1;
+          participants.forEach(({ id }) => {
+            if (!isVoteCast(currentTicket.votes[id])) {
+              const currentConsecutiveMisses = participants.find((participant) => participant.id === id)?.consecutiveMisses || 0;
+              updateObj[`participants.${ id }.consecutiveMisses`] = currentConsecutiveMisses + 1;
+            }
+          });
+
+          // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
+          completedTicket.averagePoints = calculateAverage(currentTicket).average;
+
+          if (!completedTicket.suggestedPoints) {
+            completedTicket.suggestedPoints = calculateSuggestedPoints(currentTicket).suggestedPoints;
           }
-        });
-
-        // Calculate average and suggested points of current ticket and write to averagePoints of current ticket
-        completedTicket.averagePoints = calculateAverage(currentTicket).average;
-
-        if (!completedTicket.suggestedPoints) {
-          completedTicket.suggestedPoints = calculateSuggestedPoints(currentTicket).suggestedPoints;
+        } else {
+          completedTicket.suggestedPoints = 'skip';
         }
 
         // Move the current ticket to the completed tickets array
