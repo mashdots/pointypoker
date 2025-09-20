@@ -116,22 +116,22 @@ const Menu = ({ topOffset }: Props) => {
 
   const menuItems: Array<{ component: JSX.Element, shouldShow?: boolean }> = [
     {
-      component: <PreferencesMenuItem />,
+      component: <PreferencesMenuItem key='preferences' />,
       shouldShow: isAuthed,
     },
     {
-      component: <FeedbackMenuItem />,
+      component: <FeedbackMenuItem key='feedback' />,
     },
     {
-      component: <Separator />,
+      component: <Separator key="separator" />,
       shouldShow: !!roomName,
     },
     {
-      component: <ImportFromJiraMenuItem />,
+      component: <ImportFromJiraMenuItem key='jira' />,
       shouldShow: isConfigured && !!roomName,
     },
     {
-      component: <LeaveRoomMenuItem />,
+      component: <LeaveRoomMenuItem key='leave-room' />,
       shouldShow: !!roomName,
     },
   ];
@@ -144,7 +144,7 @@ const Menu = ({ topOffset }: Props) => {
       top={topOffset}
       right={rightOffset}
     >
-      <ThemeModeToggleRow />
+      <ThemeModeToggleRow key="theme-mode-toggle" />
       {menuItems.map(({ component, shouldShow }) => shouldShow && component)}
     </Container>
   ) : null;

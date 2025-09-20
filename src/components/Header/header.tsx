@@ -19,7 +19,7 @@ type SectionProps = {
 }
 
 type MenuIconProps = {
-  isOpen: boolean;
+  isopen: 'true' | 'false';
 } & ThemedProps;
 
 const Wrapper = styled.div`
@@ -41,7 +41,7 @@ const Section = styled.div<SectionProps>`
 `;
 
 const MenuButton = styled(MenuIcon)<MenuIconProps>`
-  ${({ theme, isOpen }: MenuIconProps) => isOpen ? css`
+  ${({ theme, isopen }: MenuIconProps) => isopen === 'true' ? css`
     > line {
       stroke: ${theme.primary.accent12};
     }
@@ -92,7 +92,7 @@ const Header = ({ headerRef, hideMenu }: Props) => {
       </Section>
       <Section flex={1} align='right'>
         <UserControl />
-        {!hideMenu && <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isOpen={isMenuOpen} />}
+        {!hideMenu && <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isopen={`${isMenuOpen}`} />}
       </Section>
     </Wrapper>
   );

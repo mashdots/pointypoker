@@ -38,7 +38,7 @@ const LightMode = styled(LightModeIcon)`
 export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) => {
   const { themeMode, toggleThemeMode } = useTheme();
   const colorOverrides = {
-    onBg: 'success.accent9',
+    onbg: 'success.accent9',
     offBg: 'info.accent9',
   };
 

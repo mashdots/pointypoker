@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type ColorOverrides = {
-  onBg?: string;
+  onbg?: string;
   onIcon?: string;
   offBg?: string;
   offIcon?: string;
@@ -39,8 +39,8 @@ const Wrapper = styled.div<ColorOverrides & { position?: 'left' | 'right' }>`
   justify-content: center;
   
   input:checked + #slider {
-    ${({ onBg, theme }: ColorOverrides & ThemedProps) => {
-    const finalColor = onBg ? get(theme, onBg) : theme.success.accent9;
+    ${({ onbg, theme }: ColorOverrides & ThemedProps) => {
+    const finalColor = onbg ? get(theme, onbg) : theme.success.accent9;
 
     return css`
         background-color: ${finalColor};
