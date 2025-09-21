@@ -31,11 +31,12 @@ import {
 const API_URL = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
 
 const useJira = () => {
-  const { access, isConfigured, isExpired, resources, userId, setAccess } = useStore(({ preferences, setPreferences }) => {
+  const { access, isConnected, isConfigured, isExpired, resources, userId, setAccess } = useStore(({ preferences, setPreferences }) => {
     const { jiraAccess, jiraResources, jiraPreferences } = preferences;
     return {
       access: jiraAccess,
       resources: jiraResources,
+      isConnected: !!jiraAccess && !!jiraResources,
       isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
       isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
       setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
@@ -355,6 +356,7 @@ const useJira = () => {
 
   return {
     buildJiraUrl,
+    isConnected,
     isConfigured,
     jiraAccessibleResources: resources,
     launchJiraOAuth,

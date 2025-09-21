@@ -73,14 +73,14 @@ const StyledButton = styled.button`
 `;
 
 const SkeuButton = styled.button`
-  ${ ({ round, textSize, theme, variation, isLoading }: WrapperProps) => css`
+  ${ ({ round, textSize, theme, variation, isLoading, noMargin }: WrapperProps) => css`
     background-color: ${ theme[ isLoading ? 'greyscale' : variation ].accent7 };
     border-radius: ${ round ? 500 : 0.5 }rem;
     border-color: ${ theme[ isLoading ? 'greyscale' : variation ].accent8 } !important;
     box-shadow: 0 0.125rem 0.25rem ${ theme.primary.accent1 };
     font-size: ${ textSize }rem;
     padding: 0.5rem ${ round ? 0.5 : 1.75 }rem;
-
+    margin-top: ${ noMargin ? 0 : 1 }rem;
 
     ${ ({ configuredWidth }: WrapperProps) => configuredWidth && css`
       width: ${ configuredWidth };

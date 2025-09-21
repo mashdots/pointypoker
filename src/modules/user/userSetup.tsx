@@ -156,6 +156,8 @@ const UserSetup = () => {
               type='submit'
               variation='info'
               width={3}
+              refresh
+              round
             >
               <ArrowIcon />
             </Button>

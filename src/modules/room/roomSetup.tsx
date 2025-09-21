@@ -189,8 +189,8 @@ const RoomSetup = () => {
               <SetupWrapper>
                 <h1>ready to start?</h1>
                 <ButtonContainer>
-                  <Button variation='info' width='full' onClick={handleCreateRoom}>
-                  start a session
+                  <Button refresh variation='info' width='full' onClick={handleCreateRoom}>
+                    start a session
                   </Button>
                 </ButtonContainer>
               </SetupWrapper>

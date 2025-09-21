@@ -58,7 +58,7 @@ const Menu = ({ topOffset }: Props) => {
       }
     ),
   );
-  const { isConfigured } = useJira();
+  const { isConnected } = useJira();
   const [isMenuRendered, setIsMenuRendered] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [rightOffset, setRightOffset] = useState(0);
@@ -128,7 +128,7 @@ const Menu = ({ topOffset }: Props) => {
     },
     {
       component: <ImportFromJiraMenuItem key='jira' />,
-      shouldShow: isConfigured && !!roomName,
+      shouldShow: isConnected && !!roomName,
     },
     {
       component: <LeaveRoomMenuItem key='leave-room' />,

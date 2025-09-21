@@ -43,7 +43,7 @@ const JiraIntegrationCard = () => {
       setPreferences('jiraPreferences', null);
     },
   }));
-  const { launchJiraOAuth, getAccessibleResources } = useJira();
+  const { isConnected, launchJiraOAuth, getAccessibleResources } = useJira();
   const { syncPrefsToStore } = usePreferenceSync();
 
   const eventListenerMethod = (event: StorageEvent) => {
@@ -61,8 +61,8 @@ const JiraIntegrationCard = () => {
     let buttonVariation = 'info';
 
     if (isError) {
-      buttonChildren =  isConfigured ? 'Reconnect' : 'Retry connection';
-      buttonVariation = isConfigured ? 'warning' : 'error';
+      buttonChildren =  isConnected ? 'Reconnect' : 'Retry connection';
+      buttonVariation = isConnected ? 'warning' : 'error';
     }
 
     if (isLoading) {
@@ -80,7 +80,8 @@ const JiraIntegrationCard = () => {
         variation={buttonVariation as 'info' | 'warning' | 'error'}
         textSize='small'
         width='quarter'
-        isDisabled={isLoading}
+        disabled={isLoading}
+        refresh
       >
         {buttonChildren}
       </Button>
@@ -121,7 +122,7 @@ const JiraIntegrationCard = () => {
     </ConnectWrapper>
   );
 
-  const connectInfoBlock = !isConfigured ? (
+  const connectInfoBlock = !isConnected ? (
     <NoticeWrapper>
       <p>
         When you connect pointy poker to Jira, Oauth tokens are
@@ -172,7 +173,7 @@ const JiraIntegrationCard = () => {
       subtitle="View issues and assign points"
     >
       {connectInfoBlock}
-      {isConfigured && resources && [
+      {isConnected && [
         connectSuccessBlock,
         (
           <Wrapper key='integration-setup'>

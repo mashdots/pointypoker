@@ -310,11 +310,12 @@ const TicketReview = ({
           </QueueActionWrapper>
         )}
         <Button
+          refresh
           variation='info'
           width={12}
           textSize='small'
           onClick={handleAddTicketsToQueue}
-          isDisabled={ticketsInQueue && queueAction === null}
+          disabled={ticketsInQueue && queueAction === null}
         >
           {ticketsInQueue ? 'Update' : 'Add to'} queue
           <ArrowIcon />

@@ -239,8 +239,9 @@ const VoteDisplay = ({ config }: GridPanelProps) => {
       onClick={() => {
         handleUpdateCurrentTicket('shouldShowVotes', true);
       }}
-      isDisabled={shouldShowVotes || !hasAnyoneVoted}
+      disabled={shouldShowVotes || !hasAnyoneVoted}
       textSize='small'
+      refresh
     >
       show votes
     </Button>

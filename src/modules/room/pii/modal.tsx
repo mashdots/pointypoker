@@ -115,6 +115,7 @@ const ReportPIIModal = () => {
       </ReviewContainer>
       <ButtonWrapper>
         <Button
+          refresh
           variation='error'
           width={12}
           textSize='small'
@@ -123,6 +124,7 @@ const ReportPIIModal = () => {
         Cancel
         </Button>
         <Button
+          refresh
           variation='success'
           width={12}
           textSize='small'
