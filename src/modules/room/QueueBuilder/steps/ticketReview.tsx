@@ -179,7 +179,7 @@ const TicketReview = ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
   }));
-  const { currentTicket, handleCreatePredefinedTicket, shouldShowVotes } = useTickets();
+  const { currentTicket, completedTickets, handleCreatePredefinedTicket, shouldShowVotes } = useTickets();
   const { isNarrow } = useMobile();
   const { buildJiraUrl } = useJira();
   const ticketsInQueue = !!existingQueue.length;
@@ -225,6 +225,14 @@ const TicketReview = ({
       default:
         updateObj['ticketQueue'] = [...newIssues];
         break;
+      }
+
+      // Filter out completed tickets that are in newIssues
+      const updatedCompletedTickets = completedTickets?.filter(
+        (completed) => !newIssues.find((newIssue) => newIssue.id === completed.id),
+      ) || [];
+      if (updatedCompletedTickets.length !== completedTickets?.length) {
+        updateObj['completedTickets'] = updatedCompletedTickets;
       }
 
       try {

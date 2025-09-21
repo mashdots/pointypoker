@@ -2,15 +2,12 @@ import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
+import { div as TicketRow } from 'motion/react-client';
+
 
 import { useTickets } from '../../hooks';
 import { getTicketNumberFromUrl } from '../../utils';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { fadeDownEntrance } from '@components/common/animations';
-
-type TicketRowProps = {
-  showBottomBorder?: boolean,
-} & ThemedProps;
+import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,22 +39,25 @@ const TicketHeader = styled.div`
     margin: 0.25rem 0;
 `;
 
-const TicketRow = styled.div <TicketRowProps>`
-  ${({ showBottomBorder, theme }: TicketRowProps) => css`
-    color: ${ theme.primary.accent12 };
-    border-color: ${ theme.primary.accent6 };
-    border-bottom-width: ${ showBottomBorder ? 1 : 0 }px !important;
+const IDCell = styled.div`
+  ${({ theme }: ThemedProps) => css`
+    color: ${ theme.info.accent11 };
+    background-color: ${ theme.greyscale.accent3 };
+    border: 1px solid ${ theme.primary.accent6 };
   `}
 
-  padding: 0.75rem 2rem 0.75rem 1rem;
-  display: flex;
+  flex: 1 ;
   align-items: center;
-  border-style: solid;
-  border-width: 0px;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  animation: ${fadeDownEntrance} 300ms;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  margin-right: 0.5rem;
+   
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 const NameCell = styled.div`
@@ -79,41 +79,60 @@ const PointCell = styled.div`
   width: 1rem;
   justify-content: center;
   align-items: center;
-  margin-left: 0.5rem;
+  margin-left: 1rem;
 `;
 
 const History = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const { completedTickets } = useTickets();
-  const ticketRows = useMemo(() => completedTickets?.map(({
-    id,
-    name,
-    suggestedPoints,
-  }, i) => {
-    const parsedUrl = parseURL(name ?? '');
-    const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
-    const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
-    const isLast = i === completedTickets.length - 1;
+  const { theme } = useTheme();
 
-    return (
-      <TicketRow key={id} showBottomBorder={!isLast}>
-        <NameCell title={title ?? name}>{nameComponent || '(no title)'}</NameCell>
-        <PointCell>{suggestedPoints}</PointCell>
-      </TicketRow>
-    );
-  }), [completedTickets],
-  );
+  const ticketRows = useMemo(() => completedTickets?.map(
+    ({
+      id,
+      name,
+      suggestedPoints,
+      url,
+    }, i) => {
+      const parsedUrl = url ?? parseURL(name ?? '');
+      const idElement = id ? <IDCell><Link to={url} target='_blank'>{id}</Link></IDCell> : null;
+      const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
+      const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
+      const isLast = i === completedTickets.length - 1;
 
-  const header = (
-    <TicketHeader ref={headerRef}>
-      <NameCell>ticket</NameCell>
-      <PointCell title="Suggested points">suggested</PointCell>
-    </TicketHeader>
+      return (
+        <TicketRow
+          key={id}
+          initial={{ y: -10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 10, opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            borderStyle: 'solid',
+            borderWidth: '0px',
+            borderColor: theme.primary.accent6,
+            borderBottomWidth: isLast ? 0 : '1px',
+            padding: '0.75rem 2rem 0.75rem 1rem',
+          }}
+        >
+          {idElement}
+          <NameCell title={title ?? name}>{nameComponent || '(no title)'}</NameCell>
+          <PointCell>{suggestedPoints}</PointCell>
+        </TicketRow>
+      );
+    }), [completedTickets],
   );
 
   return (
     <Wrapper>
-      {header}
+      <TicketHeader ref={headerRef}>
+        <NameCell>ticket</NameCell>
+        <PointCell title="Suggested points">suggested</PointCell>
+      </TicketHeader>
       <TicketRowList>
         {ticketRows}
       </TicketRowList>
