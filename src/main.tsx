@@ -14,10 +14,11 @@ import {
 } from './routes';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import { PostHogProvider } from 'posthog-js/react';
+import { ConfigDefaults } from 'posthog-js';
 
 const options = {
   api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-  defaults: '2025-05-24',
+  defaults: '2025-05-24' as ConfigDefaults,
 };
 
 
