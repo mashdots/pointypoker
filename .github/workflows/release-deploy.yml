@@ -39,6 +39,7 @@ jobs:
         VITE_FB_APP_ID: ${{ secrets.VITE_FB_APP_ID }}
         VITE_JIRA_CLIENT_ID: ${{ secrets.VITE_JIRA_CLIENT_ID }}
         VITE_JIRA_CLIENT_SECRET: ${{ secrets.VITE_JIRA_CLIENT_SECRET }}
+        VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
         VITE_VERSION: ${{ env.VITE_VERSION }}
 
     - name: Copy robots.txt
