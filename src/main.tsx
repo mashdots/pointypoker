@@ -4,6 +4,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
+import posthog from 'posthog-js';
+import { PostHogProvider } from 'posthog-js/react';
 
 import './index.css';
 import {
@@ -13,13 +15,12 @@ import {
   Switcher,
 } from './routes';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
-import { PostHogProvider } from 'posthog-js/react';
-import { ConfigDefaults } from 'posthog-js';
 
-const options = {
+
+posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
   api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-  defaults: '2025-05-24' as ConfigDefaults,
-};
+  defaults: '2025-05-24',
+});
 
 
 const router = createBrowserRouter([
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <PostHogProvider apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY} options={options}>
+    <PostHogProvider client={posthog} >
       <RouterProvider router={router} />
     </PostHogProvider>
   </React.StrictMode>,
