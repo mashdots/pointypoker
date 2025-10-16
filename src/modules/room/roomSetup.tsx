@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
 import { AnimatePresence } from 'motion/react';
-import { div as AnimatedWrapper } from 'motion/react-client';
+import { div as AnimatedWrapper, s } from 'motion/react-client';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -58,6 +58,7 @@ const RoomSetup = () => {
   );
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
   const [isRoomOpen, setIsRoomOpen] = useState(false);
+  const [isLoadingRoom, setIsLoadingRoom] = useState(false);
   const navigate = useNavigate();
   const roomFromPath = useMemo(() => window.location.pathname.slice(1), [window.location.pathname]);
 
@@ -65,6 +66,8 @@ const RoomSetup = () => {
     if (!user) {
       return;
     }
+
+    setIsLoadingRoom(true);
 
     const roomName = generateRoomName();
     const self: Participant = {
@@ -95,6 +98,8 @@ const RoomSetup = () => {
       } else {
         console.error(result);
       }
+
+      setIsLoadingRoom(false);
     });
   };
 
@@ -103,6 +108,7 @@ const RoomSetup = () => {
 
     if (roomToJoin && !subscribedRoomRef.current) {
       const roomToJoin = roomData?.name || roomFromPath;
+      setIsLoadingRoom(true);
 
       subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
         if (!result.error) {
@@ -110,12 +116,14 @@ const RoomSetup = () => {
             const { data } = result;
             setRoom(data as RoomType);
             setIsRoomOpen(true);
-            document.title = `pointy poker - ${ (data as RoomType).name}`;
+            document.title = `pointy poker - ${(data as RoomType).name}`;
           }
         } else {
           navigate('/');
           console.error(result);
         }
+
+        setIsLoadingRoom(false);
       });
     } else if (!roomToJoin) {
       subscribedRoomRef.current?.();
@@ -123,6 +131,7 @@ const RoomSetup = () => {
       setIsRoomOpen(false);
       setRoom(null);
       navigate('/');
+      setIsLoadingRoom(false);
     }
 
     if (user && roomData) {
@@ -189,7 +198,7 @@ const RoomSetup = () => {
               <SetupWrapper>
                 <h1>ready to start?</h1>
                 <ButtonContainer>
-                  <Button refresh variation='info' width='full' onClick={handleCreateRoom}>
+                  <Button refresh loading={isLoadingRoom} variation='info' width='full' onClick={handleCreateRoom}>
                     start a session
                   </Button>
                 </ButtonContainer>
