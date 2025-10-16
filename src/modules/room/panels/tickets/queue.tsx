@@ -131,7 +131,7 @@ const Queue = () => {
   } = useTickets();
 
   const handleSelectIssue = (ticket: PossibleQueuedTicket) => {
-    handleCreatePredefinedTicket(ticket, true);
+    handleCreatePredefinedTicket(ticket, true, true);
   };
 
   const issues = queue.map((issue, delayMultiplier) => {

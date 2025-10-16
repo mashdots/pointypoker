@@ -98,8 +98,9 @@ const useTickets = () => {
   const handleCreatePredefinedTicket = (
     preDefinedTicket: Partial<Ticket | JiraTicket | PossibleQueuedTicket>,
     isFromQueue = false,
+    keepCurrentInQueue = false,
   ) => {
-    handleCreateTicket(preDefinedTicket.name, preDefinedTicket, isFromQueue);
+    handleCreateTicket(preDefinedTicket.name, preDefinedTicket, isFromQueue, keepCurrentInQueue);
   };
 
   /**
@@ -110,7 +111,7 @@ const useTickets = () => {
    * points will be calculated, and the ticket will be moved to the
    * `completedTickets` array.
    */
-  const handleCreateTicket = useCallback((newTicketName = '', preDefinedTicket?: Partial<Ticket | JiraTicket | PossibleQueuedTicket>, fromQueue = false) => {
+  const handleCreateTicket = useCallback((newTicketName = '', preDefinedTicket?: Partial<Ticket | JiraTicket | PossibleQueuedTicket>, fromQueue = false, keepCurrentInQueue = false) => {
     if (roomName && user) {
       const updateObj: RoomUpdateObject = {};
       updateObj['currentTicket'] = {
@@ -148,13 +149,15 @@ const useTickets = () => {
           completedTicket.suggestedPoints = 'skip';
         }
 
-        // Move the current ticket to the completed tickets array
-        updateObj['completedTickets'] = arrayUnion(completedTicket);
+        if (!keepCurrentInQueue) {
+          // Move the current ticket to the completed tickets array
+          updateObj['completedTickets'] = arrayUnion(completedTicket);
 
-        // If the ticket is in the queue, remove it from the queue
-        if (currentTicket?.fromQueue) {
-          const currentTicketFromQueue = queue.find((ticket) => ticket.id === currentTicket.id);
-          updateObj['ticketQueue'] = arrayRemove(currentTicketFromQueue);
+          // If the ticket is in the queue, remove it from the queue
+          if (currentTicket?.fromQueue) {
+            const currentTicketFromQueue = queue.find((ticket) => ticket.id === currentTicket.id);
+            updateObj['ticketQueue'] = arrayRemove(currentTicketFromQueue);
+          }
         }
       }
 
