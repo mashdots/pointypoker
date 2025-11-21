@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'lodash/isEqual';
 import { AnimatePresence } from 'motion/react';
-import { div as AnimatedWrapper, s } from 'motion/react-client';
+import { div as AnimatedWrapper } from 'motion/react-client';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -60,9 +60,35 @@ const RoomSetup = () => {
   const [isRoomOpen, setIsRoomOpen] = useState(false);
   const [isLoadingRoom, setIsLoadingRoom] = useState(false);
   const navigate = useNavigate();
-  const roomFromPath = useMemo(() => window.location.pathname.slice(1), [window.location.pathname]);
+  const roomToJoin = useMemo(() => roomData?.name ?? window.location.pathname.slice(1), [roomData?.name]);
 
-  const handleCreateRoom = async () => {
+  const handleJoinRoom = useCallback((roomName: string) => {
+    setIsLoadingRoom(true);
+    subscribedRoomRef.current = watchRoom(roomName, (result) => {
+      if (!result.error) {
+        if (!isEqual(result.data, roomData)) {
+          const { data } = result;
+          
+          setRoom(data);
+
+          if (!window.location.pathname.includes(roomName)) {
+            navigate(`/${ roomName }`);
+            document.title = `pointy poker - ${data.name}`;
+          }
+
+          setIsRoomOpen(true);
+        }
+      } else {
+        navigate('/');
+        console.error(result);
+      }
+
+      setIsLoadingRoom(false);
+    });
+  }, [ navigate, roomData, setRoom ]);
+
+
+  const handleCreateRoom = useCallback(async () => {
     if (!user) {
       return;
     }
@@ -93,55 +119,53 @@ const RoomSetup = () => {
 
     await createRoom(newRoom, (result) => {
       if (!result.error) {
-        const resolvedRoom = result.data as RoomType;
-        navigate(`/${resolvedRoom.name}`);
+        const resolvedRoom = result.data;
+        handleJoinRoom(resolvedRoom.name);
       } else {
         console.error(result);
-      }
-
-      setIsLoadingRoom(false);
-    });
-  };
-
-  useEffect(() => {
-    const roomToJoin = roomData || roomFromPath;
-
-    if (roomToJoin && !subscribedRoomRef.current) {
-      const roomToJoin = roomData?.name || roomFromPath;
-      setIsLoadingRoom(true);
-
-      subscribedRoomRef.current = watchRoom(roomToJoin, (result) => {
-        if (!result.error) {
-          if (!isEqual(result.data, roomData)) {
-            const { data } = result;
-            setRoom(data as RoomType);
-            setIsRoomOpen(true);
-            document.title = `pointy poker - ${(data as RoomType).name}`;
-          }
-        } else {
-          navigate('/');
-          console.error(result);
-        }
-
         setIsLoadingRoom(false);
-      });
+      }
+    });
+  }, [handleJoinRoom, isObserver, user]);
+
+  /**
+   * This effect handles joining and leaving rooms based on the roomToJoin value.
+   */
+  useEffect(() => {
+    // If there's data for a room to join, and we're not already subscribed, kick off the join process.
+    if (roomToJoin && !subscribedRoomRef.current) {
+      setIsLoadingRoom(true);
+      handleJoinRoom(roomToJoin);
     } else if (!roomToJoin) {
+      // If there's no room to join, cancel any existing subscriptions and close the room.
       subscribedRoomRef.current?.();
       subscribedRoomRef.current = undefined;
       setIsRoomOpen(false);
       setRoom(null);
       navigate('/');
+      document.title = 'pointy poker';
       setIsLoadingRoom(false);
     }
 
+    return () => {
+      // Unsubscribe from the room upon unmount
+      subscribedRoomRef.current?.();
+      subscribedRoomRef.current = undefined;
+    };
+  }, [handleJoinRoom, navigate, roomToJoin, setRoom]);
+
+  /**
+   * This effect ensures that when a user joins a room, they are added as a participant if not already present.
+   */
+  useEffect(() => {
     if (user && roomData) {
+      const updateObj: RoomUpdateObject = {};
       const userInRoom = Object
         .values(roomData?.participants ?? {})
         .find((participant) => participant.id === user?.id);
 
-      // If the user is not in the room, add them
       if (!userInRoom) {
-        const updateObj: RoomUpdateObject = {};
+      // If the user is not in the room, add them
         const selfAsParticipant: Participant = {
           id: user.id,
           name: user.name,
@@ -152,27 +176,16 @@ const RoomSetup = () => {
           isObserver,
         };
 
-        updateObj[`participants.${selfAsParticipant.id}`] = selfAsParticipant;
-
-        updateRoom(roomData.name, updateObj);
+        updateObj[ `participants.${ selfAsParticipant.id }` ] = selfAsParticipant;
+      } else if (userInRoom.inactive) {
+        // If they are but are inactive, set them to active
+        updateObj[ `participants.${ user.id }.inactive` ] = false;
+        updateObj[ `participants.${ user.id }.consecutiveMisses` ] = 0;
       }
 
-      // If the user is in the room, update their presence
-      if (userInRoom && userInRoom.inactive) {
-        const updateObj: RoomUpdateObject = {};
-        updateObj[`participants.${user.id}.inactive`] = false;
-        updateObj[`participants.${user.id}.consecutiveMisses`] = 0;
-
-        updateRoom(roomData.name, updateObj);
-      }
+      updateRoom(roomData.name, updateObj);
     }
-
-    return () => {
-      // Unsubscribe from the room
-      subscribedRoomRef.current?.();
-      subscribedRoomRef.current = undefined;
-    };
-  }, [roomData, roomFromPath]);
+  }, [user, roomData, isObserver]);
 
   useEffect(() => {
     document.title = 'pointy poker';

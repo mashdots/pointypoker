@@ -21,8 +21,8 @@ import PIIReport from '@yappy/types/piiReport';
 
 type PossibleFirebaseTypes = Room | Participant | Ticket;
 
-export interface ResultType {
-  data: DocumentData | Array<PossibleFirebaseTypes> | PossibleFirebaseTypes;
+export type ResultType<T = undefined> = {
+  data: T extends PossibleFirebaseTypes ? T : (DocumentData[] | DocumentData);
   error: boolean;
   message: string | null;
 }
@@ -121,9 +121,9 @@ const getSpecifiedDocsFromCollection = async (
 
 const createUser = async (
   data: User,
-  callback: (arg: ResultType) => void,
+  callback: (arg: ResultType<typeof data>) => void,
 ): Promise<void> => {
-  const result: ResultType = {
+  const result: ResultType<typeof data> = {
     data: [],
     error: false,
     message: null,
@@ -173,10 +173,10 @@ const createPIIReport = async (
 
 const createRoom = async (
   data: Room,
-  callback: (arg: ResultType) => void,
+  callback: (arg: ResultType<typeof data>) => void,
 ): Promise<void> => {
-  const result: ResultType = {
-    data: [],
+  const result: ResultType<typeof data> = {
+    data,
     error: false,
     message: null,
   };
@@ -186,7 +186,6 @@ const createRoom = async (
 
     if (db) {
       await setDoc(doc(db, PossibleFirebaseCollections.ROOMS, data.name), data);
-      result.data = data as Room;
     } else {
       throw new Error('Failed to get data client.');
     }
@@ -198,9 +197,9 @@ const createRoom = async (
   callback(result);
 };
 
-const watchRoom = (roomName: string, callback: (arg: ResultType) => void) => {
-  const result: ResultType = {
-    data: [],
+const watchRoom = (roomName: string, callback: (arg: ResultType<Room>) => void) => {
+  const result: ResultType<Room> = {
+    data: {} as Room,
     error: false,
     message: null,
   };
@@ -211,13 +210,13 @@ const watchRoom = (roomName: string, callback: (arg: ResultType) => void) => {
 
     const unsubscribe = onSnapshot(roomRef, (doc) => {
       if (doc.exists()) {
-        result.data = doc.data();
-        callback(result);
+        result.data = doc.data() as Room;
       } else {
         result.error = true;
         result.message = `The room ${roomName} does not exist.`;
-        callback(result);
       }
+
+      callback(result);
     });
 
     return unsubscribe;
@@ -234,6 +233,7 @@ const updateRoom = async (
   callback?: () => void,
 ): Promise<void> => {
   if (!room || (data === undefined || data === null)) {
+    console.error('Unexpected error while updating a room.');
     return;
   }
 
@@ -256,10 +256,10 @@ const updateRoom = async (
 const addTicket = async (
   room: string,
   data: Ticket,
-  callback?: (arg: ResultType) => void,
+  callback?: (arg: ResultType<typeof data>) => void,
 ): Promise<void> => {
-  const result: ResultType = {
-    data: [],
+  const result: ResultType<typeof data> = {
+    data,
     error: false,
     message: null,
   };
@@ -273,8 +273,6 @@ const addTicket = async (
       await updateDoc(roomRef, {
         tickets: arrayUnion(data),
       });
-
-      result.data = data as Ticket;
     } else {
       throw new Error('Failed to get data client.');
     }
