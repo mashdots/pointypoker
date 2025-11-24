@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useTickets } from '../hooks';
-import { getPointOptions } from '../utils';
 import { GridPanel } from '@components/common';
 import { GridPanelProps } from '@components/common/gridPanel';
+import { useAuth } from '@modules/user';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { PointOptions } from '@yappy/types';
+
+import { useTickets } from '../hooks';
+import { getPointOptions } from '../utils';
 
 const VoteButtonsContainer = styled.div`
   display: flex;
@@ -80,9 +82,10 @@ const DisabledContainer = styled.div`
 `;
 
 const VotingPanel = ({ config }: GridPanelProps) => {
-  const { user, isModalOpen, isTitleInputFocused, isObserver } = useStore(
+  const { user } = useAuth();
+  const { isModalOpen, isTitleInputFocused, isObserver } = useStore(
     ({ preferences, isTitleInputFocused, currentModal }) => (
-      { user: preferences?.user, isTitleInputFocused, isModalOpen: !!currentModal, isObserver: preferences?.isObserver }
+      { isTitleInputFocused, isModalOpen: !!currentModal, isObserver: preferences?.isObserver }
     ));
   const { currentTicket, handleUpdateCurrentTicket, voteData } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;

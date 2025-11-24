@@ -1,4 +1,4 @@
-import type { Auth } from 'firebase/auth';
+import type { Auth, Unsubscribe } from 'firebase/auth';
 import {
   browserLocalPersistence,
   getAuth,
@@ -65,9 +65,9 @@ const signOut = async (): Promise<ResultResponse> => {
   return result;
 };
 
-const watchForUserId = (callback: (arg: string) => void): void => {
+const watchForUserId = (callback: (arg: string) => void): Unsubscribe => {
   const authClient = getAuthClient();
-  onAuthStateChanged(authClient, (user) => {
+  return onAuthStateChanged(authClient, (user) => {
     callback((user && user.uid) || '');
   });
 };

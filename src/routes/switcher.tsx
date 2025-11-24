@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedWrapper } from 'motion/react-client';
 
-import { UserSetup } from '@modules/user';
+import { useAuth, UserSetup } from '@modules/user';
 import { RoomSetup } from '@modules/room';
-import useStore from '@utils/store';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { LoadingIcon } from '@modules/preferences/panes/integrations/jira/components';
 
 /**
  * This is a hybrid module that handles:
@@ -16,12 +17,34 @@ import useStore from '@utils/store';
  * to set up the user, set up the room, or facilitate the room.
  */
 const Switcher = () => {
-  const user = useStore(({ preferences }) => preferences?.user);
+  const { isInitialized } = useAuthorizedUser();
+  const { user } = useAuth();
+
+  const renderComponent = useMemo(() => {
+    if (!isInitialized) {
+      return {
+        key: 'loading',
+        component: <LoadingIcon />,
+      };
+    }
+
+    if (!user) {
+      return {
+        key: 'user',
+        component: <UserSetup />,
+      };
+    }
+
+    return {
+      key: 'room',
+      component: <RoomSetup />,
+    };
+  }, [isInitialized, user]);
 
   return (
     <AnimatePresence mode="wait">
       <AnimatedWrapper
-        key={!user ? 'user' : 'room'}
+        key={renderComponent.key}
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: -10, opacity: 0 }}
@@ -34,7 +57,7 @@ const Switcher = () => {
           height: '100%',
         }}
       >
-        {!user ? <UserSetup /> : <RoomSetup />}
+        {renderComponent.component}
       </AnimatedWrapper>
     </AnimatePresence>
   );

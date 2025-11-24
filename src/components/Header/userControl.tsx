@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import useStore from '@utils/store';
 
 import { useAuth } from '../../modules/user';
 
@@ -13,8 +12,7 @@ const Wrapper = styled.div<ThemedProps>`
 `;
 
 const UserControl = () => {
-  const user = useStore(({ preferences }) => preferences?.user);
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   return <Wrapper onClick={signOut}>{user?.name}</Wrapper>;
 };

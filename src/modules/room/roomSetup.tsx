@@ -5,13 +5,15 @@ import { div as AnimatedWrapper } from 'motion/react-client';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-import RoomPresenter from './roomPresenter';
 import Button from '@components/common/button';
+import { useAuth } from '@modules/user';
 import { useHeaderHeight } from '@routes/root';
 import { createRoom, updateRoom, watchRoom } from '@services/firebase';
 import { generateRoomName } from '@utils';
 import useStore from '@utils/store';
 import { Participant, Room as RoomType, RoomUpdateObject } from '@yappy/types';
+
+import RoomPresenter from './roomPresenter';
 
 type HeightAdjusted = {
   heightDiff: number;
@@ -34,7 +36,6 @@ const ButtonContainer = styled.div`
 `;
 
 const SetupWrapper = styled.div`
-  /* transition: opacity 250ms ease-out; */
   text-align: center;
 `;
 
@@ -42,25 +43,31 @@ const RoomWrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-
-  /* transition: all 250ms ease-out; */
 `;
 
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
-  const { isObserver, roomData, setRoom, user } = useStore(
+  const { user } = useAuth();
+  const { isObserver, roomData, setRoom } = useStore(
     ({ preferences, room, setRoom }) => ({
       isObserver: preferences?.isObserver ?? false,
-      user: preferences?.user,
       roomData: room,
       setRoom,
     }),
   );
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
   const [isRoomOpen, setIsRoomOpen] = useState(false);
-  const [isLoadingRoom, setIsLoadingRoom] = useState(false);
+  const [isLoadingRoom, setIsLoadingRoom] = useState(true);
   const navigate = useNavigate();
-  const roomToJoin = useMemo(() => roomData?.name ?? window.location.pathname.slice(1), [roomData?.name]);
+  const roomToJoin = useMemo(() => {
+    const nameFromPath = window.location.pathname.slice(1);
+
+    if (nameFromPath) {
+      return nameFromPath;
+    }
+
+    return roomData?.name ?? window.location.pathname.slice(1)
+  }, [roomData?.name]);
 
   const handleJoinRoom = useCallback((roomName: string) => {
     setIsLoadingRoom(true);
@@ -141,8 +148,8 @@ const RoomSetup = () => {
       subscribedRoomRef.current?.();
       subscribedRoomRef.current = undefined;
       setIsRoomOpen(false);
-      setRoom(null);
       navigate('/');
+      setRoom(null);
       document.title = 'pointy poker';
       setIsLoadingRoom(false);
     }

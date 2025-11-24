@@ -13,6 +13,7 @@ const instruments = [
   'bass',
   'ukulele',
   'harmonica',
+  'harpsichord',
   'tambourine',
   'marimba',
   'xylophone',
@@ -35,6 +36,11 @@ const instruments = [
   'triangle',
   'viola',
   'zither',
+  'keyboard',
+  'bagpipes',
+  'didgeridoo',
+  'flugelhorn',
+  'kalimba',
 ];
 
 export default instruments;

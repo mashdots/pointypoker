@@ -5,18 +5,20 @@ import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '@utils/styles/colors
 import useStore from '@utils/store';
 import { User } from '@yappy/types';
 
+type GenericPrefType = string
+  | boolean
+  | number
+  | THEMES
+  | THEME_MODES
+  | User
+  | JiraAuthData
+  | JiraResourceData
+  | JiraPreferences
+  | undefined
+  | null;
+
 export type PreferencesType = {
-  [ key: string ]: string
-    | boolean
-    | number
-    | THEMES
-    | THEME_MODES
-    | User
-    | JiraAuthData
-    | JiraResourceData
-    | JiraPreferences
-    | undefined
-    | null;
+  [ key: string ]: GenericPrefType;
   isObserver?: boolean;
   jiraAccess?: JiraAuthData | null;
   jiraResources?: JiraResourceData | null;
@@ -28,7 +30,7 @@ export type PreferencesType = {
   user?: User | null;
 }
 
-const getPrefFromLocalStorage = (key: string): string | boolean | number | THEMES | THEME_MODES | undefined => {
+const getPrefFromLocalStorage = (key: string): GenericPrefType | undefined => {
   const storedPref = localStorage.getItem(key);
   if (storedPref) {
     return JSON.parse(storedPref);

@@ -1,42 +1,40 @@
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import {
-  getAuthClient,
   signIn as signInFB,
   signOut as signOutFB,
-} from '@services/firebase/auth';
+} from '@services/firebase';
 import { createUserPayload } from '@utils';
-import { getCookie, clearCookie } from '@utils/cookies';
 import useStore from '@utils/store';
 import { User } from '@yappy/types';
 
 
 const useAuth = () => {
-  const { setUser, user, clearUser, clearRoom } = useStore(
+  const { userId, isInitialized } = useAuthorizedUser();
+  const { setUser, storedUser, clearUser, clearRoom } = useStore(
     ({ clearRoom, preferences, setPreferences }) => ({
       setUser: (newUser: User) => setPreferences('user', { ...newUser }),
-      user: preferences?.user,
+      storedUser: preferences?.user,
       clearUser: () => setPreferences('user', null),
       clearRoom,
     }),
   );
-  const userCookie = getCookie();
 
   const signIn = async (newUserName: string) => {
     const payload = createUserPayload(newUserName);
 
     try {
-      const anonUser = await signInFB();
-      payload.id = anonUser.userId as string;
-      setUser(payload as User);
+      await signInFB();
+      setUser(payload);
     } catch (error) {
       console.error(error);
     }
   };
-
-  const signOut = ()  => {
+  
+  const signOut = async () => {
     try {
-      signOutFB();
+      await signOutFB();
       clearUser();
       clearRoom();
     } catch (e) {
@@ -44,17 +42,16 @@ const useAuth = () => {
     }
   };
 
-  useEffect(() => {
-    // Deprecated - Legacy user name management
-    if (userCookie) {
-      setUser(userCookie);
-      clearCookie();
+  const user = useMemo(() =>  {
+    if (isInitialized && userId && storedUser) {
+      return {
+        ...storedUser,
+        id: userId,
+      };
     }
 
-    if (user) {
-      getAuthClient();
-    }
-  }, [user?.id]);
+    return null;
+  }, [ isInitialized, userId, storedUser ]); 
 
   return {
     signIn,

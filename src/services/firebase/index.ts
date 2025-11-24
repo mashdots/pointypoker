@@ -12,6 +12,13 @@ import {
   watchRoom,
 } from './data';
 
+import {
+  getAuthClient,
+  signIn,
+  signOut,
+  watchForUserId,
+ } from './auth'
+
 let app: FirebaseApp;
 
 const getApp = (): FirebaseApp => {
@@ -44,6 +51,10 @@ export {
   getSpecifiedDocsFromCollection,
   updateRoom,
   watchRoom,
+  getAuthClient,
+  signIn,
+  signOut,
+  watchForUserId,
 };
 
 export type {

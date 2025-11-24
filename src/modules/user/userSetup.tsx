@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useAuth } from './useAuth';
 import LogoSvg from '@assets/pointy-poker.svg?react';
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
-import { Button, TextInput } from '@components/common';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Button, Card, TextInput } from '@components/common';
 import Logo from '@components/Header/logo';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useMobile } from '@utils/hooks/mobile';
 
-type CardProps = {
-  overrideWidth?: number,
-  overrideHeight?: number,
-  scroll?: boolean,
-} & ThemedProps;
-
+import { useAuth } from './useAuth';
 
 const Icon = styled(LogoSvg)`
   ${({ theme }: ThemedProps) => css`
@@ -35,45 +29,14 @@ const ArrowIcon = styled(ArrowSvg)`
   width: 1.5rem;
 `;
 
-const Card = styled.div<CardProps>`
-  ${({ scroll, theme }: CardProps) => css`
-    background-color: ${theme.primary.accent3};
-    border-color: ${theme.primary.accent6};
-    overflow: ${scroll ? 'auto' : 'hidden'};
-  `};
-
-  ${ ({ overrideWidth, isNarrow }: CardProps) => !isNarrow && overrideWidth && css`
-    width: ${overrideWidth}rem !important;
-  `}
-
-  ${({ overrideHeight }: CardProps) => overrideHeight && css`
-    height: ${overrideHeight}rem !important;
-  `}
-
-  border-width: 1px;
-  border-style: solid;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  border-radius: 1rem;
-  width: 90%;
-  height: 30rem;
-  transition: all 300ms ease-out;
-`;
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   width: 80%;
   height: 100%;
   padding: 1rem;
-
-  > form {
-    width: 100%;
-  }
 `;
 
 const HeaderWrapper = styled.div`
@@ -102,10 +65,6 @@ const FormWrapper = styled.div`
   align-items: center;
   width: 100%;
 
-  > form {
-    width: 100%;
-  }
-
   > p {
     font-weight: 100;
     margin-bottom: 0;
@@ -116,6 +75,7 @@ const Form = styled.form`
   display: flex;
   align-items: center;
   padding: 1rem 0;
+  width: 100%;
 `;
 
 const UserSetup = () => {

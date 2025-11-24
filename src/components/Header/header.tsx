@@ -1,12 +1,14 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import Logo from './logo';
-import RoomName from './roomName';
-import UserControl from './userControl';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import MenuIcon from '@assets/icons/menu.svg?react';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
+import Logo from './logo';
+import RoomName from './roomName';
+import UserControl from './userControl';
 
 type Props = {
   headerRef: React.RefObject<HTMLDivElement>;
@@ -74,19 +76,19 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
 `;
 
 const Header = ({ headerRef, hideMenu }: Props) => {
-  const { isMenuOpen, setIsMenuOpen, hasUser } = useStore(
-    ({ isMenuOpen, setIsMenuOpen, preferences }) => (
+  const { isAuthenticated } = useAuthorizedUser();
+  const { isMenuOpen, setIsMenuOpen } = useStore(
+    ({ isMenuOpen, setIsMenuOpen }) => (
       {
         isMenuOpen,
         setIsMenuOpen,
-        hasUser: !!preferences?.user,
       }
     ),
   );
 
   return (
     <Wrapper ref={headerRef}>
-      <Section flex={6} align='left' style={{ opacity: hasUser ? 1 : 0, transition: 'all 300ms ease-out' }}>
+      <Section flex={6} align='left' style={{ opacity: isAuthenticated ? 1 : 0, transition: 'all 300ms ease-out' }}>
         <Logo />
         <RoomName />
       </Section>

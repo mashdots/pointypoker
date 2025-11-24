@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import debounce from 'lodash/debounce';
 
-import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, ImportFromJiraMenuItem } from './menuItems';
+import { useJira } from '@modules/integrations';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import { ThemeModeToggleRow } from '@modules/preferences';
 import { Separator } from '@modules/preferences/panes/common';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
-import { useJira } from '@modules/integrations';
+
+import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, ImportFromJiraMenuItem } from './menuItems';
 
 type Props = {
   topOffset: number;
@@ -48,10 +50,10 @@ let timer: number;
 
 const Menu = ({ topOffset }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null);
-  const { isAuthed, isMenuOpen, setIsMenuOpen, roomName } = useStore(
-    ({ isMenuOpen, setIsMenuOpen, room, preferences }) => (
+  const { isAuthenticated } = useAuthorizedUser();
+  const { isMenuOpen, setIsMenuOpen, roomName } = useStore(
+    ({ isMenuOpen, setIsMenuOpen, room }) => (
       {
-        isAuthed: !!preferences?.user,
         isMenuOpen,
         setIsMenuOpen,
         roomName: room?.name,
@@ -117,7 +119,7 @@ const Menu = ({ topOffset }: Props) => {
   const menuItems: Array<{ component: JSX.Element, shouldShow?: boolean }> = [
     {
       component: <PreferencesMenuItem key='preferences' />,
-      shouldShow: isAuthed,
+      shouldShow: isAuthenticated,
     },
     {
       component: <FeedbackMenuItem key='feedback' />,

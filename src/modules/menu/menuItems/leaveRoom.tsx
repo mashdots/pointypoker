@@ -8,6 +8,7 @@ import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { RoomUpdateObject } from '@yappy/types';
+import { useAuth } from '@modules/user';
 
 
 const Icon = styled(DoorIcon)<ThemedProps>`
@@ -25,16 +26,16 @@ const Icon = styled(DoorIcon)<ThemedProps>`
 `;
 
 const LeaveRoomMenuItem = () => {
-  const { roomName, room, clearRoom, user } = useStore((state) => ({
+  const { user } = useAuth();
+  const { roomName, room, clearRoom } = useStore((state) => ({
     roomName: state?.room?.name,
     room: state.room,
     clearRoom: state.clearRoom,
-    user: state.preferences?.user,
   }));
   const navigate = useNavigate();
 
   const handleExitRoom = () => {
-    if (room && user && room.participants[ user.id ]) {
+    if (user && room?.participants[ user.id ]) {
       const updateObj: RoomUpdateObject = {};
       updateObj[ `participants.${ user.id }.inactive` ] = true;
 

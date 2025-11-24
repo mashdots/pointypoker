@@ -3,13 +3,15 @@ import { arrayRemove, arrayUnion } from 'firebase/firestore';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
 
-import { VoteDisplayProps } from '../panels/voteDisplay';
-import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes } from '../utils';
+import { JiraTicket } from '@modules/integrations/jira/types';
+import { useAuth } from '@modules/user';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject, Ticket } from '@yappy/types';
 import { PossibleQueuedTicket } from '@yappy/types/room';
-import { JiraTicket } from '@modules/integrations/jira/types';
+
+import { VoteDisplayProps } from '../panels/voteDisplay';
+import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes } from '../utils';
 
 export enum TICKET_ACTIONS {
   SKIP,
@@ -20,21 +22,20 @@ export enum TICKET_ACTIONS {
 }
 
 const useTickets = () => {
+  const { user } = useAuth();
   const {
     completedTickets,
     currentTicket,
     participants,
     roomName,
     queue,
-    user,
-  } = useStore(({ preferences, room }) => (
+  } = useStore(({ room }) => (
     {
       completedTickets: room?.completedTickets,
       currentTicket: room?.currentTicket,
       participants: Object.values(room?.participants || {}),
       queue: room?.ticketQueue ?? [],
       roomName: room?.name,
-      user: preferences?.user,
     }
   ));
 

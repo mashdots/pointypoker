@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
-import useStore from '@utils/store';
 import createApiClient, { getJiraApiClient } from '@utils/axios';
+import useStore from '@utils/store';
 import { blobToBase64 } from '@utils/room';
 
 import {
@@ -18,6 +18,7 @@ import {
   JiraIssueSearchPayload,
   RefreshAuth,
 } from './types';
+import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
 
 /**
  * Jira service
@@ -31,7 +32,8 @@ import {
 const API_URL = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
 
 const useJira = () => {
-  const { access, isConnected, isConfigured, isExpired, resources, userId, setAccess } = useStore(({ preferences, setPreferences }) => {
+  const { userId } = useAuthorizedUser();
+  const { access, isConnected, isConfigured, isExpired, resources, setAccess } = useStore(({ preferences, setPreferences }) => {
     const { jiraAccess, jiraResources, jiraPreferences } = preferences;
     return {
       access: jiraAccess,
@@ -40,7 +42,6 @@ const useJira = () => {
       isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
       isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
       setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
-      userId: preferences?.user?.id,
     };
   });
 
@@ -54,6 +55,8 @@ const useJira = () => {
    * Kicks off the OAuth flow for Jira by opening a new window to JIRA's OAuth page
    */
   const launchJiraOAuth = () => {
+    if (!userId) return; 
+
     const options = {
       toolbar: 'no',
       location: 'no',

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-import { SettingsRow, VerticalContainer } from '../common';
+import { CheckBox } from '@components/common';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject } from '@yappy/types';
-import { CheckBox } from '@components/common';
+
+import { SettingsRow, VerticalContainer } from '../common';
 
 let timeout: number;
 
 const ObserverSwitch = () => {
-  const { isObserver, userId, updateIsObserver, roomName, roomData } = useStore(({ preferences, setPreferences, room }) => ({
+  const { userId } = useAuthorizedUser();
+  const { isObserver, updateIsObserver, roomName, roomData } = useStore(({ preferences, setPreferences, room }) => ({
     isObserver: preferences?.isObserver ?? false,
-    userId: preferences?.user?.id,
     updateIsObserver: (is: boolean) => {
       setPreferences('isObserver', is);
     },
