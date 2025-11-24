@@ -167,10 +167,10 @@ const Modal = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleBackdropClick}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.5 }}
             style={{
               backgroundColor: theme.transparent.accent1,
-              backdropFilter: 'blur(0.25rem)',
+              backdropFilter: 'blur(0.5rem)',
               alignItems: 'center',
               display: 'flex',
               justifyContent: 'center',
@@ -196,11 +196,10 @@ const Modal = () => {
                 width: isNarrow ? sizeConfig.narrowWidth : sizeConfig.width,
               }}
               exit={entryAndExitAnimationStyle}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.3 }}
               ref={modalRef}
               style={{
                 minWidth: isNarrow ? sizeConfig.narrowMinWidth : sizeConfig.minWidth,
-                backdropFilter: 'blur(0.75rem)',
               }}
             >
               <Card
