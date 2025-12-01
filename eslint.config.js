@@ -32,9 +32,8 @@ export default defineConfig([
       },
     },
     rules: {
-      'indent': ['error', 2],
-      'linebreak-style': ['error', 'unix'],
-      'semi': ['error', 'always'],
+      '@stylistic/linebreak-style': ['error', 'unix'],
+      '@stylistic/semi': ['error', 'always'],
       '@stylistic/max-len': [
         'error',
         {
@@ -58,7 +57,7 @@ export default defineConfig([
           allowTernary: true,
         },
       ],
-      'object-curly-newline': ['error', {
+      '@stylistic/object-curly-newline': ['error', {
         'ObjectExpression': 'always',
         'ObjectPattern': {
           'multiline': true, minProperties: 3,
