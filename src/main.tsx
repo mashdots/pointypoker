@@ -19,6 +19,7 @@ import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
   api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+  ui_host: 'https://us.i.posthog.com',
   defaults: '2025-05-24',
 });
 
