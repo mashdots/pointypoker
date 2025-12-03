@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Timestamp } from 'firebase/firestore';
 import isEqual from 'lodash/isEqual';
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedWrapper } from 'motion/react-client';
@@ -18,6 +19,8 @@ import RoomPresenter from './roomPresenter';
 type HeightAdjusted = {
   heightDiff: number;
 }
+
+const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
 const Container = styled.div<HeightAdjusted>`
   display: flex;
@@ -94,7 +97,6 @@ const RoomSetup = () => {
     });
   }, [ navigate, roomData, setRoom ]);
 
-
   const handleCreateRoom = useCallback(async () => {
     if (!user) {
       return;
@@ -114,8 +116,8 @@ const RoomSetup = () => {
     };
     const newRoom: RoomType = {
       name: roomName,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
+      createdAt: Timestamp.now(),
+      expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
       participants: {
         [self.id]: self,
       },
