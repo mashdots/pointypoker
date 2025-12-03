@@ -1,6 +1,7 @@
-import React, { useMemo, useRef } from 'react';
+import React, { FC, useEffect, useMemo, useRef } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Outlet, useOutletContext, useLocation } from 'react-router-dom';
+import { usePostHog } from '@posthog/react'
 
 import Header from '@components/Header';
 import Menu from '@modules/menu';
@@ -33,14 +34,23 @@ const ChildrenWrapper = styled.div`
   flex: 1;
 `;
 
-const Root = (): JSX.Element => {
+const Root: FC = () => {
   usePreferenceSync();
 
+  const posthog = usePostHog();
   const { theme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerHeight = useMemo(() => headerRef?.current?.clientHeight ?? 0, [headerRef?.current]);
   const location = useLocation();
   const shouldShowMenu = !location.pathname.includes(JIRA_REDIRECT_PATH);
+
+  useEffect(() => {
+    if (posthog) {
+      posthog.setPersonProperties({
+        deployVersion: import.meta.env.VITE_VERSION
+      });
+    }
+  }, [posthog]);
 
   return (
     <AuthProvider>

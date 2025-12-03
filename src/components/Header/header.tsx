@@ -1,8 +1,10 @@
 import React from 'react';
+import { useFeatureFlagEnabled } from 'posthog-js/react';
 import styled, { css } from 'styled-components';
 
 import { useAuthorizedUser } from '@modules/user/AuthContext';
 import MenuIcon from '@assets/icons/menu.svg?react';
+import flags from '@utils/flags';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
@@ -85,6 +87,12 @@ const Header = ({ headerRef, hideMenu }: Props) => {
       }
     ),
   );
+
+  const flagEnabled = useFeatureFlagEnabled(flags.REDESIGN);
+
+  if (flagEnabled) {
+    return null;
+  }
 
   return (
     <Wrapper ref={headerRef}>
