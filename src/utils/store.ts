@@ -6,7 +6,7 @@ import { Room } from '@yappy/types';
 
 type Store = {
   preferences: PreferencesType;
-  setPreferences: (key: keyof PreferencesType, arg: PreferencesType[keyof PreferencesType]) => void;
+  setPreference: (key: keyof PreferencesType, arg: PreferencesType[keyof PreferencesType]) => void;
   room: Room | null;
   setRoom: (arg: Room | null) => void;
   clearRoom: () => void;
@@ -30,7 +30,7 @@ const useStore = create<Store>((set) => ({
   room: null,
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
   setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
-  setPreferences: (key, newPreferences) => set((state) => (
+  setPreference: (key, newPreferences) => set((state) => (
     {
       preferences: {
         ...state.preferences,

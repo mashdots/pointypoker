@@ -19,14 +19,14 @@ const ObserverSwitch = () => {
     roomData,
   } = useStore(({
     preferences,
-    setPreferences,
+    setPreference,
     room,
   }) => ({
     isObserver: preferences?.isObserver ?? false,
     roomData: room,
     roomName: room?.name,
     updateIsObserver: (is: boolean) => {
-      setPreferences('isObserver', is);
+      setPreference('isObserver', is);
     },
   }));
   const [value, setValue] = useState(isObserver);

@@ -17,7 +17,7 @@ const UserNameUpdateForm = () => {
     updateUserName,
     roomName,
     roomData,
-  } = useStore(({ setPreferences, room }) => ({
+  } = useStore(({ setPreference, room }) => ({
     roomData: room,
     roomName: room?.name,
     updateUserName: (name: string) => {
@@ -26,7 +26,7 @@ const UserNameUpdateForm = () => {
           ...user,
           name,
         };
-        setPreferences('user', updatedUser);
+        setPreference('user', updatedUser);
       }
     },
   }));

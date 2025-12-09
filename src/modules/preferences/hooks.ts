@@ -65,14 +65,14 @@ const usePreferenceSync = () => {
     setPrefsInitialized,
   } = useStore(({
     preferences,
-    setPreferences,
+    setPreference,
     arePrefsInitialized,
     setPrefsInitialized,
   }) => (
     {
       arePrefsInitialized,
       preferences,
-      setPref: (key: string, pref: keyof PreferencesType) => setPreferences(key, pref),
+      setPref: (key: string, pref: keyof PreferencesType) => setPreference(key, pref),
       setPrefsInitialized,
     }
   ));

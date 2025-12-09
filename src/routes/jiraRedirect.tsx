@@ -115,9 +115,9 @@ const UnderText = styled.p`
 
 const JiraRedirect = () => {
   const [status, setStatus] = useState(STATUS.LOADING);
-  const { access, setAccess } = useStore(({ preferences, setPreferences }) => ({
+  const { access, setAccess } = useStore(({ preferences, setPreference }) => ({
     access: preferences?.jiraAccess,
-    setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
+    setAccess: (access: JiraAuthData) => setPreference('jiraAccess', access),
   }));
   const { getAccessTokenFromApi } = useJira();
 

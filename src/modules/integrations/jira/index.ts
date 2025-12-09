@@ -45,7 +45,7 @@ const useJira = () => {
     isExpired,
     resources,
     setAccess,
-  } = useStore(({ preferences, setPreferences }) => {
+  } = useStore(({ preferences, setPreference }) => {
     const {
       jiraAccess,
       jiraResources,
@@ -57,7 +57,7 @@ const useJira = () => {
       isConnected: !!jiraAccess && !!jiraResources,
       isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
       resources: jiraResources,
-      setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
+      setAccess: (access: JiraAuthData) => setPreference('jiraAccess', access),
     };
   });
 

@@ -12,12 +12,12 @@ const useJiraScopeCheck = () => {
     openReAuthenticationModal,
   } = useStore(({
     preferences,
-    setPreferences,
+    setPreference,
     setCurrentModal,
   }) => ({
     openReAuthenticationModal: () => setCurrentModal(MODAL_TYPES.JIRA_REAUTH),
     revokeAccess: () => {
-      setPreferences('jiraAccess', null);
+      setPreference('jiraAccess', null);
     },
     storedJiraPermissionsScope: preferences.jiraAccess?.scope.split(' ').sort(),
   }));

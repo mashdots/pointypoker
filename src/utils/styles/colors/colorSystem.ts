@@ -182,16 +182,16 @@ const useTheme = () => {
   } = useStore(({
     arePrefsInitialized,
     preferences,
-    setPreferences,
+    setPreference,
   }) => (
     {
       arePrefsInitialized,
       isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
       selectedTheme: preferences?.theme,
       selectedThemeMode: preferences?.themeMode,
-      setIsThemeModeSetByUser: () => setPreferences('themeModeController', THEME_MODE_CONTROLLER.USER),
-      setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
-      setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
+      setIsThemeModeSetByUser: () => setPreference('themeModeController', THEME_MODE_CONTROLLER.USER),
+      setTheme: (newTheme: THEMES) => setPreference('theme', newTheme),
+      setThemeMode: (newThemeMode: THEME_MODES) => setPreference('themeMode', newThemeMode),
     }
   ));
 

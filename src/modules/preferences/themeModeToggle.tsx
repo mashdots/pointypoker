@@ -75,9 +75,9 @@ const ThemeModeToggleRow = () => {
 };
 
 export const SystemModeCheckbox = () => {
-  const { isThemeModeSetBySystem, setThemeModeController } = useStore(({ preferences, setPreferences }) => ({
+  const { isThemeModeSetBySystem, setThemeModeController } = useStore(({ preferences, setPreference }) => ({
     isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
-    setThemeModeController: () => setPreferences('themeModeController', preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
+    setThemeModeController: () => setPreference('themeModeController', preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
       ? THEME_MODE_CONTROLLER.USER
       : THEME_MODE_CONTROLLER.SYSTEM),
   }));

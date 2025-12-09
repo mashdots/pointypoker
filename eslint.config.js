@@ -140,6 +140,7 @@ export default defineConfig([
       'react/jsx-indent-props': ['error', 2],
       'react/jsx-max-props-per-line': ['error', { maximum: 2 }],
       'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/refs': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'sort/imports': [
         'warn',

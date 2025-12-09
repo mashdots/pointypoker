@@ -21,8 +21,8 @@ const BoardSelection = ({
   setShowOverrideUI,
 }: Props) => {
   const { getBoards } = useJira();
-  const setDefaultBoard = useStore(({ preferences, setPreferences }) =>
-    (board: JiraBoardPayloadValue) => setPreferences('jiraPreferences', {
+  const setDefaultBoard = useStore(({ preferences, setPreference }) =>
+    (board: JiraBoardPayloadValue) => setPreference('jiraPreferences', {
       ...preferences?.jiraPreferences,
       defaultBoard: board,
     }));

@@ -20,11 +20,11 @@ const useAuth = () => {
   } = useStore(({
     clearRoom,
     preferences,
-    setPreferences,
+    setPreference,
   }) => ({
     clearRoom,
-    clearUser: () => setPreferences('user', null),
-    setUser: (newUser: User) => setPreferences('user', { ...newUser }),
+    clearUser: () => setPreference('user', null),
+    setUser: (newUser: User) => setPreference('user', { ...newUser }),
     storedUser: preferences?.user,
   }));
 

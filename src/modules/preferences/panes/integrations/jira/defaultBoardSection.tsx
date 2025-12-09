@@ -20,13 +20,13 @@ const DefaultBoardSection = () => {
     defaultBoard,
     clearDefaultBoard,
     setDefaultBoard,
-  } = useStore(({ preferences, setPreferences }) => ({
-    clearDefaultBoard: () => setPreferences('jiraPreferences', {
+  } = useStore(({ preferences, setPreference }) => ({
+    clearDefaultBoard: () => setPreference('jiraPreferences', {
       ...preferences?.jiraPreferences,
       defaultBoard: null,
     }),
     defaultBoard: preferences?.jiraPreferences?.defaultBoard,
-    setDefaultBoard: (board: JiraBoardPayloadValue) => setPreferences('jiraPreferences', {
+    setDefaultBoard: (board: JiraBoardPayloadValue) => setPreference('jiraPreferences', {
       ...preferences?.jiraPreferences,
       defaultBoard: board,
     }),

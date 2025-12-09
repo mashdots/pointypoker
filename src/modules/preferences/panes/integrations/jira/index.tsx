@@ -37,16 +37,16 @@ const JiraIntegrationCard = () => {
     resources,
     setResources,
     revokeAccess,
-  } = useStore(({ preferences, setPreferences }) => ({
+  } = useStore(({ preferences, setPreference }) => ({
     accessToken: preferences?.jiraAccess?.access_token,
     isConfigured: !!preferences?.jiraAccess,
     resources: preferences?.jiraResources,
     revokeAccess: () => {
-      setPreferences('jiraAccess', null);
-      setPreferences('jiraResources', null);
-      setPreferences('jiraPreferences', null);
+      setPreference('jiraAccess', null);
+      setPreference('jiraResources', null);
+      setPreference('jiraPreferences', null);
     },
-    setResources: (resources: JiraResourceData | null) => setPreferences('jiraResources', resources),
+    setResources: (resources: JiraResourceData | null) => setPreference('jiraResources', resources),
   }));
   const {
     isConnected,
