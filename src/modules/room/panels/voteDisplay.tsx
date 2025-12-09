@@ -66,7 +66,9 @@ const Wrapper = styled.div`
 
 const StyledVoteCell = styled.div<StyledVoteCellProps>`
   ${({
-    isIdle, isInactive, theme,
+    isIdle,
+    isInactive,
+    theme,
   }: StyledVoteCellProps) => {
     let color = theme.primary.accent12;
 
@@ -226,7 +228,9 @@ const VoteCell = ({ voteData, cellMode }: VoteCellProps) => {
 const VoteDisplay = ({ config }: GridPanelProps) => {
   const { user } = useAuth();
   const {
-    shouldShowVotes, voteData, handleUpdateCurrentTicket,
+    shouldShowVotes,
+    voteData,
+    handleUpdateCurrentTicket,
   } = useTickets();
 
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
@@ -267,57 +271,62 @@ const VoteDisplay = ({ config }: GridPanelProps) => {
   //   ),
   //   [shouldShowVotes, user, voteData],
   // );
-  const voteNodes = useMemo(
-    () => voteData.reduce((nodes, {
-      name: participantName, vote, inactive, consecutiveMisses, isObserver,
-    }, i) => {
-      const userIsParticipant = participantName === user?.name;
-      const hasVoted = isVoteCast(vote);
-      const name = userIsParticipant ? 'you' : participantName;
-      const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
-      const isLast = false;
-      // const isLast = userIsParticipant ? nodes.length === 0 : i === voteData.length - 1;
-      let mode: userModes = PARTICIPANT_MODES.DEFAULT;
-      if (isObserver) {
-        mode = NON_PARTICIPANT_MODES.OBSERVER;
-      } else if (inactive) {
-        mode = NON_PARTICIPANT_MODES.INACTIVE;
-      } else if (consecutiveMisses > 2) {
-        mode = NON_PARTICIPANT_MODES.ABSENT;
-      } else if (hasVoted) {
-        if (!displayVote) {
-          mode = PARTICIPANT_MODES.VOTED;
-        } else {
-          mode = PARTICIPANT_MODES.REVEALED;
-        }
-      }
-
-      const node = (
-        <VoteCell
-          key={i}
-          cellMode={mode}
-          isLast={isLast}
-          voteData={{
-            name,
-            vote,
-          }}
-        />
-      );
-
-      if (userIsParticipant) {
-        nodes.unshift(node);
+  const voteNodes = useMemo(() => voteData.reduce((
+    nodes,
+    {
+      name: participantName,
+      vote,
+      inactive,
+      consecutiveMisses,
+      isObserver,
+    },
+    i,
+  ) => {
+    const userIsParticipant = participantName === user?.name;
+    const hasVoted = isVoteCast(vote);
+    const name = userIsParticipant ? 'you' : participantName;
+    const displayVote = shouldShowVotes || (userIsParticipant && hasVoted);
+    const isLast = false;
+    // const isLast = userIsParticipant ? nodes.length === 0 : i === voteData.length - 1;
+    let mode: userModes = PARTICIPANT_MODES.DEFAULT;
+    if (isObserver) {
+      mode = NON_PARTICIPANT_MODES.OBSERVER;
+    } else if (inactive) {
+      mode = NON_PARTICIPANT_MODES.INACTIVE;
+    } else if (consecutiveMisses > 2) {
+      mode = NON_PARTICIPANT_MODES.ABSENT;
+    } else if (hasVoted) {
+      if (!displayVote) {
+        mode = PARTICIPANT_MODES.VOTED;
       } else {
-        nodes.push(node);
+        mode = PARTICIPANT_MODES.REVEALED;
       }
+    }
 
-      return nodes;
-    }, [] as JSX.Element[]),
-    [
-      shouldShowVotes,
-      user,
-      voteData,
-    ],
-  );
+    const node = (
+      <VoteCell
+        key={i}
+        cellMode={mode}
+        isLast={isLast}
+        voteData={{
+          name,
+          vote,
+        }}
+      />
+    );
+
+    if (userIsParticipant) {
+      nodes.unshift(node);
+    } else {
+      nodes.push(node);
+    }
+
+    return nodes;
+  }, [] as JSX.Element[]), [
+    shouldShowVotes,
+    user,
+    voteData,
+  ]);
 
 
   const showVotesButton = (

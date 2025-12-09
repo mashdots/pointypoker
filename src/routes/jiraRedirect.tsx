@@ -1,5 +1,7 @@
 import React, {
-  useEffect, useMemo, useState,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 
 import styled, { css, keyframes } from 'styled-components';
@@ -112,10 +114,7 @@ const UnderText = styled.p`
 `;
 
 const JiraRedirect = () => {
-  const [
-    status,
-    setStatus,
-  ] = useState(STATUS.LOADING);
+  const [status, setStatus] = useState(STATUS.LOADING);
   const { access, setAccess } = useStore(({ preferences, setPreferences }) => ({
     access: preferences?.jiraAccess,
     setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
@@ -176,10 +175,7 @@ const JiraRedirect = () => {
   }, []);
 
   useEffect(() => {
-    if ([
-      STATUS.SUCCESS,
-      STATUS.ERROR,
-    ].includes(status)){
+    if ([STATUS.SUCCESS, STATUS.ERROR].includes(status)){
       setTimeout(() => {
         window.close();
       }, 2000);

@@ -13,7 +13,10 @@ import { PossibleQueuedTicket } from '@yappy/types/legacy/room';
 
 import { VoteDisplayProps } from '../panels/voteDisplay';
 import {
-  calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes,
+  calculateAverage,
+  calculateSuggestedPoints,
+  isVoteCast,
+  PointingTypes,
 } from '../utils';
 
 export enum TICKET_ACTIONS {
@@ -45,49 +48,39 @@ const useTickets = () => {
   const nextTicket = useMemo(() => {
     const currentTicketIndex = queue.findIndex((ticket) => ticket.id === currentTicket?.id);
     return queue?.[currentTicketIndex + 1] ?? null;
-  }, [
-    queue,
-    currentTicket,
-  ]);
+  }, [queue, currentTicket]);
 
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
     .map(({
-      name, id, inactive, consecutiveMisses, isObserver,
+      name,
+      id,
+      inactive,
+      consecutiveMisses,
+      isObserver,
     }): VoteDisplayProps => ({
       consecutiveMisses,
       inactive,
       isObserver,
       name: name,
       vote: currentTicket?.votes[id] ?? '',
-    })),
-  [
-    participants,
-    currentTicket,
-  ],
-  );
+    })), [participants, currentTicket] );
 
-  const areAllVotesCast = useMemo(
-    () => participants
-      .filter(({
-        inactive, consecutiveMisses, isObserver,
-      }) => !inactive && consecutiveMisses < 3 && !isObserver)
-      .every(({ id }) => isVoteCast(currentTicket?.votes[id])),
-    [
-      participants,
-      currentTicket?.votes,
-    ],
-  );
+  const areAllVotesCast = useMemo(() => participants
+    .filter(({
+      inactive,
+      consecutiveMisses,
+      isObserver,
+    }) => !inactive && consecutiveMisses < 3 && !isObserver)
+    .every(({ id }) => isVoteCast(currentTicket?.votes[id])), [participants, currentTicket?.votes]);
 
-  const shouldShowVotes = useMemo(
-    () => areAllVotesCast || !!currentTicket?.shouldShowVotes,
-    [
-      areAllVotesCast,
-      currentTicket,
-    ],
-  );
+  const shouldShowVotes = useMemo(() => areAllVotesCast || !!currentTicket?.shouldShowVotes, [areAllVotesCast, currentTicket]);
 
-  const handleUpdateCurrentTicket = useCallback((field: string, value: any, callback?: () => void) => {
+  const handleUpdateCurrentTicket = useCallback((
+    field: string,
+    value: any,
+    callback?: () => void,
+  ) => {
     if (roomName && user && currentTicket) {
       const updateObj: RoomUpdateObject = {};
       updateObj[`currentTicket.${field}`] = value;
@@ -111,7 +104,11 @@ const useTickets = () => {
         }
       }
 
-      updateRoom(roomName, updateObj, callback);
+      updateRoom(
+        roomName,
+        updateObj,
+        callback,
+      );
     }
   }, [
     roomName,
@@ -124,7 +121,12 @@ const useTickets = () => {
     isFromQueue = false,
     keepCurrentInQueue = false,
   ) => {
-    handleCreateTicket(preDefinedTicket.name, preDefinedTicket, isFromQueue, keepCurrentInQueue);
+    handleCreateTicket(
+      preDefinedTicket.name,
+      preDefinedTicket,
+      isFromQueue,
+      keepCurrentInQueue,
+    );
   };
 
   /**
@@ -135,7 +137,12 @@ const useTickets = () => {
    * points will be calculated, and the ticket will be moved to the
    * `completedTickets` array.
    */
-  const handleCreateTicket = useCallback((newTicketName = '', preDefinedTicket?: Partial<Ticket | JiraTicket | PossibleQueuedTicket>, fromQueue = false, keepCurrentInQueue = false) => {
+  const handleCreateTicket = useCallback((
+    newTicketName = '',
+    preDefinedTicket?: Partial<Ticket | JiraTicket | PossibleQueuedTicket>,
+    fromQueue = false,
+    keepCurrentInQueue = false,
+  ) => {
     if (roomName && user) {
       const updateObj: RoomUpdateObject = {};
       updateObj['currentTicket'] = {

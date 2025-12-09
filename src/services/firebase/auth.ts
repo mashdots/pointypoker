@@ -73,5 +73,8 @@ const watchForUserId = (callback: (arg: string) => void): Unsubscribe => {
 };
 
 export {
-  getAuthClient, watchForUserId, signIn, signOut,
+  getAuthClient,
+  watchForUserId,
+  signIn,
+  signOut,
 };

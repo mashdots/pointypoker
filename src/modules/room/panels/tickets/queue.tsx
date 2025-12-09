@@ -25,7 +25,10 @@ const TicketRowList = styled.div`
 
 const IssueWrapper = styled.div<IssueWrapperProps>`
   ${ ({
-    delayFactor, isCurrentTicket, isSelectable, theme,
+    delayFactor,
+    isCurrentTicket,
+    isSelectable,
+    theme,
   }: IssueWrapperProps) => {
     const themeColor = isCurrentTicket ? 'primary' : 'greyscale';
     return css`
@@ -135,7 +138,11 @@ const Queue = () => {
   } = useTickets();
 
   const handleSelectIssue = (ticket: PossibleQueuedTicket) => {
-    handleCreatePredefinedTicket(ticket, true, true);
+    handleCreatePredefinedTicket(
+      ticket,
+      true,
+      true,
+    );
   };
 
   const issues = queue.map((issue, delayMultiplier) => {

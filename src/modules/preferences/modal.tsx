@@ -68,10 +68,7 @@ const SettingsDisplay = styled.div`
 
 const PreferencesModal = () => {
   const { isNarrow } = useMobile();
-  const [
-    currentCategory,
-    setCurrentCategory,
-  ] = useState(0);
+  const [currentCategory, setCurrentCategory] = useState(0);
 
   const panes: Panes[] = [
     {
@@ -92,12 +89,10 @@ const PreferencesModal = () => {
     <Wrapper isNarrow={isNarrow}>
       <CategoryList isNarrow={isNarrow}>
         {panes.map(({ categoryCard }, index) => (
-          categoryCard(
-            {
-              isActive: index === currentCategory,
-              onClick: () => setCurrentCategory(index),
-            },
-          )
+          categoryCard({
+            isActive: index === currentCategory,
+            onClick: () => setCurrentCategory(index),
+          })
         ))}
       </CategoryList>
       <SettingsContainer>

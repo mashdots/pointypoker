@@ -1,8 +1,13 @@
 import React, {
-  FC, useEffect, useMemo, useRef,
+  FC,
+  useEffect,
+  useMemo,
+  useRef,
 } from 'react';
 import {
-  Outlet, useOutletContext, useLocation,
+  Outlet,
+  useOutletContext,
+  useLocation,
 } from 'react-router-dom';
 
 import styled, { ThemeProvider } from 'styled-components';

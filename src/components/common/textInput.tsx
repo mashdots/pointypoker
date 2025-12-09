@@ -40,7 +40,9 @@ const InputWrapper = styled.div<{ noPadding: boolean }>`
 
 const StyledInput = styled.input<InputProps>`
   ${({
-    align, size, theme,
+    align,
+    size,
+    theme,
   }: InputProps & ThemedProps) => css`
     background-color: ${ theme.primary.accent2 };
     border-color: ${ theme.primary.accent6};

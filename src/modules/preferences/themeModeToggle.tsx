@@ -8,7 +8,9 @@ import Toggle from '@components/common/toggle';
 import useStore from '@utils/store';
 import useTheme from '@utils/styles/colors';
 import {
-  THEME_MODE_CONTROLLER, THEME_MODES, ThemedProps,
+  THEME_MODE_CONTROLLER,
+  THEME_MODES,
+  ThemedProps,
 } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div`
@@ -75,12 +77,9 @@ const ThemeModeToggleRow = () => {
 export const SystemModeCheckbox = () => {
   const { isThemeModeSetBySystem, setThemeModeController } = useStore(({ preferences, setPreferences }) => ({
     isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
-    setThemeModeController: () => setPreferences(
-      'themeModeController',
-      preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
-        ? THEME_MODE_CONTROLLER.USER
-        : THEME_MODE_CONTROLLER.SYSTEM,
-    ),
+    setThemeModeController: () => setPreferences('themeModeController', preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
+      ? THEME_MODE_CONTROLLER.USER
+      : THEME_MODE_CONTROLLER.SYSTEM),
   }));
 
   return (

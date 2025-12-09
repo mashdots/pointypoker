@@ -68,43 +68,33 @@ const Menu = ({ topOffset }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuthorizedUser();
   const {
-    isMenuOpen, setIsMenuOpen, roomName,
-  } = useStore(
-    ({
-      isMenuOpen, setIsMenuOpen, room,
-    }) => (
-      {
-        isMenuOpen,
-        roomName: room?.name,
-        setIsMenuOpen,
-      }
-    ),
-  );
+    isMenuOpen,
+    setIsMenuOpen,
+    roomName,
+  } = useStore(({
+    isMenuOpen,
+    setIsMenuOpen,
+    room,
+  }) => (
+    {
+      isMenuOpen,
+      roomName: room?.name,
+      setIsMenuOpen,
+    }
+  ));
   const { isConnected } = useJira();
-  const [
-    isMenuRendered,
-    setIsMenuRendered,
-  ] = useState(false);
-  const [
-    isMenuVisible,
-    setIsMenuVisible,
-  ] = useState(false);
-  const [
-    rightOffset,
-    setRightOffset,
-  ] = useState(0);
+  const [isMenuRendered, setIsMenuRendered] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [rightOffset, setRightOffset] = useState(0);
 
   useEffect(() => {
-    const resizeObserverFunction = debounce(
-      () => {
-        if (window.innerWidth > 1280) {
-          setRightOffset((window.innerWidth - 1280) / 2);
-        } else {
-          setRightOffset(0);
-        }
-      },
-      500,
-    );
+    const resizeObserverFunction = debounce(() => {
+      if (window.innerWidth > 1280) {
+        setRightOffset((window.innerWidth - 1280) / 2);
+      } else {
+        setRightOffset(0);
+      }
+    }, 500);
 
     window.addEventListener('resize', resizeObserverFunction);
 
@@ -118,10 +108,7 @@ const Menu = ({ topOffset }: Props) => {
     if (menuRef.current && !event.composedPath().includes(menuRef.current)) {
       setIsMenuOpen(false);
     }
-  }, [
-    setIsMenuOpen,
-    menuRef.current,
-  ]);
+  }, [setIsMenuOpen, menuRef.current]);
 
   useEffect(() => {
     clearTimeout(timer);
@@ -148,8 +135,7 @@ const Menu = ({ topOffset }: Props) => {
     };
   }, [isMenuOpen]);
 
-  const menuItems: Array<{ component: JSX.Element,
-    shouldShow?: boolean }> = [
+  const menuItems: Array<{ component: JSX.Element,shouldShow?: boolean }> = [
     {
       component: <PreferencesMenuItem key='preferences' />,
       shouldShow: isAuthenticated,

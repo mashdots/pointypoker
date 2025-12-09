@@ -39,10 +39,17 @@ const API_URL = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
 const useJira = () => {
   const { userId } = useAuthorizedUser();
   const {
-    access, isConnected, isConfigured, isExpired, resources, setAccess,
+    access,
+    isConnected,
+    isConfigured,
+    isExpired,
+    resources,
+    setAccess,
   } = useStore(({ preferences, setPreferences }) => {
     const {
-      jiraAccess, jiraResources, jiraPreferences,
+      jiraAccess,
+      jiraResources,
+      jiraPreferences,
     } = preferences;
     return {
       access: jiraAccess,
@@ -77,14 +84,15 @@ const useJira = () => {
       width: 800,
     };
 
-    const optionsString = Object.entries(options).map(([
-      key,
-      value,
-    ]) => `${key}=${value}`).join(', ');
+    const optionsString = Object.entries(options).map(([key, value]) => `${key}=${value}`).join(', ');
 
     const url = buildUrl(URL_ACTIONS.AUTHORIZE, { userId });
 
-    window.open(url, 'targetWindow', optionsString);
+    window.open(
+      url,
+      'targetWindow',
+      optionsString,
+    );
   };
 
   /**
@@ -133,10 +141,7 @@ const useJira = () => {
         return response.access_token;
       }
     }
-  }, [
-    access,
-    isExpired,
-  ]);
+  }, [access, isExpired]);
 
   const getAccessibleResources = useCallback(async () => {
     if (access) {
@@ -166,17 +171,15 @@ const useJira = () => {
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_BOARDS, { resourceId: resources?.id });
 
-    return client(
-      {
-        method: 'GET',
-        params: {
-          maxResults,
-          name,
-          orderBy: 'name',
-        },
-        url: path,
+    return client({
+      method: 'GET',
+      params: {
+        maxResults,
+        name,
+        orderBy: 'name',
       },
-    )
+      url: path,
+    })
       .then((res): JiraDataPayload => res.data)
       .catch((error) => {
         throw new Error(error);
@@ -191,12 +194,10 @@ const useJira = () => {
       resourceId: resources?.id,
     });
 
-    return client(
-      {
-        method: 'GET',
-        url: path,
-      },
-    )
+    return client({
+      method: 'GET',
+      url: path,
+    })
       .then((res): JiraBoardConfig => res.data)
       .catch((error) => {
         throw new Error(error);
@@ -208,13 +209,11 @@ const useJira = () => {
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_FIELDS, { resourceId: resources?.id });
 
-    return client(
-      {
-        method: 'GET',
-        params: { orderBy: 'name' },
-        url: path,
-      },
-    )
+    return client({
+      method: 'GET',
+      params: { orderBy: 'name' },
+      url: path,
+    })
       .then((res): JiraFieldPayload[] => res.data)
       .catch((error) => {
         throw new Error(error);
@@ -229,23 +228,25 @@ const useJira = () => {
       resourceId: resources?.id,
     });
 
-    return client(
-      {
-        method: 'GET',
-        params: {
-          startAt,
-          state: 'future',
-        },
-        url: path,
+    return client({
+      method: 'GET',
+      params: {
+        startAt,
+        state: 'future',
       },
-    )
+      url: path,
+    })
       .then((res): JiraDataPayload => res.data)
       .catch((error) => {
         throw new Error(error);
       });
   };
 
-  const getIssuesForBoard = async (boardId: string | number, pointField?: JiraField | null, startAt = 0) => {
+  const getIssuesForBoard = async (
+    boardId: string | number,
+    pointField?: JiraField | null,
+    startAt = 0,
+  ) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_ISSUES_NO_JQL, {
@@ -269,18 +270,16 @@ const useJira = () => {
       fields.push(pointField.id);
     }
 
-    return client(
-      {
-        method: 'GET',
-        params: {
-          fields: fields.join(','),
-          jql,
-          maxResults: 100,
-          startAt,
-        },
-        url: path,
+    return client({
+      method: 'GET',
+      params: {
+        fields: fields.join(','),
+        jql,
+        maxResults: 100,
+        startAt,
       },
-    )
+      url: path,
+    })
       .then((res): JiraIssuesDataPayload => res.data)
       .catch((error) => {
         throw new Error(error);
@@ -309,13 +308,11 @@ const useJira = () => {
       fields.push(pointField.id);
     }
 
-    return client(
-      {
-        method: 'GET',
-        params: { fields: fields.join(',') },
-        url: path,
-      },
-    )
+    return client({
+      method: 'GET',
+      params: { fields: fields.join(',') },
+      url: path,
+    })
       .then((res): JiraIssueSearchPayload => res.data)
       .catch((error) => {
         throw new Error(error);
@@ -325,23 +322,18 @@ const useJira = () => {
   const getAvatars = async (avatarData: { [key: string]: number }) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const promises = Object.entries(avatarData).map(([
-      issueType,
-      avatarId,
-    ]) => {
+    const promises = Object.entries(avatarData).map(([issueType, avatarId]) => {
       const path = buildUrl(URL_ACTIONS.GET_AVATAR, {
         avatarId,
         resourceId: resources?.id,
       });
 
-      return client(
-        {
-          method: 'GET',
-          params: { size: 'large' },
-          responseType: 'blob',
-          url: path,
-        },
-      )
+      return client({
+        method: 'GET',
+        params: { size: 'large' },
+        responseType: 'blob',
+        url: path,
+      })
         .then(async (res) => {
           const base64Data = await blobToBase64(res.data);
           return {
@@ -357,12 +349,10 @@ const useJira = () => {
 
     // Combine all promises into a single object
     return Promise.all(promises)
-      .then(
-        (results) => results.reduce((acc, curr) => ({
-          ...acc,
-          ...curr,
-        }), {}),
-      );
+      .then((results) => results.reduce((acc, curr) => ({
+        ...acc,
+        ...curr,
+      }), {}));
   };
 
   const getPointFieldFromBoardId = async (boardId: number) => {
@@ -382,7 +372,11 @@ const useJira = () => {
     }
   };
 
-  const writePointValue = async (issue: string, value: number, fieldId: string) => {
+  const writePointValue = async (
+    issue: string,
+    value: number,
+    fieldId: string,
+  ) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.ISSUE, {
@@ -390,13 +384,11 @@ const useJira = () => {
       resourceId: resources?.id,
     });
 
-    return client(
-      {
-        data: { fields: { [ fieldId ]: value } },
-        method: 'PUT',
-        url: path,
-      },
-    )
+    return client({
+      data: { fields: { [ fieldId ]: value } },
+      method: 'PUT',
+      url: path,
+    })
       .then((res) => res.data)
       .catch((error) => {
         throw new Error(error);

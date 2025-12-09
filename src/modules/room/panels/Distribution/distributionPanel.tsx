@@ -72,7 +72,10 @@ const StatDisplayWrapper = styled.div`
 
 const StatDisplay = styled.div<StatDisplayProps>`
   ${ ({
-    animationDuration, percentage, revealVotes, theme,
+    animationDuration,
+    percentage,
+    revealVotes,
+    theme,
   }: StatDisplayProps & ThemedProps) => css`
     background-color: ${ theme.info.accent9 };
     height: ${ revealVotes ? percentage : 0 }%;
@@ -92,61 +95,51 @@ const StatDisplay = styled.div<StatDisplayProps>`
 
 const DistributionPanel = (props: GridPanelProps) => {
   const {
-    currentTicket, shouldShowVotes, voteData,
+    currentTicket,
+    shouldShowVotes,
+    voteData,
   } = useTickets();
   const { sequence, exclusions } = getPointOptions(currentTicket?.pointOptions);
 
-  const hasConsensus = useMemo(
-    () => (
-      shouldShowVotes
+  const hasConsensus = useMemo(() => (
+    shouldShowVotes
       && voteData.length > 0
       && voteData.every(({ vote }) => !!vote && vote === voteData[ 0 ].vote)
-    ),
-    [voteData],
-  );
+  ), [voteData]);
 
-  const voteCounts = useMemo(
-    () => voteData.reduce(
-      (acc: { [key: string]: number }, { vote }) => {
-        if (isVoteCast(vote)) {
+  const voteCounts = useMemo(() => voteData.reduce((acc: { [key: string]: number }, { vote }) => {
+    if (isVoteCast(vote)) {
 
-          acc[vote!] = acc[vote!] ? acc[vote!] + 1 : 1;
-        }
-        return acc;
-      },
-      {},
-    ),
-    [voteData],
-  );
+      acc[vote!] = acc[vote!] ? acc[vote!] + 1 : 1;
+    }
+    return acc;
+  }, {}), [voteData]);
 
-  const voteStats = useMemo(
-    () => sequence.map((point) => {
-      const votes = voteCounts[point] || 0;
-      const votePercentage = (votes / voteData.length) * 100;
+  const voteStats = useMemo(() => sequence.map((point) => {
+    const votes = voteCounts[point] || 0;
+    const votePercentage = (votes / voteData.length) * 100;
 
-      if (exclusions.includes(point) && votePercentage === 0) {
-        return null;
-      }
+    if (exclusions.includes(point) && votePercentage === 0) {
+      return null;
+    }
 
-      return (
-        <StatContainer key={point}>
-          <StatDisplayWrapper>
-            <StatDisplay
-              revealVotes={shouldShowVotes}
-              percentage={votePercentage}
-              animationDuration={votes ? votes * 250 : 250}
-            />
-          </StatDisplayWrapper>
-          <StatLabel>{point}</StatLabel>
-        </StatContainer>
-      );
-    }),
-    [
-      voteCounts,
-      voteData,
-      shouldShowVotes,
-    ],
-  );
+    return (
+      <StatContainer key={point}>
+        <StatDisplayWrapper>
+          <StatDisplay
+            revealVotes={shouldShowVotes}
+            percentage={votePercentage}
+            animationDuration={votes ? votes * 250 : 250}
+          />
+        </StatDisplayWrapper>
+        <StatLabel>{point}</StatLabel>
+      </StatContainer>
+    );
+  }), [
+    voteCounts,
+    voteData,
+    shouldShowVotes,
+  ]);
 
   const component = hasConsensus ? <Consensus /> : voteStats;
   return (

@@ -1,5 +1,7 @@
 import React, {
-  useEffect, useMemo, useState,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 
 import styled, { css } from 'styled-components';
@@ -56,21 +58,22 @@ const Padding = styled.span`
 
 const TicketController = () => {
   const { currentTicket } = useTickets();
-  const [
-    triggerFocus,
-    setTriggerFocus,
-  ] = useState<string | null>(null);
-  const [
-    actionSubtitle,
-    setActionSubtitle,
-  ] = useState<string | null>(null);
+  const [triggerFocus, setTriggerFocus] = useState<string | null>(null);
+  const [actionSubtitle, setActionSubtitle] = useState<string | null>(null);
   const { isNarrow } = useMobile();
 
   const {
-    title, subTitle, icon, url,
+    title,
+    subTitle,
+    icon,
+    url,
   } = useMemo((): TicketControlFormat => {
     const {
-      id, name, url: ticketUrl, type, sprint,
+      id,
+      name,
+      url: ticketUrl,
+      type,
+      sprint,
     } = currentTicket ?? ({} as Ticket | TicketFromQueue);
 
     const title = name ?? '';

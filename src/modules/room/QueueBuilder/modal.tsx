@@ -1,5 +1,7 @@
 import React, {
-  useEffect, useMemo, useState,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 
 import styled, { css } from 'styled-components';
@@ -9,7 +11,9 @@ import UndoSvg from '@assets/icons/undo.svg?react';
 import { scaleEntrance } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import {
-  JiraBoardPayloadValue, JiraField, JiraSprintWithIssues,
+  JiraBoardPayloadValue,
+  JiraField,
+  JiraSprintWithIssues,
 } from '@modules/integrations/jira/types';
 import { useTickets } from '@modules/room/hooks';
 import useStore from '@utils/store';
@@ -155,26 +159,11 @@ const QueueModal = () => {
   const { getPointFieldFromBoardId } = useJira();
   const { queue } = useTickets();
   // const [ importModeSelection, setImportModeSelection ] = useState<ImportModeSelection | null>(null);
-  const [
-    overrideBoard,
-    setOverrideBoard,
-  ] = useState<JiraBoardPayloadValue | null>(null);
-  const [
-    selectedSprint,
-    setSelectedSprint,
-  ] = useState<JiraSprintWithIssues | null>(null);
-  const [
-    showOverrideUI,
-    setShowOverrideUI,
-  ] = useState<boolean>(false);
-  const [
-    pointField,
-    setPointField,
-  ] = useState<JiraField | null>(null);
-  const isAnyBoardSelected = useMemo(() => !!defaultBoard || !!overrideBoard, [
-    defaultBoard,
-    overrideBoard,
-  ]);
+  const [overrideBoard, setOverrideBoard] = useState<JiraBoardPayloadValue | null>(null);
+  const [selectedSprint, setSelectedSprint] = useState<JiraSprintWithIssues | null>(null);
+  const [showOverrideUI, setShowOverrideUI] = useState<boolean>(false);
+  const [pointField, setPointField] = useState<JiraField | null>(null);
+  const isAnyBoardSelected = useMemo(() => !!defaultBoard || !!overrideBoard, [defaultBoard, overrideBoard]);
 
   const selectionContent = useMemo(() => {
     // if (!importModeSelection) {
@@ -262,7 +251,7 @@ const QueueModal = () => {
                   () => {
                     setOverrideBoard(null);
                     setSelectedSprint(null);
-                }
+                  }
                 }
               >
                 Revert to default board

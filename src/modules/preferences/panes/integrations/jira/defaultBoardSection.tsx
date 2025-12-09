@@ -17,7 +17,9 @@ import {
 
 const DefaultBoardSection = () => {
   const {
-    defaultBoard, clearDefaultBoard, setDefaultBoard,
+    defaultBoard,
+    clearDefaultBoard,
+    setDefaultBoard,
   } = useStore(({ preferences, setPreferences }) => ({
     clearDefaultBoard: () => setPreferences('jiraPreferences', {
       ...preferences?.jiraPreferences,
@@ -30,14 +32,12 @@ const DefaultBoardSection = () => {
     }),
   }));
   const { getBoards } = useJira();
-  const transformer = (boards: JiraBoardPayloadValue[]) => boards.map(
-    (board) => ({
-      id: board.id,
-      name: board.name,
-      selectValue: board,
-      shortDesc: `(${board.id})`,
-    }),
-  );
+  const transformer = (boards: JiraBoardPayloadValue[]) => boards.map((board) => ({
+    id: board.id,
+    name: board.name,
+    selectValue: board,
+    shortDesc: `(${board.id})`,
+  }));
 
   const picker = !defaultBoard?.name
     ? (

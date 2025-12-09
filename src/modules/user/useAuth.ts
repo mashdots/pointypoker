@@ -13,17 +13,20 @@ import { User } from '@yappy/types';
 const useAuth = () => {
   const { userId, isInitialized } = useAuthorizedUser();
   const {
-    setUser, storedUser, clearUser, clearRoom,
-  } = useStore(
-    ({
-      clearRoom, preferences, setPreferences,
-    }) => ({
-      clearRoom,
-      clearUser: () => setPreferences('user', null),
-      setUser: (newUser: User) => setPreferences('user', { ...newUser }),
-      storedUser: preferences?.user,
-    }),
-  );
+    setUser,
+    storedUser,
+    clearUser,
+    clearRoom,
+  } = useStore(({
+    clearRoom,
+    preferences,
+    setPreferences,
+  }) => ({
+    clearRoom,
+    clearUser: () => setPreferences('user', null),
+    setUser: (newUser: User) => setPreferences('user', { ...newUser }),
+    storedUser: preferences?.user,
+  }));
 
   const signIn = async (newUserName: string) => {
     const payload = createUserPayload(newUserName);

@@ -6,7 +6,7 @@ import { Room } from '@yappy/types';
 
 type Store = {
   preferences: PreferencesType;
-  setPreferences: (key: keyof PreferencesType, arg: PreferencesType[keyof PreferencesType] ) => void;
+  setPreferences: (key: keyof PreferencesType, arg: PreferencesType[keyof PreferencesType]) => void;
   room: Room | null;
   setRoom: (arg: Room | null) => void;
   clearRoom: () => void;

@@ -1,5 +1,8 @@
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 
 import styled, { css } from 'styled-components';
@@ -79,7 +82,10 @@ const StatusItem = styled.div`
 `;
 
 const Options = ({
-  options, showError, isLoading, handleStoreUpdate,
+  options,
+  showError,
+  isLoading,
+  handleStoreUpdate,
 }: OptionsProps) => {
   const wasLoading = usePrevious(isLoading);
   let tailElement = null;
@@ -95,7 +101,10 @@ const Options = ({
   return (
     <OptionWrapper>
       {options.slice(0, 5).map(({
-        id, name, selectValue, shortDesc,
+        id,
+        name,
+        selectValue,
+        shortDesc,
       }) => (
         <OptionItem key={id} onClick={() => handleStoreUpdate(selectValue)}>
           {name}
@@ -117,22 +126,10 @@ const OptionPicker = ({
   transformFn,
   filterFromNameStart = false,
 }: Props) => {
-  const [
-    isLoading,
-    setIsLoading,
-  ] = useState(false);
-  const [
-    isError,
-    setIsError,
-  ] = useState(false);
-  const [
-    items,
-    setItems,
-  ] = useState<Array<any>>([]);
-  const [
-    filter,
-    setFilter,
-  ] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [items, setItems] = useState<Array<any>>([]);
+  const [filter, setFilter] = useState('');
 
   const fetchData = useCallback(async () => {
     setIsError(false);
@@ -153,14 +150,13 @@ const OptionPicker = ({
       return [];
     }
 
-    return transformFn(items).filter(
-      ({ name }) => {
-        if (filterFromNameStart) {
-          return name.toLowerCase().startsWith(filter.toLowerCase());
-        }
+    return transformFn(items).filter(({ name }) => {
+      if (filterFromNameStart) {
+        return name.toLowerCase().startsWith(filter.toLowerCase());
+      }
 
-        return name.toLowerCase().includes(filter.toLowerCase());
-      });
+      return name.toLowerCase().includes(filter.toLowerCase());
+    });
   }, [
     items,
     filter,
@@ -171,12 +167,9 @@ const OptionPicker = ({
     clearTimeout(timeout);
 
     if (filter) {
-      timeout = setTimeout(
-        () => {
-          fetchData();
-        },
-        500,
-      );
+      timeout = setTimeout(() => {
+        fetchData();
+      }, 500);
     }
   }, [filter]);
 

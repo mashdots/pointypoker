@@ -9,7 +9,9 @@ import useTheme, { ThemeOption as ThemeOptionType, ThemedProps } from '@utils/st
 import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
 import {
-  Separator, SettingsRow, VerticalContainer,
+  Separator,
+  SettingsRow,
+  VerticalContainer,
 } from './common';
 
 type ThemeOptionWrapperProps = {
@@ -84,7 +86,9 @@ const ThemeOption = ({
 
 const AppearancePreferences = () => {
   const {
-    themeMode, themeOptions, setTheme,
+    themeMode,
+    themeOptions,
+    setTheme,
   } = useTheme();
   const { theme } = useStore(({ preferences }) => ({ theme: preferences?.theme }));
 
@@ -110,16 +114,14 @@ const AppearancePreferences = () => {
             Theme
           </label>
           <ThemeOptionContainer>
-            {themeOptions.map(
-              (option) => (
-                <ThemeOption
-                  key={option.theme}
-                  isActive={option.theme === theme}
-                  {...option}
-                  onClick={() => setTheme(option.theme)}
-                />
-              ),
-            )}
+            {themeOptions.map((option) => (
+              <ThemeOption
+                key={option.theme}
+                isActive={option.theme === theme}
+                {...option}
+                onClick={() => setTheme(option.theme)}
+              />
+            ))}
           </ThemeOptionContainer>
         </VerticalContainer>
       </SettingsRow>

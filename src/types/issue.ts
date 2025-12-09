@@ -23,6 +23,7 @@ type ExternalData = {
 };
 
 type Issue = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
   id: string;
   name: string;

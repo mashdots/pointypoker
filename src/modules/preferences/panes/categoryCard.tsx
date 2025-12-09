@@ -53,7 +53,10 @@ const Title = styled.p`
 `;
 
 const CategoryCard = ({
-  icon, title, onClick, isActive,
+  icon,
+  title,
+  onClick,
+  isActive,
 }: Props) => (
   <Wrapper
     aria-label={title}

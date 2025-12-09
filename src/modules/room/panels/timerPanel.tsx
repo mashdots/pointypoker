@@ -17,7 +17,9 @@ const Wrapper = styled.div`
 
 const TimerPanel = ({ config }: GridPanelProps) => {
   const {
-    currentTicket, shouldShowVotes, handleUpdateCurrentTicket,
+    currentTicket,
+    shouldShowVotes,
+    handleUpdateCurrentTicket,
   } = useTickets();
 
   useEffect(() => {

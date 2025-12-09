@@ -1,5 +1,10 @@
 import type {
-  Participant, PointOptions, Ticket, Room, Vote, RoomUpdateObject,
+  Participant,
+  PointOptions,
+  Ticket,
+  Room,
+  Vote,
+  RoomUpdateObject,
 } from './legacy/room';
 import type User from './user';
 

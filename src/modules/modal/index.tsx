@@ -147,7 +147,10 @@ const Modal = () => {
     if (modalRef.current) {
       const { clientX, clientY } = event;
       const {
-        top, right, bottom, left,
+        top,
+        right,
+        bottom,
+        left,
       } = modalRef.current.getBoundingClientRect();
 
       if (
@@ -159,10 +162,7 @@ const Modal = () => {
         closeModal();
       }
     }
-  }, [
-    closeModal,
-    modalRef.current,
-  ]);
+  }, [closeModal, modalRef.current]);
 
   return (
     <AnimatePresence>

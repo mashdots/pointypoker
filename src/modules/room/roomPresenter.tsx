@@ -1,5 +1,7 @@
 import {
-  useFeatureFlagEnabled, useFeatureFlagPayload, useFeatureFlagVariantKey,
+  useFeatureFlagEnabled,
+  useFeatureFlagPayload,
+  useFeatureFlagVariantKey,
 } from 'posthog-js/react';
 import React from 'react';
 

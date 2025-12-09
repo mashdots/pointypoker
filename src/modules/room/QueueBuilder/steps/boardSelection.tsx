@@ -21,24 +21,17 @@ const BoardSelection = ({
   setShowOverrideUI,
 }: Props) => {
   const { getBoards } = useJira();
-  const setDefaultBoard = useStore(
-    ({ preferences, setPreferences }) =>
-      (board: JiraBoardPayloadValue) => setPreferences(
-        'jiraPreferences',
-        {
-          ...preferences?.jiraPreferences,
-          defaultBoard: board,
-        },
-      ),
-  );
-  const boardOptionsTransformer = (boards: JiraBoardPayloadValue[]) => boards.map(
-    (board) => ({
-      id: board.id,
-      name: board.name,
-      selectValue: board,
-      shortDesc: `(${ board.id })`,
-    }),
-  );
+  const setDefaultBoard = useStore(({ preferences, setPreferences }) =>
+    (board: JiraBoardPayloadValue) => setPreferences('jiraPreferences', {
+      ...preferences?.jiraPreferences,
+      defaultBoard: board,
+    }));
+  const boardOptionsTransformer = (boards: JiraBoardPayloadValue[]) => boards.map((board) => ({
+    id: board.id,
+    name: board.name,
+    selectValue: board,
+    shortDesc: `(${ board.id })`,
+  }));
 
   const handleUpdateBoard = (board: JiraBoardPayloadValue) => {
     if (!defaultBoard) {

@@ -14,16 +14,12 @@ export type InfoCellProps = {
 let timeout: number;
 
 const InfoCell = ({
-  icon, value, label,
+  icon,
+  value,
+  label,
 }: InfoCellProps) => {
-  const [
-    valueData,
-    setValueData,
-  ] = useState(value);
-  const [
-    shouldHide,
-    setShouldHide,
-  ] = useState(false);
+  const [valueData, setValueData] = useState(value);
+  const [shouldHide, setShouldHide] = useState(false);
 
   useEffect(() => {
     if (value === null) {
@@ -37,9 +33,7 @@ const InfoCell = ({
     }
 
     return () => clearTimeout(timeout);
-  },
-  [value],
-  );
+  }, [value] );
 
   return (
     <Wrapper>

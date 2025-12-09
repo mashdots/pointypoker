@@ -46,7 +46,9 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
   background-color 250ms ease-out;
   
   ${({
-    selected, theme, disabled,
+    selected,
+    theme,
+    disabled,
   }) => css`
       background-color: ${selected ? theme.primary.accent9 : theme.greyscale.accent3};
       color: ${selected ? theme.primary.accent12 : theme.greyscale.accent12};
@@ -55,7 +57,9 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
 
   :hover {
     ${({
-      selected, theme, disabled,
+      selected,
+      theme,
+      disabled,
     }) => !disabled && css`
       background-color: ${ theme.primary[selected ? 'accent8' : 'accent4'] };
       border-color: ${ theme.primary[selected ? 'transparent' : 'accent8'] };
@@ -89,39 +93,43 @@ const DisabledContainer = styled.div`
 const VotingPanel = ({ config }: GridPanelProps) => {
   const { user } = useAuth();
   const {
-    isModalOpen, isTitleInputFocused, isObserver,
-  } = useStore(
-    ({
-      preferences, isTitleInputFocused, currentModal,
-    }) => (
-      {
-        isModalOpen: !!currentModal,
-        isObserver: preferences?.isObserver,
-        isTitleInputFocused,
-      }
-    ));
+    isModalOpen,
+    isTitleInputFocused,
+    isObserver,
+  } = useStore(({
+    preferences,
+    isTitleInputFocused,
+    currentModal,
+  }) => (
+    {
+      isModalOpen: !!currentModal,
+      isObserver: preferences?.isObserver,
+      isTitleInputFocused,
+    }
+  ));
   const {
-    currentTicket, handleUpdateCurrentTicket, voteData,
+    currentTicket,
+    handleUpdateCurrentTicket,
+    voteData,
   } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
   const voteOptions = getPointOptions(currentTicket?.pointOptions);
 
-  const generateVoteButtons = (voteOptions: PointOptions['sequence']) => voteOptions.map(
-    (option) => (
-      <ButtonWrapper key={option}>
-        <VoteButton
-          selected={myVote === option}
-          onClick={() => {
-            if (user) {
-              handleUpdateCurrentTicket(`votes.${user.id}`, option);
-            }
-          }}
-          disabled={!currentTicket || isObserver}
-        >
-          {option}
-        </VoteButton>
-      </ButtonWrapper>
-    ));
+  const generateVoteButtons = (voteOptions: PointOptions['sequence']) => voteOptions.map((option) => (
+    <ButtonWrapper key={option}>
+      <VoteButton
+        selected={myVote === option}
+        onClick={() => {
+          if (user) {
+            handleUpdateCurrentTicket(`votes.${user.id}`, option);
+          }
+        }}
+        disabled={!currentTicket || isObserver}
+      >
+        {option}
+      </VoteButton>
+    </ButtonWrapper>
+  ));
 
   const handleKeyPress = useCallback(({ key }: KeyboardEvent) => {
     if (currentTicket && !isTitleInputFocused && !isModalOpen) {
@@ -143,10 +151,7 @@ const VotingPanel = ({ config }: GridPanelProps) => {
     if (currentTicket) {
       document.onkeydown = handleKeyPress;
     }
-  }, [
-    currentTicket,
-    isTitleInputFocused,
-  ]);
+  }, [currentTicket, isTitleInputFocused]);
 
   return (
     <GridPanel config={config}>

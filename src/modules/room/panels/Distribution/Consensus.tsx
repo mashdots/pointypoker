@@ -56,10 +56,7 @@ const AnimatedText = styled.h1<{ isPresented: boolean }>`
 let timeout: number;
 
 const Consensus = () => {
-  const [
-    isPresented,
-    setIsPresented,
-  ] = useState(false);
+  const [isPresented, setIsPresented] = useState(false);
 
   useEffect(() => {
     clearTimeout(timeout);

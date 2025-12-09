@@ -1,5 +1,8 @@
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 
 import cloneDeep from 'lodash/cloneDeep';
@@ -9,7 +12,10 @@ import Spinner from '@assets/icons/loading-circle.svg?react';
 import { fadeDownEntrance, spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import {
-  JiraField, JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues,
+  JiraField,
+  JiraIssueSearchPayload,
+  JiraSprint,
+  JiraSprintWithIssues,
 } from '@modules/integrations/jira/types';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -68,7 +74,9 @@ const SprintOptionWrapper = styled.div`
 
 const SprintOption = styled.div<SprintOptionProps>`
   ${({
-    delayFactor, hasIssues, theme,
+    delayFactor,
+    hasIssues,
+    theme,
   }: SprintOptionProps) => css`
     cursor: ${ hasIssues ? 'pointer' : 'default' };
     background-color: ${ theme.greyscale[ hasIssues ? 'accent3' : 'accent2' ] };
@@ -101,7 +109,9 @@ const SprintOption = styled.div<SprintOptionProps>`
 
 const PointContainer = styled.span<SprintOptionProps>`
   ${({
-    theme, hasIssues, hasNewIssuesWithIssuesInQueue,
+    theme,
+    hasIssues,
+    hasNewIssuesWithIssuesInQueue,
   }: SprintOptionProps) => {
     let colorScheme = hasIssues ? 'success' : 'greyscale';
     if (hasNewIssuesWithIssuesInQueue) {
@@ -134,20 +144,13 @@ const SprintSelection = ({
   pointField,
 }: Props) => {
   const previousBoardId = usePrevious(boardId);
-  const [
-    isLoading,
-    setIsLoading,
-  ] = useState(false);
-  const [
-    sprintData,
-    setSprintData,
-  ] = useState<JiraSprint[] | null>(null);
-  const [
-    issueData,
-    setIssueData,
-  ] = useState<JiraIssueSearchPayload[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [sprintData, setSprintData] = useState<JiraSprint[] | null>(null);
+  const [issueData, setIssueData] = useState<JiraIssueSearchPayload[] | null>(null);
   const {
-    getSprintsForBoard, getIssuesForBoard, getAvatars,
+    getSprintsForBoard,
+    getIssuesForBoard,
+    getAvatars,
   } = useJira();
 
   const handleFetchSprintData = useCallback(async () => {
@@ -212,7 +215,11 @@ const SprintSelection = ({
     // setIsError(false);
 
     try {
-      const issues = await getIssuesForBoard(boardId as string, pointField, startAt);
+      const issues = await getIssuesForBoard(
+        boardId as string,
+        pointField,
+        startAt,
+      );
       setIssueData((existingIssueData) => {
         if (!existingIssueData) {
           return [...issues.issues];
@@ -222,10 +229,7 @@ const SprintSelection = ({
           return !existingIssueData.some((existingIssue) => existingIssue.id === issue.id);
         });
 
-        return [
-          ...existingIssueData,
-          ...newIssues,
-        ];
+        return [...existingIssueData, ...newIssues];
       });
 
       if (startAt < issues.total) {
@@ -321,12 +325,9 @@ const SprintSelection = ({
     existingQueue,
   ]);
 
-  const loadingIcon = useMemo(
-    () => sprintData ? 'Select a sprint' : (
-      <LoadingWrapper size={2}><LoadingIcon /></LoadingWrapper>
-    ),
-    [sprintData],
-  );
+  const loadingIcon = useMemo(() => sprintData ? 'Select a sprint' : (
+    <LoadingWrapper size={2}><LoadingIcon /></LoadingWrapper>
+  ), [sprintData]);
 
   return (
     <SectionWrapper>

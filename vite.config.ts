@@ -17,10 +17,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [
-    react(),
-    svgr(),
-  ],
+  plugins: [react(), svgr()],
   resolve: {
     alias: {
       '@assets': path.resolve(__dirname, 'src/assets'),

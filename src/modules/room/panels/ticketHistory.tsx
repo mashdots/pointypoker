@@ -110,8 +110,7 @@ const TicketHistory = ({ config }: Props) => {
         <PointCell>{averagePoints}</PointCell>
       </TicketRow>
     );
-  }), [completedTickets],
-  );
+  }), [completedTickets] );
 
   const header = (
     <TicketHeader ref={headerRef}>

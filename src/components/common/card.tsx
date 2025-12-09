@@ -10,7 +10,12 @@ export type CardProps = {
 
 const Card = styled.div<CardProps>`
   ${ ({
-    colorTheme, scroll, theme, isNarrow, overrideHeight, overrideWidth,
+    colorTheme,
+    scroll,
+    theme,
+    isNarrow,
+    overrideHeight,
+    overrideWidth,
   }: CardProps) => {
     const finalTheme = colorTheme ?? 'primary';
 

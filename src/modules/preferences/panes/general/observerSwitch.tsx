@@ -13,9 +13,14 @@ let timeout: number;
 const ObserverSwitch = () => {
   const { userId } = useAuthorizedUser();
   const {
-    isObserver, updateIsObserver, roomName, roomData,
+    isObserver,
+    updateIsObserver,
+    roomName,
+    roomData,
   } = useStore(({
-    preferences, setPreferences, room,
+    preferences,
+    setPreferences,
+    room,
   }) => ({
     isObserver: preferences?.isObserver ?? false,
     roomData: room,
@@ -24,31 +29,25 @@ const ObserverSwitch = () => {
       setPreferences('isObserver', is);
     },
   }));
-  const [
-    value,
-    setValue,
-  ] = useState(isObserver);
+  const [value, setValue] = useState(isObserver);
 
   useEffect(() => {
     clearTimeout(timeout);
-    timeout = setTimeout(
-      () => {
-        updateIsObserver(value);
+    timeout = setTimeout(() => {
+      updateIsObserver(value);
 
-        // If the user is in a room, update their name in the room too
-        const userInRoom = Object
-          .values(roomData?.participants ?? {})
-          .find((participant) => participant.id === userId);
+      // If the user is in a room, update their name in the room too
+      const userInRoom = Object
+        .values(roomData?.participants ?? {})
+        .find((participant) => participant.id === userId);
 
-        if (roomName && userInRoom) {
-          const updateObj: RoomUpdateObject = {};
-          updateObj[ `participants.${ userId }.isObserver` ] = value;
+      if (roomName && userInRoom) {
+        const updateObj: RoomUpdateObject = {};
+        updateObj[ `participants.${ userId }.isObserver` ] = value;
 
-          updateRoom(roomName, updateObj);
-        }
-      },
-      250,
-    );
+        updateRoom(roomName, updateObj);
+      }
+    }, 250);
   }, [
     value,
     roomName,

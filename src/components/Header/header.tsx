@@ -80,14 +80,12 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
 
 const Header = ({ headerRef, hideMenu }: Props) => {
   const { isAuthenticated } = useAuthorizedUser();
-  const { isMenuOpen, setIsMenuOpen } = useStore(
-    ({ isMenuOpen, setIsMenuOpen }) => (
-      {
-        isMenuOpen,
-        setIsMenuOpen,
-      }
-    ),
-  );
+  const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => (
+    {
+      isMenuOpen,
+      setIsMenuOpen,
+    }
+  ));
 
   const flagEnabled = useFeatureFlagEnabled(flags.REDESIGN);
 

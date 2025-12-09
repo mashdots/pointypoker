@@ -1,7 +1,9 @@
 import { URLRecord } from 'whatwg-url';
 
 import {
-  PointOptions, Ticket, Vote,
+  PointOptions,
+  Ticket,
+  Vote,
 } from '@yappy/types';
 
 enum PointingTypes {

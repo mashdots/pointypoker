@@ -11,7 +11,9 @@ import { Button } from '@components/common';
 import { fadeDownEntrance } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import {
-  JiraField, JiraIssueSearchPayload, QueuedJiraTicket,
+  JiraField,
+  JiraIssueSearchPayload,
+  QueuedJiraTicket,
 } from '@modules/integrations/jira/types';
 import { Separator } from '@modules/preferences/panes/common';
 import { useTickets } from '@modules/room/hooks';
@@ -178,92 +180,89 @@ const TicketReview = ({
   pointField,
   selectedBoardId,
 }: Props) => {
-  const [
-    queueAction,
-    setQueueAction,
-  ] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
+  const [queueAction, setQueueAction] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
   const { closeModal, roomName } = useStore(({ room, setCurrentModal }) => ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
   }));
   const {
-    currentTicket, completedTickets, handleCreatePredefinedTicket, shouldShowVotes,
+    currentTicket,
+    completedTickets,
+    handleCreatePredefinedTicket,
+    shouldShowVotes,
   } = useTickets();
   const { isNarrow } = useMobile();
   const { buildJiraUrl } = useJira();
   const ticketsInQueue = !!existingQueue.length;
 
-  const handleAddTicketsToQueue = useCallback(
-    async () => {
-      if (!roomName) {
-        return;
-      }
+  const handleAddTicketsToQueue = useCallback(async () => {
+    if (!roomName) {
+      return;
+    }
 
-      const updateObj: RoomUpdateObject = {};
-      const newIssues = issues.map(
-        ({
-          key, fields: {
-            summary, issuetype, sprint,
-          },
-        }): QueuedJiraTicket => {
-          return {
-            currentBoardId: selectedBoardId,
-            estimationFieldId: pointField.id,
-            id: key,
-            name: summary,
-            sprint,
-            type: { ...issuetype },
-            url: buildJiraUrl(key),
-          };
-        },
+    const updateObj: RoomUpdateObject = {};
+    const newIssues = issues.map(({
+      key,
+      fields: {
+        summary,
+        issuetype,
+        sprint,
+      },
+    }): QueuedJiraTicket => {
+      return {
+        currentBoardId: selectedBoardId,
+        estimationFieldId: pointField.id,
+        id: key,
+        name: summary,
+        sprint,
+        type: { ...issuetype },
+        url: buildJiraUrl(key),
+      };
+    });
+
+    if (!currentTicket || !shouldShowVotes) {
+      const newCurrentTicket = newIssues[0];
+      if (newCurrentTicket) {
+        handleCreatePredefinedTicket(newCurrentTicket, true);
+      }
+    }
+
+    switch (queueAction) {
+      case EXISTING_QUEUE_ACTIONS.APPEND:
+        updateObj['ticketQueue'] = arrayUnion(...newIssues);
+        break;
+      case EXISTING_QUEUE_ACTIONS.PREPEND:
+        updateObj['ticketQueue'] = [...newIssues, ...existingQueue];
+        break;
+      case EXISTING_QUEUE_ACTIONS.REPLACE:
+      default:
+        updateObj['ticketQueue'] = [...newIssues];
+        break;
+    }
+
+    // Filter out completed tickets that are in newIssues
+    const updatedCompletedTickets = completedTickets?.filter((completed) => !newIssues.find((newIssue) => newIssue.id === completed.id)) || [];
+    if (updatedCompletedTickets.length !== completedTickets?.length) {
+      updateObj['completedTickets'] = updatedCompletedTickets;
+    }
+
+    try {
+      await updateRoom(
+        roomName,
+        updateObj,
+        closeModal,
       );
-
-      if (!currentTicket || !shouldShowVotes) {
-        const newCurrentTicket = newIssues[0];
-        if (newCurrentTicket) {
-          handleCreatePredefinedTicket(newCurrentTicket, true);
-        }
-      }
-
-      switch (queueAction) {
-        case EXISTING_QUEUE_ACTIONS.APPEND:
-          updateObj['ticketQueue'] = arrayUnion(...newIssues);
-          break;
-        case EXISTING_QUEUE_ACTIONS.PREPEND:
-          updateObj['ticketQueue'] = [
-            ...newIssues,
-            ...existingQueue,
-          ];
-          break;
-        case EXISTING_QUEUE_ACTIONS.REPLACE:
-        default:
-          updateObj['ticketQueue'] = [...newIssues];
-          break;
-      }
-
-      // Filter out completed tickets that are in newIssues
-      const updatedCompletedTickets = completedTickets?.filter(
-        (completed) => !newIssues.find((newIssue) => newIssue.id === completed.id),
-      ) || [];
-      if (updatedCompletedTickets.length !== completedTickets?.length) {
-        updateObj['completedTickets'] = updatedCompletedTickets;
-      }
-
-      try {
-        await updateRoom(roomName, updateObj, closeModal);
-      } catch (error) {
-        console.error('Doh!', error);
-      }
-    },
-    [
-      queueAction,
-      existingQueue,
-      issues,
-      pointField,
-      roomName,
-      currentTicket,
-    ],
-  );
+    } catch (error) {
+      console.error('Doh!', error);
+    }
+  }, [
+    queueAction,
+    existingQueue,
+    issues,
+    pointField,
+    roomName,
+    currentTicket,
+  ]);
 
   const issueList = issues.map(({
     fields: {
@@ -324,7 +323,9 @@ const TicketReview = ({
         {ticketsInQueue && (
           <QueueActionWrapper>
             {queueActionOptions.map(({
-              label, value, icon,
+              label,
+              value,
+              icon,
             }) => (
               <QueueActionRadioButton
                 key={value}
@@ -340,8 +341,7 @@ const TicketReview = ({
                 />
                 <label htmlFor={label}>{label}</label>
               </QueueActionRadioButton>
-            ),
-            )}
+            ) )}
           </QueueActionWrapper>
         )}
         <Button

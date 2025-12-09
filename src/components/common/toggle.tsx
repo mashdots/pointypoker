@@ -54,7 +54,9 @@ const Wrapper = styled.div<ColorOverrides & { position?: 'left' | 'right' }>`
 
 const Slider = styled.div <Pick<Props, 'isOn'> & ColorOverrides>`
   ${({
-    isOn, offBg, theme,
+    isOn,
+    offBg,
+    theme,
   }: Pick<Props, 'isOn'> & ThemedProps & ColorOverrides) => css`
     background-color: ${ offBg ? get(theme, offBg) : theme.primary.accent3 };
     border: 1px solid ${ isOn ? theme.primary.accent7 : theme.primary.accent12 };

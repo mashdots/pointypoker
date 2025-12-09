@@ -53,7 +53,10 @@ const StyledCheckBox = styled.input`
 `;
 
 const CheckBox = ({
-  id, checked, onChange, label,
+  id,
+  checked,
+  onChange,
+  label,
 }: Props) => (
   <Wrapper>
     <StyledCheckBox type='checkbox' id={id}

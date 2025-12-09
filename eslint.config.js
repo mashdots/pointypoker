@@ -64,23 +64,19 @@ export default defineConfig([
           'objectsInArrays': false,
         },
       ],
-      '@stylistic/array-element-newline': 'error',
-      '@stylistic/comma-dangle': [
+      '@stylistic/array-element-newline': [
         'error',
-        'always-multiline',
+        {
+          minItems: 3,
+          multiline: true,
+        },
       ],
-      '@stylistic/eol-last': [
-        'error',
-        'always',
-      ],
-      '@stylistic/indent': [
-        'error',
-        2,
-      ],
-      '@stylistic/linebreak-style': [
-        'error',
-        'unix',
-      ],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
+      '@stylistic/eol-last': ['error', 'always'],
+      '@stylistic/exp-list-style': ['error', { 'multiLine': { 'minItems': 1 } }],
+      '@stylistic/function-paren-newline': ['error', { minItems: 3 }],
+      '@stylistic/indent': ['error', 2],
+      '@stylistic/linebreak-style': ['error', 'unix'],
       '@stylistic/max-len': [
         'error',
         {
@@ -88,11 +84,8 @@ export default defineConfig([
           ignoreComments: true,
         },
       ],
-      '@stylistic/no-multi-spaces': [
-        'error',
-        { ignoreEOLComments: false },
-      ],
 
+      '@stylistic/no-multi-spaces': ['error', { ignoreEOLComments: false }],
       '@stylistic/no-trailing-spaces': [
         'error',
         {
@@ -121,19 +114,10 @@ export default defineConfig([
           },
         },
       ],
-      '@stylistic/object-curly-spacing': [
-        'error',
-        'always',
-      ],
+      '@stylistic/object-curly-spacing': ['error', 'always'],
       '@stylistic/object-property-newline': 'error',
-      '@stylistic/quotes': [
-        'error',
-        'single',
-      ],
-      '@stylistic/semi': [
-        'error',
-        'always',
-      ],
+      '@stylistic/quotes': ['error', 'single'],
+      '@stylistic/semi': ['error', 'always'],
       '@typescript-eslint/no-unused-expressions': [
         'error',
         {
@@ -153,14 +137,8 @@ export default defineConfig([
           indentLogicalExpressions: true,
         },
       ],
-      'react/jsx-indent-props': [
-        'error',
-        2,
-      ],
-      'react/jsx-max-props-per-line': [
-        'error',
-        { maximum: 2 },
-      ],
+      'react/jsx-indent-props': ['error', 2],
+      'react/jsx-max-props-per-line': ['error', { maximum: 2 }],
       'react-hooks/exhaustive-deps': 'warn',
       'react-hooks/rules-of-hooks': 'error',
       'sort/imports': [

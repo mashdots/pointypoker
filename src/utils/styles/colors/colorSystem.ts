@@ -1,5 +1,7 @@
 import {
-  useCallback, useEffect, useMemo,
+  useCallback,
+  useEffect,
+  useMemo,
 } from 'react';
 
 import * as colors from '@radix-ui/colors';
@@ -84,8 +86,7 @@ export type ThemeOption = {
   color: string;
 };
 
-const variationPropertiesList: { dark: Array<keyof ColorAccents>,
-  light: Array<keyof ColorAccents> } = {
+const variationPropertiesList: { dark: Array<keyof ColorAccents>,light: Array<keyof ColorAccents> } = {
   dark: [
     'accent1',
     'accent2',
@@ -119,7 +120,11 @@ const variationPropertiesList: { dark: Array<keyof ColorAccents>,
 /**
  * Builds the expected color association structure for a given color scheme and mode.
  */
-const buildColorAssociation = (color: Hue, mode: ActualThemeMode, isTransparent = false): ColorAccents => {
+const buildColorAssociation = (
+  color: Hue,
+  mode: ActualThemeMode,
+  isTransparent = false,
+): ColorAccents => {
   const transparentModifier = isTransparent ? 'A' : '';
   const combinedColor: ColorCollectionType = `${color}${mode}${transparentModifier}`;
   const colorAssociation = {} as ColorAccents;
@@ -148,7 +153,11 @@ const buildTheme = (theme: ThemeColors, mode: THEME_MODES): Theme => {
       builtTheme[key] = buildColorAssociation(theme[key] as Hue, finalColorMode);
 
       if (key === 'greyscale') {
-        builtTheme.transparent = buildColorAssociation(theme[key] as Hue, finalColorMode, true);
+        builtTheme.transparent = buildColorAssociation(
+          theme[key] as Hue,
+          finalColorMode,
+          true,
+        );
       }
 
     } else {
@@ -170,51 +179,39 @@ const useTheme = () => {
     setThemeMode,
     isThemeModeSetBySystem,
     setIsThemeModeSetByUser,
-  } = useStore(
-    ({
-      arePrefsInitialized, preferences, setPreferences,
-    }) => (
-      {
-        arePrefsInitialized,
-        isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
-        selectedTheme: preferences?.theme,
-        selectedThemeMode: preferences?.themeMode,
-        setIsThemeModeSetByUser: () => setPreferences('themeModeController', THEME_MODE_CONTROLLER.USER),
-        setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
-        setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
-      }
-    ),
-  );
+  } = useStore(({
+    arePrefsInitialized,
+    preferences,
+    setPreferences,
+  }) => (
+    {
+      arePrefsInitialized,
+      isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
+      selectedTheme: preferences?.theme,
+      selectedThemeMode: preferences?.themeMode,
+      setIsThemeModeSetByUser: () => setPreferences('themeModeController', THEME_MODE_CONTROLLER.USER),
+      setTheme: (newTheme: THEMES) => setPreferences('theme', newTheme),
+      setThemeMode: (newThemeMode: THEME_MODES) => setPreferences('themeMode', newThemeMode),
+    }
+  ));
 
   const setThemeModeFromEvent = (e: MediaQueryListEvent) => setThemeMode(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
 
-  const themeMode = useMemo(
-    () => selectedThemeMode ? selectedThemeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT,
-    [selectedThemeMode],
-  );
+  const themeMode = useMemo(() => selectedThemeMode ? selectedThemeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT, [selectedThemeMode]);
 
-  const theme = useMemo(
-    () => {
-      const finalTheme = selectedTheme ? selectedTheme : THEMES.WHATEVER;
+  const theme = useMemo(() => {
+    const finalTheme = selectedTheme ? selectedTheme : THEMES.WHATEVER;
 
-      return buildTheme(themes[ finalTheme ], themeMode);
-    },
-    [
-      selectedTheme,
-      themeMode,
-    ],
-  );
+    return buildTheme(themes[ finalTheme ], themeMode);
+  }, [selectedTheme, themeMode]);
 
-  const themeOptions = useMemo(
-    () => Object.values(THEMES).map((theme) => {
-      const colors = buildTheme(themes[ theme ], themeMode);
-      return {
-        color: colors.primary.accent9,
-        theme,
-      };
-    }),
-    [themeMode],
-  );
+  const themeOptions = useMemo(() => Object.values(THEMES).map((theme) => {
+    const colors = buildTheme(themes[ theme ], themeMode);
+    return {
+      color: colors.primary.accent9,
+      theme,
+    };
+  }), [themeMode]);
 
   const toggleThemeMode = useCallback(() => {
     const newMode = themeMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
@@ -236,10 +233,7 @@ const useTheme = () => {
     return () => {
       darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     };
-  }, [
-    arePrefsInitialized,
-    isThemeModeSetBySystem,
-  ]);
+  }, [arePrefsInitialized, isThemeModeSetBySystem]);
 
   return {
     setTheme,

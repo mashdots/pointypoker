@@ -17,7 +17,9 @@ const Wrapper = styled.div`
 
 const FlowContainer = () => {
   const {
-    currentTicket, queue, completedTickets,
+    currentTicket,
+    queue,
+    completedTickets,
   } = useTickets();
 
   return <Wrapper>{currentTicket ? <TicketCard {...currentTicket} /> : 'FlowContainer'}</Wrapper>;

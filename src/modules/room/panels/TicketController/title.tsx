@@ -1,5 +1,8 @@
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 
 import styled, { css } from 'styled-components';
@@ -86,18 +89,15 @@ const Title = ({ shouldFocus, value }: Props) => {
     handleCreatePredefinedTicket,
     shouldShowVotes,
   } = useTickets();
-  const [
-    isLoading,
-    setIsLoading,
-  ] = useState(false);
-  const [
-    canEdit,
-    setCanEdit,
-  ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const setIsFocused = useStore(({ setTitleInputFocus }) => setTitleInputFocus);
   const {
-    buildJiraUrl, isConfigured: isJiraConfigured, getIssueDetail, getPointFieldFromBoardId,
+    buildJiraUrl,
+    isConfigured: isJiraConfigured,
+    getIssueDetail,
+    getPointFieldFromBoardId,
   } = useJira();
 
   const handleCreateNewJiraTicket = async (ticketName: string) => {

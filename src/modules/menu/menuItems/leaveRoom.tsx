@@ -30,7 +30,9 @@ const Icon = styled(DoorIcon)<ThemedProps>`
 const LeaveRoomMenuItem = () => {
   const { user } = useAuth();
   const {
-    roomName, room, clearRoom,
+    roomName,
+    room,
+    clearRoom,
   } = useStore((state) => ({
     clearRoom: state.clearRoom,
     room: state.room,

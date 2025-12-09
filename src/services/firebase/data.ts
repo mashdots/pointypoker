@@ -15,7 +15,10 @@ import {
 } from 'firebase/firestore';
 
 import {
-  Ticket, Participant, Room, User,
+  Ticket,
+  Participant,
+  Room,
+  User,
 } from '@yappy/types';
 import PIIReport from '@yappy/types/piiReport';
 
@@ -54,10 +57,7 @@ const getCollection = (collectionName: PossibleFirebaseCollections) => {
 };
 
 
-const getAllDocsFromCollection = async (
-  collectionName: PossibleFirebaseCollections,
-  callback: (arg: ResultType) => void,
-): Promise<void> => {
+const getAllDocsFromCollection = async (collectionName: PossibleFirebaseCollections, callback: (arg: ResultType) => void): Promise<void> => {
   const result: ResultType = {
     data: [],
     error: false,
@@ -103,7 +103,11 @@ const getSpecifiedDocsFromCollection = async (
     const documentCollection = getCollection(collectionName);
 
     if (documentCollection) {
-      const q = query(documentCollection, where(matchField, '==', id));
+      const q = query(documentCollection, where(
+        matchField,
+        '==',
+        id,
+      ));
       const documents = await getDocs(q);
 
       if (documents.empty) {
@@ -122,10 +126,7 @@ const getSpecifiedDocsFromCollection = async (
   callback(result);
 };
 
-const createUser = async (
-  data: User,
-  callback: (arg: ResultType<typeof data>) => void,
-): Promise<void> => {
+const createUser = async (data: User, callback: (arg: ResultType<typeof data>) => void): Promise<void> => {
   const result: ResultType<typeof data> = {
     data: [],
     error: false,
@@ -136,7 +137,11 @@ const createUser = async (
     const db = getDataClient();
 
     if (db) {
-      await setDoc(doc(db, PossibleFirebaseCollections.USERS, data.id), data);
+      await setDoc(doc(
+        db,
+        PossibleFirebaseCollections.USERS,
+        data.id,
+      ), data);
     } else {
       throw new Error('Failed to get data client.');
     }
@@ -148,9 +153,7 @@ const createUser = async (
   callback(result);
 };
 
-const createPIIReport = async (
-  data: PIIReport,
-): Promise<void> => {
+const createPIIReport = async (data: PIIReport): Promise<void> => {
   const result: ResultType = {
     data: [],
     error: false,
@@ -161,7 +164,11 @@ const createPIIReport = async (
     const db = getDataClient();
 
     if (db) {
-      await setDoc(doc(db, PossibleFirebaseCollections.PII_REPORTS, data.id), data);
+      await setDoc(doc(
+        db,
+        PossibleFirebaseCollections.PII_REPORTS,
+        data.id,
+      ), data);
       result.data = data as PIIReport;
     } else {
       throw new Error('Failed to get data client.');
@@ -174,10 +181,7 @@ const createPIIReport = async (
 
 /** Room Management */
 
-const createRoom = async (
-  data: Room,
-  callback: (arg: ResultType<typeof data>) => void,
-): Promise<void> => {
+const createRoom = async (data: Room, callback: (arg: ResultType<typeof data>) => void): Promise<void> => {
   const result: ResultType<typeof data> = {
     data,
     error: false,
@@ -188,7 +192,11 @@ const createRoom = async (
     const db = getDataClient();
 
     if (db) {
-      await setDoc(doc(db, PossibleFirebaseCollections.ROOMS, data.name), data);
+      await setDoc(doc(
+        db,
+        PossibleFirebaseCollections.ROOMS,
+        data.name,
+      ), data);
     } else {
       throw new Error('Failed to get data client.');
     }
@@ -209,7 +217,11 @@ const watchRoom = (roomName: string, callback: (arg: ResultType<Room>) => void) 
 
   try {
     const db = getDataClient();
-    const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, roomName);
+    const roomRef = doc(
+      db,
+      PossibleFirebaseCollections.ROOMS,
+      roomName,
+    );
 
     const unsubscribe = onSnapshot(roomRef, (doc) => {
       if (doc.exists()) {
@@ -244,7 +256,11 @@ const updateRoom = async (
     const db = getDataClient();
 
     if (db) {
-      const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
+      const roomRef = doc(
+        db,
+        PossibleFirebaseCollections.ROOMS,
+        room,
+      );
       await updateDoc(roomRef, data);
     }
   } catch (error) {
@@ -271,7 +287,11 @@ const addTicket = async (
     const db = getDataClient();
 
     if (db) {
-      const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
+      const roomRef = doc(
+        db,
+        PossibleFirebaseCollections.ROOMS,
+        room,
+      );
 
       await updateDoc(roomRef, { tickets: arrayUnion(data) });
     } else {

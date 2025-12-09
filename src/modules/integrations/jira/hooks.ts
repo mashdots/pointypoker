@@ -7,9 +7,13 @@ import { jiraPermissionScopes } from './utils';
 
 const useJiraScopeCheck = () => {
   const {
-    storedJiraPermissionsScope, revokeAccess, openReAuthenticationModal,
+    storedJiraPermissionsScope,
+    revokeAccess,
+    openReAuthenticationModal,
   } = useStore(({
-    preferences, setPreferences, setCurrentModal,
+    preferences,
+    setPreferences,
+    setCurrentModal,
   }) => ({
     openReAuthenticationModal: () => setCurrentModal(MODAL_TYPES.JIRA_REAUTH),
     revokeAccess: () => {

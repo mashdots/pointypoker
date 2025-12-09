@@ -1,5 +1,7 @@
 import React, {
-  useCallback, useMemo, useState,
+  useCallback,
+  useMemo,
+  useState,
 } from 'react';
 
 import styled, { css } from 'styled-components';
@@ -220,125 +222,111 @@ const ActionButton = styled.button<ActionButtonProps>`
 
 const Controls = ({ triggerFocus, setSubtitle }: Props) => {
   const {
-    currentTicket, queue, shouldShowVotes, handleGoToNextTicket,
+    currentTicket,
+    queue,
+    shouldShowVotes,
+    handleGoToNextTicket,
   } = useTickets();
   const { isConfigured, writePointValue } = useJira();
   const { isNarrow } = useMobile();
-  const [
-    loadingIndex,
-    setLoadingIndex,
-  ] = useState<number | null>(null);
-  const [
-    successIndex,
-    setSuccessIndex,
-  ] = useState<number | null>(null);
-  const [
-    showAllButtons,
-    setShowAllButtons,
-  ] = useState(false);
+  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
+  const [successIndex, setSuccessIndex] = useState<number | null>(null);
+  const [showAllButtons, setShowAllButtons] = useState(false);
   const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.PII));
 
-  const collapsedButtonCount = useMemo(
-    () => isNarrow ? 2 : 3,
-    [isNarrow],
-  );
+  const collapsedButtonCount = useMemo(() => isNarrow ? 2 : 3, [isNarrow]);
 
-  const handleAction = useCallback(
-    (actions: TICKET_ACTIONS[], index: number) => {
-      const { suggestedPoints } = calculateSuggestedPoints(currentTicket);
-      const updateObj: RoomUpdateObject = {};
+  const handleAction = useCallback((actions: TICKET_ACTIONS[], index: number) => {
+    const { suggestedPoints } = calculateSuggestedPoints(currentTicket);
+    const updateObj: RoomUpdateObject = {};
 
-      actions.forEach(async (action) => {
-        switch (action) {
-          case TICKET_ACTIONS.SKIP:
-            handleGoToNextTicket();
-            break;
+    actions.forEach(async (action) => {
+      switch (action) {
+        case TICKET_ACTIONS.SKIP:
+          handleGoToNextTicket();
+          break;
 
-          case TICKET_ACTIONS.NEW:
-            triggerFocus(currentTicket?.id ?? 'ticket');
-            break;
+        case TICKET_ACTIONS.NEW:
+          triggerFocus(currentTicket?.id ?? 'ticket');
+          break;
 
-          case TICKET_ACTIONS.POINT:
-            if (isConfigured && currentTicket?.url) {
-              setLoadingIndex(index);
-              await wait(500);
-              try {
-                await writePointValue(currentTicket?.id, suggestedPoints as number, currentTicket.estimationFieldId);
-                updateObj['currentTicket.suggestedPoints'] = suggestedPoints;
-                updateObj['currentTicket.wasPointed'] = true;
-              } catch (error) {
-                updateObj[ 'currentTicket.wasPointed' ] = false;
-              }
-
-              setLoadingIndex(null);
-              setSuccessIndex(index);
-              await wait(500);
-              updateRoom(currentTicket?.id, updateObj);
-              setSuccessIndex(null);
+        case TICKET_ACTIONS.POINT:
+          if (isConfigured && currentTicket?.url) {
+            setLoadingIndex(index);
+            await wait(500);
+            try {
+              await writePointValue(
+                currentTicket?.id,
+                suggestedPoints as number,
+                currentTicket.estimationFieldId,
+              );
+              updateObj['currentTicket.suggestedPoints'] = suggestedPoints;
+              updateObj['currentTicket.wasPointed'] = true;
+            } catch (error) {
+              updateObj[ 'currentTicket.wasPointed' ] = false;
             }
-            break;
 
-          case TICKET_ACTIONS.NEXT:
+            setLoadingIndex(null);
+            setSuccessIndex(index);
+            await wait(500);
+            updateRoom(currentTicket?.id, updateObj);
+            setSuccessIndex(null);
+          }
+          break;
+
+        case TICKET_ACTIONS.NEXT:
           // Similar to skip, but is locked behind a condition that requires all votes to be cast
-            handleGoToNextTicket();
-            break;
+          handleGoToNextTicket();
+          break;
 
-          case TICKET_ACTIONS.REPORT_PII:
+        case TICKET_ACTIONS.REPORT_PII:
           // Open a modal to report PII
-            openModal();
-            break;
+          openModal();
+          break;
 
-          default:
-            break;
-        }
-      });
-      setShowAllButtons(false);
-    },
-    [
-      currentTicket,
-      queue,
-    ],
-  );
+        default:
+          break;
+      }
+    });
+    setShowAllButtons(false);
+  }, [currentTicket, queue]);
 
-  const buildCaption = useCallback(
-    (actions: Array<TICKET_ACTIONS | EXTRA_ACTIONS>) => {
-      let message = '';
+  const buildCaption = useCallback((actions: Array<TICKET_ACTIONS | EXTRA_ACTIONS>) => {
+    let message = '';
 
-      if (
-        !shouldShowVotes
+    if (
+      !shouldShowVotes
         && (
           actions.includes(TICKET_ACTIONS.POINT)
           || actions.includes(TICKET_ACTIONS.NEXT)
         )
-      ) {
-        message += 'everyone should vote before you can ';
+    ) {
+      message += 'everyone should vote before you can ';
+    }
+
+    if (actions.includes(EXTRA_ACTIONS.EXPAND_BUTTONS)) {
+      return 'see more options';
+    }
+
+    message += actions.map((action) => {
+      switch (action) {
+        case TICKET_ACTIONS.SKIP:
+          return 'skip this';
+        case TICKET_ACTIONS.NEW:
+          return 'create a new';
+        case TICKET_ACTIONS.POINT:
+          return 'point this';
+        case TICKET_ACTIONS.NEXT:
+          return 'start the next';
+        case TICKET_ACTIONS.REPORT_PII:
+          return 'report PII for this';
+        default:
+          return '';
       }
+    }).join(' and ');
 
-      if (actions.includes(EXTRA_ACTIONS.EXPAND_BUTTONS)) {
-        return 'see more options';
-      }
-
-      message += actions.map((action) => {
-        switch (action) {
-          case TICKET_ACTIONS.SKIP:
-            return 'skip this';
-          case TICKET_ACTIONS.NEW:
-            return 'create a new';
-          case TICKET_ACTIONS.POINT:
-            return 'point this';
-          case TICKET_ACTIONS.NEXT:
-            return 'start the next';
-          case TICKET_ACTIONS.REPORT_PII:
-            return 'report PII for this';
-          default:
-            return '';
-        }
-      }).join(' and ');
-
-      return message + ' ticket';
-    },
-    [shouldShowVotes],
-  );
+    return message + ' ticket';
+  }, [shouldShowVotes]);
 
   const buttonOptions: Array<ButtonProps> = [
     {
@@ -369,102 +357,86 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
       shouldShow: !queue.length && !!currentTicket && isConfigured && currentTicket?.url,
     },
     {
-      actions: [
-        TICKET_ACTIONS.POINT,
-        TICKET_ACTIONS.NEW,
-      ],
+      actions: [TICKET_ACTIONS.POINT, TICKET_ACTIONS.NEW],
       component: <PointNewIcon />,
       disabled: !shouldShowVotes,
       shouldShow: !!currentTicket && isConfigured && currentTicket?.url,
     },
     {
-      actions: [
-        TICKET_ACTIONS.POINT,
-        TICKET_ACTIONS.NEXT,
-      ],
+      actions: [TICKET_ACTIONS.POINT, TICKET_ACTIONS.NEXT],
       component: <PointNextIcon />,
       disabled: !shouldShowVotes,
       shouldShow: queue.length > 0 && isConfigured && currentTicket?.url,
     },
   ];
 
-  const buttonComponents = useMemo(
-    () => buttonOptions
-      .filter(bo => bo.shouldShow)
-      .map(({
-        component, disabled, actions,
-      }: ButtonProps, index: number) => {
-        const caption = buildCaption(actions);
-        let icon = component;
+  const buttonComponents = useMemo(() => buttonOptions
+    .filter(bo => bo.shouldShow)
+    .map(({
+      component,
+      disabled,
+      actions,
+    }: ButtonProps, index: number) => {
+      const caption = buildCaption(actions);
+      let icon = component;
 
-        if (loadingIndex === index) {
-          icon = <LoadingIcon />;
-        } else if (successIndex === index) {
-          icon = <SuccessIcon />;
-        }
-
-        return (
-          <ButtonWrapper
-            key={index}
-            onMouseEnter={() => setSubtitle(caption)}
-          >
-            <ActionButton
-              disabled={!!disabled && !loadingIndex}
-              onClick={() => handleAction(actions, index)}
-            >
-              {icon}
-            </ActionButton>
-          </ButtonWrapper>
-        );
-      }),
-    [
-      buttonOptions,
-      loadingIndex,
-      successIndex,
-      currentTicket,
-      queue,
-    ],
-  );
-
-  const dynamicWidth = useMemo(
-    () => {
-      if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
-        return 3 * collapsedButtonCount;
+      if (loadingIndex === index) {
+        icon = <LoadingIcon />;
+      } else if (successIndex === index) {
+        icon = <SuccessIcon />;
       }
 
-      return buttonOptions.filter(b => b.shouldShow).length * 3;
-    },
-    [
-      buttonComponents,
-      collapsedButtonCount,
-    ],
-  );
-
-  const moreButton = useMemo(
-    () => {
-      if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
-        return (
-          <ButtonWrapper
-            onMouseEnter={() => setSubtitle(buildCaption([EXTRA_ACTIONS.EXPAND_BUTTONS]))}
+      return (
+        <ButtonWrapper
+          key={index}
+          onMouseEnter={() => setSubtitle(caption)}
+        >
+          <ActionButton
+            disabled={!!disabled && !loadingIndex}
+            onClick={() => handleAction(actions, index)}
           >
-            <ActionButton
-              disabled={false}
-              onClick={() => setShowAllButtons(true)}
-            >
-              <MoreIcon />
-            </ActionButton>
-          </ButtonWrapper>
-        );
-      }
+            {icon}
+          </ActionButton>
+        </ButtonWrapper>
+      );
+    }), [
+    buttonOptions,
+    loadingIndex,
+    successIndex,
+    currentTicket,
+    queue,
+  ]);
 
-      return null;
-    },
-    [
-      showAllButtons,
-      buttonComponents,
-      collapsedButtonCount,
-    ],
-  );
+  const dynamicWidth = useMemo(() => {
+    if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
+      return 3 * collapsedButtonCount;
+    }
+
+    return buttonOptions.filter(b => b.shouldShow).length * 3;
+  }, [buttonComponents, collapsedButtonCount]);
+
+  const moreButton = useMemo(() => {
+    if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
+      return (
+        <ButtonWrapper
+          onMouseEnter={() => setSubtitle(buildCaption([EXTRA_ACTIONS.EXPAND_BUTTONS]))}
+        >
+          <ActionButton
+            disabled={false}
+            onClick={() => setShowAllButtons(true)}
+          >
+            <MoreIcon />
+          </ActionButton>
+        </ButtonWrapper>
+      );
+    }
+
+    return null;
+  }, [
+    showAllButtons,
+    buttonComponents,
+    collapsedButtonCount,
+  ]);
 
   return (
     <Wrapper onMouseLeave={() => setSubtitle(' ')}>

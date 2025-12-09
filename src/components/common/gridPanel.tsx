@@ -22,7 +22,11 @@ const Container = styled.div<ThemedProps & GridConfiguration>`
   flex-direction: column;
   
   ${({
-    columnStart, columnEnd, rowStart, rowEnd, theme,
+    columnStart,
+    columnEnd,
+    rowStart,
+    rowEnd,
+    theme,
   }: ThemedProps & GridConfiguration) => css`
     grid-column-start: ${columnStart};
     grid-column-end: ${columnEnd};

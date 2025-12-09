@@ -88,54 +88,52 @@ const History = () => {
   const { completedTickets } = useTickets();
   const { theme } = useTheme();
 
-  const ticketRows = useMemo(() => completedTickets?.map(
-    ({
-      id,
-      name,
-      suggestedPoints,
-      url,
-    }, i) => {
-      const parsedUrl = url ?? parseURL(name ?? '');
-      const idElement = id ? <IDCell><Link to={url} target='_blank'>{id}</Link></IDCell> : null;
-      const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
-      const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
-      const isLast = i === completedTickets.length - 1;
+  const ticketRows = useMemo(() => completedTickets?.map(({
+    id,
+    name,
+    suggestedPoints,
+    url,
+  }, i) => {
+    const parsedUrl = url ?? parseURL(name ?? '');
+    const idElement = id ? <IDCell><Link to={url} target='_blank'>{id}</Link></IDCell> : null;
+    const title = parsedUrl ? getTicketNumberFromUrl(parsedUrl) : null;
+    const nameComponent = title ? <Link to={name!} target='_blank'>{title}</Link> : name;
+    const isLast = i === completedTickets.length - 1;
 
-      return (
-        <TicketRow
-          key={id}
-          initial={{
-            opacity: 0,
-            y: -10,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          exit={{
-            opacity: 0,
-            y: 10,
-          }}
-          transition={{ duration: 0.25 }}
-          style={{
-            alignItems: 'center',
-            borderBottomWidth: isLast ? 0 : '1px',
-            borderColor: theme.primary.accent6,
-            borderStyle: 'solid',
-            borderWidth: '0px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0.75rem 2rem 0.75rem 1rem',
-            width: '100%',
-          }}
-        >
-          {idElement}
-          <NameCell title={title ?? name}>{nameComponent || '(no title)'}</NameCell>
-          <PointCell>{suggestedPoints}</PointCell>
-        </TicketRow>
-      );
-    }), [completedTickets],
-  );
+    return (
+      <TicketRow
+        key={id}
+        initial={{
+          opacity: 0,
+          y: -10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        exit={{
+          opacity: 0,
+          y: 10,
+        }}
+        transition={{ duration: 0.25 }}
+        style={{
+          alignItems: 'center',
+          borderBottomWidth: isLast ? 0 : '1px',
+          borderColor: theme.primary.accent6,
+          borderStyle: 'solid',
+          borderWidth: '0px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: '0.75rem 2rem 0.75rem 1rem',
+          width: '100%',
+        }}
+      >
+        {idElement}
+        <NameCell title={title ?? name}>{nameComponent || '(no title)'}</NameCell>
+        <PointCell>{suggestedPoints}</PointCell>
+      </TicketRow>
+    );
+  }), [completedTickets] );
 
   return (
     <Wrapper>

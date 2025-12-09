@@ -5,7 +5,9 @@ import styled, { css } from 'styled-components';
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
 import LogoSvg from '@assets/pointy-poker.svg?react';
 import {
-  Button, Card, TextInput,
+  Button,
+  Card,
+  TextInput,
 } from '@components/common';
 import Logo from '@components/Header/logo';
 import { useMobile } from '@utils/hooks/mobile';
@@ -83,10 +85,7 @@ const Form = styled.form`
 
 const UserSetup = () => {
   const { signIn } = useAuth();
-  const [
-    name,
-    setName,
-  ] = useState('');
+  const [name, setName] = useState('');
   const { isNarrow } = useMobile();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

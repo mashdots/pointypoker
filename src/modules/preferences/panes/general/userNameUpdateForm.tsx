@@ -14,7 +14,9 @@ const UserNameUpdateForm = () => {
   const { user } = useAuth();
   const { id: userId, name: userName } = user || {};
   const {
-    updateUserName, roomName, roomData,
+    updateUserName,
+    roomName,
+    roomData,
   } = useStore(({ setPreferences, room }) => ({
     roomData: room,
     roomName: room?.name,
@@ -29,32 +31,26 @@ const UserNameUpdateForm = () => {
     },
   }));
 
-  const [
-    value,
-    setValue,
-  ] = useState(userName);
+  const [value, setValue] = useState(userName);
 
   useEffect(() => {
     if (value && value !== userName) {
       clearTimeout(timeout);
-      timeout = setTimeout(
-        () => {
-          updateUserName(value);
+      timeout = setTimeout(() => {
+        updateUserName(value);
 
-          // If the user is in a room, update their name in the room too
-          const userInRoom = Object
-            .values(roomData?.participants ?? {})
-            .find((participant) => participant.id === userId);
+        // If the user is in a room, update their name in the room too
+        const userInRoom = Object
+          .values(roomData?.participants ?? {})
+          .find((participant) => participant.id === userId);
 
-          if (roomName && userInRoom) {
-            const updateObj: RoomUpdateObject = {};
-            updateObj[ `participants.${ userId }.name` ] = value;
+        if (roomName && userInRoom) {
+          const updateObj: RoomUpdateObject = {};
+          updateObj[ `participants.${ userId }.name` ] = value;
 
-            updateRoom(roomName, updateObj);
-          }
-        },
-        1000,
-      );
+          updateRoom(roomName, updateObj);
+        }
+      }, 1000);
     }
   }, [
     value,

@@ -1,7 +1,11 @@
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedWrapper } from 'motion/react-client';
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,12 +17,16 @@ import Button from '@components/common/button';
 import { useAuth } from '@modules/user';
 import { useHeaderHeight } from '@routes/root';
 import {
-  createRoom, updateRoom, watchRoom,
+  createRoom,
+  updateRoom,
+  watchRoom,
 } from '@services/firebase';
 import { generateRoomName } from '@utils';
 import useStore from '@utils/store';
 import {
-  Participant, Room as RoomType, RoomUpdateObject,
+  Participant,
+  Room as RoomType,
+  RoomUpdateObject,
 } from '@yappy/types';
 
 import RoomPresenter from './roomPresenter';
@@ -59,25 +67,21 @@ const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
   const { user } = useAuth();
   const {
-    isObserver, roomData, setRoom,
-  } = useStore(
-    ({
-      preferences, room, setRoom,
-    }) => ({
-      isObserver: preferences?.isObserver ?? false,
-      roomData: room,
-      setRoom,
-    }),
-  );
+    isObserver,
+    roomData,
+    setRoom,
+  } = useStore(({
+    preferences,
+    room,
+    setRoom,
+  }) => ({
+    isObserver: preferences?.isObserver ?? false,
+    roomData: room,
+    setRoom,
+  }));
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
-  const [
-    isRoomOpen,
-    setIsRoomOpen,
-  ] = useState(false);
-  const [
-    isLoadingRoom,
-    setIsLoadingRoom,
-  ] = useState(true);
+  const [isRoomOpen, setIsRoomOpen] = useState(false);
+  const [isLoadingRoom, setIsLoadingRoom] = useState(true);
   const navigate = useNavigate();
   const roomToJoin = useMemo(() => {
     const nameFromPath = window.location.pathname.slice(1);

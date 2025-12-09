@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 
 import {
-  JiraAuthData, JiraPreferences, JiraResourceData,
+  JiraAuthData,
+  JiraPreferences,
+  JiraResourceData,
 } from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
 import {
-  THEMES, THEME_MODES, THEME_MODE_CONTROLLER,
+  THEMES,
+  THEME_MODES,
+  THEME_MODE_CONTROLLER,
 } from '@utils/styles/colors/colorSystem';
 import { User } from '@yappy/types';
 
@@ -55,18 +59,23 @@ const purgeLocalStorage = () => {
 
 const usePreferenceSync = () => {
   const {
-    preferences, setPref, arePrefsInitialized, setPrefsInitialized,
-  } = useStore(
-    ({
-      preferences, setPreferences, arePrefsInitialized, setPrefsInitialized,
-    }) => (
-      {
-        arePrefsInitialized,
-        preferences,
-        setPref: (key: string, pref: keyof PreferencesType) => setPreferences(key, pref),
-        setPrefsInitialized,
-      }
-    ));
+    preferences,
+    setPref,
+    arePrefsInitialized,
+    setPrefsInitialized,
+  } = useStore(({
+    preferences,
+    setPreferences,
+    arePrefsInitialized,
+    setPrefsInitialized,
+  }) => (
+    {
+      arePrefsInitialized,
+      preferences,
+      setPref: (key: string, pref: keyof PreferencesType) => setPreferences(key, pref),
+      setPrefsInitialized,
+    }
+  ));
 
   const syncPrefsToStore = () => {
     const storedPreferences = { ...localStorage };
@@ -77,7 +86,11 @@ const usePreferenceSync = () => {
         pref = JSON.parse(storedPreferences[ key ]);
         setPref(key, pref);
       } catch (error) {
-        console.error('YIKES:', key, storedPreferences[ key ]);
+        console.error(
+          'YIKES:',
+          key,
+          storedPreferences[ key ],
+        );
       }
     }
   };
@@ -95,10 +108,7 @@ const usePreferenceSync = () => {
         writeToLocalStorage(key, preferences[key]);
       }
     }
-  }, [
-    arePrefsInitialized,
-    preferences,
-  ]);
+  }, [arePrefsInitialized, preferences]);
 
   return {
     getPrefFromLocalStorage,

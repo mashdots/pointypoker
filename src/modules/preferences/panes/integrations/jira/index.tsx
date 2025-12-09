@@ -1,5 +1,7 @@
 import React, {
-  useEffect, useMemo, useState,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 
 import { Button } from '@components/common';
@@ -27,14 +29,8 @@ import {
 } from './components';
 
 const JiraIntegrationCard = () => {
-  const [
-    isLoading,
-    setIsLoading,
-  ] = useState(false);
-  const [
-    isError,
-    setIsError,
-  ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const {
     isConfigured,
     accessToken,
@@ -53,7 +49,9 @@ const JiraIntegrationCard = () => {
     setResources: (resources: JiraResourceData | null) => setPreferences('jiraResources', resources),
   }));
   const {
-    isConnected, launchJiraOAuth, getAccessibleResources,
+    isConnected,
+    launchJiraOAuth,
+    getAccessibleResources,
   } = useJira();
   const { syncPrefsToStore } = usePreferenceSync();
 

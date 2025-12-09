@@ -28,7 +28,12 @@ type WrapperProps = ThemedProps & {
 
 const StyledButton = styled.button`
   ${ ({
-    disabled, noMargin, round, textSize, theme, variation,
+    disabled,
+    noMargin,
+    round,
+    textSize,
+    theme,
+    variation,
   }: WrapperProps) => css`
     background-color: ${ theme[ disabled ? 'greyscale' : variation ].accent3 };
     border-bottom-color: ${ theme[ disabled ? 'greyscale' : variation ].accent7 } !important;
@@ -58,7 +63,10 @@ const StyledButton = styled.button`
 
   :hover {
     ${ ({
-      disabled, noMargin, theme, variation,
+      disabled,
+      noMargin,
+      theme,
+      variation,
     }: WrapperProps) => !disabled && css`
       color: ${ theme[ variation ].accent12 };
       background-color: ${ theme[ variation ].accent4 };
@@ -70,7 +78,10 @@ const StyledButton = styled.button`
   
   :active {
     ${ ({
-      disabled, noMargin, theme, variation,
+      disabled,
+      noMargin,
+      theme,
+      variation,
     }: WrapperProps) => !disabled && css`
       background-color: ${ theme[ variation ].accent5 };
       border-bottom-width: 1px;
@@ -81,7 +92,12 @@ const StyledButton = styled.button`
 
 const SkeuButton = styled.button`
   ${ ({
-    round, textSize, theme, variation, isLoading, noMargin,
+    round,
+    textSize,
+    theme,
+    variation,
+    isLoading,
+    noMargin,
   }: WrapperProps) => css`
     background-color: ${ theme[ isLoading ? 'greyscale' : variation ].accent7 };
     border-radius: ${ round ? 500 : 0.5 }rem;

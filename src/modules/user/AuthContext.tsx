@@ -1,5 +1,11 @@
 import React, {
-  createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef, useState,
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 
 import { Unsubscribe } from 'firebase/auth';
@@ -20,18 +26,9 @@ const AuthContext = createContext<AuthContext>({
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const authListener = useRef<Unsubscribe | null>(null);
-  const [
-    isInitialized,
-    setIsInitialized,
-  ] = useState(false);
-  const [
-    isAuthenticated,
-    setIsAuthenticated,
-  ] = useState(false);
-  const [
-    userId,
-    setUserId,
-  ] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const value: AuthContext = useMemo(() => ({
     isAuthenticated,

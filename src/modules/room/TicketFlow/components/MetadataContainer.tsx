@@ -10,7 +10,10 @@ type Props = {
 };
 
 const MetadataContainer = ({
-  id, url, ticketType, sprint,
+  id,
+  url,
+  ticketType,
+  sprint,
 }: Props) => {
   const typeCopy = ticketType ? ` • ${ticketType}` : '';
   const sprintCopy = ticketType && sprint ? ` in ${sprint.name}` : '';

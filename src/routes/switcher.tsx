@@ -39,10 +39,7 @@ const Switcher = () => {
       component: <RoomSetup />,
       key: 'room',
     };
-  }, [
-    isInitialized,
-    user,
-  ]);
+  }, [isInitialized, user]);
 
   return (
     <AnimatePresence mode="wait">

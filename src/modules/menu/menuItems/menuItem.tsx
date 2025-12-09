@@ -28,7 +28,9 @@ const Wrapper = styled.div`
 `;
 
 const MenuItem = ({
-  text, onClick, uniqueElement,
+  text,
+  onClick,
+  uniqueElement,
 }: MenuItemProps) => {
   const setIsMenuOpen = useStore(({ setIsMenuOpen }) => setIsMenuOpen);
 

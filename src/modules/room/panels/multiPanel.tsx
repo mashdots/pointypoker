@@ -1,5 +1,8 @@
 import React, {
-  useEffect, useMemo, useRef, useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 
 import debounce from 'lodash/debounce';
@@ -51,7 +54,9 @@ const TitleContainer = styled.div`
 
 const Title = styled.h2<TitleProps>`
   ${({
-    isSelectable, isSelected, theme,
+    isSelectable,
+    isSelected,
+    theme,
   }: TitleProps) => css`
     border-bottom: 1px solid ${ isSelected ? theme.primary.accent7 : 'transparent'};
     color: ${ theme.primary.accent11 };
@@ -115,14 +120,8 @@ const PANEL_FIXTURES = [
 ];
 
 const MultiPanel = ({ panels = PANEL_FIXTURES, forcePanelChange }: Props) => {
-  const [
-    width,
-    setWidth,
-  ] = useState(0);
-  const [
-    selectedPanel,
-    setSelectedPanel,
-  ] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [selectedPanel, setSelectedPanel] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const titles = panels.map((panel, i) => {
     const isSelectable = panels.length > 1 && selectedPanel !== i;
@@ -140,29 +139,20 @@ const MultiPanel = ({ panels = PANEL_FIXTURES, forcePanelChange }: Props) => {
     );
   });
 
-  const panelComponents = useMemo(
-    () => panels.map((panel, i) => {
-      return (
-        <PanelWrapper width={width} key={i}>{panel.component}</PanelWrapper>
-      );
-    }),
-    [
-      panels,
-      width,
-    ],
-  );
+  const panelComponents = useMemo(() => panels.map((panel, i) => {
+    return (
+      <PanelWrapper width={width} key={i}>{panel.component}</PanelWrapper>
+    );
+  }), [panels, width]);
 
-  const handleSetWidth = debounce(
-    (element) => {
-      const computedWrapperStyle = getComputedStyle(element);
+  const handleSetWidth = debounce((element) => {
+    const computedWrapperStyle = getComputedStyle(element);
 
-      let finalWidth = parseFloat(computedWrapperStyle.width);
-      finalWidth -= (parseFloat(computedWrapperStyle.paddingLeft) + parseFloat(computedWrapperStyle.paddingRight));
+    let finalWidth = parseFloat(computedWrapperStyle.width);
+    finalWidth -= (parseFloat(computedWrapperStyle.paddingLeft) + parseFloat(computedWrapperStyle.paddingRight));
 
-      setWidth(finalWidth);
-    },
-    500,
-  );
+    setWidth(finalWidth);
+  }, 500);
 
   useEffect(() => {
     if (!wrapperRef.current) return;
