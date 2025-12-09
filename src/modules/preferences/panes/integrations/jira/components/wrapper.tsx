@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
 import { VerticalContainer } from '@modules/preferences/panes/common';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled(VerticalContainer)`
   ${ ({ theme }: ThemedProps) => css`

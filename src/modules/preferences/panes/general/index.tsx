@@ -1,12 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import UserNameUpdateForm from './userNameUpdateForm';
-import CategoryCard, { GenericPrefCardProps } from '../categoryCard';
-import { SettingsRow } from '../common';
+import styled from 'styled-components';
 
 import Icon from '@assets/icons/settings-general.svg?react';
 import ObserverSwitch from '@modules/preferences/panes/general/observerSwitch';
+
+import CategoryCard, { GenericPrefCardProps } from '../categoryCard';
+import { SettingsRow } from '../common';
+import UserNameUpdateForm from './userNameUpdateForm';
 
 const GeneralPreferences = () => {
   return (

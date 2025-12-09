@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+
 import styled, { css } from 'styled-components';
 
-import LogoSvg from '@assets/pointy-poker.svg?react';
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
-import { Button, Card, TextInput } from '@components/common';
+import LogoSvg from '@assets/pointy-poker.svg?react';
+import {
+  Button, Card, TextInput,
+} from '@components/common';
 import Logo from '@components/Header/logo';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { useMobile } from '@utils/hooks/mobile';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 import { useAuth } from './useAuth';
 
@@ -80,7 +83,10 @@ const Form = styled.form`
 
 const UserSetup = () => {
   const { signIn } = useAuth();
-  const [name, setName] = useState('');
+  const [
+    name,
+    setName,
+  ] = useState('');
   const { isNarrow } = useMobile();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,7 +98,8 @@ const UserSetup = () => {
   };
 
   return (
-    <Card isNarrow={isNarrow} overrideHeight={24} overrideWidth={40}>
+    <Card isNarrow={isNarrow} overrideHeight={24}
+      overrideWidth={40}>
       <Wrapper>
         <HeaderWrapper>
           <Icon />
@@ -101,7 +108,8 @@ const UserSetup = () => {
         <FormWrapper>
           <p>what do we call you?</p>
           {/* <Notice>this is stored locally so you&apos;re not asked every time, and in the cloud to sync with room data</Notice> */}
-          <Form onSubmit={handleSubmit} autoComplete='off' role="user name">
+          <Form onSubmit={handleSubmit} autoComplete='off'
+            role="user name">
             <TextInput
               alignment='left'
               id='name'

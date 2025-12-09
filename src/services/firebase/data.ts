@@ -14,10 +14,13 @@ import {
   // writeBatch,
 } from 'firebase/firestore';
 
+import {
+  Ticket, Participant, Room, User,
+} from '@yappy/types';
+import PIIReport from '@yappy/types/piiReport';
+
 import getApp from '.';
 import { PossibleFirebaseCollections } from './constants';
-import { Ticket, Participant, Room, User } from '@yappy/types';
-import PIIReport from '@yappy/types/piiReport';
 
 type PossibleFirebaseTypes = Room | Participant | Ticket;
 
@@ -25,7 +28,7 @@ export type ResultType<T = undefined> = {
   data: T extends PossibleFirebaseTypes ? T : (DocumentData[] | DocumentData);
   error: boolean;
   message: string | null;
-}
+};
 
 let client: Firestore;
 
@@ -270,9 +273,7 @@ const addTicket = async (
     if (db) {
       const roomRef = doc(db, PossibleFirebaseCollections.ROOMS, room);
 
-      await updateDoc(roomRef, {
-        tickets: arrayUnion(data),
-      });
+      await updateDoc(roomRef, { tickets: arrayUnion(data) });
     } else {
       throw new Error('Failed to get data client.');
     }

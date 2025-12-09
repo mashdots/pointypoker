@@ -1,5 +1,3 @@
 import useTickets from './ticket';
 
-export {
-  useTickets,
-};
+export { useTickets };

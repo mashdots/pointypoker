@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { GridPanel } from '@components/common';
@@ -44,14 +45,18 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
   border-color 250ms ease-out,
   background-color 250ms ease-out;
   
-  ${({ selected, theme, disabled }) => css`
+  ${({
+    selected, theme, disabled,
+  }) => css`
       background-color: ${selected ? theme.primary.accent9 : theme.greyscale.accent3};
       color: ${selected ? theme.primary.accent12 : theme.greyscale.accent12};
       cursor: ${disabled ? 'not-allowed' : 'pointer'};
   `}
 
   :hover {
-    ${({ selected, theme, disabled }) => !disabled && css`
+    ${({
+      selected, theme, disabled,
+    }) => !disabled && css`
       background-color: ${ theme.primary[selected ? 'accent8' : 'accent4'] };
       border-color: ${ theme.primary[selected ? 'transparent' : 'accent8'] };
     `}
@@ -83,11 +88,21 @@ const DisabledContainer = styled.div`
 
 const VotingPanel = ({ config }: GridPanelProps) => {
   const { user } = useAuth();
-  const { isModalOpen, isTitleInputFocused, isObserver } = useStore(
-    ({ preferences, isTitleInputFocused, currentModal }) => (
-      { isTitleInputFocused, isModalOpen: !!currentModal, isObserver: preferences?.isObserver }
+  const {
+    isModalOpen, isTitleInputFocused, isObserver,
+  } = useStore(
+    ({
+      preferences, isTitleInputFocused, currentModal,
+    }) => (
+      {
+        isModalOpen: !!currentModal,
+        isObserver: preferences?.isObserver,
+        isTitleInputFocused,
+      }
     ));
-  const { currentTicket, handleUpdateCurrentTicket, voteData } = useTickets();
+  const {
+    currentTicket, handleUpdateCurrentTicket, voteData,
+  } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
   const voteOptions = getPointOptions(currentTicket?.pointOptions);
 
@@ -117,13 +132,21 @@ const VotingPanel = ({ config }: GridPanelProps) => {
         handleUpdateCurrentTicket(`votes.${user?.id}`, key);
       }
     }
-  }, [ currentTicket, isModalOpen, isTitleInputFocused, voteOptions ]);
+  }, [
+    currentTicket,
+    isModalOpen,
+    isTitleInputFocused,
+    voteOptions,
+  ]);
 
   useEffect(() => {
     if (currentTicket) {
       document.onkeydown = handleKeyPress;
     }
-  }, [currentTicket, isTitleInputFocused]);
+  }, [
+    currentTicket,
+    isTitleInputFocused,
+  ]);
 
   return (
     <GridPanel config={config}>

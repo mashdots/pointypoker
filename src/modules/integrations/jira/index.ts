@@ -3,8 +3,8 @@ import { useCallback } from 'react';
 import { useAuthorizedUser } from '@modules/user/AuthContext';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import createApiClient, { getJiraApiClient } from '@utils/axios';
-import useStore from '@utils/store';
 import { blobToBase64 } from '@utils/room';
+import useStore from '@utils/store';
 
 import {
   InitialAuth,
@@ -18,7 +18,12 @@ import {
   JiraIssueSearchPayload,
   RefreshAuth,
 } from './types';
-import { ATLASSIAN_URL, buildUrl, JIRA_SUBDOMAINS, URL_ACTIONS } from './utils';
+import {
+  ATLASSIAN_URL,
+  buildUrl,
+  JIRA_SUBDOMAINS,
+  URL_ACTIONS,
+} from './utils';
 
 /**
  * Jira service
@@ -33,14 +38,18 @@ const API_URL = `https://${ JIRA_SUBDOMAINS.API }.${ ATLASSIAN_URL }`;
 
 const useJira = () => {
   const { userId } = useAuthorizedUser();
-  const { access, isConnected, isConfigured, isExpired, resources, setAccess } = useStore(({ preferences, setPreferences }) => {
-    const { jiraAccess, jiraResources, jiraPreferences } = preferences;
+  const {
+    access, isConnected, isConfigured, isExpired, resources, setAccess,
+  } = useStore(({ preferences, setPreferences }) => {
+    const {
+      jiraAccess, jiraResources, jiraPreferences,
+    } = preferences;
     return {
       access: jiraAccess,
-      resources: jiraResources,
-      isConnected: !!jiraAccess && !!jiraResources,
       isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
+      isConnected: !!jiraAccess && !!jiraResources,
       isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
+      resources: jiraResources,
       setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
     };
   });
@@ -55,20 +64,23 @@ const useJira = () => {
    * Kicks off the OAuth flow for Jira by opening a new window to JIRA's OAuth page
    */
   const launchJiraOAuth = () => {
-    if (!userId) return; 
+    if (!userId) return;
 
     const options = {
-      toolbar: 'no',
-      location: 'no',
-      status: 'no',
-      menubar: 'no',
-      scrollbars: 'yes',
-      resizable: 'yes',
-      width: 800,
       height: 1000,
+      location: 'no',
+      menubar: 'no',
+      resizable: 'yes',
+      scrollbars: 'yes',
+      status: 'no',
+      toolbar: 'no',
+      width: 800,
     };
 
-    const optionsString = Object.entries(options).map(([key, value]) => `${key}=${value}`).join(', ');
+    const optionsString = Object.entries(options).map(([
+      key,
+      value,
+    ]) => `${key}=${value}`).join(', ');
 
     const url = buildUrl(URL_ACTIONS.AUTHORIZE, { userId });
 
@@ -85,9 +97,9 @@ const useJira = () => {
   const getAccessTokenFromApi = (authorization: string, isRefresh = false) => {
     const url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}`;
     const data: Partial<JiraAuthPayload> = {
-      grant_type: isRefresh ? 'refresh_token' : 'authorization_code',
       client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
       client_secret: import.meta.env.VITE_JIRA_CLIENT_SECRET,
+      grant_type: isRefresh ? 'refresh_token' : 'authorization_code',
     };
 
     if (!isRefresh) {
@@ -121,7 +133,10 @@ const useJira = () => {
         return response.access_token;
       }
     }
-  }, [access, isExpired]);
+  }, [
+    access,
+    isExpired,
+  ]);
 
   const getAccessibleResources = useCallback(async () => {
     if (access) {
@@ -154,12 +169,12 @@ const useJira = () => {
     return client(
       {
         method: 'GET',
-        url: path,
         params: {
           maxResults,
-          orderBy: 'name',
           name,
+          orderBy: 'name',
         },
+        url: path,
       },
     )
       .then((res): JiraDataPayload => res.data)
@@ -171,7 +186,10 @@ const useJira = () => {
   const getBoardConfiguration = async (boardId: string | number) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = buildUrl(URL_ACTIONS.GET_BOARD_CONFIGURATION, { resourceId: resources?.id, boardId });
+    const path = buildUrl(URL_ACTIONS.GET_BOARD_CONFIGURATION, {
+      boardId,
+      resourceId: resources?.id,
+    });
 
     return client(
       {
@@ -193,10 +211,8 @@ const useJira = () => {
     return client(
       {
         method: 'GET',
+        params: { orderBy: 'name' },
         url: path,
-        params: {
-          orderBy: 'name',
-        },
       },
     )
       .then((res): JiraFieldPayload[] => res.data)
@@ -208,16 +224,19 @@ const useJira = () => {
   const getSprintsForBoard = async (boardId: string | number, startAt = 0) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = buildUrl(URL_ACTIONS.GET_SPRINTS, { resourceId: resources?.id, boardId });
+    const path = buildUrl(URL_ACTIONS.GET_SPRINTS, {
+      boardId,
+      resourceId: resources?.id,
+    });
 
     return client(
       {
         method: 'GET',
-        url: path,
         params: {
-          state: 'future',
           startAt,
+          state: 'future',
         },
+        url: path,
       },
     )
       .then((res): JiraDataPayload => res.data)
@@ -229,9 +248,20 @@ const useJira = () => {
   const getIssuesForBoard = async (boardId: string | number, pointField?: JiraField | null, startAt = 0) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = buildUrl(URL_ACTIONS.GET_ISSUES_NO_JQL, { resourceId: resources?.id, boardId });
+    const path = buildUrl(URL_ACTIONS.GET_ISSUES_NO_JQL, {
+      boardId,
+      resourceId: resources?.id,
+    });
 
-    const fields = ['id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team'];
+    const fields = [
+      'id',
+      'key',
+      'sprint',
+      'summary',
+      'issuetype',
+      'components',
+      'team',
+    ];
     let jql = 'Sprint IN futureSprints() AND resolution IS EMPTY';
 
     if (pointField) {
@@ -242,13 +272,13 @@ const useJira = () => {
     return client(
       {
         method: 'GET',
-        url: path,
         params: {
+          fields: fields.join(','),
           jql,
           maxResults: 100,
           startAt,
-          fields: fields.join(','),
         },
+        url: path,
       },
     )
       .then((res): JiraIssuesDataPayload => res.data)
@@ -260,9 +290,20 @@ const useJira = () => {
   const getIssueDetail = async (key: string, pointField?: JiraField | null) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = buildUrl(URL_ACTIONS.ISSUE, { resourceId: resources?.id, issueId: key });
+    const path = buildUrl(URL_ACTIONS.ISSUE, {
+      issueId: key,
+      resourceId: resources?.id,
+    });
 
-    const fields = [ 'id', 'key', 'sprint', 'summary', 'issuetype', 'components', 'team' ];
+    const fields = [
+      'id',
+      'key',
+      'sprint',
+      'summary',
+      'issuetype',
+      'components',
+      'team',
+    ];
 
     if (pointField) {
       fields.push(pointField.id);
@@ -271,10 +312,8 @@ const useJira = () => {
     return client(
       {
         method: 'GET',
+        params: { fields: fields.join(',') },
         url: path,
-        params: {
-          fields: fields.join(','),
-        },
       },
     )
       .then((res): JiraIssueSearchPayload => res.data)
@@ -286,26 +325,31 @@ const useJira = () => {
   const getAvatars = async (avatarData: { [key: string]: number }) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const promises = Object.entries(avatarData).map(([issueType, avatarId]) => {
-      const path = buildUrl(URL_ACTIONS.GET_AVATAR, { resourceId: resources?.id, avatarId });
+    const promises = Object.entries(avatarData).map(([
+      issueType,
+      avatarId,
+    ]) => {
+      const path = buildUrl(URL_ACTIONS.GET_AVATAR, {
+        avatarId,
+        resourceId: resources?.id,
+      });
 
       return client(
         {
           method: 'GET',
-          url: path,
+          params: { size: 'large' },
           responseType: 'blob',
-          params: {
-            size: 'large',
-          },
+          url: path,
         },
       )
         .then(async (res) => {
           const base64Data = await blobToBase64(res.data);
-          return { blobData: base64Data, contentType: res.data.type };
+          return {
+            blobData: base64Data,
+            contentType: res.data.type,
+          };
         })
-        .then((data) => ({
-          [ issueType ]: { ...data },
-        }))
+        .then((data) => ({ [ issueType ]: { ...data } }))
         .catch((error) => {
           throw new Error(error);
         });
@@ -314,7 +358,10 @@ const useJira = () => {
     // Combine all promises into a single object
     return Promise.all(promises)
       .then(
-        (results) => results.reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+        (results) => results.reduce((acc, curr) => ({
+          ...acc,
+          ...curr,
+        }), {}),
       );
   };
 
@@ -338,17 +385,16 @@ const useJira = () => {
   const writePointValue = async (issue: string, value: number, fieldId: string) => {
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
-    const path = buildUrl(URL_ACTIONS.ISSUE, { resourceId: resources?.id, issueId: issue });
+    const path = buildUrl(URL_ACTIONS.ISSUE, {
+      issueId: issue,
+      resourceId: resources?.id,
+    });
 
     return client(
       {
+        data: { fields: { [ fieldId ]: value } },
         method: 'PUT',
         url: path,
-        data: {
-          fields: {
-            [ fieldId ]: value,
-          },
-        },
       },
     )
       .then((res) => res.data)
@@ -359,20 +405,20 @@ const useJira = () => {
 
   return {
     buildJiraUrl,
-    isConnected,
-    isConfigured,
-    jiraAccessibleResources: resources,
-    launchJiraOAuth,
-    getAccessTokenFromApi,
     getAccessibleResources,
+    getAccessTokenFromApi,
     getAvatars,
-    getBoards,
     getBoardConfiguration,
+    getBoards,
+    getIssueDetail,
     getIssueFields,
     getIssuesForBoard,
-    getIssueDetail,
     getPointFieldFromBoardId,
     getSprintsForBoard,
+    isConfigured,
+    isConnected,
+    jiraAccessibleResources: resources,
+    launchJiraOAuth,
     writePointValue,
   };
 };

@@ -1,19 +1,30 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
 import debounce from 'lodash/debounce';
+import styled, { css } from 'styled-components';
 
 import { useJira } from '@modules/integrations';
-import { useAuthorizedUser } from '@modules/user/AuthContext';
 import { ThemeModeToggleRow } from '@modules/preferences';
 import { Separator } from '@modules/preferences/panes/common';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
-import { FeedbackMenuItem, LeaveRoomMenuItem, PreferencesMenuItem, ImportFromJiraMenuItem } from './menuItems';
+import {
+  FeedbackMenuItem,
+  LeaveRoomMenuItem,
+  PreferencesMenuItem,
+  ImportFromJiraMenuItem,
+} from './menuItems';
 
 type Props = {
   topOffset: number;
-}
+};
 
 type ContainerProps = {
   isVisible: boolean;
@@ -34,7 +45,12 @@ const Container = styled.div<ContainerProps>`
 
   transition: opacity 400ms, transform 400ms, filter 400ms;
 
-  ${({ isVisible, right, top, theme }: ContainerProps) => css`
+  ${({
+    isVisible,
+    right,
+    top,
+    theme,
+  }: ContainerProps) => css`
     background-color: ${theme.greyscale.accent3};
     border-color: ${theme.primary.accent6};
     color: ${theme.primary.accent12};
@@ -51,19 +67,32 @@ let timer: number;
 const Menu = ({ topOffset }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuthorizedUser();
-  const { isMenuOpen, setIsMenuOpen, roomName } = useStore(
-    ({ isMenuOpen, setIsMenuOpen, room }) => (
+  const {
+    isMenuOpen, setIsMenuOpen, roomName,
+  } = useStore(
+    ({
+      isMenuOpen, setIsMenuOpen, room,
+    }) => (
       {
         isMenuOpen,
-        setIsMenuOpen,
         roomName: room?.name,
+        setIsMenuOpen,
       }
     ),
   );
   const { isConnected } = useJira();
-  const [isMenuRendered, setIsMenuRendered] = useState(false);
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [rightOffset, setRightOffset] = useState(0);
+  const [
+    isMenuRendered,
+    setIsMenuRendered,
+  ] = useState(false);
+  const [
+    isMenuVisible,
+    setIsMenuVisible,
+  ] = useState(false);
+  const [
+    rightOffset,
+    setRightOffset,
+  ] = useState(0);
 
   useEffect(() => {
     const resizeObserverFunction = debounce(
@@ -89,7 +118,10 @@ const Menu = ({ topOffset }: Props) => {
     if (menuRef.current && !event.composedPath().includes(menuRef.current)) {
       setIsMenuOpen(false);
     }
-  }, [setIsMenuOpen, menuRef.current]);
+  }, [
+    setIsMenuOpen,
+    menuRef.current,
+  ]);
 
   useEffect(() => {
     clearTimeout(timer);
@@ -116,14 +148,13 @@ const Menu = ({ topOffset }: Props) => {
     };
   }, [isMenuOpen]);
 
-  const menuItems: Array<{ component: JSX.Element, shouldShow?: boolean }> = [
+  const menuItems: Array<{ component: JSX.Element,
+    shouldShow?: boolean }> = [
     {
       component: <PreferencesMenuItem key='preferences' />,
       shouldShow: isAuthenticated,
     },
-    {
-      component: <FeedbackMenuItem key='feedback' />,
-    },
+    { component: <FeedbackMenuItem key='feedback' /> },
     {
       component: <Separator key="separator" />,
       shouldShow: !!roomName,

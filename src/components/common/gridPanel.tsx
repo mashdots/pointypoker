@@ -1,7 +1,9 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
 import { GridConfiguration } from './types';
 
 export type GridPanelProps = {
@@ -9,7 +11,7 @@ export type GridPanelProps = {
   config: GridConfiguration;
   children: React.ReactNode;
   headingElement?: React.ReactNode;
-}
+};
 
 const Container = styled.div<ThemedProps & GridConfiguration>`
   display: flex;
@@ -19,7 +21,9 @@ const Container = styled.div<ThemedProps & GridConfiguration>`
   padding: 1rem;
   flex-direction: column;
   
-  ${({ columnStart, columnEnd, rowStart, rowEnd, theme }: ThemedProps & GridConfiguration) => css`
+  ${({
+    columnStart, columnEnd, rowStart, rowEnd, theme,
+  }: ThemedProps & GridConfiguration) => css`
     grid-column-start: ${columnStart};
     grid-column-end: ${columnEnd};
     grid-row-start: ${rowStart};

@@ -1,9 +1,10 @@
-import React from 'react';
 import { useFeatureFlagEnabled } from 'posthog-js/react';
+import React from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { useAuthorizedUser } from '@modules/user/AuthContext';
 import MenuIcon from '@assets/icons/menu.svg?react';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 import flags from '@utils/flags';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -15,12 +16,12 @@ import UserControl from './userControl';
 type Props = {
   headerRef: React.RefObject<HTMLDivElement>;
   hideMenu: boolean;
-}
+};
 
 type SectionProps = {
   align: 'left' | 'right';
   flex: number;
-}
+};
 
 type MenuIconProps = {
   isopen: 'true' | 'false';
@@ -96,7 +97,11 @@ const Header = ({ headerRef, hideMenu }: Props) => {
 
   return (
     <Wrapper ref={headerRef}>
-      <Section flex={6} align='left' style={{ opacity: isAuthenticated ? 1 : 0, transition: 'all 300ms ease-out' }}>
+      <Section flex={6} align='left'
+        style={{
+          opacity: isAuthenticated ? 1 : 0,
+          transition: 'all 300ms ease-out',
+        }}>
         <Logo />
         <RoomName />
       </Section>

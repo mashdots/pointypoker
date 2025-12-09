@@ -1,13 +1,13 @@
-import { THEME_COLORS } from './definitions';
 import { ThemeColors } from '../colorSystem';
+import { THEME_COLORS } from './definitions';
 
 const mint: ThemeColors = {
-  primary: THEME_COLORS.TEAL,
+  error: THEME_COLORS.RED,
   greyscale: THEME_COLORS.SAGE,
+  info: THEME_COLORS.BLUE,
+  primary: THEME_COLORS.TEAL,
   success: THEME_COLORS.GRASS,
   warning: THEME_COLORS.YELLOW,
-  error: THEME_COLORS.RED,
-  info: THEME_COLORS.BLUE,
 };
 
 export default mint;

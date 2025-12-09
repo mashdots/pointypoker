@@ -1,13 +1,13 @@
-import { THEME_COLORS } from './definitions';
 import { ThemeColors } from '../colorSystem';
+import { THEME_COLORS } from './definitions';
 
 const strawberry: ThemeColors = {
-  primary: THEME_COLORS.CRIMSON,
+  error: THEME_COLORS.TOMATO,
   greyscale: THEME_COLORS.MAUVE,
+  info: THEME_COLORS.BLUE,
+  primary: THEME_COLORS.CRIMSON,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
-  error: THEME_COLORS.TOMATO,
-  info: THEME_COLORS.BLUE,
 };
 
 export default strawberry;

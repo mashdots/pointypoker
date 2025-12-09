@@ -13,18 +13,26 @@ let timeout: number;
 const UserNameUpdateForm = () => {
   const { user } = useAuth();
   const { id: userId, name: userName } = user || {};
-  const { updateUserName, roomName, roomData } = useStore(({ setPreferences, room }) => ({
+  const {
+    updateUserName, roomName, roomData,
+  } = useStore(({ setPreferences, room }) => ({
+    roomData: room,
+    roomName: room?.name,
     updateUserName: (name: string) => {
       if (user) {
-        const updatedUser: User = { ...user, name };
+        const updatedUser: User = {
+          ...user,
+          name,
+        };
         setPreferences('user', updatedUser);
       }
     },
-    roomName: room?.name,
-    roomData: room,
   }));
 
-  const [ value, setValue ] = useState(userName);
+  const [
+    value,
+    setValue,
+  ] = useState(userName);
 
   useEffect(() => {
     if (value && value !== userName) {
@@ -48,14 +56,20 @@ const UserNameUpdateForm = () => {
         1000,
       );
     }
-  }, [ value, roomName, userId ]);
+  }, [
+    value,
+    roomName,
+    userId,
+  ]);
 
   return (
     <VerticalContainer style={{ width: '100%' }}>
       <label>
         Name
       </label>
-      <TextInput size='small' id="name-update" value={value ?? ''} onChange={(e) => setValue(e.target.value)} alignment='left' />
+      <TextInput size='small' id="name-update"
+        value={value ?? ''} onChange={(e) => setValue(e.target.value)}
+        alignment='left' />
     </VerticalContainer>
   );
 };

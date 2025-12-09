@@ -1,5 +1,6 @@
-import { fadeDownEntrance } from '@components/common/animations';
 import styled, { css } from 'styled-components';
+
+import { fadeDownEntrance } from '@components/common/animations';
 
 export const SectionWrapper = styled.div<{ isColumn?: boolean }>`
   ${ ({ isColumn }: { isColumn?: boolean }) => css`

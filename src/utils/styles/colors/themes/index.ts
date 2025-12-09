@@ -1,10 +1,10 @@
 import blueberry from './blueberry';
 import dirt from './dirt';
 import grape from './grape';
-import whatever from './whatever';
 import mint from './mint';
 import orange from './orange';
 import strawberry from './strawberry';
+import whatever from './whatever';
 
 export {
   blueberry,

@@ -1,23 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
+
+import styled, { css } from 'styled-components';
 
 import { TextInput } from '@components/common';
-import styled, { css } from 'styled-components';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { usePrevious } from '@utils';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 export type OptionType = {
   id: string | number;
   name: string;
   shortDesc?: string;
   selectValue: any;
-}
+};
 
 type OptionsProps = {
   options: OptionType[];
   showError: boolean;
   isLoading: boolean;
   handleStoreUpdate: (value: any) => void;
-}
+};
 
 type Props = {
   idPrefix: string;
@@ -26,7 +29,7 @@ type Props = {
   storeUpdateFn: (value: any) => void;
   transformFn: (value: Array<any>) => OptionType[];
   filterFromNameStart?: boolean;
-}
+};
 
 const OptionWrapper = styled.div`
   display: flex;
@@ -75,7 +78,9 @@ const StatusItem = styled.div`
   width: 80%;
 `;
 
-const Options = ({ options, showError, isLoading, handleStoreUpdate }: OptionsProps) => {
+const Options = ({
+  options, showError, isLoading, handleStoreUpdate,
+}: OptionsProps) => {
   const wasLoading = usePrevious(isLoading);
   let tailElement = null;
 
@@ -89,7 +94,9 @@ const Options = ({ options, showError, isLoading, handleStoreUpdate }: OptionsPr
 
   return (
     <OptionWrapper>
-      {options.slice(0, 5).map(({ id, name, selectValue, shortDesc }) => (
+      {options.slice(0, 5).map(({
+        id, name, selectValue, shortDesc,
+      }) => (
         <OptionItem key={id} onClick={() => handleStoreUpdate(selectValue)}>
           {name}
           <span>{shortDesc}</span>
@@ -110,10 +117,22 @@ const OptionPicker = ({
   transformFn,
   filterFromNameStart = false,
 }: Props) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [items, setItems] = useState<Array<any>>([]);
-  const [filter, setFilter] = useState('');
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(false);
+  const [
+    isError,
+    setIsError,
+  ] = useState(false);
+  const [
+    items,
+    setItems,
+  ] = useState<Array<any>>([]);
+  const [
+    filter,
+    setFilter,
+  ] = useState('');
 
   const fetchData = useCallback(async () => {
     setIsError(false);
@@ -127,7 +146,7 @@ const OptionPicker = ({
       setIsLoading(false);
       setIsError(true);
     }
-  }, [ filter ]);
+  }, [filter]);
 
   const filteredData = useMemo(() => {
     if (!filter) {
@@ -142,7 +161,11 @@ const OptionPicker = ({
 
         return name.toLowerCase().includes(filter.toLowerCase());
       });
-  }, [ items, filter, filterFromNameStart ]);
+  }, [
+    items,
+    filter,
+    filterFromNameStart,
+  ]);
 
   useEffect(() => {
     clearTimeout(timeout);

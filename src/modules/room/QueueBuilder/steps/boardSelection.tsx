@@ -1,17 +1,18 @@
 import React from 'react';
 
-import { SectionWrapper } from './common';
 import { useJira } from '@modules/integrations';
-import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
 import { JiraBoardPayloadValue } from '@modules/integrations/jira/types';
+import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
 import useStore from '@utils/store';
+
+import { SectionWrapper } from './common';
 
 type Props = {
   defaultBoard?: JiraBoardPayloadValue | null;
   setOverrideBoard: (board: JiraBoardPayloadValue | null) => void;
   showOverrideUI: boolean;
   setShowOverrideUI: (show: boolean) => void;
-}
+};
 
 const BoardSelection = ({
   defaultBoard,
@@ -24,11 +25,19 @@ const BoardSelection = ({
     ({ preferences, setPreferences }) =>
       (board: JiraBoardPayloadValue) => setPreferences(
         'jiraPreferences',
-        { ...preferences?.jiraPreferences, defaultBoard: board },
+        {
+          ...preferences?.jiraPreferences,
+          defaultBoard: board,
+        },
       ),
   );
   const boardOptionsTransformer = (boards: JiraBoardPayloadValue[]) => boards.map(
-    (board) => ({ id: board.id, name: board.name, selectValue: board, shortDesc: `(${ board.id })` }),
+    (board) => ({
+      id: board.id,
+      name: board.name,
+      selectValue: board,
+      shortDesc: `(${ board.id })`,
+    }),
   );
 
   const handleUpdateBoard = (board: JiraBoardPayloadValue) => {
@@ -43,7 +52,10 @@ const BoardSelection = ({
   return defaultBoard && !showOverrideUI ? null : (
     <SectionWrapper>
       Select a board
-      <div style={{ display: 'flex', width: '80%' }}>
+      <div style={{
+        display: 'flex',
+        width: '80%',
+      }}>
         <OptionPicker
           idPrefix='board'
           placeholder='Search for a board'

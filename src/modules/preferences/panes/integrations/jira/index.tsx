@@ -1,14 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState,
+} from 'react';
 
-import IntegrationCard from '../integrationCard';
-import usePreferenceSync from '../../../hooks';
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
-import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
-import { Separator } from '@modules/preferences/panes/common';
-import useStore from '@utils/store';
-import { isDev } from '@utils';
 import { JiraResourceData } from '@modules/integrations/jira/types';
+import { Separator } from '@modules/preferences/panes/common';
+import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
+import { isDev } from '@utils';
+import useStore from '@utils/store';
+
+import usePreferenceSync from '../../../hooks';
+import IntegrationCard from '../integrationCard';
 import {
   ConnectWrapper,
   CopyIcon,
@@ -24,8 +27,14 @@ import {
 } from './components';
 
 const JiraIntegrationCard = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(false);
+  const [
+    isError,
+    setIsError,
+  ] = useState(false);
   const {
     isConfigured,
     accessToken,
@@ -33,17 +42,19 @@ const JiraIntegrationCard = () => {
     setResources,
     revokeAccess,
   } = useStore(({ preferences, setPreferences }) => ({
-    isConfigured: !!preferences?.jiraAccess,
     accessToken: preferences?.jiraAccess?.access_token,
+    isConfigured: !!preferences?.jiraAccess,
     resources: preferences?.jiraResources,
-    setResources: (resources: JiraResourceData | null) => setPreferences('jiraResources', resources),
     revokeAccess: () => {
       setPreferences('jiraAccess', null);
       setPreferences('jiraResources', null);
       setPreferences('jiraPreferences', null);
     },
+    setResources: (resources: JiraResourceData | null) => setPreferences('jiraResources', resources),
   }));
-  const { isConnected, launchJiraOAuth, getAccessibleResources } = useJira();
+  const {
+    isConnected, launchJiraOAuth, getAccessibleResources,
+  } = useJira();
   const { syncPrefsToStore } = usePreferenceSync();
 
   const eventListenerMethod = (event: StorageEvent) => {
@@ -61,7 +72,7 @@ const JiraIntegrationCard = () => {
     let buttonVariation = 'info';
 
     if (isError) {
-      buttonChildren =  isConnected ? 'Reconnect' : 'Retry connection';
+      buttonChildren = isConnected ? 'Reconnect' : 'Retry connection';
       buttonVariation = isConnected ? 'warning' : 'error';
     }
 
@@ -86,7 +97,11 @@ const JiraIntegrationCard = () => {
         {buttonChildren}
       </Button>
     );
-  }, [isLoading, isError, isConfigured]);
+  }, [
+    isLoading,
+    isError,
+    isConfigured,
+  ]);
 
   const handleFetchResources = async () => {
     setIsLoading(true);
@@ -162,7 +177,7 @@ const JiraIntegrationCard = () => {
     if (isConfigured) {
       handleFetchResources();
     }
-  }, [ isConfigured ]);
+  }, [isConfigured]);
 
   return (
     <IntegrationCard

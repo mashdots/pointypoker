@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedWrapper } from 'motion/react-client';
+import React, { useMemo } from 'react';
 
-import { useAuth, UserSetup } from '@modules/user';
-import { RoomSetup } from '@modules/room';
-import { useAuthorizedUser } from '@modules/user/AuthContext';
 import { LoadingIcon } from '@modules/preferences/panes/integrations/jira/components';
+import { RoomSetup } from '@modules/room';
+import { useAuth, UserSetup } from '@modules/user';
+import { useAuthorizedUser } from '@modules/user/AuthContext';
 
 /**
  * This is a hybrid module that handles:
@@ -23,38 +23,50 @@ const Switcher = () => {
   const renderComponent = useMemo(() => {
     if (!isInitialized) {
       return {
-        key: 'loading',
         component: <LoadingIcon />,
+        key: 'loading',
       };
     }
 
     if (!user) {
       return {
-        key: 'user',
         component: <UserSetup />,
+        key: 'user',
       };
     }
 
     return {
-      key: 'room',
       component: <RoomSetup />,
+      key: 'room',
     };
-  }, [isInitialized, user]);
+  }, [
+    isInitialized,
+    user,
+  ]);
 
   return (
     <AnimatePresence mode="wait">
       <AnimatedWrapper
         key={renderComponent.key}
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -10, opacity: 0 }}
+        initial={{
+          opacity: 0,
+          y: 10,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        exit={{
+          opacity: 0,
+          y: -10,
+        }}
         transition={{ duration: 0.2 }}
         style={{
+          alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
           height: '100%',
+          justifyContent: 'center',
         }}
       >
         {renderComponent.component}

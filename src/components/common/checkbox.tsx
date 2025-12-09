@@ -1,8 +1,9 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { scaleEntrance } from '@components/common/animations';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
   id: string;
@@ -51,9 +52,12 @@ const StyledCheckBox = styled.input`
   height: 1.5rem;
 `;
 
-const CheckBox = ({ id, checked, onChange, label }: Props) => (
+const CheckBox = ({
+  id, checked, onChange, label,
+}: Props) => (
   <Wrapper>
-    <StyledCheckBox type='checkbox' id={id} checked={checked} onChange={onChange} />
+    <StyledCheckBox type='checkbox' id={id}
+      checked={checked} onChange={onChange} />
     <label>
       {label}
     </label>

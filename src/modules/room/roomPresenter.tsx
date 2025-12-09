@@ -1,5 +1,15 @@
+import {
+  useFeatureFlagEnabled, useFeatureFlagPayload, useFeatureFlagVariantKey,
+} from 'posthog-js/react';
 import React from 'react';
+
 import styled, { css } from 'styled-components';
+
+import useJiraScopeCheck from '@modules/integrations/jira/hooks';
+import TicketController from '@modules/room/panels/TicketController';
+import TicketFlow from '@modules/room/TicketFlow';
+import flags from '@utils/flags';
+import { useMobile } from '@utils/hooks/mobile';
 
 import {
   DistributionPanel,
@@ -9,9 +19,6 @@ import {
   VoteResults,
   VotingPanel,
 } from './panels';
-import useJiraScopeCheck from '@modules/integrations/jira/hooks';
-import TicketController from '@modules/room/panels/TicketController';
-import { useMobile } from '@utils/hooks/mobile';
 
 type RoomDataContainerProps = {
   showNarrow: boolean;
@@ -43,30 +50,101 @@ const RoomDataContainer = styled.div<RoomDataContainerProps>`
 const getGridConfig = (showNarrow: boolean) => {
   if (showNarrow) {
     return {
-      timer: { columnStart: 1, columnEnd: 4, rowStart: 1, rowEnd: 3 },
-      voteResults: { columnStart: 4, columnEnd: 9, rowStart: 1, rowEnd: 3 },
-      voting: { columnStart: 1, columnEnd: 9, rowStart: 3, rowEnd: 4 },
-      history: { columnStart: 1, columnEnd: 5, rowStart: 4, rowEnd: 8 },
-      voteDisplay: { columnStart: 5, columnEnd: 9, rowStart: 4, rowEnd: 8 },
-      distribution: { columnStart: 1, columnEnd: 9, rowStart: 8, rowEnd: 10 },
+      distribution: {
+        columnEnd: 9,
+        columnStart: 1,
+        rowEnd: 10,
+        rowStart: 8,
+      },
+      history: {
+        columnEnd: 5,
+        columnStart: 1,
+        rowEnd: 8,
+        rowStart: 4,
+      },
+      timer: {
+        columnEnd: 4,
+        columnStart: 1,
+        rowEnd: 3,
+        rowStart: 1,
+      },
+      voteDisplay: {
+        columnEnd: 9,
+        columnStart: 5,
+        rowEnd: 8,
+        rowStart: 4,
+      },
+      voteResults: {
+        columnEnd: 9,
+        columnStart: 4,
+        rowEnd: 3,
+        rowStart: 1,
+      },
+      voting: {
+        columnEnd: 9,
+        columnStart: 1,
+        rowEnd: 4,
+        rowStart: 3,
+      },
     };
   }
 
   return {
-    voting: { columnStart: 4, columnEnd: 10, rowStart: 1, rowEnd: 1 },
-    timer: { columnStart: 1, columnEnd: 4, rowStart: 1, rowEnd: 1 },
-    voteDisplay: { columnStart: 1, columnEnd: 3, rowStart: 2, rowEnd: 7 },
-    voteResults: { columnStart: 3, columnEnd: 7, rowStart: 2, rowEnd: 4 },
-    distribution: { columnStart: 3, columnEnd: 7, rowStart: 4, rowEnd: 7 },
-    history: { columnStart: 7, columnEnd: 10, rowStart: 2, rowEnd: 7 },
+    distribution: {
+      columnEnd: 7,
+      columnStart: 3,
+      rowEnd: 7,
+      rowStart: 4,
+    },
+    history: {
+      columnEnd: 10,
+      columnStart: 7,
+      rowEnd: 7,
+      rowStart: 2,
+    },
+    timer: {
+      columnEnd: 4,
+      columnStart: 1,
+      rowEnd: 1,
+      rowStart: 1,
+    },
+    voteDisplay: {
+      columnEnd: 3,
+      columnStart: 1,
+      rowEnd: 7,
+      rowStart: 2,
+    },
+    voteResults: {
+      columnEnd: 7,
+      columnStart: 3,
+      rowEnd: 4,
+      rowStart: 2,
+    },
+    voting: {
+      columnEnd: 10,
+      columnStart: 4,
+      rowEnd: 1,
+      rowStart: 1,
+    },
   };
 };
 
 const RoomPresenter = () => {
   const { isNarrow } = useMobile();
+  const flagEnabled = useFeatureFlagEnabled(flags.REDESIGN);
   useJiraScopeCheck();
 
+  console.log('Feature Flag - Monocard:', flagEnabled);
   const gridConfigs = getGridConfig(isNarrow);
+
+  if (flagEnabled) {
+    return (
+      <Wrapper>
+        <TicketFlow />
+      </Wrapper>
+    );
+  }
+
 
   return (
     <Wrapper>

@@ -1,7 +1,7 @@
-import Switcher from './switcher';
-import Root from './root';
 import JiraRedirect from './jiraRedirect';
 import Privacy from './privacy';
+import Root from './root';
+import Switcher from './switcher';
 
 export {
   JiraRedirect,

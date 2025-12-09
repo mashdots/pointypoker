@@ -1,14 +1,15 @@
 import React from 'react';
+
 import styled from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 export type MenuItemProps = {
   text: string;
   onClick?: () => void;
   uniqueElement: JSX.Element;
-}
+};
 
 const Wrapper = styled.div`
   align-items: center;
@@ -26,7 +27,9 @@ const Wrapper = styled.div`
   }
 `;
 
-const MenuItem = ({ text, onClick, uniqueElement }: MenuItemProps) => {
+const MenuItem = ({
+  text, onClick, uniqueElement,
+}: MenuItemProps) => {
   const setIsMenuOpen = useStore(({ setIsMenuOpen }) => setIsMenuOpen);
 
   return (

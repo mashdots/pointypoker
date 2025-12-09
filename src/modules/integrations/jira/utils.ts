@@ -54,67 +54,71 @@ export const jiraPermissionScopes = [
 ];
 
 const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
-  const { avatarId, boardId, issueId, resourceId, userId } = options || {};
+  const {
+    avatarId,
+    boardId,
+    issueId,
+    resourceId,
+    userId,
+  } = options || {};
   let url = '';
 
   switch (action) {
   // OAUTH
-  case URL_ACTIONS.AUTHORIZE: {
-    if (!userId) {
-      throw new Error('User ID is required for this action');
+    case URL_ACTIONS.AUTHORIZE: {
+      if (!userId) {
+        throw new Error('User ID is required for this action');
+      }
+
+      const params = new URLSearchParams({
+        audience: `${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`,
+        client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
+        prompt: 'consent',
+        redirect_uri: `${window.location.origin}${JIRA_REDIRECT_PATH}`,
+        response_type: 'code',
+        scope: jiraPermissionScopes.join(' '),
+        state: userId,
+      });
+
+      url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.AUTHORIZE}?${params.toString()}`;
+      break;
     }
-
-    const params = new URLSearchParams({
-      audience: `${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`,
-      client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
-      scope: jiraPermissionScopes.join(' '),
-      redirect_uri: `${window.location.origin}${JIRA_REDIRECT_PATH}`,
-      state: userId,
-      response_type: 'code',
-      prompt: 'consent',
-    });
-
-    url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.AUTHORIZE}?${params.toString()}`;
-    break;
-  }
-  case URL_ACTIONS.OAUTH:
-    url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.OAUTH}`;
-    break;
-  case URL_ACTIONS.GET_RESOURCES:
-    url = `https://${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}/${URL_ACTIONS.GET_RESOURCES}`;
-    break;
+    case URL_ACTIONS.OAUTH:
+      url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}/${URL_ACTIONS.OAUTH}`;
+      break;
+    case URL_ACTIONS.GET_RESOURCES:
+      url = `https://${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}/${URL_ACTIONS.GET_RESOURCES}`;
+      break;
 
     // JIRA AGILE API
-  case URL_ACTIONS.GET_BOARDS:
-    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board`;
-    break;
-  case URL_ACTIONS.GET_BOARD_CONFIGURATION:
-    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/configuration`;
-    break;
-  case URL_ACTIONS.GET_SPRINTS:
-    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/sprint`;
-    break;
-  case URL_ACTIONS.GET_ISSUES_NO_JQL:
-    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/issue`;
-    break;
+    case URL_ACTIONS.GET_BOARDS:
+      url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board`;
+      break;
+    case URL_ACTIONS.GET_BOARD_CONFIGURATION:
+      url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/configuration`;
+      break;
+    case URL_ACTIONS.GET_SPRINTS:
+      url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/sprint`;
+      break;
+    case URL_ACTIONS.GET_ISSUES_NO_JQL:
+      url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.AGILE_1}/board/${boardId}/issue`;
+      break;
 
     // JIRA API V2
-  case URL_ACTIONS.GET_FIELDS:
-    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/field`;
-    break;
-  case URL_ACTIONS.ISSUE:
-    url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/issue/${issueId}`;
-    break;
-  case URL_ACTIONS.GET_AVATAR:
-    url = `${ JIRA_PRE_PATH }/${ resourceId }/${ API_SPACE.API_2 }/universal_avatar/view/type/issuetype/avatar/${avatarId}`;
-    break;
-  default:
-    return '';
+    case URL_ACTIONS.GET_FIELDS:
+      url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/field`;
+      break;
+    case URL_ACTIONS.ISSUE:
+      url = `${JIRA_PRE_PATH}/${resourceId}/${API_SPACE.API_2}/issue/${issueId}`;
+      break;
+    case URL_ACTIONS.GET_AVATAR:
+      url = `${ JIRA_PRE_PATH }/${ resourceId }/${ API_SPACE.API_2 }/universal_avatar/view/type/issuetype/avatar/${avatarId}`;
+      break;
+    default:
+      return '';
   }
 
   return url;
 };
 
-export {
-  buildUrl,
-};
+export { buildUrl };

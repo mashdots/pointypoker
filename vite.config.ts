@@ -1,8 +1,8 @@
-import path from 'path';
-
+import * as path from 'path';
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,6 +17,10 @@ export default defineConfig({
       },
     },
   },
+  plugins: [
+    react(),
+    svgr(),
+  ],
   resolve: {
     alias: {
       '@assets': path.resolve(__dirname, 'src/assets'),
@@ -24,11 +28,10 @@ export default defineConfig({
       '@modules': path.resolve(__dirname, 'src/modules'),
       '@routes': path.resolve(__dirname, 'src/routes'),
       '@services': path.resolve(__dirname, 'src/services'),
-      '@yappy/types': path.resolve(__dirname, 'src/types'),
       '@utils': path.resolve(__dirname, 'src/utils'),
+      '@yappy/types': path.resolve(__dirname, 'src/types'),
     },
   },
-  plugins: [react(), svgr()],
 });
 
 /// <reference types="vite-plugin-svgr/client" />

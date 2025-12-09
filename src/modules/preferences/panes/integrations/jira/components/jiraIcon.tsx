@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import JiraLogo from '@assets/icons/jira-logo.svg?react';
 
 const JiraIcon = styled(JiraLogo)`

@@ -1,17 +1,19 @@
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+
 import styled, { css, keyframes } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
-import { useTickets } from '../hooks';
-import { getTicketNumberFromUrl } from '../utils';
 import GridPanel, { GridPanelProps } from '@components/common/gridPanel';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Ticket } from '@yappy/types';
 
+import { useTickets } from '../hooks';
+import { getTicketNumberFromUrl } from '../utils';
+
 type Props = GridPanelProps & {
   previousTickets?: Ticket[];
-}
+};
 
 type TicketRowProps = {
   showBottomBorder?: boolean,
@@ -120,7 +122,8 @@ const TicketHistory = ({ config }: Props) => {
   );
 
   return (
-    <GridPanel config={config} title='history' headingElement={header}>
+    <GridPanel config={config} title='history'
+      headingElement={header}>
       <TicketRowList>
         {ticketRows}
       </TicketRowList>

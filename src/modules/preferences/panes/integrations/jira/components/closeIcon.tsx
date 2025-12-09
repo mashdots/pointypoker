@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import PlusIcon from '@assets/icons/plus.svg?react';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 

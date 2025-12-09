@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { VARIATIONS } from '@utils/styles';
 
 const Wrapper = styled.div`

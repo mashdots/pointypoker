@@ -1,13 +1,13 @@
-import { THEME_COLORS } from './definitions';
 import { ThemeColors } from '../colorSystem';
+import { THEME_COLORS } from './definitions';
 
 const blueberry: ThemeColors = {
-  primary: THEME_COLORS.INDIGO,
+  error: THEME_COLORS.RED,
   greyscale: THEME_COLORS.SLATE,
+  info: THEME_COLORS.BLUE,
+  primary: THEME_COLORS.INDIGO,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
-  error: THEME_COLORS.RED,
-  info: THEME_COLORS.BLUE,
 };
 
 export default blueberry;

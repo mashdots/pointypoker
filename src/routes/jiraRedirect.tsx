@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState,
+} from 'react';
+
 import styled, { css, keyframes } from 'styled-components';
 
-import LoadingIcon from '@assets/icons/loading-circle.svg?react';
 import Check from '@assets/icons/check.svg?react';
+import LoadingIcon from '@assets/icons/loading-circle.svg?react';
 import Error from '@assets/icons/plus.svg?react';
 import { useJira } from '@modules/integrations';
 import { JiraAuthData } from '@modules/integrations/jira/types';
@@ -109,7 +112,10 @@ const UnderText = styled.p`
 `;
 
 const JiraRedirect = () => {
-  const [status, setStatus] = useState(STATUS.LOADING);
+  const [
+    status,
+    setStatus,
+  ] = useState(STATUS.LOADING);
   const { access, setAccess } = useStore(({ preferences, setPreferences }) => ({
     access: preferences?.jiraAccess,
     setAccess: (access: JiraAuthData) => setPreferences('jiraAccess', access),
@@ -118,29 +124,29 @@ const JiraRedirect = () => {
 
   const mainComponent = useMemo(() => {
     switch (status) {
-    case STATUS.SUCCESS:
-      return (
-        <>
-          <SuccessIcon />
-          <Text>all set!</Text>
-          <UnderText>(closing the window)</UnderText>
-        </>
-      );
-    case STATUS.ERROR:
-      return (
-        <>
-          <ErrorIcon />
-          <Text>there was a problem</Text>
-          <UnderText>try connecting Jira again</UnderText>
-        </>
-      );
-    default:
-      return (
-        <>
-          <LoadingIndicator />
-          <Text>getting tokens . . .</Text>
-        </>
-      );
+      case STATUS.SUCCESS:
+        return (
+          <>
+            <SuccessIcon />
+            <Text>all set!</Text>
+            <UnderText>(closing the window)</UnderText>
+          </>
+        );
+      case STATUS.ERROR:
+        return (
+          <>
+            <ErrorIcon />
+            <Text>there was a problem</Text>
+            <UnderText>try connecting Jira again</UnderText>
+          </>
+        );
+      default:
+        return (
+          <>
+            <LoadingIndicator />
+            <Text>getting tokens . . .</Text>
+          </>
+        );
     }
   }, [status]);
 
@@ -170,7 +176,10 @@ const JiraRedirect = () => {
   }, []);
 
   useEffect(() => {
-    if ([STATUS.SUCCESS, STATUS.ERROR].includes(status)){
+    if ([
+      STATUS.SUCCESS,
+      STATUS.ERROR,
+    ].includes(status)){
       setTimeout(() => {
         window.close();
       }, 2000);

@@ -1,24 +1,31 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Timestamp } from 'firebase/firestore';
-import isEqual from 'lodash/isEqual';
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedWrapper } from 'motion/react-client';
-import styled from 'styled-components';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { Timestamp } from 'firebase/firestore';
+import isEqual from 'lodash/isEqual';
+import styled from 'styled-components';
 
 import Button from '@components/common/button';
 import { useAuth } from '@modules/user';
 import { useHeaderHeight } from '@routes/root';
-import { createRoom, updateRoom, watchRoom } from '@services/firebase';
+import {
+  createRoom, updateRoom, watchRoom,
+} from '@services/firebase';
 import { generateRoomName } from '@utils';
 import useStore from '@utils/store';
-import { Participant, Room as RoomType, RoomUpdateObject } from '@yappy/types';
+import {
+  Participant, Room as RoomType, RoomUpdateObject,
+} from '@yappy/types';
 
 import RoomPresenter from './roomPresenter';
 
 type HeightAdjusted = {
   heightDiff: number;
-}
+};
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
@@ -51,16 +58,26 @@ const RoomWrapper = styled.div`
 const RoomSetup = () => {
   const { refHeight } = useHeaderHeight();
   const { user } = useAuth();
-  const { isObserver, roomData, setRoom } = useStore(
-    ({ preferences, room, setRoom }) => ({
+  const {
+    isObserver, roomData, setRoom,
+  } = useStore(
+    ({
+      preferences, room, setRoom,
+    }) => ({
       isObserver: preferences?.isObserver ?? false,
       roomData: room,
       setRoom,
     }),
   );
   const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
-  const [isRoomOpen, setIsRoomOpen] = useState(false);
-  const [isLoadingRoom, setIsLoadingRoom] = useState(true);
+  const [
+    isRoomOpen,
+    setIsRoomOpen,
+  ] = useState(false);
+  const [
+    isLoadingRoom,
+    setIsLoadingRoom,
+  ] = useState(true);
   const navigate = useNavigate();
   const roomToJoin = useMemo(() => {
     const nameFromPath = window.location.pathname.slice(1);
@@ -69,7 +86,7 @@ const RoomSetup = () => {
       return nameFromPath;
     }
 
-    return roomData?.name ?? window.location.pathname.slice(1)
+    return roomData?.name ?? window.location.pathname.slice(1);
   }, [roomData?.name]);
 
   const handleJoinRoom = useCallback((roomName: string) => {
@@ -78,7 +95,7 @@ const RoomSetup = () => {
       if (!result.error) {
         if (!isEqual(result.data, roomData)) {
           const { data } = result;
-          
+
           setRoom(data);
 
           if (!window.location.pathname.includes(roomName)) {
@@ -95,7 +112,11 @@ const RoomSetup = () => {
 
       setIsLoadingRoom(false);
     });
-  }, [ navigate, roomData, setRoom ]);
+  }, [
+    navigate,
+    roomData,
+    setRoom,
+  ]);
 
   const handleCreateRoom = useCallback(async () => {
     if (!user) {
@@ -106,24 +127,22 @@ const RoomSetup = () => {
 
     const roomName = generateRoomName();
     const self: Participant = {
-      name: user.name,
-      id: user.id,
-      isHost: true,
       consecutiveMisses: 0,
+      id: user.id,
       inactive: false,
-      joinedAt: Date.now(),
+      isHost: true,
       isObserver,
+      joinedAt: Date.now(),
+      name: user.name,
     };
     const newRoom: RoomType = {
-      name: roomName,
-      createdAt: Timestamp.now(),
-      expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
-      participants: {
-        [self.id]: self,
-      },
-      ticketQueue: [],
-      currentTicket: null,
       completedTickets: [],
+      createdAt: Timestamp.now(),
+      currentTicket: null,
+      expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
+      name: roomName,
+      participants: { [self.id]: self },
+      ticketQueue: [],
     };
 
     await createRoom(newRoom, (result) => {
@@ -135,7 +154,11 @@ const RoomSetup = () => {
         setIsLoadingRoom(false);
       }
     });
-  }, [handleJoinRoom, isObserver, user]);
+  }, [
+    handleJoinRoom,
+    isObserver,
+    user,
+  ]);
 
   /**
    * This effect handles joining and leaving rooms based on the roomToJoin value.
@@ -161,7 +184,12 @@ const RoomSetup = () => {
       subscribedRoomRef.current?.();
       subscribedRoomRef.current = undefined;
     };
-  }, [handleJoinRoom, navigate, roomToJoin, setRoom]);
+  }, [
+    handleJoinRoom,
+    navigate,
+    roomToJoin,
+    setRoom,
+  ]);
 
   /**
    * This effect ensures that when a user joins a room, they are added as a participant if not already present.
@@ -176,13 +204,13 @@ const RoomSetup = () => {
       if (!userInRoom) {
       // If the user is not in the room, add them
         const selfAsParticipant: Participant = {
-          id: user.id,
-          name: user.name,
           consecutiveMisses: 0,
+          id: user.id,
           inactive: false,
           isHost: false,
-          joinedAt: Date.now(),
           isObserver,
+          joinedAt: Date.now(),
+          name: user.name,
         };
 
         updateObj[ `participants.${ selfAsParticipant.id }` ] = selfAsParticipant;
@@ -194,7 +222,11 @@ const RoomSetup = () => {
 
       updateRoom(roomData.name, updateObj);
     }
-  }, [user, roomData, isObserver]);
+  }, [
+    user,
+    roomData,
+    isObserver,
+  ]);
 
   useEffect(() => {
     document.title = 'pointy poker';
@@ -205,11 +237,26 @@ const RoomSetup = () => {
       <AnimatePresence mode='wait'>
         <AnimatedWrapper
           key={isRoomOpen ? 'room' : 'setup'}
-          style={isRoomOpen ? { width: '100%', height: '100%' } : {}}
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: isRoomOpen ? -12 : 12 }}
-          transition={{ type: 'tween', duration: 0.25 }}
+          style={isRoomOpen ? {
+            height: '100%',
+            width: '100%',
+          } : {}}
+          initial={{
+            opacity: 0,
+            y: -12,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          exit={{
+            opacity: 0,
+            y: isRoomOpen ? -12 : 12,
+          }}
+          transition={{
+            duration: 0.25,
+            type: 'tween',
+          }}
         >
           {
             isRoomOpen ? (
@@ -220,7 +267,9 @@ const RoomSetup = () => {
               <SetupWrapper>
                 <h1>ready to start?</h1>
                 <ButtonContainer>
-                  <Button refresh loading={isLoadingRoom} variation='info' width='full' onClick={handleCreateRoom}>
+                  <Button refresh loading={isLoadingRoom}
+                    variation='info' width='full'
+                    onClick={handleCreateRoom}>
                     start a session
                   </Button>
                 </ButtonContainer>

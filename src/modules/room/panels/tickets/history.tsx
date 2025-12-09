@@ -1,13 +1,14 @@
+import { div as TicketRow } from 'motion/react-client';
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
-import { div as TicketRow } from 'motion/react-client';
 
+import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 import { useTickets } from '../../hooks';
 import { getTicketNumberFromUrl } from '../../utils';
-import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div`
   display: flex;
@@ -103,20 +104,29 @@ const History = () => {
       return (
         <TicketRow
           key={id}
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 10, opacity: 0 }}
+          initial={{
+            opacity: 0,
+            y: -10,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          exit={{
+            opacity: 0,
+            y: 10,
+          }}
           transition={{ duration: 0.25 }}
           style={{
-            display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
+            borderBottomWidth: isLast ? 0 : '1px',
+            borderColor: theme.primary.accent6,
             borderStyle: 'solid',
             borderWidth: '0px',
-            borderColor: theme.primary.accent6,
-            borderBottomWidth: isLast ? 0 : '1px',
+            display: 'flex',
+            justifyContent: 'space-between',
             padding: '0.75rem 2rem 0.75rem 1rem',
+            width: '100%',
           }}
         >
           {idElement}

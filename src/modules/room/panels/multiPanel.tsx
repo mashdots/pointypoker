@@ -1,6 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
+
 import debounce from 'lodash/debounce';
+import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
@@ -13,21 +16,21 @@ type Panel = {
   title: string;
   component: JSX.Element;
   shouldScroll?: boolean;
-}
+};
 
 type TitleProps = ThemedProps & {
   isSelected: boolean;
   isSelectable: boolean;
-}
+};
 
 type SelectorProps = {
   width: number;
   position?: number;
-}
+};
 
 type PanelWrapperProps = SelectorProps & {
   height?: number;
-}
+};
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,7 +50,9 @@ const TitleContainer = styled.div`
 `;
 
 const Title = styled.h2<TitleProps>`
-  ${({ isSelectable, isSelected, theme }: TitleProps) => css`
+  ${({
+    isSelectable, isSelected, theme,
+  }: TitleProps) => css`
     border-bottom: 1px solid ${ isSelected ? theme.primary.accent7 : 'transparent'};
     color: ${ theme.primary.accent11 };
     cursor: ${ isSelectable ? 'pointer' : 'default' };
@@ -99,13 +104,25 @@ const PanelWrapper = styled(WidthHeightWithFallback)`
 `;
 
 const PANEL_FIXTURES = [
-  { title: 'panel 1', component: <div>Panel 1</div> },
-  { title: 'panel 2', component: <div>Panel 2</div> },
+  {
+    component: <div>Panel 1</div>,
+    title: 'panel 1',
+  },
+  {
+    component: <div>Panel 2</div>,
+    title: 'panel 2',
+  },
 ];
 
 const MultiPanel = ({ panels = PANEL_FIXTURES, forcePanelChange }: Props) => {
-  const [width, setWidth] = useState(0);
-  const [selectedPanel, setSelectedPanel] = useState(0);
+  const [
+    width,
+    setWidth,
+  ] = useState(0);
+  const [
+    selectedPanel,
+    setSelectedPanel,
+  ] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const titles = panels.map((panel, i) => {
     const isSelectable = panels.length > 1 && selectedPanel !== i;
@@ -129,7 +146,10 @@ const MultiPanel = ({ panels = PANEL_FIXTURES, forcePanelChange }: Props) => {
         <PanelWrapper width={width} key={i}>{panel.component}</PanelWrapper>
       );
     }),
-    [panels, width],
+    [
+      panels,
+      width,
+    ],
   );
 
   const handleSetWidth = debounce(

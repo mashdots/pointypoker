@@ -1,8 +1,9 @@
 import React, { ButtonHTMLAttributes } from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { Theme, ThemedProps } from '@utils/styles/colors/colorSystem';
 import { getWidth } from '@utils/styles';
+import { Theme, ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Props = {
   type?: 'button' | 'submit' | 'reset' | undefined;
@@ -23,10 +24,12 @@ type WrapperProps = ThemedProps & {
   noMargin?: boolean;
   round?: boolean;
   isLoading?: boolean;
-} & ButtonHTMLAttributes<HTMLButtonElement>
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
 const StyledButton = styled.button`
-  ${ ({ disabled, noMargin, round, textSize, theme, variation }: WrapperProps) => css`
+  ${ ({
+    disabled, noMargin, round, textSize, theme, variation,
+  }: WrapperProps) => css`
     background-color: ${ theme[ disabled ? 'greyscale' : variation ].accent3 };
     border-bottom-color: ${ theme[ disabled ? 'greyscale' : variation ].accent7 } !important;
     border-bottom-width: ${ disabled ? 0 : 2 }px !important;
@@ -54,7 +57,9 @@ const StyledButton = styled.button`
   transition: all 250ms ease-out;
 
   :hover {
-    ${ ({ disabled, noMargin, theme, variation }: WrapperProps) => !disabled && css`
+    ${ ({
+      disabled, noMargin, theme, variation,
+    }: WrapperProps) => !disabled && css`
       color: ${ theme[ variation ].accent12 };
       background-color: ${ theme[ variation ].accent4 };
       border-bottom-color: ${ theme[ disabled ? 'greyscale' : variation ].accent8 } !important;
@@ -64,7 +69,9 @@ const StyledButton = styled.button`
   }
   
   :active {
-    ${ ({ disabled, noMargin, theme, variation }: WrapperProps) => !disabled && css`
+    ${ ({
+      disabled, noMargin, theme, variation,
+    }: WrapperProps) => !disabled && css`
       background-color: ${ theme[ variation ].accent5 };
       border-bottom-width: 1px;
       margin-top: calc(${ noMargin ? 0 : 1 }rem + 1px);
@@ -73,7 +80,9 @@ const StyledButton = styled.button`
 `;
 
 const SkeuButton = styled.button`
-  ${ ({ round, textSize, theme, variation, isLoading, noMargin }: WrapperProps) => css`
+  ${ ({
+    round, textSize, theme, variation, isLoading, noMargin,
+  }: WrapperProps) => css`
     background-color: ${ theme[ isLoading ? 'greyscale' : variation ].accent7 };
     border-radius: ${ round ? 500 : 0.5 }rem;
     border-color: ${ theme[ isLoading ? 'greyscale' : variation ].accent8 } !important;
@@ -129,15 +138,15 @@ const Button = ({
   let buttonFontSize: number;
 
   switch (textSize) {
-  case 'small':
-    buttonFontSize = 1;
-    break;
-  case 'large':
-    buttonFontSize = 3;
-    break;
-  case 'medium':
-  default:
-    buttonFontSize = 2;
+    case 'small':
+      buttonFontSize = 1;
+      break;
+    case 'large':
+      buttonFontSize = 3;
+      break;
+    case 'medium':
+    default:
+      buttonFontSize = 2;
   }
 
   if (!refresh) {

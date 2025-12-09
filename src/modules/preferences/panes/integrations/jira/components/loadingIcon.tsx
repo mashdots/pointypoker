@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { spinAnimation } from '@components/common/animations';
 

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
 import DarkModeIcon from '@assets/icons/dark-mode-fill.svg?react';
@@ -6,7 +7,9 @@ import LightModeIcon from '@assets/icons/light-mode-fill.svg?react';
 import Toggle from '@components/common/toggle';
 import useStore from '@utils/store';
 import useTheme from '@utils/styles/colors';
-import { THEME_MODE_CONTROLLER, THEME_MODES, ThemedProps } from '@utils/styles/colors/colorSystem';
+import {
+  THEME_MODE_CONTROLLER, THEME_MODES, ThemedProps,
+} from '@utils/styles/colors/colorSystem';
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,8 +41,8 @@ const LightMode = styled(LightModeIcon)`
 export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) => {
   const { themeMode, toggleThemeMode } = useTheme();
   const colorOverrides = {
-    onbg: 'success.accent9',
     offBg: 'info.accent9',
+    onbg: 'success.accent9',
   };
 
   return (
@@ -81,7 +84,8 @@ export const SystemModeCheckbox = () => {
   }));
 
   return (
-    <Toggle isOn={isThemeModeSetBySystem} handleToggle={setThemeModeController} position='right' />
+    <Toggle isOn={isThemeModeSetBySystem} handleToggle={setThemeModeController}
+      position='right' />
   );
 };
 

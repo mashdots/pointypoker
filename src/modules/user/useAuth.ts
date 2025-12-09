@@ -12,12 +12,16 @@ import { User } from '@yappy/types';
 
 const useAuth = () => {
   const { userId, isInitialized } = useAuthorizedUser();
-  const { setUser, storedUser, clearUser, clearRoom } = useStore(
-    ({ clearRoom, preferences, setPreferences }) => ({
+  const {
+    setUser, storedUser, clearUser, clearRoom,
+  } = useStore(
+    ({
+      clearRoom, preferences, setPreferences,
+    }) => ({
+      clearRoom,
+      clearUser: () => setPreferences('user', null),
       setUser: (newUser: User) => setPreferences('user', { ...newUser }),
       storedUser: preferences?.user,
-      clearUser: () => setPreferences('user', null),
-      clearRoom,
     }),
   );
 
@@ -31,7 +35,7 @@ const useAuth = () => {
       console.error(error);
     }
   };
-  
+
   const signOut = async () => {
     try {
       await signOutFB();
@@ -42,7 +46,7 @@ const useAuth = () => {
     }
   };
 
-  const user = useMemo(() =>  {
+  const user = useMemo(() => {
     if (isInitialized && userId && storedUser) {
       return {
         ...storedUser,
@@ -51,7 +55,11 @@ const useAuth = () => {
     }
 
     return null;
-  }, [ isInitialized, userId, storedUser ]); 
+  }, [
+    isInitialized,
+    userId,
+    storedUser,
+  ]);
 
   return {
     signIn,
@@ -60,6 +68,4 @@ const useAuth = () => {
   };
 };
 
-export {
-  useAuth,
-};
+export { useAuth };

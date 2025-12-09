@@ -7,9 +7,7 @@ type MobileProviderContext = {
 const useMobile = (): MobileProviderContext => {
   const isNarrow = useMediaQuery({ maxWidth: 812 });
 
-  return {
-    isNarrow,
-  };
+  return { isNarrow };
 };
 
 export { useMobile };

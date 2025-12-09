@@ -47,6 +47,4 @@ export interface VariationProperties {
 }
 
 export default useTheme;
-export {
-  VARIATIONS as LEGACY_COLORS,
-};
+export { VARIATIONS as LEGACY_COLORS };

@@ -1,8 +1,12 @@
 import { useEffect } from 'react';
 
-import { JiraAuthData, JiraPreferences, JiraResourceData } from '@modules/integrations/jira/types';
-import { THEMES, THEME_MODES, THEME_MODE_CONTROLLER } from '@utils/styles/colors/colorSystem';
+import {
+  JiraAuthData, JiraPreferences, JiraResourceData,
+} from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
+import {
+  THEMES, THEME_MODES, THEME_MODE_CONTROLLER,
+} from '@utils/styles/colors/colorSystem';
 import { User } from '@yappy/types';
 
 type GenericPrefType = string
@@ -28,7 +32,7 @@ export type PreferencesType = {
   themeMode?: THEME_MODES;
   themeModeController?: THEME_MODE_CONTROLLER;
   user?: User | null;
-}
+};
 
 const getPrefFromLocalStorage = (key: string): GenericPrefType | undefined => {
   const storedPref = localStorage.getItem(key);
@@ -50,8 +54,12 @@ const purgeLocalStorage = () => {
 };
 
 const usePreferenceSync = () => {
-  const { preferences, setPref, arePrefsInitialized, setPrefsInitialized } = useStore(
-    ({ preferences, setPreferences, arePrefsInitialized, setPrefsInitialized }) => (
+  const {
+    preferences, setPref, arePrefsInitialized, setPrefsInitialized,
+  } = useStore(
+    ({
+      preferences, setPreferences, arePrefsInitialized, setPrefsInitialized,
+    }) => (
       {
         arePrefsInitialized,
         preferences,
@@ -87,12 +95,15 @@ const usePreferenceSync = () => {
         writeToLocalStorage(key, preferences[key]);
       }
     }
-  }, [arePrefsInitialized, preferences]);
+  }, [
+    arePrefsInitialized,
+    preferences,
+  ]);
 
   return {
     getPrefFromLocalStorage,
-    syncPrefsToStore,
     purgeLocalStorage,
+    syncPrefsToStore,
   };
 };
 

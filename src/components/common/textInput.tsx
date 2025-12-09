@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
@@ -17,13 +18,13 @@ type Props = {
   value: string;
   size?: 'small' | 'medium' | 'large';
   collapse?: boolean;
-}
+};
 
 type InputProps = ThemedProps & {
   align: string;
   isLoading: boolean;
   size: number;
-}
+};
 
 const InputWrapper = styled.div<{ noPadding: boolean }>`
   ${({ noPadding }) => css`
@@ -38,7 +39,9 @@ const InputWrapper = styled.div<{ noPadding: boolean }>`
 `;
 
 const StyledInput = styled.input<InputProps>`
-  ${({ align, size, theme }: InputProps & ThemedProps) => css`
+  ${({
+    align, size, theme,
+  }: InputProps & ThemedProps) => css`
     background-color: ${ theme.primary.accent2 };
     border-color: ${ theme.primary.accent6};
     color: ${ theme.primary.accent11 };
@@ -91,29 +94,29 @@ const TextInput = ({
   let inputSize;
 
   switch (alignment) {
-  case 'center':
-    inputAlign = 'center';
-    break;
-  case 'right':
-    inputAlign = 'end';
-    break;
-  case 'left':
-  default:
-    inputAlign = 'start';
-    break;
+    case 'center':
+      inputAlign = 'center';
+      break;
+    case 'right':
+      inputAlign = 'end';
+      break;
+    case 'left':
+    default:
+      inputAlign = 'start';
+      break;
   }
 
   switch (size) {
-  case 'small':
-    inputSize = 1;
-    break;
-  case 'large':
-    inputSize = 2;
-    break;
-  case 'medium':
-  default:
-    inputSize = 1.5;
-    break;
+    case 'small':
+      inputSize = 1;
+      break;
+    case 'large':
+      inputSize = 2;
+      break;
+    case 'medium':
+    default:
+      inputSize = 1.5;
+      break;
   }
 
   return (

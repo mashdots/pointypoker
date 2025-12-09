@@ -1,14 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import styled, { css } from 'styled-components';
 
-import MenuItem from './menuItem';
 import DoorIcon from '@assets/icons/door.svg?react';
+import { useAuth } from '@modules/user';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { RoomUpdateObject } from '@yappy/types';
-import { useAuth } from '@modules/user';
+
+import MenuItem from './menuItem';
 
 
 const Icon = styled(DoorIcon)<ThemedProps>`
@@ -27,10 +29,12 @@ const Icon = styled(DoorIcon)<ThemedProps>`
 
 const LeaveRoomMenuItem = () => {
   const { user } = useAuth();
-  const { roomName, room, clearRoom } = useStore((state) => ({
-    roomName: state?.room?.name,
-    room: state.room,
+  const {
+    roomName, room, clearRoom,
+  } = useStore((state) => ({
     clearRoom: state.clearRoom,
+    room: state.room,
+    roomName: state?.room?.name,
   }));
   const navigate = useNavigate();
 

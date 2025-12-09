@@ -1,12 +1,16 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
-import CategoryCard, { GenericPrefCardProps } from './categoryCard';
-import { Separator, SettingsRow, VerticalContainer } from './common';
-import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
 import Icon from '@assets/icons/settings-appearance.svg?react';
 import useStore from '@utils/store';
 import useTheme, { ThemeOption as ThemeOptionType, ThemedProps } from '@utils/styles/colors/colorSystem';
+
+import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
+import CategoryCard, { GenericPrefCardProps } from './categoryCard';
+import {
+  Separator, SettingsRow, VerticalContainer,
+} from './common';
 
 type ThemeOptionWrapperProps = {
   isActive: boolean;
@@ -68,16 +72,20 @@ const ThemeOption = ({
 }: ThemeOptionType & Pick<ThemeOptionWrapperProps, 'onClick' | 'isActive'>) => {
 
   return (
-    <ThemeOptionWrapper isActive={isActive} onClick={onClick} baseColor={color}>
+    <ThemeOptionWrapper isActive={isActive} onClick={onClick}
+      baseColor={color}>
       <ColorChip baseColor={color} />
       {theme}
-      <ThemeOptionRadio type='radio' name='theme' value={theme} onClick={() => 'click!'} />
+      <ThemeOptionRadio type='radio' name='theme'
+        value={theme} onClick={() => 'click!'} />
     </ThemeOptionWrapper>
   );
 };
 
 const AppearancePreferences = () => {
-  const { themeMode, themeOptions, setTheme } = useTheme();
+  const {
+    themeMode, themeOptions, setTheme,
+  } = useTheme();
   const { theme } = useStore(({ preferences }) => ({ theme: preferences?.theme }));
 
   return (

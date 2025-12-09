@@ -1,13 +1,14 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { useTickets } from '@modules/room/hooks';
-import useStore from '@utils/store';
-import { wait } from '@utils';
-import PIIReport from '@yappy/types/piiReport';
-import { createPIIReport } from '@services/firebase';
 import { Button } from '@components/common';
+import { useTickets } from '@modules/room/hooks';
+import { createPIIReport } from '@services/firebase';
+import { wait } from '@utils';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import PIIReport from '@yappy/types/piiReport';
 
 const Wrapper = styled.div`
   flex-direction: column;
@@ -73,9 +74,9 @@ const ReportPIIModal = () => {
 
   const handleReport = () => {
     const piiReport: PIIReport = {
+      date: new Date(),
       id: currentTicket.id,
       room: roomName,
-      date: new Date(),
     };
 
     createPIIReport(piiReport);
@@ -121,7 +122,7 @@ const ReportPIIModal = () => {
           textSize='small'
           onClick={closeModal}
         >
-        Cancel
+          Cancel
         </Button>
         <Button
           refresh
@@ -130,7 +131,7 @@ const ReportPIIModal = () => {
           textSize='small'
           onClick={handleReport}
         >
-        Submit Report
+          Submit Report
         </Button>
       </ButtonWrapper>
     </Wrapper>

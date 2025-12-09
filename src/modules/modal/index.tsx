@@ -1,21 +1,22 @@
+import { AnimatePresence } from 'motion/react';
+import { div as AnimatedContainer } from 'motion/react-client';
 import React, {
   MouseEventHandler,
   useCallback,
   useMemo,
   useRef,
 } from 'react';
+
 import styled, { css } from 'styled-components';
-import { AnimatePresence } from 'motion/react';
-import { div as AnimatedContainer } from 'motion/react-client';
 
 import PlusIcon from '@assets/icons/plus.svg?react';
+import Card from '@components/common/card';
+import { JiraReauthModal } from '@modules/modal/jiraReauth';
 import { PreferencesModal } from '@modules/preferences';
 import { QueueModal, ReportPIIModal } from '@modules/room';
-import { JiraReauthModal } from '@modules/modal/jiraReauth';
 import { useMobile } from '@utils/hooks/mobile';
-import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
 import useStore from '@utils/store';
-import Card from '@components/common/card';
+import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 export enum MODAL_TYPES {
   FEEDBACK,
@@ -33,15 +34,15 @@ export type SizeProps = {
   narrowHeight: string;
   minWidth: string;
   narrowMinWidth: string;
-}
+};
 
 const DEFAULT_SIZE_CONFIG: SizeProps = {
   height: '60%',
-  width: '50%',
-  narrowHeight: '90%',
-  narrowWidth: '90%',
   minWidth: '720px',
+  narrowHeight: '90%',
   narrowMinWidth: '90%',
+  narrowWidth: '90%',
+  width: '50%',
 };
 
 
@@ -104,40 +105,40 @@ const Modal = () => {
 
   const modal = useMemo(() => {
     switch (modalType) {
-    case MODAL_TYPES.FEEDBACK:
-      return {
-        title: 'Feedback',
-        contents: <div>Feedback</div>,
-      };
-    case MODAL_TYPES.PREFERENCES:
-      return {
-        title: 'Preferences',
-        subtitle: 'Changes save automatically',
-        contents: <PreferencesModal />,
-      };
-    case MODAL_TYPES.JIRA:
-      return {
-        title: 'Import from Jira',
-        contents: <QueueModal />,
-      };
-    case MODAL_TYPES.JIRA_REAUTH:
-      return {
-        title: 'Jira Integration Update',
-        contents: <JiraReauthModal />,
-      };
-    case MODAL_TYPES.PII:
-      return {
-        title: 'Report PII',
-        contents: <ReportPIIModal />,
-      };
-    default:
-      return null;
+      case MODAL_TYPES.FEEDBACK:
+        return {
+          contents: <div>Feedback</div>,
+          title: 'Feedback',
+        };
+      case MODAL_TYPES.PREFERENCES:
+        return {
+          contents: <PreferencesModal />,
+          subtitle: 'Changes save automatically',
+          title: 'Preferences',
+        };
+      case MODAL_TYPES.JIRA:
+        return {
+          contents: <QueueModal />,
+          title: 'Import from Jira',
+        };
+      case MODAL_TYPES.JIRA_REAUTH:
+        return {
+          contents: <JiraReauthModal />,
+          title: 'Jira Integration Update',
+        };
+      case MODAL_TYPES.PII:
+        return {
+          contents: <ReportPIIModal />,
+          title: 'Report PII',
+        };
+      default:
+        return null;
     }
-  }, [ modalType ]);
+  }, [modalType]);
 
   const entryAndExitAnimationStyle = {
-    opacity: 0,
     filter: 'blur(1rem)',
+    opacity: 0,
     transform: 'perspective(500px) rotateX(-10deg) translateZ(-90px) translateY(20px)',
   };
 
@@ -145,7 +146,9 @@ const Modal = () => {
   const handleBackdropClick: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
     if (modalRef.current) {
       const { clientX, clientY } = event;
-      const { top, right, bottom, left } = modalRef.current.getBoundingClientRect();
+      const {
+        top, right, bottom, left,
+      } = modalRef.current.getBoundingClientRect();
 
       if (
         clientY < top ||
@@ -156,7 +159,10 @@ const Modal = () => {
         closeModal();
       }
     }
-  }, [ closeModal, modalRef.current ]);
+  }, [
+    closeModal,
+    modalRef.current,
+  ]);
 
   return (
     <AnimatePresence>
@@ -169,15 +175,15 @@ const Modal = () => {
             onClick={handleBackdropClick}
             transition={{ duration: 0.5 }}
             style={{
-              backgroundColor: theme.transparent.accent1,
-              backdropFilter: 'blur(0.5rem)',
               alignItems: 'center',
+              backdropFilter: 'blur(0.5rem)',
+              backgroundColor: theme.transparent.accent1,
               display: 'flex',
-              justifyContent: 'center',
-              position: 'fixed',
-              left: 0,
-              top: 0,
               height: '100vh',
+              justifyContent: 'center',
+              left: 0,
+              position: 'fixed',
+              top: 0,
               width: '100vw',
               zIndex: 100,
             }}
@@ -189,18 +195,16 @@ const Modal = () => {
                 width: isNarrow ? sizeConfig.narrowWidth : sizeConfig.width,
               }}
               animate={{
-                opacity: 1,
                 filter: 'blur(0rem)',
-                transform: 'perspective(500px) rotateX(0deg) translateZ(0px) translateY(0px)',
                 height: isNarrow ? sizeConfig.narrowHeight : sizeConfig.height,
+                opacity: 1,
+                transform: 'perspective(500px) rotateX(0deg) translateZ(0px) translateY(0px)',
                 width: isNarrow ? sizeConfig.narrowWidth : sizeConfig.width,
               }}
               exit={entryAndExitAnimationStyle}
               transition={{ duration: 0.3 }}
               ref={modalRef}
-              style={{
-                minWidth: isNarrow ? sizeConfig.narrowMinWidth : sizeConfig.minWidth,
-              }}
+              style={{ minWidth: isNarrow ? sizeConfig.narrowMinWidth : sizeConfig.minWidth }}
             >
               <Card
                 colorTheme='transparent'

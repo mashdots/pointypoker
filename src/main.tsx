@@ -1,51 +1,51 @@
+import { PostHogProvider } from 'posthog-js/react';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from 'react-router-dom';
-import posthog from 'posthog-js';
-import { PostHogProvider } from 'posthog-js/react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import './index.css';
+import posthog from 'posthog-js';
+
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+
 import {
   JiraRedirect,
   Privacy,
   Root,
   Switcher,
 } from './routes';
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+
+import './index.css';
 
 
 posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
   api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-  ui_host: 'https://us.i.posthog.com',
   defaults: '2025-05-24',
+  ui_host: 'https://us.i.posthog.com',
 });
 
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Root />,
     children: [
       {
+        element: <Switcher />,
         path: '',
-        element: <Switcher />,
       },
       {
+        element: <Switcher />,
         path: '/:roomName',
-        element: <Switcher />,
       },
       {
-        path: JIRA_REDIRECT_PATH,
         element: <JiraRedirect />,
+        path: JIRA_REDIRECT_PATH,
       },
       {
-        path: '/privacy',
         element: <Privacy />,
+        path: '/privacy',
       },
     ],
+    element: <Root />,
+    path: '/',
   },
 ]);
 

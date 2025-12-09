@@ -1,6 +1,8 @@
 import { URLRecord } from 'whatwg-url';
 
-import { PointOptions, Ticket, Vote } from '@yappy/types';
+import {
+  PointOptions, Ticket, Vote,
+} from '@yappy/types';
 
 enum PointingTypes {
   tshirt = 'T-Shirt',
@@ -10,42 +12,67 @@ enum PointingTypes {
 type CalculationResult = {
   warning?: string;
   severity?: 'error' | 'warning';
-}
+};
 
 type AverageResult = CalculationResult & {
   average: number;
-}
+};
 
 type SuggestedResult = CalculationResult & {
   suggestedPoints: number | string;
-}
+};
 
 
 const getPointOptions = (type?: string): PointOptions => {
   switch (type) {
-  case PointingTypes.tshirt:
-    return {
-      sequence: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      exclusions: ['?'],
-    };
-  case PointingTypes.fibonacci:
-  default:
-    return {
-      sequence: [0, 1, 2, 3, 5, 8, 13],
-      exclusions: ['?', '∞', '☕'],
-    };
+    case PointingTypes.tshirt:
+      return {
+        exclusions: ['?'],
+        sequence: [
+          'XS',
+          'S',
+          'M',
+          'L',
+          'XL',
+          'XXL',
+        ],
+      };
+    case PointingTypes.fibonacci:
+    default:
+      return {
+        exclusions: [
+          '?',
+          '∞',
+          '☕',
+        ],
+        sequence: [
+          0,
+          1,
+          2,
+          3,
+          5,
+          8,
+          13,
+        ],
+      };
   }
 };
 
-const calculateAverage = (currentTicket?: Ticket | null): AverageResult  => {
+const calculateAverage = (currentTicket?: Ticket | null): AverageResult => {
   if (!currentTicket) {
-    return { average: 0, warning: '' };
+    return {
+      average: 0,
+      warning: '',
+    };
   }
   const { votes: voteData, pointOptions } = currentTicket;
 
   // No averaging of t-shirt sizes!
   if (pointOptions === PointingTypes.tshirt) {
-    return { average: 0, warning: 'T-Shirt sizes cannot be averaged.' };
+    return {
+      average: 0,
+      warning: 'T-Shirt sizes cannot be averaged.',
+    };
   }
 
   const { exclusions } = getPointOptions(pointOptions);
@@ -75,14 +102,17 @@ const calculateAverage = (currentTicket?: Ticket | null): AverageResult  => {
 
   return {
     average: average % 1 === 0 ? average : parseFloat(average.toFixed(2)),
-    warning,
     severity,
+    warning,
   };
 };
 
 const calculateSuggestedPoints = (currentTicket?: Ticket | null): SuggestedResult => {
   if (!currentTicket) {
-    return { suggestedPoints: 0, warning: '' };
+    return {
+      suggestedPoints: 0,
+      warning: '',
+    };
   }
   const { votes: voteData, pointOptions } = currentTicket;
   const { sequence, exclusions } = getPointOptions(pointOptions);
@@ -150,7 +180,11 @@ const getTicketNumberFromUrl = ({ host, path }: URLRecord): string => {
   return parsed ?? host?.toString() ?? '';
 };
 
-const isVoteCast = (vote?: Vote): boolean => ![null, undefined, ''].includes(vote as any);
+const isVoteCast = (vote?: Vote): boolean => ![
+  null,
+  undefined,
+  '',
+].includes(vote as any);
 
 export {
   calculateAverage,

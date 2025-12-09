@@ -1,5 +1,5 @@
-import Cookies from 'universal-cookie';
 import { Buffer } from 'buffer';
+import Cookies from 'universal-cookie';
 
 enum COOKIE_TYPES {
   USER = 'yappy-user',
@@ -14,7 +14,10 @@ const getCookie = () => {
 
 const setCookie = (value: object) => {
   const encryptedID = Buffer.from(JSON.stringify(value)).toString('base64');
-  cookies.set(COOKIE_TYPES.USER, encryptedID, { expires: new Date('2100/01/01'), sameSite: 'lax' });
+  cookies.set(COOKIE_TYPES.USER, encryptedID, {
+    expires: new Date('2100/01/01'),
+    sameSite: 'lax',
+  });
 };
 
 const clearCookie = () => {

@@ -1,20 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
+
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
-import { useTickets } from '../../hooks';
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { TextInput } from '@components/common';
-import useStore from '@utils/store';
+import { spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
+import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { spinAnimation } from '@components/common/animations';
+
+import { useTickets } from '../../hooks';
 
 type Props = {
   value: string;
   shouldFocus: string | null;
-}
+};
 
 const LoadingIcon = styled(Spinner)`
   height: 2rem;
@@ -82,22 +86,30 @@ const Title = ({ shouldFocus, value }: Props) => {
     handleCreatePredefinedTicket,
     shouldShowVotes,
   } = useTickets();
-  const [isLoading, setIsLoading] = useState(false);
-  const [canEdit, setCanEdit] = useState(false);
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(false);
+  const [
+    canEdit,
+    setCanEdit,
+  ] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const setIsFocused = useStore(({ setTitleInputFocus }) => setTitleInputFocus);
-  const { buildJiraUrl, isConfigured: isJiraConfigured, getIssueDetail, getPointFieldFromBoardId } = useJira();
+  const {
+    buildJiraUrl, isConfigured: isJiraConfigured, getIssueDetail, getPointFieldFromBoardId,
+  } = useJira();
 
   const handleCreateNewJiraTicket = async (ticketName: string) => {
     try {
       const ticketDetail = await getIssueDetail(ticketName);
       const pointField = await getPointFieldFromBoardId(ticketDetail.fields.sprint.originBoardId);
       const newTicket: QueuedJiraTicket = {
+        estimationFieldId: pointField?.id ?? '',
         id: ticketDetail.key,
         name: ticketDetail.fields.summary,
-        type: ticketDetail.fields.issuetype,
         sprint: ticketDetail.fields.sprint,
-        estimationFieldId: pointField?.id ?? '',
+        type: ticketDetail.fields.issuetype,
         url: buildJiraUrl(ticketDetail.key),
       };
 
@@ -137,7 +149,7 @@ const Title = ({ shouldFocus, value }: Props) => {
       handleCreateTicket(newTicketName);
       setIsLoading(false);
     }, 1000);
-  }, [ isJiraConfigured ]);
+  }, [isJiraConfigured]);
 
   const displayComponent = canEdit ? (
     <>
@@ -171,7 +183,7 @@ const Title = ({ shouldFocus, value }: Props) => {
 
   useEffect(() => {
     setCanEdit(false);
-  }, [ value ]);
+  }, [value]);
 
   useEffect(() => {
     if (canEdit) {

@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
+
 import styled, { css } from 'styled-components';
 
-import Consensus from './Consensus';
-import { useTickets } from '../../hooks';
-import { getPointOptions, isVoteCast } from '../../utils';
 import { GridPanel } from '@components/common';
 import { GridPanelProps } from '@components/common/gridPanel';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
+import { useTickets } from '../../hooks';
+import { getPointOptions, isVoteCast } from '../../utils';
+import Consensus from './Consensus';
 
 
 const Wrapper = styled.div`
@@ -69,7 +71,9 @@ const StatDisplayWrapper = styled.div`
 `;
 
 const StatDisplay = styled.div<StatDisplayProps>`
-  ${ ({ animationDuration, percentage, revealVotes, theme }: StatDisplayProps & ThemedProps) => css`
+  ${ ({
+    animationDuration, percentage, revealVotes, theme,
+  }: StatDisplayProps & ThemedProps) => css`
     background-color: ${ theme.info.accent9 };
     height: ${ revealVotes ? percentage : 0 }%;
     transition: height ${ animationDuration }ms ease-out;
@@ -87,7 +91,9 @@ const StatDisplay = styled.div<StatDisplayProps>`
 
 
 const DistributionPanel = (props: GridPanelProps) => {
-  const { currentTicket, shouldShowVotes, voteData } = useTickets();
+  const {
+    currentTicket, shouldShowVotes, voteData,
+  } = useTickets();
   const { sequence, exclusions } = getPointOptions(currentTicket?.pointOptions);
 
   const hasConsensus = useMemo(
@@ -96,21 +102,21 @@ const DistributionPanel = (props: GridPanelProps) => {
       && voteData.length > 0
       && voteData.every(({ vote }) => !!vote && vote === voteData[ 0 ].vote)
     ),
-    [ voteData ],
+    [voteData],
   );
 
   const voteCounts = useMemo(
     () => voteData.reduce(
       (acc: { [key: string]: number }, { vote }) => {
         if (isVoteCast(vote)) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
           acc[vote!] = acc[vote!] ? acc[vote!] + 1 : 1;
         }
         return acc;
       },
       {},
     ),
-    [ voteData ],
+    [voteData],
   );
 
   const voteStats = useMemo(
@@ -135,7 +141,11 @@ const DistributionPanel = (props: GridPanelProps) => {
         </StatContainer>
       );
     }),
-    [ voteCounts, voteData, shouldShowVotes ],
+    [
+      voteCounts,
+      voteData,
+      shouldShowVotes,
+    ],
   );
 
   const component = hasConsensus ? <Consensus /> : voteStats;

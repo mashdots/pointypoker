@@ -1,4 +1,4 @@
-import { QueuedTicket, Ticket } from '@yappy/types/room';
+import { QueuedTicket, Ticket } from '@yappy/types/legacy/room';
 
 /**
  * Auth
@@ -6,11 +6,11 @@ import { QueuedTicket, Ticket } from '@yappy/types/room';
 export type InitialAuth = {
   code: string;
   redirect_uri: string;
-}
+};
 
 export type RefreshAuth = {
   refresh_token: string;
-}
+};
 
 export type JiraAuthPayload = {
   grant_type: string;
@@ -25,7 +25,7 @@ export type JiraAuthData = {
   token_type: string;
   refresh_token: string;
   scope: string;
-}
+};
 
 export type JiraResourceData = {
   id: string;
@@ -33,7 +33,7 @@ export type JiraResourceData = {
   name: string;
   scopes: string[];
   avatarUrl: string;
-}
+};
 
 /**
  * Boards
@@ -42,13 +42,13 @@ export type JiraBoardPayloadValue = {
   id: number;
   name: string;
   self: string;
-}
+};
 
 export type JiraBoard = {
   id: number;
   name: string;
   apiUrl: string;
-}
+};
 
 export type JiraBoardConfig = {
   estimation: {
@@ -60,7 +60,7 @@ export type JiraBoardConfig = {
   };
   name: string;
   id: number;
-}
+};
 
 /**
  * Fields
@@ -78,12 +78,12 @@ export type JiraFieldPayload = {
   schema: {
     type: string;
   }
-}
+};
 
 export type JiraField = {
   id: string;
   name: string;
-}
+};
 
 /**
  * Issues
@@ -98,7 +98,7 @@ type IssueType = {
     contentType: string;
     blobData: string;
   }
-}
+};
 
 export type JiraIssueSearchPayload = {
   expand: string;
@@ -111,7 +111,7 @@ export type JiraIssueSearchPayload = {
     issuetype: IssueType;
     summary: string;
   }
-}
+};
 
 // Issues are tickets from Jira's API.
 // Tickets are issues that are in this app's context.
@@ -122,7 +122,7 @@ type JiraTicketBase = {
   type: IssueType
   wasPointed?: boolean;
   currentBoardId?: number;
-}
+};
 
 // A ticket from Jira in the queue prior to pointing
 export type QueuedJiraTicket = QueuedTicket & JiraTicketBase;
@@ -143,11 +143,11 @@ export type JiraSprint = {
   name: string,
   originBoardId: number,
   goal: string
-}
+};
 
 export type JiraSprintWithIssues = JiraSprint & {
   issues?: JiraIssueSearchPayload[];
-}
+};
 
 /**
  * Other Data
@@ -157,17 +157,17 @@ export type BasePayload = {
   startAt: number;
   isLast: boolean;
   total: number;
-}
+};
 
 export type JiraDataPayload = BasePayload & {
   values: JiraBoardPayloadValue[] | JiraSprint[]
-}
+};
 
 export type JiraIssuesDataPayload = BasePayload & {
   issues: JiraIssueSearchPayload[]
-}
+};
 
 export type JiraPreferences = {
   defaultBoard?: JiraBoardPayloadValue | null;
   pointField?: JiraField | null;
-}
+};

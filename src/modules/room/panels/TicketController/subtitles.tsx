@@ -1,17 +1,19 @@
-import React from 'react';
 import { AnimatePresence } from 'motion/react';
 import { div as Wrapper } from 'motion/react-client';
+import React from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { LinkIcon } from './components';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
+import { LinkIcon } from './components';
 
 type Props = {
   flex?: number;
   width?: string;
   content?: string | null;
   url?: string;
-}
+};
 
 const StyledLink = styled.a`
   ${ ({ theme }: ThemedProps) => css`
@@ -38,23 +40,33 @@ const Subtitles = ({
     <AnimatePresence mode='wait'>
       <Wrapper
         key={content || 'default-content'}
-        initial={{ opacity: 0, filter: 'blur(0.25rem)' }}
-        animate={{ opacity: 1, filter: 'blur(0rem)' }}
-        exit={{ opacity: 0, filter: 'blur(0.25rem)' }}
+        initial={{
+          filter: 'blur(0.25rem)',
+          opacity: 0,
+        }}
+        animate={{
+          filter: 'blur(0rem)',
+          opacity: 1,
+        }}
+        exit={{
+          filter: 'blur(0.25rem)',
+          opacity: 0,
+        }}
         transition={{ duration: 0.25 }}
         style={{
           display: 'flex',
+          flex,
           flexDirection: 'column',
-          padding: '0 1rem',
           overflow: 'hidden',
+          padding: '0 1rem',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
-          flex,
           width,
         }}
       >
         {url ? (
-          <StyledLink href={url} target="_blank" rel="noreferrer"><LinkIcon />{content ?? ''}</StyledLink>
+          <StyledLink href={url} target="_blank"
+            rel="noreferrer"><LinkIcon />{content ?? ''}</StyledLink>
         ) : content}
       </Wrapper>
     </AnimatePresence>

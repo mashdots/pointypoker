@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import InformationWrapper from './informationWrapper';
 
 const DisconnectInfoWrapper = styled(InformationWrapper)`

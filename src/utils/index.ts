@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
+
 import { getCookie, setCookie } from './cookies';
-import createUserPayload from './user';
 import generateRoomName from './room';
+import createUserPayload from './user';
 
 const getRandomInt = (size: number): number => {
   const min = Math.ceil(0);
@@ -16,7 +17,7 @@ const usePrevious = <T>(value: T): T | undefined => {
 
   useEffect(() => {
     ref.current = value;
-  }, [ value ]);
+  }, [value]);
 
   return ref.current;
 };

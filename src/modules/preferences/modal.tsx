@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+
 import styled, { css } from 'styled-components';
+
+import { useMobile } from '@utils/hooks/mobile';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 import {
   AppearancePreferences,
@@ -10,13 +14,11 @@ import {
   IntegrationsPreferencesCard,
 } from './panes';
 import { GenericPrefCardProps } from './panes/categoryCard';
-import { useMobile } from '@utils/hooks/mobile';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 type Panes = {
   categoryCard: (props: GenericPrefCardProps) => JSX.Element;
   pane: React.ReactNode;
-}
+};
 
 const Wrapper = styled.div<ThemedProps>`
   ${({ isNarrow }) => css`
@@ -66,7 +68,10 @@ const SettingsDisplay = styled.div`
 
 const PreferencesModal = () => {
   const { isNarrow } = useMobile();
-  const [currentCategory, setCurrentCategory] = useState(0);
+  const [
+    currentCategory,
+    setCurrentCategory,
+  ] = useState(0);
 
   const panes: Panes[] = [
     {
@@ -89,8 +94,8 @@ const PreferencesModal = () => {
         {panes.map(({ categoryCard }, index) => (
           categoryCard(
             {
-              onClick: () => setCurrentCategory(index),
               isActive: index === currentCategory,
+              onClick: () => setCurrentCategory(index),
             },
           )
         ))}

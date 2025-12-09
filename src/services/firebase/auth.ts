@@ -15,7 +15,7 @@ let client: Auth;
 type ResultResponse = {
   userId?: string | null;
   error?: string | null;
-}
+};
 
 const getAuthClient = (): Auth => {
   if (client) {
@@ -30,8 +30,8 @@ const getAuthClient = (): Auth => {
 
 const signIn = async (): Promise<ResultResponse> => {
   const result: ResultResponse = {
-    userId: null,
     error: null,
+    userId: null,
   };
 
   try {
@@ -51,8 +51,8 @@ const signIn = async (): Promise<ResultResponse> => {
 
 const signOut = async (): Promise<ResultResponse> => {
   const result: ResultResponse = {
-    userId: null,
     error: null,
+    userId: null,
   };
 
   try {
@@ -72,4 +72,6 @@ const watchForUserId = (callback: (arg: string) => void): Unsubscribe => {
   });
 };
 
-export { getAuthClient, watchForUserId, signIn, signOut };
+export {
+  getAuthClient, watchForUserId, signIn, signOut,
+};

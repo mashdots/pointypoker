@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import LinkSvg from '@assets/icons/link-out.svg?react';
 
 const LinkIcon = styled(LinkSvg)`

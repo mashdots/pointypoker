@@ -1,9 +1,9 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 
-import MenuItem from './menuItem';
 import FeedbackIcon from '@assets/icons/feedback.svg?react';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
+import MenuItem from './menuItem';
 
 
 const Icon = styled(FeedbackIcon) <ThemedProps>`

@@ -13,15 +13,15 @@ function getWidth(value?: string | number): string {
   }
 
   switch (value) {
-  case 'quarter':
-    return '25%';
-  case 'third':
-    return '33%';
-  case 'half':
-    return '50%';
-  case 'full':
-  default:
-    return '100%';
+    case 'quarter':
+      return '25%';
+    case 'third':
+      return '33%';
+    case 'half':
+      return '50%';
+    case 'full':
+    default:
+      return '100%';
   }
 }
 

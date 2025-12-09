@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
-import { PreferencesType } from '@modules/preferences/hooks';
 import { MODAL_TYPES } from '@modules/modal';
+import { PreferencesType } from '@modules/preferences/hooks';
 import { Room } from '@yappy/types';
 
 type Store = {
@@ -18,10 +18,18 @@ type Store = {
   setCurrentModal: (arg: MODAL_TYPES | null) => void;
   arePrefsInitialized: boolean;
   setPrefsInitialized: () => void;
-}
+};
 
 const useStore = create<Store>((set) => ({
+  arePrefsInitialized: false,
+  clearRoom: () => set(() => ({ room: null })),
+  currentModal: null,
+  isMenuOpen: false,
+  isTitleInputFocused: false,
   preferences: {},
+  room: null,
+  setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
+  setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
   setPreferences: (key, newPreferences) => set((state) => (
     {
       preferences: {
@@ -30,17 +38,9 @@ const useStore = create<Store>((set) => ({
       },
     }
   )),
-  room: null,
-  setRoom: (newRoom) => set(() => ({ room: newRoom })),
-  clearRoom: () => set(() => ({ room: null })),
-  isTitleInputFocused: false,
-  setTitleInputFocus: (isFocused) => set(() => ({ isTitleInputFocused: isFocused })),
-  isMenuOpen: false,
-  setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
-  currentModal: null,
-  setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
-  arePrefsInitialized: false,
   setPrefsInitialized: () => set(() => ({ arePrefsInitialized: true })),
+  setRoom: (newRoom) => set(() => ({ room: newRoom })),
+  setTitleInputFocus: (isFocused) => set(() => ({ isTitleInputFocused: isFocused })),
 }));
 
 export default useStore;

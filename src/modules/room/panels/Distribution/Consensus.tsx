@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import styled, { keyframes } from 'styled-components';
 
 const Wrapper = styled.div`
@@ -30,7 +31,7 @@ const movement = keyframes`
   }
 `;
 
-const AnimatedText = styled.h1<{ isPresented: boolean}>`
+const AnimatedText = styled.h1<{ isPresented: boolean }>`
   /* font-size: 3rem; */
   will-change: auto;
   display: block;
@@ -55,7 +56,10 @@ const AnimatedText = styled.h1<{ isPresented: boolean}>`
 let timeout: number;
 
 const Consensus = () => {
-  const [isPresented, setIsPresented] = useState(false);
+  const [
+    isPresented,
+    setIsPresented,
+  ] = useState(false);
 
   useEffect(() => {
     clearTimeout(timeout);

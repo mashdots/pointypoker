@@ -1,5 +1,3 @@
 import DistributionPanel from './distributionPanel';
 
-export {
-  DistributionPanel,
-};
+export { DistributionPanel };

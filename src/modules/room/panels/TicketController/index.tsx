@@ -1,24 +1,28 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState,
+} from 'react';
+
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
-import Title from './title';
-import Controls from './controls';
-import IssueIcon from './issueIcon';
-import { useTickets } from '@modules/room/hooks';
-import { Ticket } from '@yappy/types';
-import { TicketFromQueue } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
-import Subtitles from './subtitles';
+import { useTickets } from '@modules/room/hooks';
 import { useMobile } from '@utils/hooks/mobile';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Ticket } from '@yappy/types';
+import { TicketFromQueue } from '@yappy/types/legacy/room';
+
+import Controls from './controls';
+import IssueIcon from './issueIcon';
+import Subtitles from './subtitles';
+import Title from './title';
 
 type TicketControlFormat = {
   icon?: string;
   subTitle?: string;
   title: string;
   url?: string;
-}
+};
 
 const Wrapper = styled.div`
   display: flex;
@@ -52,12 +56,22 @@ const Padding = styled.span`
 
 const TicketController = () => {
   const { currentTicket } = useTickets();
-  const [triggerFocus, setTriggerFocus] = useState<string | null>(null);
-  const [actionSubtitle, setActionSubtitle] = useState<string | null>(null);
+  const [
+    triggerFocus,
+    setTriggerFocus,
+  ] = useState<string | null>(null);
+  const [
+    actionSubtitle,
+    setActionSubtitle,
+  ] = useState<string | null>(null);
   const { isNarrow } = useMobile();
 
-  const { title, subTitle, icon, url } = useMemo((): TicketControlFormat => {
-    const { id, name, url: ticketUrl, type, sprint } = currentTicket ?? ({} as Ticket | TicketFromQueue);
+  const {
+    title, subTitle, icon, url,
+  } = useMemo((): TicketControlFormat => {
+    const {
+      id, name, url: ticketUrl, type, sprint,
+    } = currentTicket ?? ({} as Ticket | TicketFromQueue);
 
     const title = name ?? '';
     let subTitle;
@@ -78,12 +92,17 @@ const TicketController = () => {
       url = title;
     }
 
-    return { title, subTitle, icon, url };
-  }, [ currentTicket ]);
+    return {
+      icon,
+      subTitle,
+      title,
+      url,
+    };
+  }, [currentTicket]);
 
   useEffect(() => {
     setTriggerFocus(null);
-  }, [ currentTicket ]);
+  }, [currentTicket]);
 
   return (
     <Wrapper>
@@ -94,7 +113,8 @@ const TicketController = () => {
       </PrimaryContainer>
       <InformationDisplay isNarrow={isNarrow}>
         {!isNarrow && <Padding />}
-        <Subtitles flex={isNarrow ? 0 : 1} content={subTitle} url={url} />
+        <Subtitles flex={isNarrow ? 0 : 1} content={subTitle}
+          url={url} />
         <Subtitles content={actionSubtitle} />
       </InformationDisplay>
     </Wrapper>

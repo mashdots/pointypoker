@@ -1,13 +1,13 @@
-import { THEME_COLORS } from './definitions';
 import { ThemeColors } from '../colorSystem';
+import { THEME_COLORS } from './definitions';
 
 const whatever: ThemeColors = {
-  primary: THEME_COLORS.GRAY,
+  error: THEME_COLORS.RED,
   greyscale: THEME_COLORS.GRAY,
+  info: THEME_COLORS.BLUE,
+  primary: THEME_COLORS.GRAY,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
-  error: THEME_COLORS.RED,
-  info: THEME_COLORS.BLUE,
 };
 
 export default whatever;

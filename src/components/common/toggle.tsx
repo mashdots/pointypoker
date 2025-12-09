@@ -1,6 +1,7 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+
 import get from 'lodash/get';
+import styled, { css } from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
@@ -40,19 +41,21 @@ const Wrapper = styled.div<ColorOverrides & { position?: 'left' | 'right' }>`
   
   input:checked + #slider {
     ${({ onbg, theme }: ColorOverrides & ThemedProps) => {
-    const finalColor = onbg ? get(theme, onbg) : theme.success.accent9;
+      const finalColor = onbg ? get(theme, onbg) : theme.success.accent9;
 
-    return css`
+      return css`
         background-color: ${finalColor};
       `;
-  }}
+    }}
 
     transition: background-color 0.25s ease-out;
   }
 `;
 
 const Slider = styled.div <Pick<Props, 'isOn'> & ColorOverrides>`
-  ${({ isOn, offBg, theme }: Pick<Props, 'isOn'> & ThemedProps & ColorOverrides) => css`
+  ${({
+    isOn, offBg, theme,
+  }: Pick<Props, 'isOn'> & ThemedProps & ColorOverrides) => css`
     background-color: ${ offBg ? get(theme, offBg) : theme.primary.accent3 };
     border: 1px solid ${ isOn ? theme.primary.accent7 : theme.primary.accent12 };
 
@@ -108,14 +111,16 @@ const Toggle = ({
   onIcon,
   position,
 }: Props) => (
-  <Wrapper onClick={handleToggle} {...colorOverrides} position={position}>
+  <Wrapper onClick={handleToggle} {...colorOverrides}
+    position={position}>
     <CheckBox
       type="checkbox"
       checked={isOn}
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+
       onChange={() => {}}
     />
-    <Slider isOn={isOn} id='slider' {...colorOverrides}>
+    <Slider isOn={isOn} id='slider'
+      {...colorOverrides}>
       <Icon position='left'>
         {onIcon}
       </Icon>

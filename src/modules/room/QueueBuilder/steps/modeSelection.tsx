@@ -3,8 +3,8 @@ import React from 'react';
 export type ImportModeSelection = 'sprint' | 'jql';
 
 type Props = {
-    handleModeSelection: (selection: ImportModeSelection) => void;
-}
+  handleModeSelection: (selection: ImportModeSelection) => void;
+};
 
 const ModeSelection = ({ handleModeSelection }: Props) => {
   return (

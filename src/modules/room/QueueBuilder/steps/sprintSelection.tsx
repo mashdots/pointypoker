@@ -1,22 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
+
 import cloneDeep from 'lodash/cloneDeep';
+import styled, { css } from 'styled-components';
 
 import Spinner from '@assets/icons/loading-circle.svg?react';
 import { fadeDownEntrance, spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
-import { JiraField, JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues } from '@modules/integrations/jira/types';
-import { InformationWrapper, SectionWrapper } from './common';
+import {
+  JiraField, JiraIssueSearchPayload, JiraSprint, JiraSprintWithIssues,
+} from '@modules/integrations/jira/types';
 import { usePrevious } from '@utils';
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { Room } from '@yappy/types';
+
+import { InformationWrapper, SectionWrapper } from './common';
 
 type Props = {
   boardId?: string | number;
   existingQueue: Room[ 'ticketQueue' ];
   setSprint: (sprintData: JiraSprintWithIssues) => void;
   pointField: JiraField;
-}
+};
 
 type SprintOptionProps = {
   hasIssues: boolean;
@@ -61,7 +67,9 @@ const SprintOptionWrapper = styled.div`
 `;
 
 const SprintOption = styled.div<SprintOptionProps>`
-  ${({ delayFactor, hasIssues, theme }: SprintOptionProps) => css`
+  ${({
+    delayFactor, hasIssues, theme,
+  }: SprintOptionProps) => css`
     cursor: ${ hasIssues ? 'pointer' : 'default' };
     background-color: ${ theme.greyscale[ hasIssues ? 'accent3' : 'accent2' ] };
     color: ${ theme.greyscale[hasIssues ? 'accent12' : 'accent11'] };
@@ -92,7 +100,9 @@ const SprintOption = styled.div<SprintOptionProps>`
 `;
 
 const PointContainer = styled.span<SprintOptionProps>`
-  ${({ theme, hasIssues, hasNewIssuesWithIssuesInQueue }: SprintOptionProps) => {
+  ${({
+    theme, hasIssues, hasNewIssuesWithIssuesInQueue,
+  }: SprintOptionProps) => {
     let colorScheme = hasIssues ? 'success' : 'greyscale';
     if (hasNewIssuesWithIssuesInQueue) {
       colorScheme = 'info';
@@ -124,10 +134,21 @@ const SprintSelection = ({
   pointField,
 }: Props) => {
   const previousBoardId = usePrevious(boardId);
-  const [isLoading, setIsLoading] = useState(false);
-  const [sprintData, setSprintData] = useState<JiraSprint[] | null>(null);
-  const [issueData, setIssueData] = useState<JiraIssueSearchPayload[] | null>(null);
-  const { getSprintsForBoard, getIssuesForBoard, getAvatars } = useJira();
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(false);
+  const [
+    sprintData,
+    setSprintData,
+  ] = useState<JiraSprint[] | null>(null);
+  const [
+    issueData,
+    setIssueData,
+  ] = useState<JiraIssueSearchPayload[] | null>(null);
+  const {
+    getSprintsForBoard, getIssuesForBoard, getAvatars,
+  } = useJira();
 
   const handleFetchSprintData = useCallback(async () => {
     if (!boardId) {
@@ -154,7 +175,7 @@ const SprintSelection = ({
     const avatarData = issueData?.reduce((acc: { [key: string]: number }, issue) => {
       const { issuetype } = issue.fields;
       if (!acc[issuetype.name]) {
-        acc[issuetype.name] =  issuetype.avatarId;
+        acc[issuetype.name] = issuetype.avatarId;
       }
       return acc;
     }, {});
@@ -201,7 +222,10 @@ const SprintSelection = ({
           return !existingIssueData.some((existingIssue) => existingIssue.id === issue.id);
         });
 
-        return [...existingIssueData, ...newIssues];
+        return [
+          ...existingIssueData,
+          ...newIssues,
+        ];
       });
 
       if (startAt < issues.total) {
@@ -290,7 +314,12 @@ const SprintSelection = ({
         </PointContainer>
       </SprintOption>
     );
-  }), [sprintData, issueData, isLoading, existingQueue]);
+  }), [
+    sprintData,
+    issueData,
+    isLoading,
+    existingQueue,
+  ]);
 
   const loadingIcon = useMemo(
     () => sprintData ? 'Select a sprint' : (

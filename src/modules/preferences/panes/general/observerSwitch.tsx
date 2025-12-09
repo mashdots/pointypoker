@@ -12,15 +12,22 @@ let timeout: number;
 
 const ObserverSwitch = () => {
   const { userId } = useAuthorizedUser();
-  const { isObserver, updateIsObserver, roomName, roomData } = useStore(({ preferences, setPreferences, room }) => ({
+  const {
+    isObserver, updateIsObserver, roomName, roomData,
+  } = useStore(({
+    preferences, setPreferences, room,
+  }) => ({
     isObserver: preferences?.isObserver ?? false,
+    roomData: room,
+    roomName: room?.name,
     updateIsObserver: (is: boolean) => {
       setPreferences('isObserver', is);
     },
-    roomName: room?.name,
-    roomData: room,
   }));
-  const [ value, setValue ] = useState(isObserver);
+  const [
+    value,
+    setValue,
+  ] = useState(isObserver);
 
   useEffect(() => {
     clearTimeout(timeout);
@@ -42,12 +49,17 @@ const ObserverSwitch = () => {
       },
       250,
     );
-  }, [ value, roomName, userId ]);
+  }, [
+    value,
+    roomName,
+    userId,
+  ]);
 
   return (
     <VerticalContainer style={{ width: '100%' }}>
       <SettingsRow>
-        <CheckBox id="observer-switch" checked={value} onChange={(e) => setValue(e.target.checked)} label="Observer Mode" />
+        <CheckBox id="observer-switch" checked={value}
+          onChange={(e) => setValue(e.target.checked)} label="Observer Mode" />
       </SettingsRow>
     </VerticalContainer>
   );

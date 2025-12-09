@@ -9,7 +9,9 @@ export type CardProps = {
 } & ThemedProps;
 
 const Card = styled.div<CardProps>`
-  ${ ({ colorTheme, scroll, theme, isNarrow, overrideHeight, overrideWidth }: CardProps) => {
+  ${ ({
+    colorTheme, scroll, theme, isNarrow, overrideHeight, overrideWidth,
+  }: CardProps) => {
     const finalTheme = colorTheme ?? 'primary';
 
     let finalWidth = '90%';

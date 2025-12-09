@@ -1,13 +1,18 @@
-import React, { FC, useEffect, useMemo, useRef } from 'react';
+import React, {
+  FC, useEffect, useMemo, useRef,
+} from 'react';
+import {
+  Outlet, useOutletContext, useLocation,
+} from 'react-router-dom';
+
 import styled, { ThemeProvider } from 'styled-components';
-import { Outlet, useOutletContext, useLocation } from 'react-router-dom';
-import { usePostHog } from '@posthog/react'
 
 import Header from '@components/Header';
 import Menu from '@modules/menu';
 import Modal from '@modules/modal';
-import AuthProvider from '@modules/user/AuthContext';
 import usePreferenceSync from '@modules/preferences/hooks';
+import AuthProvider from '@modules/user/AuthContext';
+import { usePostHog } from '@posthog/react';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
@@ -46,25 +51,23 @@ const Root: FC = () => {
 
   useEffect(() => {
     if (posthog) {
-      posthog.setPersonProperties({
-        deployVersion: import.meta.env.VITE_VERSION
-      });
+      posthog.setPersonProperties({ deployVersion: import.meta.env.VITE_VERSION });
     }
   }, [posthog]);
 
   return (
     <AuthProvider>
-    <ThemeProvider theme={theme}>
-      <Container>
-        <GlobalStyles/>
-        <Header headerRef={headerRef} hideMenu={!shouldShowMenu} />
-        <Modal />
-        {shouldShowMenu && <Menu topOffset={headerHeight} />}
-        <ChildrenWrapper>
-          <Outlet context={{ refHeight: headerHeight} satisfies ContextType} />
-        </ChildrenWrapper>
-      </Container>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Container>
+          <GlobalStyles/>
+          <Header headerRef={headerRef} hideMenu={!shouldShowMenu} />
+          <Modal />
+          {shouldShowMenu && <Menu topOffset={headerHeight} />}
+          <ChildrenWrapper>
+            <Outlet context={{ refHeight: headerHeight } satisfies ContextType} />
+          </ChildrenWrapper>
+        </Container>
+      </ThemeProvider>
     </AuthProvider>
   );
 };

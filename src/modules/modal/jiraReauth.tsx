@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled from 'styled-components';
 
 import JiraIntegrationCard from '@modules/preferences/panes/integrations/jira';
@@ -16,7 +17,7 @@ const Container = styled.div`
 export const JiraReauthModal = () => (
   <Container>
     <NoticeWrapper>
-        There&apos;s been an update to the Jira integration. Please reauthorize to continue using it.
+      There&apos;s been an update to the Jira integration. Please reauthorize to continue using it.
     </NoticeWrapper>
     <JiraIntegrationCard />
   </Container>

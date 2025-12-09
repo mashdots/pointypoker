@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
+
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
+
 import InformationWrapper from './informationWrapper';
 
 const ConnectWrapper = styled(InformationWrapper)`

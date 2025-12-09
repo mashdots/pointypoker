@@ -1,24 +1,28 @@
 import React, { useCallback, useState } from 'react';
+
 import { arrayUnion } from 'firebase/firestore';
 import styled, { css } from 'styled-components';
 
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
-import PrependSvg from '@assets/icons/queue-prepend.svg?react';
-import AppendSvg from '@assets/icons/queue.svg?react';
 import ReplaceSvg from '@assets/icons/arrows-counter-clockwise.svg?react';
+import AppendSvg from '@assets/icons/queue.svg?react';
+import PrependSvg from '@assets/icons/queue-prepend.svg?react';
 import { Button } from '@components/common';
 import { fadeDownEntrance } from '@components/common/animations';
-import { InformationWrapper, SectionWrapper } from './common';
-import { JiraField, JiraIssueSearchPayload, QueuedJiraTicket } from '@modules/integrations/jira/types';
-import { Separator } from '@modules/preferences/panes/common';
-import { updateRoom } from '@services/firebase';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import useStore from '@utils/store';
-import { Room } from '@yappy/types';
-import { RoomUpdateObject } from '@yappy/types/room';
-import { useMobile } from '@utils/hooks/mobile';
 import { useJira } from '@modules/integrations';
+import {
+  JiraField, JiraIssueSearchPayload, QueuedJiraTicket,
+} from '@modules/integrations/jira/types';
+import { Separator } from '@modules/preferences/panes/common';
 import { useTickets } from '@modules/room/hooks';
+import { updateRoom } from '@services/firebase';
+import { useMobile } from '@utils/hooks/mobile';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Room } from '@yappy/types';
+import { RoomUpdateObject } from '@yappy/types/legacy/room';
+
+import { InformationWrapper, SectionWrapper } from './common';
 
 export enum EXISTING_QUEUE_ACTIONS {
   PREPEND,
@@ -31,11 +35,11 @@ type Props = {
   issues: JiraIssueSearchPayload[];
   pointField: JiraField;
   selectedBoardId: number;
-}
+};
 
 type QueueControlProps = {
   alignRight: boolean;
-}
+};
 
 const IssuesWrapper = styled.div`
   display: flex;
@@ -174,12 +178,17 @@ const TicketReview = ({
   pointField,
   selectedBoardId,
 }: Props) => {
-  const [queueAction, setQueueAction] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
+  const [
+    queueAction,
+    setQueueAction,
+  ] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
   const { closeModal, roomName } = useStore(({ room, setCurrentModal }) => ({
     closeModal: () => setCurrentModal(null),
     roomName: room?.name,
   }));
-  const { currentTicket, completedTickets, handleCreatePredefinedTicket, shouldShowVotes } = useTickets();
+  const {
+    currentTicket, completedTickets, handleCreatePredefinedTicket, shouldShowVotes,
+  } = useTickets();
   const { isNarrow } = useMobile();
   const { buildJiraUrl } = useJira();
   const ticketsInQueue = !!existingQueue.length;
@@ -192,17 +201,19 @@ const TicketReview = ({
 
       const updateObj: RoomUpdateObject = {};
       const newIssues = issues.map(
-        ({ key, fields: { summary, issuetype, sprint } }): QueuedJiraTicket => {
+        ({
+          key, fields: {
+            summary, issuetype, sprint,
+          },
+        }): QueuedJiraTicket => {
           return {
+            currentBoardId: selectedBoardId,
+            estimationFieldId: pointField.id,
             id: key,
             name: summary,
-            type: {
-              ...issuetype,
-            },
             sprint,
+            type: { ...issuetype },
             url: buildJiraUrl(key),
-            estimationFieldId: pointField.id,
-            currentBoardId: selectedBoardId,
           };
         },
       );
@@ -215,16 +226,19 @@ const TicketReview = ({
       }
 
       switch (queueAction) {
-      case EXISTING_QUEUE_ACTIONS.APPEND:
-        updateObj['ticketQueue'] = arrayUnion(...newIssues);
-        break;
-      case EXISTING_QUEUE_ACTIONS.PREPEND:
-        updateObj['ticketQueue'] = [ ...newIssues, ...existingQueue ];
-        break;
-      case EXISTING_QUEUE_ACTIONS.REPLACE:
-      default:
-        updateObj['ticketQueue'] = [...newIssues];
-        break;
+        case EXISTING_QUEUE_ACTIONS.APPEND:
+          updateObj['ticketQueue'] = arrayUnion(...newIssues);
+          break;
+        case EXISTING_QUEUE_ACTIONS.PREPEND:
+          updateObj['ticketQueue'] = [
+            ...newIssues,
+            ...existingQueue,
+          ];
+          break;
+        case EXISTING_QUEUE_ACTIONS.REPLACE:
+        default:
+          updateObj['ticketQueue'] = [...newIssues];
+          break;
       }
 
       // Filter out completed tickets that are in newIssues
@@ -241,7 +255,14 @@ const TicketReview = ({
         console.error('Doh!', error);
       }
     },
-    [ queueAction, existingQueue, issues, pointField, roomName, currentTicket ],
+    [
+      queueAction,
+      existingQueue,
+      issues,
+      pointField,
+      roomName,
+      currentTicket,
+    ],
   );
 
   const issueList = issues.map(({
@@ -270,9 +291,21 @@ const TicketReview = ({
   });
 
   const queueActionOptions = [
-    { label: 'Replace', value: EXISTING_QUEUE_ACTIONS.REPLACE, icon: <ReplaceIcon /> },
-    { label: 'Append', value: EXISTING_QUEUE_ACTIONS.APPEND, icon: <AppendIcon /> },
-    { label: 'Prepend', value: EXISTING_QUEUE_ACTIONS.PREPEND, icon: <PrependIcon /> },
+    {
+      icon: <ReplaceIcon />,
+      label: 'Replace',
+      value: EXISTING_QUEUE_ACTIONS.REPLACE,
+    },
+    {
+      icon: <AppendIcon />,
+      label: 'Append',
+      value: EXISTING_QUEUE_ACTIONS.APPEND,
+    },
+    {
+      icon: <PrependIcon />,
+      label: 'Prepend',
+      value: EXISTING_QUEUE_ACTIONS.PREPEND,
+    },
   ];
 
   return (
@@ -290,7 +323,9 @@ const TicketReview = ({
       <QueueControlWrapper alignRight={!ticketsInQueue} isNarrow={isNarrow}>
         {ticketsInQueue && (
           <QueueActionWrapper>
-            {queueActionOptions.map(({ label, value, icon }) => (
+            {queueActionOptions.map(({
+              label, value, icon,
+            }) => (
               <QueueActionRadioButton
                 key={value}
                 isSelected={queueAction === value}

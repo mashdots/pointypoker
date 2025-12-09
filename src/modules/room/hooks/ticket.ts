@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+
 import { arrayRemove, arrayUnion } from 'firebase/firestore';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
@@ -8,10 +9,12 @@ import { useAuth } from '@modules/user';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject, Ticket } from '@yappy/types';
-import { PossibleQueuedTicket } from '@yappy/types/room';
+import { PossibleQueuedTicket } from '@yappy/types/legacy/room';
 
 import { VoteDisplayProps } from '../panels/voteDisplay';
-import { calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes } from '../utils';
+import {
+  calculateAverage, calculateSuggestedPoints, isVoteCast, PointingTypes,
+} from '../utils';
 
 export enum TICKET_ACTIONS {
   SKIP,
@@ -42,30 +45,46 @@ const useTickets = () => {
   const nextTicket = useMemo(() => {
     const currentTicketIndex = queue.findIndex((ticket) => ticket.id === currentTicket?.id);
     return queue?.[currentTicketIndex + 1] ?? null;
-  }, [queue, currentTicket]);
+  }, [
+    queue,
+    currentTicket,
+  ]);
 
   const voteData = useMemo(() => participants
     .sort((a, b) => a.joinedAt - b.joinedAt)
-    .map(({ name, id, inactive, consecutiveMisses, isObserver }): VoteDisplayProps => ({
-      name: name,
-      vote: currentTicket?.votes[id] ?? '',
+    .map(({
+      name, id, inactive, consecutiveMisses, isObserver,
+    }): VoteDisplayProps => ({
+      consecutiveMisses,
       inactive,
       isObserver,
-      consecutiveMisses,
+      name: name,
+      vote: currentTicket?.votes[id] ?? '',
     })),
-  [participants, currentTicket],
+  [
+    participants,
+    currentTicket,
+  ],
   );
 
   const areAllVotesCast = useMemo(
     () => participants
-      .filter(({ inactive, consecutiveMisses, isObserver }) => !inactive && consecutiveMisses < 3 && !isObserver)
+      .filter(({
+        inactive, consecutiveMisses, isObserver,
+      }) => !inactive && consecutiveMisses < 3 && !isObserver)
       .every(({ id }) => isVoteCast(currentTicket?.votes[id])),
-    [participants, currentTicket?.votes],
+    [
+      participants,
+      currentTicket?.votes,
+    ],
   );
 
   const shouldShowVotes = useMemo(
     () => areAllVotesCast || !!currentTicket?.shouldShowVotes,
-    [areAllVotesCast, currentTicket],
+    [
+      areAllVotesCast,
+      currentTicket,
+    ],
   );
 
   const handleUpdateCurrentTicket = useCallback((field: string, value: any, callback?: () => void) => {
@@ -94,7 +113,11 @@ const useTickets = () => {
 
       updateRoom(roomName, updateObj, callback);
     }
-  }, [roomName, currentTicket, queue]);
+  }, [
+    roomName,
+    currentTicket,
+    queue,
+  ]);
 
   const handleCreatePredefinedTicket = (
     preDefinedTicket: Partial<Ticket | JiraTicket | PossibleQueuedTicket>,
@@ -116,15 +139,15 @@ const useTickets = () => {
     if (roomName && user) {
       const updateObj: RoomUpdateObject = {};
       updateObj['currentTicket'] = {
-        name: newTicketName,
+        createdAt: Date.now(),
         createdBy: user.id,
+        fromQueue: fromQueue,
         id: uuid(),
+        name: newTicketName,
+        pointOptions: PointingTypes.fibonacci,
         shouldShowVotes: false,
         votes: {},
-        createdAt: Date.now(),
-        pointOptions: PointingTypes.fibonacci,
         votesShownAt: null,
-        fromQueue: fromQueue,
         ...(preDefinedTicket || {}) ,
       } as Ticket;
 
@@ -164,26 +187,37 @@ const useTickets = () => {
 
       updateRoom(roomName, updateObj);
     }
-  }, [roomName, currentTicket, participants, user, queue, shouldShowVotes]);
+  }, [
+    roomName,
+    currentTicket,
+    participants,
+    user,
+    queue,
+    shouldShowVotes,
+  ]);
 
   const handleGoToNextTicket = useCallback(() => {
     if (roomName && user && nextTicket) {
       handleCreatePredefinedTicket(nextTicket, true);
     }
-  }, [roomName, queue, nextTicket]);
+  }, [
+    roomName,
+    queue,
+    nextTicket,
+  ]);
 
   return {
     areAllVotesCast,
-    currentTicket,
     completedTickets,
+    currentTicket,
+    handleCreatePredefinedTicket,
+    handleCreateTicket,
+    handleGoToNextTicket,
+    handleUpdateCurrentTicket,
     nextTicket,
     queue,
     shouldShowVotes,
     voteData,
-    handleUpdateCurrentTicket,
-    handleCreateTicket,
-    handleCreatePredefinedTicket,
-    handleGoToNextTicket,
   };
 };
 

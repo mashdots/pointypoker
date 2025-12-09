@@ -1,5 +1,7 @@
-import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
+
+import styled, { css } from 'styled-components';
+
 import { ThemedProps } from '@utils/styles/colors/colorSystem';
 
 const InfoLink = styled(Link)`

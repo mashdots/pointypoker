@@ -1,12 +1,14 @@
 import React from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { useTickets } from '../../hooks';
 import LinkSvg from '@assets/icons/link-out.svg?react';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
 import { fadeDownEntrance } from '@components/common/animations';
-import { PossibleQueuedTicket } from '@yappy/types/room';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { PossibleQueuedTicket } from '@yappy/types/legacy/room';
+
+import { useTickets } from '../../hooks';
 
 type IssueWrapperProps = ThemedProps & {
   delayFactor: number,
@@ -22,7 +24,9 @@ const TicketRowList = styled.div`
 `;
 
 const IssueWrapper = styled.div<IssueWrapperProps>`
-  ${ ({ delayFactor, isCurrentTicket, isSelectable, theme }: IssueWrapperProps) => {
+  ${ ({
+    delayFactor, isCurrentTicket, isSelectable, theme,
+  }: IssueWrapperProps) => {
     const themeColor = isCurrentTicket ? 'primary' : 'greyscale';
     return css`
       animation: ${ fadeDownEntrance } 0.25s ease-out ${ delayFactor }ms forwards;

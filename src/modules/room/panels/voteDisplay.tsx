@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
-import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'motion/react';
 import { div as NewDisplayElementWrapper } from 'motion/react-client';
+import React, { useMemo } from 'react';
+
+import styled, { css } from 'styled-components';
 
 import CircleCheckSvg from '@assets/icons/circle-check.svg?react';
 import CoffeeSvg from '@assets/icons/coffee.svg?react';
@@ -41,7 +42,7 @@ type VoteCellProps = {
   isLast: boolean;
   cellMode: userModes;
   voteData: Omit<VoteDisplayProps, 'inactive' | 'consecutiveMisses' | 'isObserver'>;
-}
+};
 
 type StyledVoteCellProps = {
   isIdle?: boolean;
@@ -64,7 +65,9 @@ const Wrapper = styled.div`
 `;
 
 const StyledVoteCell = styled.div<StyledVoteCellProps>`
-  ${({ isIdle, isInactive, theme }: StyledVoteCellProps) => {
+  ${({
+    isIdle, isInactive, theme,
+  }: StyledVoteCellProps) => {
     let color = theme.primary.accent12;
 
     if (isIdle) {
@@ -148,20 +151,24 @@ const VoteCell = ({ voteData, cellMode }: VoteCellProps) => {
 
   const displayElement = useMemo(() => {
     switch (cellMode) {
-    case PARTICIPANT_MODES.VOTED:
-      return <CheckIcon title={`${ name } voted!`} />;
-    case PARTICIPANT_MODES.REVEALED:
-      return vote as Vote;
-    case NON_PARTICIPANT_MODES.OBSERVER:
-      return <CoffeeIcon title={`${ name } is just watching`} />;
-    case NON_PARTICIPANT_MODES.ABSENT:
-      return <IdleIcon title={`${ name } hasn't voted in a bit`} />;
-    case NON_PARTICIPANT_MODES.INACTIVE:
-      return <InactiveIcon title={`${ name } has left the room`} />;
-    default:
-      return null;
+      case PARTICIPANT_MODES.VOTED:
+        return <CheckIcon title={`${ name } voted!`} />;
+      case PARTICIPANT_MODES.REVEALED:
+        return vote as Vote;
+      case NON_PARTICIPANT_MODES.OBSERVER:
+        return <CoffeeIcon title={`${ name } is just watching`} />;
+      case NON_PARTICIPANT_MODES.ABSENT:
+        return <IdleIcon title={`${ name } hasn't voted in a bit`} />;
+      case NON_PARTICIPANT_MODES.INACTIVE:
+        return <InactiveIcon title={`${ name } has left the room`} />;
+      default:
+        return null;
     }
-  }, [cellMode, name, vote]);
+  }, [
+    cellMode,
+    name,
+    vote,
+  ]);
 
   const presenceAnimation = cellMode === PARTICIPANT_MODES.REVEALED ? {
     opacity: 0,
@@ -189,15 +196,24 @@ const VoteCell = ({ voteData, cellMode }: VoteCellProps) => {
       <AnimatePresence mode='wait'>
         <NewDisplayElementWrapper
           key={`${cellMode}${cellMode === PARTICIPANT_MODES.REVEALED ? `-${vote}` : ''}`}
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.5 }}
+          initial={{
+            opacity: 0,
+            scale: 0.5,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.5,
+          }}
           transition={{ duration: 0.25 }}
           style={{
             display: 'flex',
             justifyContent: 'center',
-            width: `${ICON_SIZE}rem`,
             marginLeft: '1rem',
+            width: `${ICON_SIZE}rem`,
           }}
         >
           {displayElement}
@@ -209,7 +225,9 @@ const VoteCell = ({ voteData, cellMode }: VoteCellProps) => {
 
 const VoteDisplay = ({ config }: GridPanelProps) => {
   const { user } = useAuth();
-  const { shouldShowVotes, voteData, handleUpdateCurrentTicket } = useTickets();
+  const {
+    shouldShowVotes, voteData, handleUpdateCurrentTicket,
+  } = useTickets();
 
   const hasAnyoneVoted = voteData.some(({ vote }) => vote !== undefined && vote !== '');
 
@@ -250,7 +268,9 @@ const VoteDisplay = ({ config }: GridPanelProps) => {
   //   [shouldShowVotes, user, voteData],
   // );
   const voteNodes = useMemo(
-    () => voteData.reduce((nodes, { name: participantName, vote, inactive, consecutiveMisses, isObserver }, i) => {
+    () => voteData.reduce((nodes, {
+      name: participantName, vote, inactive, consecutiveMisses, isObserver,
+    }, i) => {
       const userIsParticipant = participantName === user?.name;
       const hasVoted = isVoteCast(vote);
       const name = userIsParticipant ? 'you' : participantName;
@@ -277,7 +297,10 @@ const VoteDisplay = ({ config }: GridPanelProps) => {
           key={i}
           cellMode={mode}
           isLast={isLast}
-          voteData={{ name, vote }}
+          voteData={{
+            name,
+            vote,
+          }}
         />
       );
 
@@ -289,7 +312,11 @@ const VoteDisplay = ({ config }: GridPanelProps) => {
 
       return nodes;
     }, [] as JSX.Element[]),
-    [shouldShowVotes, user, voteData],
+    [
+      shouldShowVotes,
+      user,
+      voteData,
+    ],
   );
 
 

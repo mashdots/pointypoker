@@ -1,6 +1,9 @@
+import { Timestamp } from 'firebase/firestore';
+
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
-import User from './user';
 import { PointingTypes } from '@modules/room/utils';
+
+import User from '../user';
 
 type Participant = User & {
   consecutiveMisses: number;
@@ -8,7 +11,7 @@ type Participant = User & {
   isHost: boolean;
   isObserver: boolean;
   joinedAt: number;
-}
+};
 
 type Vote = string | number;
 
@@ -17,7 +20,7 @@ type PointOptions = {
   exclusions: Array<Vote>;
 };
 
-type QueuedTicket = Pick<Ticket, 'id' | 'name'>
+type QueuedTicket = Pick<Ticket, 'id' | 'name'>;
 
 // These are tickets that are in the queue.
 type PossibleQueuedTicket = QueuedTicket | QueuedJiraTicket;
@@ -38,14 +41,14 @@ type Ticket = {
   suggestedPoints?: number | string;
   overridePoints?: number;
   fromQueue?: boolean;
-}
+};
 
 // These tickets were in the queue and have been set as the current ticket.
 type TicketFromQueue = PossibleQueuedTicket & Ticket;
 
 type Room = {
-  createdAt: number;
-  expiresAt: number;
+  createdAt: number | Timestamp;
+  expiresAt: number | Timestamp;
   name: string;
   participants: {
     [key: string]: Participant;
@@ -57,11 +60,11 @@ type Room = {
   tickets?: {
     [key: string]: Ticket;
   };
-}
+};
 
 type RoomUpdateObject = {
   [key: string]: any;
-}
+};
 
 export type {
   Participant,

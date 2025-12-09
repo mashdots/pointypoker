@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+
 import { DateTime } from 'luxon';
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 type DurationObject = {
   minutes: number;
   seconds: number;
-}
+};
 
 enum TIME {
   MINUTE = 'min',
@@ -32,7 +33,10 @@ const buildDurationString = ({ minutes, seconds }: DurationObject) => {
 };
 
 const Timer = ({ startTime, endTime = null }: Props) => {
-  const [time, setTime] = React.useState('');
+  const [
+    time,
+    setTime,
+  ] = React.useState('');
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -54,7 +58,10 @@ const Timer = ({ startTime, endTime = null }: Props) => {
     return () => {
       clearInterval(intervalRef.current as number);
     };
-  }, [startTime, endTime]);
+  }, [
+    startTime,
+    endTime,
+  ]);
 
   return <div>{time}</div>;
 };

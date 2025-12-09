@@ -1,13 +1,13 @@
-import { THEME_COLORS } from './definitions';
 import { ThemeColors } from '../colorSystem';
+import { THEME_COLORS } from './definitions';
 
 const grape: ThemeColors = {
-  primary: THEME_COLORS.PURPLE,
+  error: THEME_COLORS.RED,
   greyscale: THEME_COLORS.MAUVE,
+  info: THEME_COLORS.BLUE,
+  primary: THEME_COLORS.PURPLE,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
-  error: THEME_COLORS.RED,
-  info: THEME_COLORS.BLUE,
 };
 
 export default grape;

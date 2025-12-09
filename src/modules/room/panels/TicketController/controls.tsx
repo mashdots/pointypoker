@@ -1,28 +1,31 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback, useMemo, useState,
+} from 'react';
+
 import styled, { css } from 'styled-components';
 
 import ArrowSvg from '@assets/icons/arrow-right.svg?react';
 import ArrowEnhanceSvg from '@assets/icons/arrow-right-enhance.svg?react';
 import CircleCheckSvg from '@assets/icons/circle-check.svg?react';
-import PlusSvg from '@assets/icons/plus.svg?react';
-import PlusEnahnceSvg from '@assets/icons/plus-enhance.svg?react';
+import Spinner from '@assets/icons/loading-circle.svg?react';
 import ReportSvg from '@assets/icons/megaphone.svg?react';
 import MoreSvg from '@assets/icons/more.svg?react';
 import PointSvg from '@assets/icons/pencil-circle.svg?react';
+import PlusSvg from '@assets/icons/plus.svg?react';
+import PlusEnahnceSvg from '@assets/icons/plus-enhance.svg?react';
 import SkipSvg from '@assets/icons/skip.svg?react';
-import Spinner from '@assets/icons/loading-circle.svg?react';
-import { useTickets } from '@modules/room/hooks';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
-import { useJira } from '@modules/integrations';
-import { TICKET_ACTIONS } from '@modules/room/hooks/ticket';
 import { scaleEntrance, spinAnimation } from '@components/common/animations';
+import { useJira } from '@modules/integrations';
+import { MODAL_TYPES } from '@modules/modal';
+import { useTickets } from '@modules/room/hooks';
+import { TICKET_ACTIONS } from '@modules/room/hooks/ticket';
 import { calculateSuggestedPoints } from '@modules/room/utils';
-import { RoomUpdateObject } from '@yappy/types';
 import { updateRoom } from '@services/firebase';
 import { wait } from '@utils';
-import { MODAL_TYPES } from '@modules/modal';
-import useStore from '@utils/store';
 import { useMobile } from '@utils/hooks/mobile';
+import useStore from '@utils/store';
+import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { RoomUpdateObject } from '@yappy/types';
 
 enum EXTRA_ACTIONS {
   EXPAND_BUTTONS = 'EXPAND_BUTTONS',
@@ -216,17 +219,28 @@ const ActionButton = styled.button<ActionButtonProps>`
 
 
 const Controls = ({ triggerFocus, setSubtitle }: Props) => {
-  const { currentTicket, queue, shouldShowVotes, handleGoToNextTicket } = useTickets();
+  const {
+    currentTicket, queue, shouldShowVotes, handleGoToNextTicket,
+  } = useTickets();
   const { isConfigured, writePointValue } = useJira();
   const { isNarrow } = useMobile();
-  const [loadingIndex, setLoadingIndex ] = useState<number | null>(null);
-  const [successIndex, setSuccessIndex ] = useState<number | null>(null);
-  const [showAllButtons, setShowAllButtons] = useState(false);
+  const [
+    loadingIndex,
+    setLoadingIndex,
+  ] = useState<number | null>(null);
+  const [
+    successIndex,
+    setSuccessIndex,
+  ] = useState<number | null>(null);
+  const [
+    showAllButtons,
+    setShowAllButtons,
+  ] = useState(false);
   const openModal = useStore(({ setCurrentModal }) => () => setCurrentModal(MODAL_TYPES.PII));
 
   const collapsedButtonCount = useMemo(
     () => isNarrow ? 2 : 3,
-    [ isNarrow ],
+    [isNarrow],
   );
 
   const handleAction = useCallback(
@@ -236,51 +250,54 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
 
       actions.forEach(async (action) => {
         switch (action) {
-        case TICKET_ACTIONS.SKIP:
-          handleGoToNextTicket();
-          break;
+          case TICKET_ACTIONS.SKIP:
+            handleGoToNextTicket();
+            break;
 
-        case TICKET_ACTIONS.NEW:
-          triggerFocus(currentTicket?.id ?? 'ticket');
-          break;
+          case TICKET_ACTIONS.NEW:
+            triggerFocus(currentTicket?.id ?? 'ticket');
+            break;
 
-        case TICKET_ACTIONS.POINT:
-          if (isConfigured && currentTicket?.url) {
-            setLoadingIndex(index);
-            await wait(500);
-            try {
-              await writePointValue(currentTicket?.id, suggestedPoints as number, currentTicket.estimationFieldId);
-              updateObj['currentTicket.suggestedPoints'] = suggestedPoints;
-              updateObj['currentTicket.wasPointed'] = true;
-            } catch (error) {
-              updateObj[ 'currentTicket.wasPointed' ] = false;
+          case TICKET_ACTIONS.POINT:
+            if (isConfigured && currentTicket?.url) {
+              setLoadingIndex(index);
+              await wait(500);
+              try {
+                await writePointValue(currentTicket?.id, suggestedPoints as number, currentTicket.estimationFieldId);
+                updateObj['currentTicket.suggestedPoints'] = suggestedPoints;
+                updateObj['currentTicket.wasPointed'] = true;
+              } catch (error) {
+                updateObj[ 'currentTicket.wasPointed' ] = false;
+              }
+
+              setLoadingIndex(null);
+              setSuccessIndex(index);
+              await wait(500);
+              updateRoom(currentTicket?.id, updateObj);
+              setSuccessIndex(null);
             }
+            break;
 
-            setLoadingIndex(null);
-            setSuccessIndex(index);
-            await wait(500);
-            updateRoom(currentTicket?.id, updateObj);
-            setSuccessIndex(null);
-          }
-          break;
-
-        case TICKET_ACTIONS.NEXT:
+          case TICKET_ACTIONS.NEXT:
           // Similar to skip, but is locked behind a condition that requires all votes to be cast
-          handleGoToNextTicket();
-          break;
+            handleGoToNextTicket();
+            break;
 
-        case TICKET_ACTIONS.REPORT_PII:
+          case TICKET_ACTIONS.REPORT_PII:
           // Open a modal to report PII
-          openModal();
-          break;
+            openModal();
+            break;
 
-        default:
-          break;
+          default:
+            break;
         }
       });
       setShowAllButtons(false);
     },
-    [currentTicket, queue],
+    [
+      currentTicket,
+      queue,
+    ],
   );
 
   const buildCaption = useCallback(
@@ -303,18 +320,18 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
 
       message += actions.map((action) => {
         switch (action) {
-        case TICKET_ACTIONS.SKIP:
-          return 'skip this';
-        case TICKET_ACTIONS.NEW:
-          return 'create a new';
-        case TICKET_ACTIONS.POINT:
-          return 'point this';
-        case TICKET_ACTIONS.NEXT:
-          return 'start the next';
-        case TICKET_ACTIONS.REPORT_PII:
-          return 'report PII for this';
-        default:
-          return '';
+          case TICKET_ACTIONS.SKIP:
+            return 'skip this';
+          case TICKET_ACTIONS.NEW:
+            return 'create a new';
+          case TICKET_ACTIONS.POINT:
+            return 'point this';
+          case TICKET_ACTIONS.NEXT:
+            return 'start the next';
+          case TICKET_ACTIONS.REPORT_PII:
+            return 'report PII for this';
+          default:
+            return '';
         }
       }).join(' and ');
 
@@ -325,50 +342,58 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
 
   const buttonOptions: Array<ButtonProps> = [
     {
+      actions: [TICKET_ACTIONS.REPORT_PII],
       component: <ReportIcon />,
       shouldShow: isConfigured && currentTicket?.url,
-      actions: [TICKET_ACTIONS.REPORT_PII],
     },
     {
+      actions: [TICKET_ACTIONS.SKIP],
       component: <SkipIcon />,
       shouldShow: queue.length > 0 && !!currentTicket,
-      actions: [TICKET_ACTIONS.SKIP],
     },
     {
+      actions: [TICKET_ACTIONS.NEW],
       component: <NewIcon />,
       shouldShow: !!currentTicket,
-      actions: [TICKET_ACTIONS.NEW],
     },
     {
+      actions: [TICKET_ACTIONS.NEXT],
       component: <NextIcon />,
+      disabled: !shouldShowVotes,
       shouldShow: queue.length > 0,
-      actions: [ TICKET_ACTIONS.NEXT ],
-      disabled: !shouldShowVotes,
     },
     {
-      component: <PointIcon />,
-      shouldShow: !queue.length && !!currentTicket && isConfigured && currentTicket?.url,
       actions: [TICKET_ACTIONS.POINT],
+      component: <PointIcon />,
       disabled: !shouldShowVotes,
+      shouldShow: !queue.length && !!currentTicket && isConfigured && currentTicket?.url,
     },
     {
+      actions: [
+        TICKET_ACTIONS.POINT,
+        TICKET_ACTIONS.NEW,
+      ],
       component: <PointNewIcon />,
-      shouldShow: !!currentTicket && isConfigured && currentTicket?.url,
-      actions: [TICKET_ACTIONS.POINT, TICKET_ACTIONS.NEW],
       disabled: !shouldShowVotes,
+      shouldShow: !!currentTicket && isConfigured && currentTicket?.url,
     },
     {
+      actions: [
+        TICKET_ACTIONS.POINT,
+        TICKET_ACTIONS.NEXT,
+      ],
       component: <PointNextIcon />,
-      shouldShow: queue.length > 0 && isConfigured && currentTicket?.url,
-      actions: [TICKET_ACTIONS.POINT, TICKET_ACTIONS.NEXT],
       disabled: !shouldShowVotes,
+      shouldShow: queue.length > 0 && isConfigured && currentTicket?.url,
     },
   ];
 
   const buttonComponents = useMemo(
     () => buttonOptions
       .filter(bo => bo.shouldShow)
-      .map(({ component, disabled, actions }: ButtonProps, index: number) => {
+      .map(({
+        component, disabled, actions,
+      }: ButtonProps, index: number) => {
         const caption = buildCaption(actions);
         let icon = component;
 
@@ -392,7 +417,13 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
           </ButtonWrapper>
         );
       }),
-    [ buttonOptions, loadingIndex, successIndex, currentTicket, queue ],
+    [
+      buttonOptions,
+      loadingIndex,
+      successIndex,
+      currentTicket,
+      queue,
+    ],
   );
 
   const dynamicWidth = useMemo(
@@ -403,7 +434,10 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
 
       return buttonOptions.filter(b => b.shouldShow).length * 3;
     },
-    [buttonComponents, collapsedButtonCount],
+    [
+      buttonComponents,
+      collapsedButtonCount,
+    ],
   );
 
   const moreButton = useMemo(
@@ -411,7 +445,7 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
       if (buttonComponents.length > collapsedButtonCount && !showAllButtons) {
         return (
           <ButtonWrapper
-            onMouseEnter={() => setSubtitle(buildCaption([ EXTRA_ACTIONS.EXPAND_BUTTONS ]))}
+            onMouseEnter={() => setSubtitle(buildCaption([EXTRA_ACTIONS.EXPAND_BUTTONS]))}
           >
             <ActionButton
               disabled={false}
@@ -425,7 +459,11 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
 
       return null;
     },
-    [ showAllButtons, buttonComponents, collapsedButtonCount ],
+    [
+      showAllButtons,
+      buttonComponents,
+      collapsedButtonCount,
+    ],
   );
 
   return (
