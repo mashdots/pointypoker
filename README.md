@@ -46,12 +46,16 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
   - DevOps updates
   - Bug fixes
 
-## Task List
+## Z-Index Guidelines
 
-Below is the remainder of the task list. All the tasks have been migrated into the [GitHub project page](https://github.com/users/mashdots/projects/1).
+To maintain consistency in layering UI components, the following z-index guidelines will be followed:
 
-|Settings Tasks|✅ or Release Version|
-|-|-|
-|Room: Pointing scale||
-|Room: Auto-show all votes when everyone has voted||
-|Room: Auto-create new ticket when changing the name after everyone votes||
+| Component                | Z-Index Value |
+|--------------------------|---------------|
+| Notifications            | 100           |
+| Control bar              | 50            |
+| Modal components         | 10            |
+| Modal overlay            | 5             |
+| Upcoming / History lists | 1             |
+| Current issue card       | 1             |
+| Base Layer               | 0             |
