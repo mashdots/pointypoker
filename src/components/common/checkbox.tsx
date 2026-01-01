@@ -3,7 +3,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { scaleEntrance } from '@components/common/animations';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 type Props = {
   id: string;

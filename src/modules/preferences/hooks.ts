@@ -7,10 +7,10 @@ import {
 } from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
 import {
-  THEMES,
-  THEME_MODES,
   THEME_MODE_CONTROLLER,
+  THEME_MODES,
 } from '@utils/styles/colors/colorSystem';
+import { THEMES } from '@utils/styles/colors/constants';
 import { User } from '@yappy/types';
 
 type GenericPrefType = string
@@ -38,6 +38,18 @@ export type PreferencesType = {
   user?: User | null;
 };
 
+const PreferenceKeys = [
+  'isObserver',
+  'jiraAccess',
+  'jiraResources',
+  'jiraPreferences',
+  'name',
+  'theme',
+  'themeMode',
+  'themeModeController',
+  'user',
+];
+
 const getPrefFromLocalStorage = (key: string): GenericPrefType | undefined => {
   const storedPref = localStorage.getItem(key);
   if (storedPref) {
@@ -46,7 +58,7 @@ const getPrefFromLocalStorage = (key: string): GenericPrefType | undefined => {
   return undefined;
 };
 
-const writeToLocalStorage = (key: string, value: any) => {
+const writeToLocalStorage = (key: string, value: unknown) => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
@@ -81,13 +93,15 @@ const usePreferenceSync = () => {
     const storedPreferences = { ...localStorage };
     let pref = null;
 
-    for (const key in storedPreferences) {
+    for (const key of Object.keys(storedPreferences)) {
       try {
-        pref = JSON.parse(storedPreferences[ key ]);
-        setPref(key, pref);
-      } catch (error) {
+        if (PreferenceKeys.includes(key)) {
+          pref = JSON.parse(storedPreferences[ key ]);
+          setPref(key, pref);
+        }
+      } catch (error: unknown) {
         console.error(
-          'YIKES:',
+          `YIKES: ${ (error as SyntaxError).message } while parsing preference key from localStorage:`,
           key,
           storedPreferences[ key ],
         );
@@ -99,6 +113,7 @@ const usePreferenceSync = () => {
   useEffect(() => {
     syncPrefsToStore();
     setPrefsInitialized();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Write to localStorage when preferences change

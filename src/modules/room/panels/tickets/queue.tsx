@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import LinkSvg from '@assets/icons/link-out.svg?react';
 import { fadeDownEntrance } from '@components/common/animations';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { PossibleQueuedTicket } from '@yappy/types/legacy/room';
 
 import { useTickets } from '../../hooks';

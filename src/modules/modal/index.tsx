@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedContainer } from 'motion/react-client';
-import React, {
+import {
   MouseEventHandler,
   useCallback,
   useMemo,
@@ -16,7 +16,8 @@ import { PreferencesModal } from '@modules/preferences';
 import { QueueModal, ReportPIIModal } from '@modules/room';
 import { useMobile } from '@utils/hooks/mobile';
 import useStore from '@utils/store';
-import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useTheme from '@utils/styles/colors';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 export enum MODAL_TYPES {
   FEEDBACK,

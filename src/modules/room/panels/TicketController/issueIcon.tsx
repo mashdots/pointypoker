@@ -5,7 +5,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import ArticleSvg from '@assets/icons/article.svg?react';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 type Props = {
   src?: string;

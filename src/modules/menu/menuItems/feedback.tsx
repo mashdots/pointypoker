@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import FeedbackIcon from '@assets/icons/feedback.svg?react';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import MenuItem from './menuItem';
 

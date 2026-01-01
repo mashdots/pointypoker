@@ -1,9 +1,7 @@
-import React from 'react';
-
 import get from 'lodash/get';
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 type ColorOverrides = {
   onbg?: string;

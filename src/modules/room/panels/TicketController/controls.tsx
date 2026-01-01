@@ -26,7 +26,7 @@ import { updateRoom } from '@services/firebase';
 import { wait } from '@utils';
 import { useMobile } from '@utils/hooks/mobile';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { RoomUpdateObject } from '@yappy/types';
 
 enum EXTRA_ACTIONS {

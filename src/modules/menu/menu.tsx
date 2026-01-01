@@ -11,9 +11,9 @@ import styled, { css } from 'styled-components';
 import { useJira } from '@modules/integrations';
 import { ThemeModeToggleRow } from '@modules/preferences';
 import { Separator } from '@modules/preferences/panes/common';
-import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { useAuthorizedUser } from '@modules/user';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import {
   FeedbackMenuItem,

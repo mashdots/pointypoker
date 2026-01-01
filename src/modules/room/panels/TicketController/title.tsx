@@ -14,7 +14,7 @@ import { spinAnimation } from '@components/common/animations';
 import { useJira } from '@modules/integrations';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import { useTickets } from '../../hooks';
 

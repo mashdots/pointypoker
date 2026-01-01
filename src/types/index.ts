@@ -6,6 +6,7 @@ import type {
   Vote,
   RoomUpdateObject,
 } from './legacy/room';
+import type Session from './session';
 import type User from './user';
 
 export {
@@ -14,6 +15,7 @@ export {
   PointOptions,
   Ticket,
   Room,
+  Session,
   RoomUpdateObject,
   Vote,
 };

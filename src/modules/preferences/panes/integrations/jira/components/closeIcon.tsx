@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import PlusIcon from '@assets/icons/plus.svg?react';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const CloseIcon = styled(PlusIcon)`
   cursor: pointer;

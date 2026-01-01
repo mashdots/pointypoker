@@ -5,7 +5,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
 import GridPanel, { GridPanelProps } from '@components/common/gridPanel';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { Ticket } from '@yappy/types';
 
 import { useTickets } from '../hooks';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { useAuthorizedUser } from '@modules/user';
 import {
   signIn as signInFB,
   signOut as signOutFB,

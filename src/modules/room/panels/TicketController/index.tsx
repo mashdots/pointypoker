@@ -10,7 +10,7 @@ import { parseURL } from 'whatwg-url';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import { useTickets } from '@modules/room/hooks';
 import { useMobile } from '@utils/hooks/mobile';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { Ticket } from '@yappy/types';
 import { TicketFromQueue } from '@yappy/types/legacy/room';
 

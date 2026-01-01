@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styled, { css } from 'styled-components';
@@ -7,7 +6,7 @@ import DoorIcon from '@assets/icons/door.svg?react';
 import { useAuth } from '@modules/user';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { RoomUpdateObject } from '@yappy/types';
 
 import MenuItem from './menuItem';

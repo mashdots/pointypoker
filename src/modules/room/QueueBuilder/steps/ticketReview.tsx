@@ -20,7 +20,7 @@ import { useTickets } from '@modules/room/hooks';
 import { updateRoom } from '@services/firebase';
 import { useMobile } from '@utils/hooks/mobile';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { Room } from '@yappy/types';
 import { RoomUpdateObject } from '@yappy/types/legacy/room';
 

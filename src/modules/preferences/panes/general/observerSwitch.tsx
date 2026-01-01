@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { CheckBox } from '@components/common';
-import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { useAuthorizedUser } from '@modules/user';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
 import { RoomUpdateObject } from '@yappy/types';

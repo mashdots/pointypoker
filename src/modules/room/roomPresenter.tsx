@@ -1,16 +1,7 @@
-import {
-  useFeatureFlagEnabled,
-  useFeatureFlagPayload,
-  useFeatureFlagVariantKey,
-} from 'posthog-js/react';
-import React from 'react';
-
 import styled, { css } from 'styled-components';
 
 import useJiraScopeCheck from '@modules/integrations/jira/hooks';
 import TicketController from '@modules/room/panels/TicketController';
-import TicketFlow from '@modules/room/TicketFlow';
-import flags from '@utils/flags';
 import { useMobile } from '@utils/hooks/mobile';
 
 import {
@@ -133,21 +124,9 @@ const getGridConfig = (showNarrow: boolean) => {
 
 const RoomPresenter = () => {
   const { isNarrow } = useMobile();
-  const flagEnabled = useFeatureFlagEnabled(flags.REDESIGN);
-  useJiraScopeCheck();
-
-  console.log('Feature Flag - Monocard:', flagEnabled);
   const gridConfigs = getGridConfig(isNarrow);
 
-  if (flagEnabled) {
-    return (
-      <Wrapper>
-        <TicketFlow />
-      </Wrapper>
-    );
-  }
-
-
+  useJiraScopeCheck();
   return (
     <Wrapper>
       <TicketController />

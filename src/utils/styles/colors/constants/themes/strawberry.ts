@@ -1,4 +1,4 @@
-import { ThemeColors } from '../colorSystem';
+import { ThemeColors } from '../../types';
 import { THEME_COLORS } from './definitions';
 
 const strawberry: ThemeColors = {

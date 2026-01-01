@@ -11,7 +11,7 @@ import {
 } from '@components/common';
 import Logo from '@components/Header/logo';
 import { useMobile } from '@utils/hooks/mobile';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import { useAuth } from './useAuth';
 

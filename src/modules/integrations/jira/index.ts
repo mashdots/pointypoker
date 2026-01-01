@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { useAuthorizedUser } from '@modules/user';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 import createApiClient, { getJiraApiClient } from '@utils/axios';
 import { blobToBase64 } from '@utils/room';
@@ -141,7 +141,11 @@ const useJira = () => {
         return response.access_token;
       }
     }
-  }, [access, isExpired]);
+  }, [
+    access,
+    isExpired,
+    setAccess,
+  ]);
 
   const getAccessibleResources = useCallback(async () => {
     if (access) {
@@ -160,7 +164,7 @@ const useJira = () => {
           throw new Error(error);
         });
     }
-  }, [access]);
+  }, [access, getJiraAccessToken]);
 
   /**
    * Query methods

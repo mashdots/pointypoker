@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 export type CardProps = {
   overrideWidth?: number | string;

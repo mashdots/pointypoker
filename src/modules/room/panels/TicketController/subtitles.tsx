@@ -1,10 +1,9 @@
 import { AnimatePresence } from 'motion/react';
 import { div as Wrapper } from 'motion/react-client';
-import React from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import { LinkIcon } from './components';
 
@@ -34,43 +33,41 @@ const Subtitles = ({
   width,
   content,
   url,
-}: Props) => {
+}: Props) => (
+  <AnimatePresence mode='wait'>
+    <Wrapper
+      key={content || 'default-content'}
+      initial={{
+        filter: 'blur(0.25rem)',
+        opacity: 0,
+      }}
+      animate={{
+        filter: 'blur(0rem)',
+        opacity: 1,
+      }}
+      exit={{
+        filter: 'blur(0.25rem)',
+        opacity: 0,
+      }}
+      transition={{ duration: 0.25 }}
+      style={{
+        display: 'flex',
+        flex,
+        flexDirection: 'column',
+        overflow: 'hidden',
+        padding: '0 1rem',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        width,
+      }}
+    >
+      {url ? (
+        <StyledLink href={url} target="_blank"
+          rel="noreferrer"><LinkIcon />{content ?? ''}</StyledLink>
+      ) : content}
+    </Wrapper>
+  </AnimatePresence>
+);
 
-  return (
-    <AnimatePresence mode='wait'>
-      <Wrapper
-        key={content || 'default-content'}
-        initial={{
-          filter: 'blur(0.25rem)',
-          opacity: 0,
-        }}
-        animate={{
-          filter: 'blur(0rem)',
-          opacity: 1,
-        }}
-        exit={{
-          filter: 'blur(0.25rem)',
-          opacity: 0,
-        }}
-        transition={{ duration: 0.25 }}
-        style={{
-          display: 'flex',
-          flex,
-          flexDirection: 'column',
-          overflow: 'hidden',
-          padding: '0 1rem',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          width,
-        }}
-      >
-        {url ? (
-          <StyledLink href={url} target="_blank"
-            rel="noreferrer"><LinkIcon />{content ?? ''}</StyledLink>
-        ) : content}
-      </Wrapper>
-    </AnimatePresence>
-  );
-};
 
 export default Subtitles;

@@ -18,7 +18,7 @@ import {
   JiraSprintWithIssues,
 } from '@modules/integrations/jira/types';
 import { usePrevious } from '@utils';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { Room } from '@yappy/types';
 
 import { InformationWrapper, SectionWrapper } from './common';

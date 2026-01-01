@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import BoardImage from '@assets/icons/article.svg?react';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const BoardIcon = styled(BoardImage)`
   margin-right: 0.25rem;

@@ -12,7 +12,7 @@ import Error from '@assets/icons/plus.svg?react';
 import { useJira } from '@modules/integrations';
 import { JiraAuthData } from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 export const JIRA_REDIRECT_PATH = '/jira-redirect';
 

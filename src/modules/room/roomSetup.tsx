@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,19 +15,22 @@ import isEqual from 'lodash/isEqual';
 import styled from 'styled-components';
 
 import Button from '@components/common/button';
+import { SessionUI } from '@modules/session';
 import { useAuth } from '@modules/user';
-import { useHeaderHeight } from '@routes/root';
+import { useHeaderHeight } from '@routes/index';
 import {
   createRoom,
   updateRoom,
   watchRoom,
 } from '@services/firebase';
 import { generateRoomName } from '@utils';
+import flags from '@utils/flags';
 import useStore from '@utils/store';
 import {
   Participant,
   Room as RoomType,
   RoomUpdateObject,
+  Session,
 } from '@yappy/types';
 
 import RoomPresenter from './roomPresenter';
@@ -34,6 +38,8 @@ import RoomPresenter from './roomPresenter';
 type HeightAdjusted = {
   heightDiff: number;
 };
+
+type RoomSetupType<V> = V extends true ? Session : RoomType;
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
@@ -70,18 +76,22 @@ const RoomSetup = () => {
     isObserver,
     roomData,
     setRoom,
+    isInV4Experience,
   } = useStore(({
     preferences,
     room,
     setRoom,
+    getFlag,
   }) => ({
+    isInV4Experience: getFlag(flags.REDESIGN),
     isObserver: preferences?.isObserver ?? false,
     roomData: room,
     setRoom,
   }));
-  const subscribedRoomRef = useRef<ReturnType<typeof watchRoom>>();
+  const subscribedRoomRef = useRef<ReturnType<typeof watchRoom> | null>(null);
   const [isRoomOpen, setIsRoomOpen] = useState(false);
   const [isLoadingRoom, setIsLoadingRoom] = useState(true);
+  const [isPending, startTransition] = useTransition();
   const navigate = useNavigate();
   const roomToJoin = useMemo(() => {
     const nameFromPath = window.location.pathname.slice(1);
@@ -90,11 +100,10 @@ const RoomSetup = () => {
       return nameFromPath;
     }
 
-    return roomData?.name ?? window.location.pathname.slice(1);
+    return roomData?.name ?? '';
   }, [roomData?.name]);
 
   const handleJoinRoom = useCallback((roomName: string) => {
-    setIsLoadingRoom(true);
     subscribedRoomRef.current = watchRoom(roomName, (result) => {
       if (!result.error) {
         if (!isEqual(result.data, roomData)) {
@@ -113,8 +122,6 @@ const RoomSetup = () => {
         navigate('/');
         console.error(result);
       }
-
-      setIsLoadingRoom(false);
     });
   }, [
     navigate,
@@ -126,7 +133,6 @@ const RoomSetup = () => {
     if (!user) {
       return;
     }
-
     setIsLoadingRoom(true);
 
     const roomName = generateRoomName();
@@ -139,15 +145,26 @@ const RoomSetup = () => {
       joinedAt: Date.now(),
       name: user.name,
     };
-    const newRoom: RoomType = {
-      completedTickets: [],
-      createdAt: Timestamp.now(),
-      currentTicket: null,
-      expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
-      name: roomName,
-      participants: { [self.id]: self },
-      ticketQueue: [],
-    };
+    const newRoom: RoomSetupType<typeof isInV4Experience> = isInV4Experience ?
+      {
+        createdAt: Timestamp.now(),
+        currentIssue: null,
+        estimations: [],
+        expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
+        history: [],
+        issues: {},
+        name: roomName,
+        participants: { [ self.id ]: self },
+        upcoming: [],
+      } : {
+        completedTickets: [],
+        createdAt: Timestamp.now(),
+        currentTicket: null,
+        expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
+        name: roomName,
+        participants: { [self.id]: self },
+        ticketQueue: [],
+      };
 
     await createRoom(newRoom, (result) => {
       if (!result.error) {
@@ -155,10 +172,13 @@ const RoomSetup = () => {
         handleJoinRoom(resolvedRoom.name);
       } else {
         console.error(result);
-        setIsLoadingRoom(false);
       }
     });
+
+    setIsLoadingRoom(false);
+
   }, [
+    isInV4Experience,
     handleJoinRoom,
     isObserver,
     user,
@@ -169,24 +189,27 @@ const RoomSetup = () => {
    */
   useEffect(() => {
     // If there's data for a room to join, and we're not already subscribed, kick off the join process.
-    if (roomToJoin && !subscribedRoomRef.current) {
-      setIsLoadingRoom(true);
-      handleJoinRoom(roomToJoin);
-    } else if (!roomToJoin) {
+    startTransition(() => {
+      if (roomToJoin && !subscribedRoomRef.current) {
+        setIsLoadingRoom(true);
+        handleJoinRoom(roomToJoin);
+      } else if (!roomToJoin) {
       // If there's no room to join, cancel any existing subscriptions and close the room.
-      subscribedRoomRef.current?.();
-      subscribedRoomRef.current = undefined;
-      setIsRoomOpen(false);
-      navigate('/');
-      setRoom(null);
-      document.title = 'pointy poker';
+        subscribedRoomRef.current?.();
+        subscribedRoomRef.current = undefined;
+        setIsRoomOpen(false);
+        navigate('/');
+        setRoom(null);
+        document.title = 'pointy poker';
+      }
+
       setIsLoadingRoom(false);
-    }
+    });
 
     return () => {
       // Unsubscribe from the room upon unmount
       subscribedRoomRef.current?.();
-      subscribedRoomRef.current = undefined;
+      subscribedRoomRef.current = null;
     };
   }, [
     handleJoinRoom,
@@ -206,7 +229,7 @@ const RoomSetup = () => {
         .find((participant) => participant.id === user?.id);
 
       if (!userInRoom) {
-      // If the user is not in the room, add them
+        // If the user is not in the room, add them
         const selfAsParticipant: Participant = {
           consecutiveMisses: 0,
           id: user.id,
@@ -235,6 +258,10 @@ const RoomSetup = () => {
   useEffect(() => {
     document.title = 'pointy poker';
   }, []);
+
+  const roomPresenterElement = useMemo(() => (
+    isInV4Experience ? <SessionUI /> : <RoomPresenter />
+  ), [isInV4Experience]);
 
   return (
     <Container heightDiff={refHeight}>
@@ -265,15 +292,18 @@ const RoomSetup = () => {
           {
             isRoomOpen ? (
               <RoomWrapper>
-                <RoomPresenter />
+                {roomPresenterElement}
               </RoomWrapper>
             ) : (
               <SetupWrapper>
                 <h1>ready to start?</h1>
                 <ButtonContainer>
-                  <Button refresh loading={isLoadingRoom}
+                  <Button
+                    refresh
+                    loading={isPending || isLoadingRoom}
                     variation='info' width='full'
-                    onClick={handleCreateRoom}>
+                    onClick={handleCreateRoom}
+                  >
                     start a session
                   </Button>
                 </ButtonContainer>

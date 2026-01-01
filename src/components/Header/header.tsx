@@ -1,20 +1,19 @@
-import { useFeatureFlagEnabled } from 'posthog-js/react';
 import React from 'react';
 
 import styled, { css } from 'styled-components';
 
 import MenuIcon from '@assets/icons/menu.svg?react';
-import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { useAuthorizedUser } from '@modules/user';
 import flags from '@utils/flags';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import Logo from './logo';
 import RoomName from './roomName';
 import UserControl from './userControl';
 
 type Props = {
-  headerRef: React.RefObject<HTMLDivElement>;
+  headerRef: React.RefObject<HTMLDivElement | null>;
   hideMenu: boolean;
 };
 
@@ -80,16 +79,23 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
 
 const Header = ({ headerRef, hideMenu }: Props) => {
   const { isAuthenticated } = useAuthorizedUser();
-  const { isMenuOpen, setIsMenuOpen } = useStore(({ isMenuOpen, setIsMenuOpen }) => (
+  const {
+    isFlagEnabled,
+    isMenuOpen,
+    setIsMenuOpen,
+  } = useStore(({
+    isMenuOpen,
+    setIsMenuOpen,
+    getFlag,
+  }) => (
     {
+      isFlagEnabled: getFlag(flags.REDESIGN),
       isMenuOpen,
       setIsMenuOpen,
     }
   ));
 
-  const flagEnabled = useFeatureFlagEnabled(flags.REDESIGN);
-
-  if (flagEnabled) {
+  if (isFlagEnabled) {
     return null;
   }
 

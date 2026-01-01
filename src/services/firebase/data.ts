@@ -19,13 +19,14 @@ import {
   Participant,
   Room,
   User,
+  Session,
 } from '@yappy/types';
 import PIIReport from '@yappy/types/piiReport';
 
 import getApp from '.';
 import { PossibleFirebaseCollections } from './constants';
 
-type PossibleFirebaseTypes = Room | Participant | Ticket;
+type PossibleFirebaseTypes = Room | Session | Participant | Ticket;
 
 export type ResultType<T = undefined> = {
   data: T extends PossibleFirebaseTypes ? T : (DocumentData[] | DocumentData);
@@ -80,7 +81,7 @@ const getAllDocsFromCollection = async (collectionName: PossibleFirebaseCollecti
     }
   } catch (error) {
     result.error = true;
-    result.message = `There was a problem retrieving the ${collectionName} collection`;
+    result.message = `There was a problem retrieving the ${collectionName} collection: ${error}`;
   }
 
   callback(result);
@@ -181,7 +182,7 @@ const createPIIReport = async (data: PIIReport): Promise<void> => {
 
 /** Room Management */
 
-const createRoom = async (data: Room, callback: (arg: ResultType<typeof data>) => void): Promise<void> => {
+const createRoom = async (data: Room | Session, callback: (arg: ResultType<typeof data>) => void): Promise<void> => {
   const result: ResultType<typeof data> = {
     data,
     error: false,
@@ -237,7 +238,7 @@ const watchRoom = (roomName: string, callback: (arg: ResultType<Room>) => void) 
     return unsubscribe;
   } catch (error) {
     result.error = true;
-    result.message = `There was a problem watching ${roomName} in the ${ PossibleFirebaseCollections.ROOMS} collection`;
+    result.message = `There was a problem watching ${roomName} in the ${ PossibleFirebaseCollections.ROOMS} collection: ${error}`;
     callback(result);
   }
 };

@@ -1,9 +1,7 @@
-import React from 'react';
-
 import styled from 'styled-components';
 
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 export type MenuItemProps = {
   text: string;

@@ -7,7 +7,7 @@ import { useTickets } from '@modules/room/hooks';
 import { createPIIReport } from '@services/firebase';
 import { wait } from '@utils';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import PIIReport from '@yappy/types/piiReport';
 
 const Wrapper = styled.div`

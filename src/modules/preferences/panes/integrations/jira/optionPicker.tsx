@@ -1,4 +1,4 @@
-import React, {
+import {
   useCallback,
   useEffect,
   useMemo,
@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components';
 
 import { TextInput } from '@components/common';
 import { usePrevious } from '@utils';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 export type OptionType = {
   id: string | number;

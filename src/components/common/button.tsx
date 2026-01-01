@@ -3,7 +3,7 @@ import React, { ButtonHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
 import { getWidth } from '@utils/styles';
-import { Theme, ThemedProps } from '@utils/styles/colors/colorSystem';
+import { Theme, ThemedProps } from '@utils/styles/colors/types';
 
 type Props = {
   type?: 'button' | 'submit' | 'reset' | undefined;

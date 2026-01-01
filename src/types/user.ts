@@ -10,5 +10,11 @@ type Participant = User & {
   joinedAt: number;
 };
 
+type AuthContext = {
+  isInitialized: boolean;
+  isAuthenticated: boolean;
+  userId: string | null;
+};
+
 export default User;
-export type { Participant };
+export type { AuthContext, Participant };

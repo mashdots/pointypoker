@@ -7,19 +7,19 @@ import { Participant } from './user';
 
 type Session = {
   createdAt: Timestamp;
+  currentIssue: string | null;
+  estimations: Estimation[];
   expiresAt: Timestamp;
+  history: string[];
+  issues: {
+    [key: Issue['id']]: Issue;
+  };
   name: string;
   participants: {
     [key: Participant['id']]: Participant;
   };
-  issues: {
-    [key: Issue['id']]: Issue;
-  };
   // Ticket management is handled by ID reference
   upcoming: string[];
-  history: string[];
-  currentIssue: string | null;
-  estimations: Estimation[];
   // estimationSchema: EstimationSchema; <- to be defined later
 };
 

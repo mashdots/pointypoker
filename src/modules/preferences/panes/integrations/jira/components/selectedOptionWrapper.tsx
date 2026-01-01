@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const SelectedOptionWrapper = styled.div`
   ${ ({ theme }: ThemedProps) => css`

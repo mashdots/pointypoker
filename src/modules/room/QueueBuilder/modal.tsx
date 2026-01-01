@@ -17,7 +17,7 @@ import {
 } from '@modules/integrations/jira/types';
 import { useTickets } from '@modules/room/hooks';
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import BoardSelection from './steps/boardSelection';
 import SprintSelection from './steps/sprintSelection';

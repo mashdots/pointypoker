@@ -1,7 +1,7 @@
 import styled, { css, keyframes } from 'styled-components';
 
 import Check from '@assets/icons/check.svg?react';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const checkAnimation = keyframes`
   0% {

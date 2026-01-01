@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const InfoLink = styled(Link)`
   ${({ theme }: ThemedProps) => css`

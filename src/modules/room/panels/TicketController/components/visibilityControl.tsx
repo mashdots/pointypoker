@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const VisibilityControl = styled.div<{ isVisible: boolean }>`
   ${({ isVisible, theme }: { isVisible: boolean } & ThemedProps) => css`

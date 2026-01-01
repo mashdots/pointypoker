@@ -6,7 +6,7 @@ import SuggestSvg from '@assets/icons/bulb.svg?react';
 import AverageSvg from '@assets/icons/chart.svg?react';
 import { GridPanel } from '@components/common';
 import { GridPanelProps } from '@components/common/gridPanel';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import { InfoCell } from '../components';
 import { useTickets } from '../hooks';

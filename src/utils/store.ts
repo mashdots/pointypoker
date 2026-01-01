@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 import { MODAL_TYPES } from '@modules/modal';
 import { PreferencesType } from '@modules/preferences/hooks';
+import { FlagName } from '@utils/flags';
 import { Room } from '@yappy/types';
 
 type Store = {
@@ -10,6 +11,9 @@ type Store = {
   room: Room | null;
   setRoom: (arg: Room | null) => void;
   clearRoom: () => void;
+  experimentFlags: { [ key: string ]: boolean };
+  setFlag: (flag: FlagName, value: boolean) => void;
+  getFlag: (flag: string) => boolean;
   isTitleInputFocused: boolean;
   setTitleInputFocus: (arg: boolean) => void;
   isMenuOpen: boolean;
@@ -24,11 +28,21 @@ const useStore = create<Store>((set) => ({
   arePrefsInitialized: false,
   clearRoom: () => set(() => ({ room: null })),
   currentModal: null,
+  experimentFlags: {},
+  getFlag: (flag): boolean => {
+    return useStore.getState().experimentFlags[ flag ] || false;
+  },
   isMenuOpen: false,
   isTitleInputFocused: false,
   preferences: {},
   room: null,
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
+  setFlag: (flag, value) => set((state) => ({
+    experimentFlags: {
+      ...state.experimentFlags,
+      [ flag ]: value,
+    },
+  })),
   setIsMenuOpen: (isOpen) => set(() => ({ isMenuOpen: isOpen })),
   setPreference: (key, newPreferences) => set((state) => (
     {

@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { GridPanel } from '@components/common';
 import { GridPanelProps } from '@components/common/gridPanel';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import { useTickets } from '../../hooks';
 import { getPointOptions, isVoteCast } from '../../utils';

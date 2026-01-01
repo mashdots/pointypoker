@@ -1,11 +1,12 @@
 import { div as TicketRow } from 'motion/react-client';
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';
 
-import useTheme, { ThemedProps } from '@utils/styles/colors/colorSystem';
+import useTheme from '@utils/styles/colors';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 import { useTickets } from '../../hooks';
 import { getTicketNumberFromUrl } from '../../utils';

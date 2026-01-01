@@ -1,13 +1,13 @@
-import { ThemeColors } from '../colorSystem';
+import { ThemeColors } from '../../types';
 import { THEME_COLORS } from './definitions';
 
-const dirt: ThemeColors = {
+const grape: ThemeColors = {
   error: THEME_COLORS.RED,
-  greyscale: THEME_COLORS.SAND,
+  greyscale: THEME_COLORS.MAUVE,
   info: THEME_COLORS.BLUE,
-  primary: THEME_COLORS.BROWN,
+  primary: THEME_COLORS.PURPLE,
   success: THEME_COLORS.GREEN,
   warning: THEME_COLORS.YELLOW,
 };
 
-export default dirt;
+export default grape;

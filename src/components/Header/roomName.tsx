@@ -1,9 +1,7 @@
-import React from 'react';
-
 import styled, { css } from 'styled-components';
 
 import useStore from '@utils/store';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const Wrapper = styled.div<{ appear: boolean }>`
   ${({ appear }) => css`

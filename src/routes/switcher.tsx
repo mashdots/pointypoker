@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import { LoadingIcon } from '@modules/preferences/panes/integrations/jira/components';
 import { RoomSetup } from '@modules/room';
 import { useAuth, UserSetup } from '@modules/user';
-import { useAuthorizedUser } from '@modules/user/AuthContext';
+import { useAuthorizedUser } from '@modules/user';
 
 /**
  * This is a hybrid module that handles:

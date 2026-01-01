@@ -13,7 +13,7 @@ import { fadeDownEntrance } from '@components/common/animations';
 import { GridPanelProps } from '@components/common/gridPanel';
 import { useAuth } from '@modules/user';
 import { usePrevious } from '@utils';
-import { ThemedProps } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 import { Participant, Vote } from '@yappy/types';
 
 import { useTickets } from '../hooks';

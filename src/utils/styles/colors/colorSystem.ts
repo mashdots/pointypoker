@@ -5,20 +5,28 @@ import {
 } from 'react';
 
 import * as colors from '@radix-ui/colors';
+import flags from '@utils/flags';
+import {
+  ColorCollectionType,
+  Hue,
+  SubColorReference,
+  Theme,
+  ThemeColorKey,
+  ThemeColors,
+} from '@utils/styles/colors/types';
 
 import { VariationProperties as ColorAccents } from '.';
 import useStore from '../../store';
-import * as themes from './themes';
+import * as themes from './constants';
+import { THEMES, THEME_COLORS } from './constants';
 
-export enum THEMES {
-  WHATEVER = 'whatever',
-  BLUEBERRY = 'blueberry',
-  DIRT = 'dirt',
-  GRAPE = 'grape',
-  MINT = 'mint',
-  ORANGE = 'orange',
-  STRAWBERRY = 'strawberry',
-}
+type HookReturnType = {
+  setTheme: (theme: THEMES) => void;
+  theme: Theme;
+  themeMode: THEME_MODES;
+  themeOptions: ThemeOption[];
+  toggleThemeMode: () => void;
+};
 
 export enum THEME_MODES {
   DARK = 'dark',
@@ -37,56 +45,15 @@ const ACTUAL_THEME_MODES = {
   [THEME_MODES.DARK]: 'Dark',
 };
 
-type ColorCollectionType = keyof typeof colors;
-type Hue = Exclude<
-  ColorCollectionType,
-  'blackA'
-    | 'blackP3A'
-    | 'whiteA'
-    | 'whiteP3A'
-    | `${ keyof typeof colors }Dark`
-    | `${ keyof typeof colors }DarkA`
-    | `${ keyof typeof colors }A`
-    | `${ keyof typeof colors }P3`
-    | `${ keyof typeof colors }P3A`
-    | `${ keyof typeof colors }DarkP3`
-    | `${ keyof typeof colors }DarkP3A`
->;
-type SubColorReference = { [ key: string ]: string };
-
-export type ThemeColors = {
-  [ key: string ]: Hue;
-  primary: Hue;
-  greyscale: Hue;
-  success: Hue;
-  warning: Hue;
-  error: Hue;
-  info: Hue;
-};
-
-export type Theme = {
-  [ key: string ]: ColorAccents;
-  primary: ColorAccents;
-  greyscale: ColorAccents;
-  transparent: ColorAccents;
-  success: ColorAccents;
-  warning: ColorAccents;
-  error: ColorAccents;
-  info: ColorAccents;
-};
-
-export type ThemedProps = {
-  theme: Theme;
-  isNarrow?: boolean;
-  colorTheme?: keyof Theme;
-};
-
 export type ThemeOption = {
   theme: THEMES,
   color: string;
 };
 
-const variationPropertiesList: { dark: Array<keyof ColorAccents>,light: Array<keyof ColorAccents> } = {
+const variationPropertiesList: {
+  dark: Array<keyof ColorAccents>,
+  light: Array<keyof ColorAccents>
+} = {
   dark: [
     'accent1',
     'accent2',
@@ -131,38 +98,47 @@ const buildColorAssociation = (
   const propertyListMode = mode === 'Dark' ? 'dark' : 'light';
 
   variationPropertiesList[propertyListMode].forEach((variationProperty, i) => {
+    // eslint-disable-next-line @stylistic/max-len
     colorAssociation[variationProperty] = (colors[combinedColor] as SubColorReference)[`${color}${transparentModifier}${i + 1}`];
   });
 
   return colorAssociation;
 };
 
-const buildTheme = (theme: ThemeColors, mode: THEME_MODES): Theme => {
+const buildTheme = (
+  theme: ThemeColors,
+  mode: THEME_MODES,
+  isInV4Experience: boolean = false,
+): Theme => {
   const finalColorMode = ACTUAL_THEME_MODES[mode] as ActualThemeMode;
   const builtTheme = {} as Theme;
 
-  for (const key in theme) {
-    if ([
-      'primary',
-      'greyscale',
-      'success',
-      'warning',
-      'error',
-      'info',
-    ].includes(key)) {
-      builtTheme[key] = buildColorAssociation(theme[key] as Hue, finalColorMode);
+  if (isInV4Experience) {
+    console.log('V4 theme building');
+  }
 
-      if (key === 'greyscale') {
-        builtTheme.transparent = buildColorAssociation(
-          theme[key] as Hue,
-          finalColorMode,
-          true,
-        );
-      }
+  for (const [colorKey, hue] of Object.entries(theme)) {
+    const finalColorKey = colorKey as ThemeColorKey;
 
-    } else {
-      throw new Error(`Invalid theme reference: ${key}. Check that your theme is properly structured.`);
+    if (!THEME_COLORS.includes(finalColorKey)) {
+      throw new Error(`Invalid theme reference: ${finalColorKey}. Check that your theme is properly structured.`);
     }
+
+    builtTheme[ finalColorKey ] = buildColorAssociation(hue, finalColorMode);
+
+    if (finalColorKey === 'greyscale') {
+      builtTheme.transparent = buildColorAssociation(
+        hue,
+        finalColorMode,
+        true,
+      );
+    }
+
+    // builtTheme[ finalColorKey === 'greyscale' ? 'transparent' : finalColorKey ] = buildColorAssociation(
+    //   hue,
+    //   finalColorMode,
+    //   finalColorKey === 'greyscale',
+    // );
   }
 
   return builtTheme;
@@ -170,7 +146,7 @@ const buildTheme = (theme: ThemeColors, mode: THEME_MODES): Theme => {
 
 const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 
-const useTheme = () => {
+const useTheme = (): HookReturnType => {
   const {
     arePrefsInitialized,
     selectedTheme,
@@ -179,13 +155,16 @@ const useTheme = () => {
     setThemeMode,
     isThemeModeSetBySystem,
     setIsThemeModeSetByUser,
+    isInV4Experience,
   } = useStore(({
     arePrefsInitialized,
     preferences,
     setPreference,
+    getFlag,
   }) => (
     {
       arePrefsInitialized,
+      isInV4Experience: getFlag(flags.REDESIGN),
       isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
       selectedTheme: preferences?.theme,
       selectedThemeMode: preferences?.themeMode,
@@ -195,17 +174,30 @@ const useTheme = () => {
     }
   ));
 
-  const setThemeModeFromEvent = (e: MediaQueryListEvent) => setThemeMode(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT);
+  const setThemeModeFromEvent = useCallback((e: MediaQueryListEvent) =>
+    setThemeMode(e.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT), [setThemeMode]);
 
-  const themeMode = useMemo(() => selectedThemeMode ? selectedThemeMode : darkModePreference.matches ? THEME_MODES.DARK : THEME_MODES.LIGHT, [selectedThemeMode]);
+  const themeMode = useMemo(() => selectedThemeMode
+    ? selectedThemeMode
+    : darkModePreference.matches
+      ? THEME_MODES.DARK
+      : THEME_MODES.LIGHT, [selectedThemeMode] );
 
   const theme = useMemo(() => {
-    const finalTheme = selectedTheme ? selectedTheme : THEMES.WHATEVER;
+    const finalTheme = selectedTheme ?? THEMES.WHATEVER;
 
-    return buildTheme(themes[ finalTheme ], themeMode);
-  }, [selectedTheme, themeMode]);
+    return buildTheme(
+      themes[ finalTheme ],
+      themeMode,
+      isInV4Experience,
+    );
+  }, [
+    selectedTheme,
+    themeMode,
+    isInV4Experience,
+  ]);
 
-  const themeOptions = useMemo(() => Object.values(THEMES).map((theme) => {
+  const themeOptions: ThemeOption[] = useMemo(() => Object.values(THEMES).map((theme) => {
     const colors = buildTheme(themes[ theme ], themeMode);
     return {
       color: colors.primary.accent9,
@@ -219,7 +211,12 @@ const useTheme = () => {
     darkModePreference.removeEventListener('change', setThemeModeFromEvent);
     setThemeMode(newMode);
     setIsThemeModeSetByUser();
-  }, [themeMode]);
+  }, [
+    setIsThemeModeSetByUser,
+    setThemeMode,
+    setThemeModeFromEvent,
+    themeMode,
+  ]);
 
   /**
    * Connect the theme mode to the user's system preference.

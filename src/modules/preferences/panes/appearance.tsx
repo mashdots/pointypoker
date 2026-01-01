@@ -1,10 +1,9 @@
-import React from 'react';
-
 import styled, { css } from 'styled-components';
 
 import Icon from '@assets/icons/settings-appearance.svg?react';
 import useStore from '@utils/store';
-import useTheme, { ThemeOption as ThemeOptionType, ThemedProps } from '@utils/styles/colors/colorSystem';
+import useTheme from '@utils/styles/colors';
+import { ThemeOption as ThemeOptionType, ThemedProps } from '@utils/styles/colors/types';
 
 import { SystemModeCheckbox, ThemeModeToggle } from '../themeModeToggle';
 import CategoryCard, { GenericPrefCardProps } from './categoryCard';
