@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled, { css } from 'styled-components';
 
 import DarkModeIcon from '@assets/icons/dark-mode-fill.svg?react';
@@ -10,8 +8,8 @@ import useTheme from '@utils/styles/colors';
 import {
   THEME_MODE_CONTROLLER,
   THEME_MODES,
-  ThemedProps,
 } from '@utils/styles/colors/colorSystem';
+import { ThemedProps } from '@utils/styles/colors/types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -77,9 +75,10 @@ const ThemeModeToggleRow = () => {
 export const SystemModeCheckbox = () => {
   const { isThemeModeSetBySystem, setThemeModeController } = useStore(({ preferences, setPreference }) => ({
     isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
-    setThemeModeController: () => setPreference('themeModeController', preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
-      ? THEME_MODE_CONTROLLER.USER
-      : THEME_MODE_CONTROLLER.SYSTEM),
+    setThemeModeController: () =>
+      setPreference('themeModeController', preferences?.themeModeController === THEME_MODE_CONTROLLER.SYSTEM
+        ? THEME_MODE_CONTROLLER.USER
+        : THEME_MODE_CONTROLLER.SYSTEM ),
   }));
 
   return (

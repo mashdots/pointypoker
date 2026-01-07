@@ -1,7 +1,8 @@
-import React, {
+import {
   useCallback,
   useMemo,
   useState,
+  JSX,
 } from 'react';
 
 import styled, { css } from 'styled-components';

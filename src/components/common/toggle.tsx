@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import get from 'lodash/get';
 import styled, { css } from 'styled-components';
 

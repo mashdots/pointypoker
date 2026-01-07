@@ -1,4 +1,5 @@
-import React, {
+import {
+  JSX,
   useCallback,
   useEffect,
   useMemo,
@@ -18,7 +19,7 @@ import {
   JiraSprintWithIssues,
 } from '@modules/integrations/jira/types';
 import { usePrevious } from '@utils';
-import { ThemedProps } from '@utils/styles/colors/types';
+import { ThemeColorKey, ThemedProps } from '@utils/styles/colors/types';
 import { Room } from '@yappy/types';
 
 import { InformationWrapper, SectionWrapper } from './common';
@@ -113,7 +114,7 @@ const PointContainer = styled.span<SprintOptionProps>`
     hasIssues,
     hasNewIssuesWithIssuesInQueue,
   }: SprintOptionProps) => {
-    let colorScheme = hasIssues ? 'success' : 'greyscale';
+    let colorScheme: ThemeColorKey = hasIssues ? 'success' : 'greyscale';
     if (hasNewIssuesWithIssuesInQueue) {
       colorScheme = 'info';
     }
@@ -121,7 +122,7 @@ const PointContainer = styled.span<SprintOptionProps>`
     return css`
       border: 1px solid ${ theme[colorScheme][ hasIssues ? 'accent8' : 'accent2' ] };
       color: ${ theme[colorScheme][hasIssues ? 'accent9' : 'accent11'] };
-      background-color: ${ theme[ colorScheme ][hasIssues ? 'accent2' : 'none'] };
+      background-color: ${ hasIssues ? theme[colorScheme]['accent2'] : 'none' };
       font-size: 0.75rem;
     `;
   }}
@@ -165,10 +166,11 @@ const SprintSelection = ({
       const sprints = await getSprintsForBoard(boardId);
       setSprintData(sprints.values as JiraSprint[]);
     } catch (error) {
+      // TODO: Handle error in the future
+      console.error('Error fetching sprints:', error);
       // setIsError(true);
     }
-
-  }, [boardId]);
+  }, [boardId, getSprintsForBoard]);
 
   const handleGetAvatars = useCallback(async () => {
     if (!issueData?.length) {
@@ -205,7 +207,7 @@ const SprintSelection = ({
     }
 
     setIsLoading(false);
-  }, [issueData?.length]);
+  }, [getAvatars, issueData]);
 
   const handleFetchIssueData = useCallback(async (startAt = 0) => {
     if (!boardId) {
@@ -233,6 +235,7 @@ const SprintSelection = ({
       });
 
       if (startAt < issues.total) {
+
         handleFetchIssueData(startAt + issues.maxResults);
         return;
       }
@@ -240,7 +243,11 @@ const SprintSelection = ({
       console.error('Ahhh shit', error);
       // setIsError(true);
     }
-  }, [boardId]);
+  }, [
+    boardId,
+    getIssuesForBoard,
+    pointField,
+  ]);
 
   useEffect(() => {
     if (boardId && previousBoardId !== boardId) {
@@ -249,13 +256,14 @@ const SprintSelection = ({
       handleFetchSprintData();
       handleFetchIssueData();
     }
-  }, [boardId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardId, previousBoardId]);
 
   useEffect(() => {
     if (issueData?.length) {
       handleGetAvatars();
     }
-  }, [issueData?.length]);
+  }, [handleGetAvatars, issueData?.length]);
 
   const sprintOptions = useMemo(() => sprintData?.map((sprint, delayFactor) => {
     const apiIssues = issueData?.filter((issue) => issue.fields.sprint?.id === sprint.id) ?? [];
@@ -290,7 +298,7 @@ const SprintSelection = ({
       if (issuesInQueue.length) {
         if (newIssueCount > 0) {
           // Issues in queue, but there are new issues in the sprint that aren't in the queue
-          pointContainerMessage = `${ issueCountDisplay } new unpointed ticket${ issuesInQueue.length === 1 ? '' : 's' }`;
+          pointContainerMessage = `${issueCountDisplay} new unpointed ticket${ issuesInQueue.length === 1 ? '' : 's' }`;
         } else {
           // Issues in queue, but they all match issues in sprint
           pointContainerMessage = 'Sprint already in queue';
@@ -313,7 +321,10 @@ const SprintSelection = ({
         onClick={handleSelectSprint}
       >
         {sprint.name}
-        <PointContainer hasIssues={hasIssues} hasNewIssuesWithIssuesInQueue={newIssueCount > 0 && issuesInQueue.length > 0}>
+        <PointContainer
+          hasIssues={hasIssues}
+          hasNewIssuesWithIssuesInQueue={newIssueCount > 0 && issuesInQueue.length > 0}
+        >
           {pointContainerMessage}
         </PointContainer>
       </SprintOption>
@@ -321,8 +332,9 @@ const SprintSelection = ({
   }), [
     sprintData,
     issueData,
-    isLoading,
     existingQueue,
+    isLoading,
+    setSprint,
   ]);
 
   const loadingIcon = useMemo(() => sprintData ? 'Select a sprint' : (

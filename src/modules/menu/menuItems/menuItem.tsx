@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import styled from 'styled-components';
 
 import useStore from '@utils/store';

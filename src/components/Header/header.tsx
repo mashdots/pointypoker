@@ -4,8 +4,6 @@ import styled, { css } from 'styled-components';
 
 import MenuIcon from '@assets/icons/menu.svg?react';
 import { useAuthorizedUser } from '@modules/user';
-import flags from '@utils/flags';
-import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/types';
 
 import Logo from './logo';
@@ -15,6 +13,8 @@ import UserControl from './userControl';
 type Props = {
   headerRef: React.RefObject<HTMLDivElement | null>;
   hideMenu: boolean;
+  isMenuOpen: boolean;
+  toggleMenu: () => void;
 };
 
 type SectionProps = {
@@ -65,53 +65,52 @@ const MenuButton = styled(MenuIcon)<MenuIconProps>`
     > line {
       stroke: ${theme.primary.accent11};
     }
-    `}
-    
+  `}
+
   cursor: pointer;
   margin-left: 1rem;
   overflow: visible;
   width: 2rem;
 
   > line {
-    transition: all 300ms ease-out;
+    transition: all 300ms cubic-bezier(.54, 1.60, .5, 1);
   }
 `;
 
-const Header = ({ headerRef, hideMenu }: Props) => {
+const Header = ({
+  headerRef,
+  hideMenu,
+  isMenuOpen,
+  toggleMenu,
+}: Props) => {
   const { isAuthenticated } = useAuthorizedUser();
-  const {
-    isFlagEnabled,
-    isMenuOpen,
-    setIsMenuOpen,
-  } = useStore(({
-    isMenuOpen,
-    setIsMenuOpen,
-    getFlag,
-  }) => (
-    {
-      isFlagEnabled: getFlag(flags.REDESIGN),
-      isMenuOpen,
-      setIsMenuOpen,
-    }
-  ));
 
-  if (isFlagEnabled) {
-    return null;
-  }
+  const handleMenuButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleMenu();
+  };
 
   return (
     <Wrapper ref={headerRef}>
-      <Section flex={6} align='left'
+      <Section
+        flex={6}
+        align='left'
         style={{
           opacity: isAuthenticated ? 1 : 0,
           transition: 'all 300ms ease-out',
-        }}>
+        }}
+      >
         <Logo />
         <RoomName />
       </Section>
       <Section flex={1} align='right'>
         <UserControl />
-        {!hideMenu && <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)} isopen={`${isMenuOpen}`} />}
+        {!hideMenu && (
+          <MenuButton
+            onClick={handleMenuButtonClick}
+            isopen={`${ isMenuOpen }`}
+          />
+        )}
       </Section>
     </Wrapper>
   );

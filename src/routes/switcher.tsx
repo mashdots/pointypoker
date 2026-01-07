@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'motion/react';
 import { div as AnimatedWrapper } from 'motion/react-client';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { LoadingIcon } from '@modules/preferences/panes/integrations/jira/components';
 import { RoomSetup } from '@modules/room';

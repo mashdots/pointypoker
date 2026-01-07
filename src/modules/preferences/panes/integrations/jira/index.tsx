@@ -1,7 +1,9 @@
-import React, {
+import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
+  JSX,
 } from 'react';
 
 import { Button } from '@components/common';
@@ -55,11 +57,11 @@ const JiraIntegrationCard = () => {
   } = useJira();
   const { syncPrefsToStore } = usePreferenceSync();
 
-  const eventListenerMethod = (event: StorageEvent) => {
+  const eventListenerMethod = useCallback((event: StorageEvent) => {
     if (event.key === 'jiraAccess') {
       syncPrefsToStore();
     }
-  };
+  }, [syncPrefsToStore]);
 
   const button = useMemo(() => {
     if (isConfigured && resources) {
@@ -96,26 +98,15 @@ const JiraIntegrationCard = () => {
       </Button>
     );
   }, [
-    isLoading,
-    isError,
     isConfigured,
+    resources,
+    isError,
+    isLoading,
+    isConnected,
+    launchJiraOAuth,
+    eventListenerMethod,
   ]);
 
-  const handleFetchResources = async () => {
-    setIsLoading(true);
-
-    try {
-      const result: JiraResourceData = await getAccessibleResources();
-      setResources(result);
-      setIsError(false);
-      removeEventListener('storage', eventListenerMethod);
-    } catch (error) {
-      setResources(null);
-      setIsError(true);
-    }
-
-    setIsLoading(false);
-  };
 
   const handleRevokeAccess = () => {
     revokeAccess();
@@ -172,10 +163,33 @@ const JiraIntegrationCard = () => {
   );
 
   useEffect(() => {
-    if (isConfigured) {
+    const handleFetchResources = async () => {
+      setIsLoading(true);
+
+      try {
+        const result: JiraResourceData = await getAccessibleResources();
+        setResources(result);
+        setIsError(false);
+        removeEventListener('storage', eventListenerMethod);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        setResources(null);
+        setIsError(true);
+      }
+
+      setIsLoading(false);
+    };
+
+    if (isConfigured && !resources) {
       handleFetchResources();
     }
-  }, [isConfigured]);
+  }, [
+    isConfigured,
+    resources,
+    getAccessibleResources,
+    setResources,
+    eventListenerMethod,
+  ]);
 
   return (
     <IntegrationCard

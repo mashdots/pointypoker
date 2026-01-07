@@ -52,6 +52,7 @@ const Root: FC = () => {
 
   const posthog = usePostHog();
   const [isPosthogInitialized, setIsPosthogInitialized] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { isInV4Experience, setFlag } = useStore(({ getFlag, setFlag }) => (
     {
@@ -87,7 +88,18 @@ const Root: FC = () => {
 
   const menuBarComponent = useMemo(() => isInV4Experience
     ? null
-    : <Header headerRef={headerRef} hideMenu={!shouldShowMenu} />, [isInV4Experience, shouldShowMenu] );
+    : (
+      <Header
+        headerRef={headerRef}
+        hideMenu={!shouldShowMenu}
+        isMenuOpen={isMenuOpen}
+        toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
+      />
+    ), [
+    isInV4Experience,
+    isMenuOpen,
+    shouldShowMenu,
+  ]);
 
   const controlComponent = useMemo(() => isInV4Experience
     ? <ControlBar />
@@ -101,7 +113,10 @@ const Root: FC = () => {
             {menuBarComponent}
             <GlobalStyles/>
             <Modal />
-            {shouldShowMenu && <Menu topOffset={headerRef?.current?.clientHeight ?? 0} />}
+            <Menu
+              closeMenu={() => setIsMenuOpen(false)}
+              isOpen={shouldShowMenu && isMenuOpen}
+            />
             <ChildrenWrapper>
               <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
             </ChildrenWrapper>

@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+  JSX,
+} from 'react';
 
 import ContentContainer from './contentContainer';
 import Label from './label';
@@ -23,6 +27,7 @@ const InfoCell = ({
 
   useEffect(() => {
     if (value === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShouldHide(true);
       timeout = setTimeout(() => {
         setValueData(null);

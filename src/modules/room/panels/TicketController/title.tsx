@@ -100,7 +100,7 @@ const Title = ({ shouldFocus, value }: Props) => {
     getPointFieldFromBoardId,
   } = useJira();
 
-  const handleCreateNewJiraTicket = async (ticketName: string) => {
+  const handleCreateNewJiraTicket = useCallback( async (ticketName: string) => {
     try {
       const ticketDetail = await getIssueDetail(ticketName);
       const pointField = await getPointFieldFromBoardId(ticketDetail.fields.sprint.originBoardId);
@@ -119,7 +119,13 @@ const Title = ({ shouldFocus, value }: Props) => {
       console.error(error);
       handleCreateTicket(ticketName);
     }
-  };
+  }, [
+    getIssueDetail,
+    getPointFieldFromBoardId,
+    buildJiraUrl,
+    handleCreatePredefinedTicket,
+    handleCreateTicket,
+  ]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length === 0) {
@@ -149,7 +155,11 @@ const Title = ({ shouldFocus, value }: Props) => {
       handleCreateTicket(newTicketName);
       setIsLoading(false);
     }, 1000);
-  }, [isJiraConfigured]);
+  }, [
+    handleCreateNewJiraTicket,
+    handleCreateTicket,
+    isJiraConfigured,
+  ]);
 
   const displayComponent = canEdit ? (
     <>
@@ -182,6 +192,7 @@ const Title = ({ shouldFocus, value }: Props) => {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCanEdit(false);
   }, [value]);
 
@@ -194,6 +205,7 @@ const Title = ({ shouldFocus, value }: Props) => {
   }, [canEdit]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCanEdit(!!shouldFocus);
   }, [shouldFocus]);
 

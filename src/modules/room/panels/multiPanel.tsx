@@ -1,4 +1,5 @@
 import {
+  JSX,
   useEffect,
   useMemo,
   useRef,
@@ -168,7 +169,7 @@ const MultiPanel = ({ panels = PANEL_FIXTURES, forcePanelChange }: Props) => {
     if (forcePanelChange && forcePanelChange !== selectedPanel) {
       setSelectedPanel(forcePanelChange);
     }
-  }, [forcePanelChange]);
+  }, [forcePanelChange, selectedPanel]);
 
   return (
     <Wrapper ref={wrapperRef} id='wrapper'>

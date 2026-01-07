@@ -1,4 +1,8 @@
-import React from 'react';
+import {
+  ReactNode,
+  RefObject,
+  ChangeEvent,
+} from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -8,11 +12,11 @@ type Props = {
   alignment?: 'left' | 'center' | 'right';
   disabled?: boolean;
   id: string;
-  icon?: React.ReactNode;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  icon?: ReactNode;
+  inputRef?: RefObject<HTMLInputElement | null>;
   isLoading?: boolean;
   onBlur?: () => void;
-  onChange: (arg: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (arg: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   placeHolder?: string;
   value: string;

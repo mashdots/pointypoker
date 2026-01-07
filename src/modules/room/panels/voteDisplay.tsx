@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'motion/react';
 import { div as NewDisplayElementWrapper } from 'motion/react-client';
-import React, { useMemo } from 'react';
+import { useMemo, JSX } from 'react';
 
 import styled, { css } from 'styled-components';
 

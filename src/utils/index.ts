@@ -12,8 +12,8 @@ const getRandomInt = (size: number): number => {
 };
 
 
-const usePrevious = <T>(value: T): T | undefined => {
-  const ref = useRef<T>();
+const usePrevious = <T>(value: T): T | null => {
+  const ref = useRef<T | null>(null);
 
   useEffect(() => {
     ref.current = value;

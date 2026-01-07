@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// TMP disable check for early development
 
 import styled, { css } from 'styled-components';
 
@@ -65,7 +66,7 @@ const TicketCard = (props: Props) => {
       }}
     >
       <TicketInfoContainer>
-        <MetadataContainer id={id} ticketType={type.name} />
+        {/* <MetadataContainer id={id} ticketType={type.name} /> */}
         <h2>icon • {props.name}</h2>
       </TicketInfoContainer>
       <VoteContainer>

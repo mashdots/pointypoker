@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useMemo,
   useState,
@@ -85,10 +85,15 @@ const ConfigOptionWrapper = styled.div`
 `;
 
 const ConfigOption = styled.div<ConfigOptionProps>`
-  ${({ selectionComplete, theme }: ConfigOptionProps) => css`
-    border: 1px ${selectionComplete ? 'solid' : 'dashed' } ${ theme.greyscale[ selectionComplete ? 'accent8' : 'border'] };
-    cursor: ${ selectionComplete ? 'pointer' : 'default' };
-  `};
+  ${({ selectionComplete, theme }: ConfigOptionProps) => {
+    const borderType = selectionComplete ? 'solid' : 'dashed';
+    const borderColor = selectionComplete ? theme.greyscale.accent6 : theme.greyscale.accent12;
+
+    return css`
+      border: 1px ${ borderType } ${ borderColor };
+      cursor: ${ selectionComplete ? 'pointer' : 'default' };
+  `;
+  }};
 
   ${({ selectionComplete, theme }: ConfigOptionProps) => selectionComplete && css`
     &:hover {
@@ -155,7 +160,7 @@ const ListContentWrapper = styled.div`
 `;
 
 const QueueModal = () => {
-  const { defaultBoard } = useStore(({ preferences }) => ({ defaultBoard: preferences?.jiraPreferences?.defaultBoard }));
+  const defaultBoard = useStore(({ preferences }) => preferences?.jiraPreferences?.defaultBoard);
   const { getPointFieldFromBoardId } = useJira();
   const { queue } = useTickets();
   // const [ importModeSelection, setImportModeSelection ] = useState<ImportModeSelection | null>(null);
@@ -166,14 +171,6 @@ const QueueModal = () => {
   const isAnyBoardSelected = useMemo(() => !!defaultBoard || !!overrideBoard, [defaultBoard, overrideBoard]);
 
   const selectionContent = useMemo(() => {
-    // if (!importModeSelection) {
-    //   return (
-    //     <ModeSelection
-    //       handleModeSelection={setImportModeSelection}
-    //     />
-    //   );
-    // }
-
     if ((!isAnyBoardSelected) || showOverrideUI) {
       return (
         <BoardSelection
@@ -207,20 +204,26 @@ const QueueModal = () => {
       );
     }
   }, [
-    defaultBoard,
-    overrideBoard,
+    isAnyBoardSelected,
     showOverrideUI,
     selectedSprint,
     pointField,
+    defaultBoard,
+    queue,
+    overrideBoard?.id,
   ]);
 
   useEffect(() => {
     if (isAnyBoardSelected) {
-
       getPointFieldFromBoardId(overrideBoard?.id || defaultBoard!.id)
         .then((pointField) => setPointField(pointField ?? null));
     }
-  }, [isAnyBoardSelected]);
+  }, [
+    defaultBoard,
+    getPointFieldFromBoardId,
+    isAnyBoardSelected,
+    overrideBoard?.id,
+  ]);
 
   return (
     <>
@@ -236,7 +239,11 @@ const QueueModal = () => {
             selectionComplete={(isAnyBoardSelected) && !showOverrideUI}
           >
             <ConfigOptionLabel>
-              {(showOverrideUI || (!isAnyBoardSelected)) ? 'Pending board selection' : overrideBoard?.name ?? defaultBoard?.name}
+              {
+                (showOverrideUI || (!isAnyBoardSelected))
+                  ? 'Pending board selection'
+                  : overrideBoard?.name ?? defaultBoard?.name
+              }
             </ConfigOptionLabel>
             {isAnyBoardSelected && (
               <ConfigOptionEditIcon>
@@ -247,12 +254,10 @@ const QueueModal = () => {
           <RevertWrapper>
             {overrideBoard && defaultBoard && (
               <p
-                onClick={
-                  () => {
-                    setOverrideBoard(null);
-                    setSelectedSprint(null);
-                  }
-                }
+                onClick={() => {
+                  setOverrideBoard(null);
+                  setSelectedSprint(null);
+                }}
               >
                 Revert to default board
                 <UndoIcon />
