@@ -9,7 +9,33 @@ import {
 enum PointingTypes {
   tshirt = 'T-Shirt',
   fibonacci = 'Fibonacci',
+  sequential = 'Sequential',
 }
+
+const TSHIRT_OPTIONS = [
+  'XS',
+  'S',
+  'M',
+  'L',
+  'XL',
+  'XXL',
+];
+
+const FIBONACCI_OPTIONS = [
+  0,
+  1,
+  2,
+  3,
+  5,
+  8,
+  13,
+];
+
+const Exclusions = [
+  '?',
+  '∞',
+  '☕',
+];
 
 type CalculationResult = {
   warning?: string;
@@ -24,40 +50,45 @@ type SuggestedResult = CalculationResult & {
   suggestedPoints: number | string;
 };
 
+type SchemaOptions = {
+  max?: number;
+  includeHalfPoints?: boolean;
+  halfPointMax?: number;
+};
 
-const getPointOptions = (type?: string): PointOptions => {
+const getPointOptions = (type?: string, options?: SchemaOptions): PointOptions => {
+  const {
+    max = 13,
+    includeHalfPoints = false,
+    halfPointMax,
+  } = options || {};
+  let pointOptions: PointOptions[ 'sequence' ] = [];
+
   switch (type) {
     case PointingTypes.tshirt:
-      return {
-        exclusions: ['?'],
-        sequence: [
-          'XS',
-          'S',
-          'M',
-          'L',
-          'XL',
-          'XXL',
-        ],
-      };
+      pointOptions = TSHIRT_OPTIONS;
+      break;
+    case PointingTypes.sequential:
+      pointOptions = Array.from(Array(max), (e, i) => i);
+      break;
     case PointingTypes.fibonacci:
     default:
-      return {
-        exclusions: [
-          '?',
-          '∞',
-          '☕',
-        ],
-        sequence: [
-          0,
-          1,
-          2,
-          3,
-          5,
-          8,
-          13,
-        ],
-      };
+      pointOptions = FIBONACCI_OPTIONS.filter((num) => num <= max);
+      break;
   }
+
+  if (type !== PointingTypes.tshirt && includeHalfPoints) {
+    const halfPoints = pointOptions
+      .filter((point) => typeof point === 'number' && point < (halfPointMax || max))
+      .map((point) => (point as number) + 0.5);
+
+    pointOptions = [...pointOptions, ...halfPoints].sort((a, b) => (a as number) - (b as number));
+  }
+
+  return {
+    exclusions: Exclusions,
+    sequence: pointOptions,
+  };
 };
 
 const calculateAverage = (currentTicket?: Ticket | null): AverageResult => {
@@ -186,7 +217,9 @@ const isVoteCast = (vote?: Vote): boolean => ![
   null,
   undefined,
   '',
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ].includes(vote as any);
+
 
 export {
   calculateAverage,
@@ -197,3 +230,4 @@ export {
 };
 
 export { PointingTypes };
+
