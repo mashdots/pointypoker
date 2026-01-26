@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useJira } from '@modules/integrations';
 import { JiraBoardPayloadValue } from '@modules/integrations/jira/types';
 import OptionPicker from '@modules/preferences/panes/integrations/jira/optionPicker';
@@ -44,7 +42,7 @@ const BoardSelection = ({
 
   return defaultBoard && !showOverrideUI ? null : (
     <SectionWrapper>
-      Select a board
+      <h2>Select a board</h2>
       <div style={{
         display: 'flex',
         width: '80%',

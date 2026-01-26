@@ -1,12 +1,11 @@
-import React from 'react';
-
 import styled from 'styled-components';
 
 import Icon from '@assets/icons/settings-general.svg?react';
 import ObserverSwitch from '@modules/preferences/panes/general/observerSwitch';
+import PointSchemaSelector from '@modules/preferences/panes/general/pointSchemeSelector';
 
 import CategoryCard, { GenericPrefCardProps } from '../categoryCard';
-import { SettingsRow } from '../common';
+import { Separator, SettingsRow } from '../common';
 import UserNameUpdateForm from './userNameUpdateForm';
 
 const GeneralPreferences = () => {
@@ -18,6 +17,10 @@ const GeneralPreferences = () => {
       </SettingsRow>
       <SettingsRow>
         <ObserverSwitch />
+      </SettingsRow>
+      <Separator />
+      <SettingsRow>
+        <PointSchemaSelector />
       </SettingsRow>
     </div>
   );

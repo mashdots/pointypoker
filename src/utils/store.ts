@@ -20,6 +20,7 @@ type Store = {
   setIsMenuOpen: (arg: boolean) => void;
   currentModal: MODAL_TYPES | null;
   setCurrentModal: (arg: MODAL_TYPES | null) => void;
+  closeModal: () => void;
   arePrefsInitialized: boolean;
   setPrefsInitialized: () => void;
 };
@@ -27,6 +28,7 @@ type Store = {
 const useStore = create<Store>((set) => ({
   arePrefsInitialized: false,
   clearRoom: () => set(() => ({ room: null })),
+  closeModal: () => set(() => ({ currentModal: null })),
   currentModal: null,
   experimentFlags: {},
   getFlag: (flag): boolean => {

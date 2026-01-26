@@ -13,6 +13,7 @@ type ColorOverrides = {
 };
 
 type Props = {
+  id?: string;
   isOn: boolean;
   onIcon?: JSX.Element;
   offIcon?: JSX.Element;
@@ -106,6 +107,7 @@ const Icon = styled.span<IconProps>`
 `;
 
 const Toggle = ({
+  id,
   isOn,
   handleToggle,
   colorOverrides,
@@ -113,12 +115,15 @@ const Toggle = ({
   onIcon,
   position,
 }: Props) => (
-  <Wrapper onClick={handleToggle} {...colorOverrides}
-    position={position}>
+  <Wrapper
+    id={id}
+    onClick={handleToggle}
+    {...colorOverrides}
+    position={position}
+  >
     <CheckBox
       type="checkbox"
       checked={isOn}
-
       onChange={() => {}}
     />
     <Slider isOn={isOn} id='slider'

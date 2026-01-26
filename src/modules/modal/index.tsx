@@ -95,8 +95,8 @@ const CloseIcon = styled(PlusIcon)`
 const Modal = () => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { isNarrow } = useMobile();
-  const { closeModal, modalType } = useStore(({ currentModal, setCurrentModal }) => ({
-    closeModal: () => setCurrentModal(null),
+  const { closeModal, modalType } = useStore(({ currentModal, closeModal }) => ({
+    closeModal,
     modalType: currentModal,
   }));
 
@@ -163,7 +163,7 @@ const Modal = () => {
         closeModal();
       }
     }
-  }, [closeModal, modalRef.current]);
+  }, [closeModal]);
 
   return (
     <AnimatePresence>
@@ -177,7 +177,7 @@ const Modal = () => {
             transition={{ duration: 0.5 }}
             style={{
               alignItems: 'center',
-              backdropFilter: 'blur(0.5rem)',
+              backdropFilter: 'blur(0.75rem)',
               backgroundColor: theme.transparent.accent1,
               display: 'flex',
               height: '100vh',

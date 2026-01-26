@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { arrayUnion } from 'firebase/firestore';
 import styled, { css } from 'styled-components';
@@ -17,6 +17,7 @@ import {
 } from '@modules/integrations/jira/types';
 import { Separator } from '@modules/preferences/panes/common';
 import { useTickets } from '@modules/room/hooks';
+import { PointingSchemes } from '@modules/room/utils';
 import { updateRoom } from '@services/firebase';
 import { useMobile } from '@utils/hooks/mobile';
 import useStore from '@utils/store';
@@ -181,13 +182,22 @@ const TicketReview = ({
   selectedBoardId,
 }: Props) => {
   const [queueAction, setQueueAction] = useState<EXISTING_QUEUE_ACTIONS | null>(null);
-  const { closeModal, roomName } = useStore(({ room, setCurrentModal }) => ({
+  const {
+    closeModal,
+    pointScheme,
+    roomName,
+  } = useStore(({
+    preferences,
+    room,
+    setCurrentModal,
+  }) => ({
     closeModal: () => setCurrentModal(null),
+    pointScheme: preferences.pointScheme?.scheme ?? PointingSchemes.fibonacci,
     roomName: room?.name,
   }));
   const {
     currentTicket,
-    completedTickets,
+    completedTickets = [],
     handleCreatePredefinedTicket,
     shouldShowVotes,
   } = useTickets();
@@ -214,6 +224,7 @@ const TicketReview = ({
         estimationFieldId: pointField.id,
         id: key,
         name: summary,
+        pointOptions: pointScheme,
         sprint,
         type: { ...issuetype },
         url: buildJiraUrl(key),
@@ -241,7 +252,10 @@ const TicketReview = ({
     }
 
     // Filter out completed tickets that are in newIssues
-    const updatedCompletedTickets = completedTickets?.filter((completed) => !newIssues.find((newIssue) => newIssue.id === completed.id)) || [];
+    const updatedCompletedTickets = completedTickets
+      .filter((completed) => !newIssues
+        .find((newIssue) => newIssue.id === completed.id) ) || [];
+
     if (updatedCompletedTickets.length !== completedTickets?.length) {
       updateObj['completedTickets'] = updatedCompletedTickets;
     }
@@ -256,12 +270,19 @@ const TicketReview = ({
       console.error('Doh!', error);
     }
   }, [
-    queueAction,
-    existingQueue,
-    issues,
-    pointField,
     roomName,
+    issues,
     currentTicket,
+    shouldShowVotes,
+    queueAction,
+    completedTickets,
+    selectedBoardId,
+    pointField.id,
+    pointScheme,
+    buildJiraUrl,
+    handleCreatePredefinedTicket,
+    existingQueue,
+    closeModal,
   ]);
 
   const issueList = issues.map(({
@@ -307,14 +328,14 @@ const TicketReview = ({
     },
   ];
 
+  const pointingSchemeString = pointScheme === PointingSchemes.fibonacci
+    ? 'the Fibonacci sequence' : 'sequential numbers';
+
   return (
     <SectionWrapper>
-      <InformationWrapper>
-        Review tickets
-      </InformationWrapper>
-      <IssuesWrapper>
-        {issueList}
-      </IssuesWrapper>
+      <InformationWrapper><h2>Review tickets</h2></InformationWrapper>
+      <IssuesWrapper>{issueList}</IssuesWrapper>
+      <p style={{ marginBottom: 0 }}>Tickets will be pointed using {pointingSchemeString}.</p>
       <Separator />
       {ticketsInQueue && (
         <p style={{ marginBottom: 0 }}>Tickets are already in the queue. How do you want to add the new tickets?</p>

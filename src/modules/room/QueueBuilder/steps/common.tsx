@@ -4,7 +4,7 @@ import { fadeDownEntrance } from '@components/common/animations';
 
 export const SectionWrapper = styled.div<{ isColumn?: boolean }>`
   ${ ({ isColumn }: { isColumn?: boolean }) => css`
-  justify-content: ${ isColumn ? 'flex-start' : 'center' };
+    justify-content: ${ isColumn ? 'flex-start' : 'center' };
   `}
   
   flex-direction: column;

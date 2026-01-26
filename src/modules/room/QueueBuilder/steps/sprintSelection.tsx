@@ -337,7 +337,9 @@ const SprintSelection = ({
     setSprint,
   ]);
 
-  const loadingIcon = useMemo(() => sprintData ? 'Select a sprint' : (
+  const loadingIcon = useMemo(() => sprintData ? (
+    <h2>Select a sprint</h2>
+  ) : (
     <LoadingWrapper size={2}><LoadingIcon /></LoadingWrapper>
   ), [sprintData]);
 

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { CheckBox } from '@components/common';
+import { Toggle } from '@components/common';
 import { useAuthorizedUser } from '@modules/user';
 import { updateRoom } from '@services/firebase';
 import useStore from '@utils/store';
@@ -16,14 +16,14 @@ const ObserverSwitch = () => {
     isObserver,
     updateIsObserver,
     roomName,
-    roomData,
+    isInRoom,
   } = useStore(({
     preferences,
     setPreference,
     room,
   }) => ({
+    isInRoom: room?.participants ? Object.keys(room.participants).includes(userId ?? 'no-user-id') : false,
     isObserver: preferences?.isObserver ?? false,
-    roomData: room,
     roomName: room?.name,
     updateIsObserver: (is: boolean) => {
       setPreference('isObserver', is);
@@ -36,29 +36,30 @@ const ObserverSwitch = () => {
     timeout = setTimeout(() => {
       updateIsObserver(value);
 
-      // If the user is in a room, update their name in the room too
-      const userInRoom = Object
-        .values(roomData?.participants ?? {})
-        .find((participant) => participant.id === userId);
-
-      if (roomName && userInRoom) {
+      if (roomName && isInRoom) {
         const updateObj: RoomUpdateObject = {};
         updateObj[ `participants.${ userId }.isObserver` ] = value;
 
         updateRoom(roomName, updateObj);
       }
     }, 250);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     value,
     roomName,
     userId,
+    isInRoom,
   ]);
 
   return (
     <VerticalContainer style={{ width: '100%' }}>
       <SettingsRow>
-        <CheckBox id="observer-switch" checked={value}
-          onChange={(e) => setValue(e.target.checked)} label="Observer Mode" />
+        <label htmlFor="observer-switch"><h3>Observer Mode</h3></label>
+        <Toggle
+          id="observer-switch"
+          isOn={value}
+          handleToggle={() => setValue(!value)}
+        />
       </SettingsRow>
     </VerticalContainer>
   );

@@ -5,8 +5,9 @@ import {
   Ticket,
   Vote,
 } from '@yappy/types';
+import { PointScheme } from '@yappy/types/estimation';
 
-enum PointingTypes {
+export enum PointingSchemes {
   tshirt = 'T-Shirt',
   fibonacci = 'Fibonacci',
   sequential = 'Sequential',
@@ -19,16 +20,6 @@ const TSHIRT_OPTIONS = [
   'L',
   'XL',
   'XXL',
-];
-
-const FIBONACCI_OPTIONS = [
-  0,
-  1,
-  2,
-  3,
-  5,
-  8,
-  13,
 ];
 
 const Exclusions = [
@@ -50,10 +41,19 @@ type SuggestedResult = CalculationResult & {
   suggestedPoints: number | string;
 };
 
-type SchemaOptions = {
-  max?: number;
-  includeHalfPoints?: boolean;
-  halfPointMax?: number;
+type SchemaOptions = Omit<PointScheme, 'scheme'>;
+
+const buildFibonacciUpTo = (max: number): number[] => {
+  const sequence = [0, 1];
+  let nextValue = 1;
+
+  while (nextValue <= max) {
+    sequence.push(nextValue);
+    const len = sequence.length;
+    nextValue = sequence[ len - 1 ] + sequence[ len - 2 ];
+  }
+
+  return [...new Set(sequence)];
 };
 
 const getPointOptions = (type?: string, options?: SchemaOptions): PointOptions => {
@@ -65,19 +65,19 @@ const getPointOptions = (type?: string, options?: SchemaOptions): PointOptions =
   let pointOptions: PointOptions[ 'sequence' ] = [];
 
   switch (type) {
-    case PointingTypes.tshirt:
+    case PointingSchemes.tshirt:
       pointOptions = TSHIRT_OPTIONS;
       break;
-    case PointingTypes.sequential:
+    case PointingSchemes.sequential:
       pointOptions = Array.from(Array(max), (e, i) => i);
       break;
-    case PointingTypes.fibonacci:
+    case PointingSchemes.fibonacci:
     default:
-      pointOptions = FIBONACCI_OPTIONS.filter((num) => num <= max);
+      pointOptions = buildFibonacciUpTo(max);
       break;
   }
 
-  if (type !== PointingTypes.tshirt && includeHalfPoints) {
+  if (type === PointingSchemes.sequential && includeHalfPoints) {
     const halfPoints = pointOptions
       .filter((point) => typeof point === 'number' && point < (halfPointMax || max))
       .map((point) => (point as number) + 0.5);
@@ -101,7 +101,7 @@ const calculateAverage = (currentTicket?: Ticket | null): AverageResult => {
   const { votes: voteData, pointOptions } = currentTicket;
 
   // No averaging of t-shirt sizes!
-  if (pointOptions === PointingTypes.tshirt) {
+  if (pointOptions === PointingSchemes.tshirt) {
     return {
       average: 0,
       warning: 'T-Shirt sizes cannot be averaged.',
@@ -167,7 +167,7 @@ const calculateSuggestedPoints = (currentTicket?: Ticket | null): SuggestedResul
     }
   }
 
-  if (pointOptions === PointingTypes.tshirt) {
+  if (pointOptions === PointingSchemes.tshirt) {
     let total = 0;
 
     for (const vote of votesArray) {
@@ -229,5 +229,5 @@ export {
   isVoteCast,
 };
 
-export { PointingTypes };
+export { PointingSchemes as PointingTypes };
 

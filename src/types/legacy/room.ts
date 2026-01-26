@@ -1,7 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
-import { PointingTypes } from '@modules/room/utils';
+import { PointingSchemes } from '@modules/room/utils';
 
 import User from '../user';
 
@@ -20,7 +20,7 @@ type PointOptions = {
   exclusions: Array<Vote>;
 };
 
-type QueuedTicket = Pick<Ticket, 'id' | 'name'>;
+type QueuedTicket = Pick<Ticket, 'id' | 'name' | 'pointOptions'>;
 
 // These are tickets that are in the queue.
 type PossibleQueuedTicket = QueuedTicket | QueuedJiraTicket;
@@ -31,7 +31,7 @@ type Ticket = {
   createdBy: string;
   id: string;
   name?: string;
-  pointOptions: PointingTypes;
+  pointOptions: PointingSchemes;
   shouldShowVotes: boolean;
   votes: {
     [key: string]: Vote;

@@ -12,31 +12,7 @@ import {
 } from '@utils/styles/colors/colorSystem';
 import { THEMES } from '@utils/styles/colors/constants';
 import { User } from '@yappy/types';
-
-type GenericPrefType = string
-  | boolean
-  | number
-  | THEMES
-  | THEME_MODES
-  | User
-  | JiraAuthData
-  | JiraResourceData
-  | JiraPreferences
-  | undefined
-  | null;
-
-export type PreferencesType = {
-  [ key: string ]: GenericPrefType;
-  isObserver?: boolean;
-  jiraAccess?: JiraAuthData | null;
-  jiraResources?: JiraResourceData | null;
-  jiraPreferences?: JiraPreferences | null;
-  name?: string;
-  theme?: THEMES;
-  themeMode?: THEME_MODES;
-  themeModeController?: THEME_MODE_CONTROLLER;
-  user?: User | null;
-};
+import { PointScheme } from '@yappy/types/estimation';
 
 const PreferenceKeys = [
   'isObserver',
@@ -44,11 +20,37 @@ const PreferenceKeys = [
   'jiraResources',
   'jiraPreferences',
   'name',
+  'pointScheme',
   'theme',
   'themeMode',
   'themeModeController',
   'user',
 ];
+
+type GenericPrefType = string
+  | boolean
+  | THEMES
+  | THEME_MODES
+  | User
+  | JiraAuthData
+  | JiraResourceData
+  | JiraPreferences
+  | PointScheme
+  | undefined
+  | null;
+
+export type PreferencesType = {
+  isObserver?: boolean;
+  jiraAccess?: JiraAuthData | null;
+  jiraResources?: JiraResourceData | null;
+  jiraPreferences?: JiraPreferences | null;
+  name?: string;
+  pointScheme?: PointScheme;
+  theme?: THEMES;
+  themeMode?: THEME_MODES;
+  themeModeController?: THEME_MODE_CONTROLLER;
+  user?: User | null;
+};
 
 const getPrefFromLocalStorage = (key: string): GenericPrefType | undefined => {
   const storedPref = localStorage.getItem(key);
@@ -84,7 +86,7 @@ const usePreferenceSync = () => {
     {
       arePrefsInitialized,
       preferences,
-      setPref: (key: string, pref: keyof PreferencesType) => setPreference(key, pref),
+      setPref: (key: keyof PreferencesType, pref: GenericPrefType) => setPreference(key, pref),
       setPrefsInitialized,
     }
   ));
@@ -97,7 +99,7 @@ const usePreferenceSync = () => {
       try {
         if (PreferenceKeys.includes(key)) {
           pref = JSON.parse(storedPreferences[ key ]);
-          setPref(key, pref);
+          setPref(key as keyof PreferencesType, pref);
         }
       } catch (error: unknown) {
         console.error(
@@ -120,7 +122,13 @@ const usePreferenceSync = () => {
   useEffect(() => {
     if (arePrefsInitialized) {
       for (const key in preferences) {
-        writeToLocalStorage(key, preferences[key]);
+        const storedPref = getPrefFromLocalStorage(key);
+
+        if (JSON.stringify(storedPref) === JSON.stringify(preferences[key as keyof PreferencesType])) {
+          continue;
+        }
+        const preference: GenericPrefType = preferences[key as keyof PreferencesType];
+        writeToLocalStorage(key, preference);
       }
     }
   }, [arePrefsInitialized, preferences]);

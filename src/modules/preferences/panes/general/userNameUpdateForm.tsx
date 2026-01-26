@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import { TextInput } from '@components/common';
 import { useAuth } from '@modules/user';
@@ -12,13 +15,13 @@ let timeout: number;
 
 const UserNameUpdateForm = () => {
   const { user } = useAuth();
-  const { id: userId, name: userName } = user || {};
+  const { id: userId = 'no-user-id', name: userName } = user || {};
   const {
+    isInRoom,
     updateUserName,
     roomName,
-    roomData,
   } = useStore(({ setPreference, room }) => ({
-    roomData: room,
+    isInRoom: room?.participants ? Object.keys(room.participants).includes(userId) : false,
     roomName: room?.name,
     updateUserName: (name: string) => {
       if (user) {
@@ -39,12 +42,7 @@ const UserNameUpdateForm = () => {
       timeout = setTimeout(() => {
         updateUserName(value);
 
-        // If the user is in a room, update their name in the room too
-        const userInRoom = Object
-          .values(roomData?.participants ?? {})
-          .find((participant) => participant.id === userId);
-
-        if (roomName && userInRoom) {
+        if (roomName && isInRoom) {
           const updateObj: RoomUpdateObject = {};
           updateObj[ `participants.${ userId }.name` ] = value;
 
@@ -56,16 +54,23 @@ const UserNameUpdateForm = () => {
     value,
     roomName,
     userId,
+    userName,
+    updateUserName,
+    isInRoom,
   ]);
 
   return (
     <VerticalContainer style={{ width: '100%' }}>
-      <label>
-        Name
+      <label htmlFor="name-update">
+        <h3>Name</h3>
       </label>
-      <TextInput size='small' id="name-update"
-        value={value ?? ''} onChange={(e) => setValue(e.target.value)}
-        alignment='left' />
+      <TextInput
+        size='small'
+        id="name-update"
+        value={value ?? ''}
+        onChange={(e) => setValue(e.target.value)}
+        alignment='left'
+      />
     </VerticalContainer>
   );
 };

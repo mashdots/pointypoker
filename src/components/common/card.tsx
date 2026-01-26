@@ -18,6 +18,7 @@ const Card = styled.div<CardProps>`
     overrideWidth,
   }: CardProps) => {
     const finalTheme = colorTheme ?? 'primary';
+    const backgroundAccent = colorTheme === 'transparent' ? 'accent2' : 'accent3';
 
     let finalWidth = '90%';
     let finalHeight = '30rem';
@@ -31,7 +32,7 @@ const Card = styled.div<CardProps>`
     }
 
     return css`
-      background-color: ${ theme[finalTheme].accent3 };
+      background-color: ${ theme[finalTheme][backgroundAccent] };
       border-color: ${ theme[finalTheme].accent6 };
       overflow: ${ scroll ? 'auto' : 'hidden' };
       width: ${ finalWidth };

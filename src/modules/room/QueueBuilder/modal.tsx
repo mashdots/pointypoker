@@ -62,7 +62,6 @@ const ConfigWrapper = styled.div`
   justify-content: center;
   padding: 0.5rem;
   border-radius: 0.5rem;
-  margin: 0.5rem 0;
   width: 100%;
 `;
 
