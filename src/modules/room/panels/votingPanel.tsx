@@ -1,4 +1,8 @@
-import React, { useCallback, useEffect } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -96,6 +100,7 @@ const VotingPanel = ({ config }: GridPanelProps) => {
     isModalOpen,
     isTitleInputFocused,
     isObserver,
+    preferredPointScheme,
   } = useStore(({
     preferences,
     isTitleInputFocused,
@@ -105,6 +110,7 @@ const VotingPanel = ({ config }: GridPanelProps) => {
       isModalOpen: !!currentModal,
       isObserver: preferences?.isObserver,
       isTitleInputFocused,
+      preferredPointScheme: preferences?.pointScheme,
     }
   ));
   const {
@@ -113,7 +119,12 @@ const VotingPanel = ({ config }: GridPanelProps) => {
     voteData,
   } = useTickets();
   const myVote = voteData.find((vote) => vote.name === user?.name)?.vote;
-  const voteOptions = getPointOptions(currentTicket?.pointOptions);
+
+  const { scheme: pointScheme, ...pointingOptions } = useMemo(() => currentTicket?.pointOptions
+    ?? preferredPointScheme
+    ?? { scheme: 'fibonacci' }, [currentTicket?.pointOptions, preferredPointScheme] );
+
+  const voteOptions = getPointOptions(pointScheme, pointingOptions);
 
   const generateVoteButtons = (voteOptions: PointOptions['sequence']) => voteOptions.map((option) => (
     <ButtonWrapper key={option}>
@@ -142,16 +153,23 @@ const VotingPanel = ({ config }: GridPanelProps) => {
     }
   }, [
     currentTicket,
+    handleUpdateCurrentTicket,
     isModalOpen,
     isTitleInputFocused,
-    voteOptions,
+    user?.id,
+    voteOptions.exclusions,
+    voteOptions.sequence,
   ]);
 
   useEffect(() => {
     if (currentTicket) {
       document.onkeydown = handleKeyPress;
     }
-  }, [currentTicket, isTitleInputFocused]);
+  }, [
+    currentTicket,
+    handleKeyPress,
+    isTitleInputFocused,
+  ]);
 
   return (
     <GridPanel config={config}>

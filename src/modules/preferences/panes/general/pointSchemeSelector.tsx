@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
 
 import { RadioGroup } from 'radix-ui';
 
@@ -8,6 +8,11 @@ import useStore from '@utils/store';
 import useTheme from '@utils/styles/colors';
 import { PointScheme } from '@yappy/types/estimation';
 
+type Option = Partial<Omit<PointScheme, 'scheme'>> & {
+  label: keyof Omit<PointScheme, 'scheme'>;
+  type: 'number' | 'checkbox';
+  shouldShow: boolean;
+};
 
 const PointSchemaSelector = (): JSX.Element => {
   const {
@@ -28,7 +33,7 @@ const PointSchemaSelector = (): JSX.Element => {
     },
     {
       label: PointingSchemes.sequential,
-      pointOptions: getPointOptions(PointingSchemes.sequential, { max: 6 }),
+      pointOptions: getPointOptions(PointingSchemes.sequential, { max: 5 }),
     },
   ];
 
@@ -38,6 +43,25 @@ const PointSchemaSelector = (): JSX.Element => {
       ...schemeData,
     });
   };
+
+  const prefOptions: Option[] = useMemo(() => ([
+    {
+      label: 'max',
+      shouldShow: pointScheme?.scheme !== PointingSchemes.tshirt,
+      type: 'number',
+    },
+    {
+      label: 'includeHalfPoints',
+      shouldShow: pointScheme?.scheme === PointingSchemes.sequential,
+      type: 'checkbox',
+    },
+    {
+      label: 'halfPointMax',
+      shouldShow: pointScheme?.scheme === PointingSchemes.sequential && pointScheme?.includeHalfPoints === true,
+      type: 'number',
+    },
+  ]), [pointScheme]);
+
 
   return (
     <VerticalContainer>
@@ -69,6 +93,38 @@ const PointSchemaSelector = (): JSX.Element => {
           </RadioGroup.Item>
         ))}
       </RadioGroup.Root>
+      {prefOptions.filter(({ shouldShow }) => shouldShow).map(({ label, type }) => (
+        <div key={label} style={{ marginTop: '1rem' }}>
+          <label htmlFor={label}>
+            {label.charAt(0).toUpperCase() + label.slice(1)}
+          </label>
+          {type === 'number' ? (
+            <input
+              id={label}
+              type="number"
+              value={pointScheme?.[label] as number ?? ''}
+              onChange={(e) => {
+                const value = e.target.value === '' ? undefined : Number(e.target.value);
+                updatePointScheme({ [label]: value });
+              }}
+              style={{
+                marginLeft: '0.5rem',
+                width: '4rem',
+              }}
+            />
+          ) : (
+            <input
+              id={label}
+              type="checkbox"
+              checked={pointScheme?.[label] as boolean ?? false}
+              onChange={(e) => {
+                updatePointScheme({ [label]: e.target.checked });
+              }}
+              style={{ marginLeft: '0.5rem' }}
+            />
+          )}
+        </div>
+      ))}
     </VerticalContainer>
   );
 };

@@ -219,7 +219,6 @@ const QueueModal = () => {
     }
   }, [
     defaultBoard,
-    getPointFieldFromBoardId,
     isAnyBoardSelected,
     overrideBoard?.id,
   ]);

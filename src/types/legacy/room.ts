@@ -1,7 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
-import { PointingSchemes } from '@modules/room/utils';
+import { PointScheme } from '@yappy/types/estimation';
 
 import User from '../user';
 
@@ -31,7 +31,7 @@ type Ticket = {
   createdBy: string;
   id: string;
   name?: string;
-  pointOptions: PointingSchemes;
+  pointOptions: PointScheme;
   shouldShowVotes: boolean;
   votes: {
     [key: string]: Vote;

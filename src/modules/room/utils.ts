@@ -69,7 +69,7 @@ const getPointOptions = (type?: string, options?: SchemaOptions): PointOptions =
       pointOptions = TSHIRT_OPTIONS;
       break;
     case PointingSchemes.sequential:
-      pointOptions = Array.from(Array(max), (e, i) => i);
+      pointOptions = Array.from(Array(max + 1), (e, i) => i);
       break;
     case PointingSchemes.fibonacci:
     default:
@@ -101,14 +101,14 @@ const calculateAverage = (currentTicket?: Ticket | null): AverageResult => {
   const { votes: voteData, pointOptions } = currentTicket;
 
   // No averaging of t-shirt sizes!
-  if (pointOptions === PointingSchemes.tshirt) {
+  if (pointOptions.scheme === PointingSchemes.tshirt) {
     return {
       average: 0,
       warning: 'T-Shirt sizes cannot be averaged.',
     };
   }
 
-  const { exclusions } = getPointOptions(pointOptions);
+  const { exclusions } = getPointOptions(pointOptions.scheme, pointOptions);
   const votesArray: number[] = [];
   const excludedVotes = [];
 
@@ -148,7 +148,7 @@ const calculateSuggestedPoints = (currentTicket?: Ticket | null): SuggestedResul
     };
   }
   const { votes: voteData, pointOptions } = currentTicket;
-  const { sequence, exclusions } = getPointOptions(pointOptions);
+  const { sequence, exclusions } = getPointOptions(pointOptions.scheme, pointOptions);
 
   const votesArray: Vote[] = [];
   const excludedVotes = [];
@@ -167,7 +167,7 @@ const calculateSuggestedPoints = (currentTicket?: Ticket | null): SuggestedResul
     }
   }
 
-  if (pointOptions === PointingSchemes.tshirt) {
+  if (pointOptions.scheme === PointingSchemes.tshirt) {
     let total = 0;
 
     for (const vote of votesArray) {

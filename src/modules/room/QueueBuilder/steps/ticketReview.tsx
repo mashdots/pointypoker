@@ -189,10 +189,10 @@ const TicketReview = ({
   } = useStore(({
     preferences,
     room,
-    setCurrentModal,
+    closeModal,
   }) => ({
-    closeModal: () => setCurrentModal(null),
-    pointScheme: preferences.pointScheme?.scheme ?? PointingSchemes.fibonacci,
+    closeModal,
+    pointScheme: preferences.pointScheme ?? { scheme: PointingSchemes.fibonacci },
     roomName: room?.name,
   }));
   const {
@@ -328,7 +328,7 @@ const TicketReview = ({
     },
   ];
 
-  const pointingSchemeString = pointScheme === PointingSchemes.fibonacci
+  const pointingSchemeString = pointScheme.scheme === PointingSchemes.fibonacci
     ? 'the Fibonacci sequence' : 'sequential numbers';
 
   return (
