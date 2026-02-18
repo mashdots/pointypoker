@@ -97,15 +97,15 @@ const DistributionPanel = (props: GridPanelProps) => {
   const {
     currentTicket,
     shouldShowVotes,
-    voteData,
+    voteData = [],
   } = useTickets();
-  const { sequence, exclusions } = getPointOptions(currentTicket?.pointOptions);
+  const { scheme, ...pointingConfig } = currentTicket?.pointOptions || {};
+  const { sequence, exclusions } = getPointOptions(scheme, pointingConfig);
 
   const hasConsensus = useMemo(() => (
     shouldShowVotes
-      && voteData.length > 0
-      && voteData.every(({ vote }) => !!vote && vote === voteData[ 0 ].vote)
-  ), [voteData]);
+      && new Set(voteData.map(({ vote }) => vote)).size === 1
+  ), [shouldShowVotes, voteData]);
 
   const voteCounts = useMemo(() => voteData.reduce((acc: { [key: string]: number }, { vote }) => {
     if (isVoteCast(vote)) {
@@ -136,8 +136,10 @@ const DistributionPanel = (props: GridPanelProps) => {
       </StatContainer>
     );
   }), [
+    sequence,
     voteCounts,
-    voteData,
+    voteData.length,
+    exclusions,
     shouldShowVotes,
   ]);
 

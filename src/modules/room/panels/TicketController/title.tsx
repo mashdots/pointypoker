@@ -15,6 +15,7 @@ import { useJira } from '@modules/integrations';
 import { QueuedJiraTicket } from '@modules/integrations/jira/types';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/types';
+import { PointScheme } from '@yappy/types/estimation';
 
 import { useTickets } from '../../hooks';
 
@@ -92,7 +93,11 @@ const Title = ({ shouldFocus, value }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const setIsFocused = useStore(({ setTitleInputFocus }) => setTitleInputFocus);
+  const { setIsFocused, preferredPointScheme } = useStore(({ preferences, setTitleInputFocus }) =>
+    ({
+      preferredPointScheme: preferences?.pointScheme,
+      setIsFocused: setTitleInputFocus,
+    }) );
   const {
     buildJiraUrl,
     isConfigured: isJiraConfigured,
@@ -108,6 +113,7 @@ const Title = ({ shouldFocus, value }: Props) => {
         estimationFieldId: pointField?.id ?? '',
         id: ticketDetail.key,
         name: ticketDetail.fields.summary,
+        pointOptions: preferredPointScheme as PointScheme,
         sprint: ticketDetail.fields.sprint,
         type: ticketDetail.fields.issuetype,
         url: buildJiraUrl(ticketDetail.key),
@@ -121,6 +127,7 @@ const Title = ({ shouldFocus, value }: Props) => {
     }
   }, [
     getIssueDetail,
+    preferredPointScheme,
     getPointFieldFromBoardId,
     buildJiraUrl,
     handleCreatePredefinedTicket,
