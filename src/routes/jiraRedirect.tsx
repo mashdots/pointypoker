@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useMemo,
   useState,
@@ -10,7 +10,8 @@ import Check from '@assets/icons/check.svg?react';
 import LoadingIcon from '@assets/icons/loading-circle.svg?react';
 import Error from '@assets/icons/plus.svg?react';
 import { useJira } from '@modules/integrations';
-import { JiraAuthData } from '@modules/integrations/jira/types';
+import { JiraResourceData } from '@modules/integrations/jira/types';
+import { useAuthorizedUser } from '@modules/user';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/types';
 
@@ -113,13 +114,14 @@ const UnderText = styled.p`
   text-align: center;
 `;
 
+
 const JiraRedirect = () => {
   const [status, setStatus] = useState(STATUS.LOADING);
-  const { access, setAccess } = useStore(({ preferences, setPreference }) => ({
-    access: preferences?.jiraAccess,
-    setAccess: (access: JiraAuthData) => setPreference('jiraAccess', access),
-  }));
-  const { getAccessTokenFromApi } = useJira();
+  const { setResources } = useStore(({ setPreference }) => (
+    { setResources: (resources: JiraResourceData | null) => setPreference('jiraResources', resources) }
+  ));
+  const { getAccessibleResources } = useJira();
+  const { userId } = useAuthorizedUser();
 
   const mainComponent = useMemo(() => {
     switch (status) {
@@ -149,38 +151,31 @@ const JiraRedirect = () => {
     }
   }, [status]);
 
-  const handleGetAccessToken = async (code: string) => {
-    try {
-      const response = await getAccessTokenFromApi(code);
-      response.expires_at = Date.now() + response.expires_in * 1000;
-      setAccess(response);
-      setStatus(STATUS.SUCCESS);
-    } catch (error) {
-      console.error(error);
-      setStatus(STATUS.ERROR);
-    }
-  };
-
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
+    const getResources = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
 
-    if (access) {
-      setStatus(STATUS.SUCCESS);
-    } else if (code) {
-      handleGetAccessToken(code);
-    } else {
-      setStatus(STATUS.ERROR);
-    }
-  }, []);
+      try {
+        const resourcesResponse: JiraResourceData = await getAccessibleResources(code);
 
-  useEffect(() => {
-    if ([STATUS.SUCCESS, STATUS.ERROR].includes(status)){
-      setTimeout(() => {
-        window.close();
-      }, 2000);
+        setResources(resourcesResponse);
+        setStatus(STATUS.SUCCESS);
+
+        window.opener.postMessage({
+          type: 'jiraAuthSuccess',
+          userId,
+        }, window.location.origin );
+      } catch (error) {
+        console.error(error);
+        setStatus(STATUS.ERROR);
+      }
+    };
+
+    if (userId) {
+      getResources();
     }
-  }, [status]);
+  }, [userId]);
 
   return (
     <Wrapper>

@@ -1,16 +1,17 @@
 import {
-  useCallback,
-  useEffect,
   useMemo,
   useState,
   JSX,
+  useRef,
+  useEffect,
+  useCallback,
 } from 'react';
 
 import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
-import { JiraResourceData } from '@modules/integrations/jira/types';
 import { Separator } from '@modules/preferences/panes/common';
 import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
+import { useAuthorizedUser } from '@modules/user';
 import { isDev } from '@utils';
 import useStore from '@utils/store';
 
@@ -30,14 +31,19 @@ import {
   Wrapper,
 } from './components';
 
+
+const TRUSTED_ORIGINS = ['http://localhost:5173', 'https://pointypoker.dev'];
+
+
 const JiraIntegrationCard = () => {
+  const redirectWindowRef = useRef<Window | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const { userId } = useAuthorizedUser();
   const {
     isConfigured,
     accessToken,
     resources,
-    setResources,
     revokeAccess,
   } = useStore(({ preferences, setPreference }) => ({
     accessToken: preferences?.jiraAccess?.access_token,
@@ -48,20 +54,42 @@ const JiraIntegrationCard = () => {
       setPreference('jiraResources', null);
       setPreference('jiraPreferences', null);
     },
-    setResources: (resources: JiraResourceData | null) => setPreference('jiraResources', resources),
   }));
+
   const {
     isConnected,
     launchJiraOAuth,
-    getAccessibleResources,
   } = useJira();
   const { syncPrefsToStore } = usePreferenceSync();
 
-  const eventListenerMethod = useCallback((event: StorageEvent) => {
-    if (event.key === 'jiraAccess') {
-      syncPrefsToStore();
+  /**
+   * Listens for messages from the Jira OAuth redirect window. Validates the
+   * origin and userId before syncing preferences and closing the window. These
+   * extra checks ensure we're executing based on specific payloads from known
+   * sources.
+   */
+  const eventListener = useCallback((e: MessageEvent) => {
+    const { data, origin } = e;
+    if (!TRUSTED_ORIGINS.includes(origin)) {
+      console.warn('Rejected message from untrusted origin:', origin);
+      return;
     }
-  }, [syncPrefsToStore]);
+
+    if (data?.userId && data?.userId !== userId) {
+      console.warn('Rejected message for different user:', data?.userId);
+      return;
+    }
+
+    if (data?.type === 'jiraAuthSuccess') {
+      syncPrefsToStore();
+      setIsLoading(false);
+      setIsError(false);
+      setTimeout(() => {
+        redirectWindowRef.current?.close();
+      }, 2000);
+    }
+  }, [userId, syncPrefsToStore] );
+
 
   const button = useMemo(() => {
     if (isConfigured && resources) {
@@ -84,8 +112,11 @@ const JiraIntegrationCard = () => {
       <Button
         onClick={() => {
           setIsLoading(true);
-          launchJiraOAuth();
-          addEventListener('storage', eventListenerMethod);
+          redirectWindowRef.current = launchJiraOAuth() ?? null;
+
+          if (redirectWindowRef.current) {
+            window.addEventListener('message', eventListener);
+          }
         }}
         noMargin
         variation={buttonVariation as 'info' | 'warning' | 'error'}
@@ -104,7 +135,7 @@ const JiraIntegrationCard = () => {
     isLoading,
     isConnected,
     launchJiraOAuth,
-    eventListenerMethod,
+    eventListener,
   ]);
 
 
@@ -163,32 +194,17 @@ const JiraIntegrationCard = () => {
   );
 
   useEffect(() => {
-    const handleFetchResources = async () => {
-      setIsLoading(true);
-
-      try {
-        const result: JiraResourceData = await getAccessibleResources();
-        setResources(result);
-        setIsError(false);
-        removeEventListener('storage', eventListenerMethod);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        setResources(null);
-        setIsError(true);
-      }
-
-      setIsLoading(false);
-    };
-
-    if (isConfigured && !resources) {
-      handleFetchResources();
+    if (isConfigured && resources) {
+      window.removeEventListener('message', eventListener);
     }
+
+    return () => {
+      window.removeEventListener('message', eventListener);
+    };
   }, [
+    eventListener,
     isConfigured,
     resources,
-    getAccessibleResources,
-    setResources,
-    eventListenerMethod,
   ]);
 
   return (

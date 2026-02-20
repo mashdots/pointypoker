@@ -88,7 +88,7 @@ const useJira = () => {
 
     const url = buildUrl(URL_ACTIONS.AUTHORIZE, { userId });
 
-    window.open(
+    return window.open(
       url,
       'targetWindow',
       optionsString,
@@ -102,7 +102,7 @@ const useJira = () => {
    * @param isRefresh whether or not we are passing a refresh token. Required by the Jira API.
    * @returns Axios API Client
    */
-  const getAccessTokenFromApi = (authorization: string, isRefresh = false) => {
+  const getAccessTokenFromApi = async (authorization: string, isRefresh = false) => {
     const url = `https://${JIRA_SUBDOMAINS.AUTH}.${ATLASSIAN_URL}`;
     const data: Partial<JiraAuthPayload> = {
       client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
@@ -122,34 +122,49 @@ const useJira = () => {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    return accessClient
-      .post(`/${URL_ACTIONS.OAUTH}`, data)
-      .then((res) => res.data)
-      .catch((error) => {
-        throw new Error(error);
-      });
+    try {
+      const response = await accessClient.post(`/${URL_ACTIONS.OAUTH}`, data);
+      return response.data;
+    } catch (error) {
+
+      // @ts-expect-error - Jira's error response is not typed, so we have to ignore it
+      throw new Error(error);
+    }
   };
 
-  const getJiraAccessToken = useCallback(async (forceRefresh?: boolean) => {
-    if (access) {
-      if (!isExpired && !forceRefresh) {
+  const getJiraAccessToken = useCallback(async (authorizationCode?: string | null) => {
+    let finalToken = authorizationCode;
+    let isRefresh = false;
+
+    if (access && !finalToken) {
+      if (!isExpired) {
         return access.access_token;
       } else {
-        const response = await getAccessTokenFromApi(access.refresh_token, true);
-        response.expires_at = Date.now() + response.expires_in * 1000;
-        setAccess(response);
-        return response.access_token;
+        isRefresh = true;
+        finalToken = access.refresh_token;
       }
     }
+
+    if (finalToken) {
+      const response = await getAccessTokenFromApi(finalToken, isRefresh);
+      response.expires_at = Date.now() + response.expires_in * 1000;
+      setAccess(response);
+
+      return response.access_token;
+    }
+
+    return null;
   }, [
     access,
     isExpired,
     setAccess,
   ]);
 
-  const getAccessibleResources = useCallback(async () => {
-    if (access) {
-      const accessToken = await getJiraAccessToken(true);
+  const getAccessibleResources = useCallback(async (code?: string | null) => {
+    const finalAccessToken = code;
+
+    const accessToken = await getJiraAccessToken(finalAccessToken);
+    if (accessToken) {
       const client = getJiraApiClient(API_URL, accessToken);
 
       return client
@@ -164,7 +179,7 @@ const useJira = () => {
           throw new Error(error);
         });
     }
-  }, [access, getJiraAccessToken]);
+  }, [getJiraAccessToken]);
 
   /**
    * Query methods
