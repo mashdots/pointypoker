@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { getCookie, setCookie } from './cookies';
 import generateRoomName from './room';
 import createUserPayload from './user';
 
@@ -30,8 +29,6 @@ export {
   createUserPayload,
   generateRoomName,
   getRandomInt,
-  getCookie,
-  setCookie,
   usePrevious,
   isDev,
   wait,
