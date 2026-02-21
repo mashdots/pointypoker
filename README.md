@@ -46,6 +46,28 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
   - DevOps updates
   - Bug fixes
 
+### Major Version History
+
+| Version | Date       | Description                                                                                     |
+|---------|------------|-------------------------------------------------------------------------------------------------|
+|v4       | <kbd>TBD</kdb>        | Complete overhaul, with goal of focus and simplicity. This involves a new design that establishes UI domains, cleaner and more consistent UI components, more robust features around creating and importing tickets, and a clear separation of components and modules. This also involves rethinking the structure of underlying data.  |
+|v3       | 2025-07-27 | More design updates. API changes that broke backward "compatibility". |
+|v2       | 2024-09-16 | Major redesign, introducing new UI and enhanced features including JIRA integration and ticket queues. |
+| v1       | 2024-05-19 | Initial release of Codename Yappy, featuring core functionalities such as room creation, voting, and real-time results display. |
+
+#### v4 Ideology
+
+The goal of v4 is to focus on simplicity and ease of use. With this comes a cleaner design, established and reliable UI components, and established domain of components.
+
+What does this mean? It defines layers of components based on intent, from handling "business" logic, to UI components, to utility components. This translates to a cleaner design from the user's perspective, and a clear hierarchy of components from the developer's perspective. To achieve this, we'll start by establishing broader terms that will influence how files and components are structured:
+
+- **Modules**: These are the structural components that implement the "business logic" that drives the application. Examples include: room management, ticket card management, etc.
+- **Hooks**: These are custom React hooks that encapsulate reusable logic and state management, allowing for cleaner and more maintainable code. Hooks should be exhaustive and abstract as much logic as possible from components. Examples include ticket data management (which leverages Firebase, importing from Jira, processing ticket data, etc.).
+- **Components**: These are the UI components that are used to build the user interface. They are reusable and can be composed together to create the various screens and features of the app. Examples include: buttons, modals, forms, etc.
+- **Assets**: These are more or less static files that are used in the app, such as icons, images, fonts, etc.
+
+Each of these will live in their own directory within `src`, and will be organized in a way that promotes clarity and maintainability.
+
 ## Z-Index Guidelines
 
 To maintain consistency in layering UI components, the following z-index guidelines will be followed:
