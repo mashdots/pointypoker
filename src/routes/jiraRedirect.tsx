@@ -160,12 +160,15 @@ const JiraRedirect = () => {
         const resourcesResponse: JiraResourceData = await getAccessibleResources(code);
 
         setResources(resourcesResponse);
+        localStorage.setItem('jiraAuthSuccess', 'true');
         setStatus(STATUS.SUCCESS);
-
         window.opener.postMessage({
           type: 'jiraAuthSuccess',
           userId,
-        }, window.location.origin );
+        }, window.location.origin);
+        setTimeout(() => {
+          window.close();
+        }, 2000);
       } catch (error) {
         console.error(error);
         setStatus(STATUS.ERROR);

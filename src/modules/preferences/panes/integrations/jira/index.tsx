@@ -4,7 +4,6 @@ import {
   JSX,
   useRef,
   useEffect,
-  useCallback,
 } from 'react';
 
 import { Button } from '@components/common';
@@ -36,7 +35,8 @@ const TRUSTED_ORIGINS = ['http://localhost:5173', 'https://pointypoker.dev'];
 
 
 const JiraIntegrationCard = () => {
-  const redirectWindowRef = useRef<Window | null>(null);
+  const redirectWindowRef = useRef<Window | null | undefined>(undefined);
+  const eventListenerRef = useRef<EventListener | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const { userId } = useAuthorizedUser();
@@ -62,33 +62,6 @@ const JiraIntegrationCard = () => {
   } = useJira();
   const { syncPrefsToStore } = usePreferenceSync();
 
-  /**
-   * Listens for messages from the Jira OAuth redirect window. Validates the
-   * origin and userId before syncing preferences and closing the window. These
-   * extra checks ensure we're executing based on specific payloads from known
-   * sources.
-   */
-  const eventListener = useCallback((e: MessageEvent) => {
-    const { data, origin } = e;
-    if (!TRUSTED_ORIGINS.includes(origin)) {
-      console.warn('Rejected message from untrusted origin:', origin);
-      return;
-    }
-
-    if (data?.userId && data?.userId !== userId) {
-      console.warn('Rejected message for different user:', data?.userId);
-      return;
-    }
-
-    if (data?.type === 'jiraAuthSuccess') {
-      syncPrefsToStore();
-      setIsLoading(false);
-      setIsError(false);
-      setTimeout(() => {
-        redirectWindowRef.current?.close();
-      }, 2000);
-    }
-  }, [userId, syncPrefsToStore] );
 
 
   const button = useMemo(() => {
@@ -115,7 +88,7 @@ const JiraIntegrationCard = () => {
           redirectWindowRef.current = launchJiraOAuth() ?? null;
 
           if (redirectWindowRef.current) {
-            window.addEventListener('message', eventListener);
+            window.addEventListener('message', eventListenerRef.current!);
           }
         }}
         noMargin
@@ -130,12 +103,11 @@ const JiraIntegrationCard = () => {
     );
   }, [
     isConfigured,
-    resources,
+    isConnected,
     isError,
     isLoading,
-    isConnected,
     launchJiraOAuth,
-    eventListener,
+    resources,
   ]);
 
 
@@ -194,18 +166,38 @@ const JiraIntegrationCard = () => {
   );
 
   useEffect(() => {
+    eventListenerRef.current = ((e: MessageEvent) => {
+      const { data, origin } = e;
+      if (!TRUSTED_ORIGINS.includes(origin)) {
+        console.warn('Rejected message from untrusted origin:', origin);
+        return;
+      }
+
+      if (data?.userId && data?.userId !== userId) {
+        console.warn('Rejected message for different user:', data?.userId);
+        return;
+      }
+
+      if (data?.type === 'jiraAuthSuccess') {
+        syncPrefsToStore();
+        setIsLoading(false);
+        setIsError(false);
+      }
+    }) as EventListener;
+  }, [userId, syncPrefsToStore]);
+
+  useEffect(() => {
     if (isConfigured && resources) {
-      window.removeEventListener('message', eventListener);
+      window.removeEventListener('message', eventListenerRef.current!);
     }
 
+  }, [isConfigured, resources]);
+
+  useEffect(() => {
     return () => {
-      window.removeEventListener('message', eventListener);
+      window.removeEventListener('storage', eventListenerRef.current!);
     };
-  }, [
-    eventListener,
-    isConfigured,
-    resources,
-  ]);
+  }, []);
 
   return (
     <IntegrationCard
