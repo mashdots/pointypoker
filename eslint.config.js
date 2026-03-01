@@ -1,6 +1,5 @@
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
 
 import { defineConfig, globalIgnores } from 'eslint/config';
 import sort from 'eslint-plugin-sort';
@@ -20,7 +19,6 @@ export default defineConfig([
     extends: [
       'js/recommended',
       'tseslint/recommended',
-      'reactRefresh/vite',
       reactHooks.configs.flat.recommended,
       react.configs.flat['jsx-runtime'],
     ],
@@ -44,7 +42,6 @@ export default defineConfig([
       js,
       react,
       reactHooks,
-      reactRefresh,
       sort,
       tseslint,
     },

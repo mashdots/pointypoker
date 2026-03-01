@@ -24,6 +24,7 @@
       "@services/*": ["./src/services/*"],
       "@yappy/types": ["./src/types"],
       "@yappy/types/*": ["./src/types/*"],
+      "@v4/*": ["./src/v4/*"],
       "@utils": ["./src/utils"],
       "@utils/*": ["./src/utils/*"],
     }
