@@ -21,6 +21,8 @@ const usePrevious = <T>(value: T): T | null => {
   return ref.current;
 };
 
+const isV4Experience = () => import.meta.env.VITE_VERSION?.includes('v4');
+
 const isDev = import.meta.env.MODE === 'development';
 
 const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -31,5 +33,6 @@ export {
   getRandomInt,
   usePrevious,
   isDev,
+  isV4Experience,
   wait,
 };

@@ -3,10 +3,8 @@ export type FlagContext = {
   getFeatureFlag: (flag: FlagName) => boolean;
 };
 
-const REDESIGN = 'feature-monocard';
+export const flagNames = [] as const;
 
-export const flagNames = [REDESIGN] as const;
-
-const flags = { REDESIGN };
+const flags = { };
 
 export default flags;

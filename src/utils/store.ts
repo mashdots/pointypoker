@@ -25,15 +25,13 @@ type Store = {
   setPrefsInitialized: () => void;
 };
 
-const useStore = create<Store>((set) => ({
+const useStore = create<Store>((set, get) => ({
   arePrefsInitialized: false,
   clearRoom: () => set(() => ({ room: null })),
   closeModal: () => set(() => ({ currentModal: null })),
   currentModal: null,
   experimentFlags: {},
-  getFlag: (flag): boolean => {
-    return useStore.getState().experimentFlags[ flag ] || false;
-  },
+  getFlag: (flag): boolean => get().experimentFlags[ flag ] ?? false,
   isMenuOpen: false,
   isTitleInputFocused: false,
   preferences: {},

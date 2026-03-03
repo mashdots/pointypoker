@@ -18,7 +18,8 @@ import usePreferenceSync from '@modules/preferences/hooks';
 import { AuthProvider } from '@modules/user';
 import { usePostHog } from '@posthog/react';
 import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
-import flags, { FlagName } from '@utils/flags';
+import { isV4Experience } from '@utils';
+import { FlagName } from '@utils/flags';
 import useStore from '@utils/store';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
@@ -54,11 +55,8 @@ const Root: FC = () => {
   const [isPosthogInitialized, setIsPosthogInitialized] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { isInV4Experience, setFlag } = useStore(({ getFlag, setFlag }) => (
-    {
-      isInV4Experience: getFlag(flags.REDESIGN),
-      setFlag,
-    }));
+  const { setFlag } = useStore(({ setFlag }) => (
+    { setFlag }));
   const { theme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();

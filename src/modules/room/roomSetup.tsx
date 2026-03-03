@@ -23,8 +23,7 @@ import {
   updateRoom,
   watchRoom,
 } from '@services/firebase';
-import { generateRoomName } from '@utils';
-import flags from '@utils/flags';
+import { generateRoomName, isV4Experience } from '@utils';
 import useStore from '@utils/store';
 import {
   Participant,
@@ -76,14 +75,11 @@ const RoomSetup = () => {
     isObserver,
     roomData,
     setRoom,
-    isInV4Experience,
   } = useStore(({
     preferences,
     room,
     setRoom,
-    getFlag,
   }) => ({
-    isInV4Experience: getFlag(flags.REDESIGN),
     isObserver: preferences?.isObserver ?? false,
     roomData: room,
     setRoom,
@@ -145,7 +141,7 @@ const RoomSetup = () => {
       joinedAt: Date.now(),
       name: user.name,
     };
-    const newRoom: RoomSetupType<typeof isInV4Experience> = isInV4Experience ?
+    const newRoom: RoomSetupType<ReturnType<typeof isV4Experience>> = isV4Experience() ?
       {
         createdAt: Timestamp.now(),
         currentIssue: null,
@@ -178,7 +174,6 @@ const RoomSetup = () => {
     setIsLoadingRoom(false);
 
   }, [
-    isInV4Experience,
     handleJoinRoom,
     isObserver,
     user,
@@ -259,10 +254,6 @@ const RoomSetup = () => {
     document.title = 'pointy poker';
   }, []);
 
-  const roomPresenterElement = useMemo(() => (
-    isInV4Experience ? <SessionUI /> : <RoomPresenter />
-  ), [isInV4Experience]);
-
   return (
     <Container heightDiff={refHeight}>
       <AnimatePresence mode='wait'>
@@ -292,7 +283,7 @@ const RoomSetup = () => {
           {
             isRoomOpen ? (
               <RoomWrapper>
-                {roomPresenterElement}
+                {isV4Experience() ? <SessionUI /> : <RoomPresenter />}
               </RoomWrapper>
             ) : (
               <SetupWrapper>

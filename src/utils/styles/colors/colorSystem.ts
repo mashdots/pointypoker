@@ -5,6 +5,7 @@ import {
 } from 'react';
 
 import * as colors from '@radix-ui/colors';
+import { isV4Experience } from '@utils';
 import flags from '@utils/flags';
 import {
   ColorCollectionType,
@@ -108,12 +109,12 @@ const buildColorAssociation = (
 const buildTheme = (
   theme: ThemeColors,
   mode: THEME_MODES,
-  isInV4Experience: boolean = false,
+  isV4Experience: boolean = false,
 ): Theme => {
   const finalColorMode = ACTUAL_THEME_MODES[mode] as ActualThemeMode;
   const builtTheme = {} as Theme;
 
-  if (isInV4Experience) {
+  if (isV4Experience) {
     console.log('V4 theme building');
   }
 
@@ -155,16 +156,13 @@ const useTheme = (): HookReturnType => {
     setThemeMode,
     isThemeModeSetBySystem,
     setIsThemeModeSetByUser,
-    isInV4Experience,
   } = useStore(({
     arePrefsInitialized,
     preferences,
     setPreference,
-    getFlag,
   }) => (
     {
       arePrefsInitialized,
-      isInV4Experience: getFlag(flags.REDESIGN),
       isThemeModeSetBySystem: preferences?.themeModeController !== THEME_MODE_CONTROLLER.USER,
       selectedTheme: preferences?.theme,
       selectedThemeMode: preferences?.themeMode,
@@ -189,13 +187,9 @@ const useTheme = (): HookReturnType => {
     return buildTheme(
       themes[ finalTheme ],
       themeMode,
-      isInV4Experience,
+      isV4Experience(),
     );
-  }, [
-    selectedTheme,
-    themeMode,
-    isInV4Experience,
-  ]);
+  }, [selectedTheme, themeMode]);
 
   const themeOptions: ThemeOption[] = useMemo(() => Object.values(THEMES).map((theme) => {
     const colors = buildTheme(themes[ theme ], themeMode);
