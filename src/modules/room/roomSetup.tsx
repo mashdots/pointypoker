@@ -8,7 +8,7 @@ import {
   useState,
   useTransition,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { Timestamp } from 'firebase/firestore';
 import isEqual from 'lodash/isEqual';

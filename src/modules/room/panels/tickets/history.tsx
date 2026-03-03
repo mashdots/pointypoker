@@ -1,6 +1,6 @@
 import { div as TicketRow } from 'motion/react-client';
 import { useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import styled, { css } from 'styled-components';
 import { parseURL } from 'whatwg-url';

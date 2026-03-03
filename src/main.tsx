@@ -1,18 +1,21 @@
 import { PostHogProvider } from 'posthog-js/react';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+} from 'react-router';
 
 import posthog from 'posthog-js';
-
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 import {
   JiraRedirect,
   Privacy,
   Root,
   Switcher,
-} from './routes';
+} from '@routes/index';
+import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 import './index.css';
 
@@ -24,34 +27,18 @@ posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
 });
 
 
-const router = createBrowserRouter([
-  {
-    children: [
-      {
-        element: <Switcher />,
-        path: '',
-      },
-      {
-        element: <Switcher />,
-        path: '/:roomName',
-      },
-      {
-        element: <JiraRedirect />,
-        path: JIRA_REDIRECT_PATH,
-      },
-      {
-        element: <Privacy />,
-        path: '/privacy',
-      },
-    ],
-    element: <Root />,
-    path: '/',
-  },
-]);
-
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<React.StrictMode>
   <PostHogProvider client={posthog} >
-    <RouterProvider router={router} />
+    {/* <RouterProvider router={router} /> */}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Root />}>
+          <Route index element={<Switcher />} />
+          <Route path=":roomName" element={<Switcher />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path={JIRA_REDIRECT_PATH} element={<JiraRedirect />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </PostHogProvider>
 </React.StrictMode>);

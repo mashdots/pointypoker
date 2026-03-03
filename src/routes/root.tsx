@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router';
 
 import styled, { ThemeProvider } from 'styled-components';
 

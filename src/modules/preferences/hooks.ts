@@ -52,7 +52,7 @@ export type PreferencesType = {
   user?: User | null;
 };
 
-const getPrefFromLocalStorage = (key: string): GenericPrefType | undefined => {
+const getPrefFromLocalStorage = (key: string): GenericPrefType => {
   const storedPref = localStorage.getItem(key);
   if (storedPref) {
     return JSON.parse(storedPref);

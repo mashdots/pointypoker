@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { ThemedProps } from '@utils/styles/colors/types';
 
-import { useAuth } from '../../modules/user';
+import { useAuth } from '@modules/user';
 
 const Wrapper = styled.div<ThemedProps>`
   display: flex;
