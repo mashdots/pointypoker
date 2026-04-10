@@ -4,6 +4,7 @@ import { MODAL_TYPES } from '@modules/modal';
 import { PreferencesType } from '@modules/preferences/hooks';
 import { FlagName } from '@utils/flags';
 import { Room } from '@yappy/types';
+import Session from '@yappy/types/session';
 
 type Store = {
   preferences: PreferencesType;
@@ -11,6 +12,9 @@ type Store = {
   room: Room | null;
   setRoom: (arg: Room | null) => void;
   clearRoom: () => void;
+  session: Session | null;
+  setSession: (arg: Session | null) => void;
+  clearSession: () => void;
   experimentFlags: { [ key: string ]: boolean };
   setFlag: (flag: FlagName, value: boolean) => void;
   getFlag: (flag: string) => boolean;
@@ -28,6 +32,7 @@ type Store = {
 const useStore = create<Store>((set, get) => ({
   arePrefsInitialized: false,
   clearRoom: () => set(() => ({ room: null })),
+  clearSession: () => set(() => ({ session: null })),
   closeModal: () => set(() => ({ currentModal: null })),
   currentModal: null,
   experimentFlags: {},
@@ -36,6 +41,7 @@ const useStore = create<Store>((set, get) => ({
   isTitleInputFocused: false,
   preferences: {},
   room: null,
+  session: null,
   setCurrentModal: (newModal) => set(() => ({ currentModal: newModal })),
   setFlag: (flag, value) => set((state) => ({
     experimentFlags: {
@@ -54,6 +60,7 @@ const useStore = create<Store>((set, get) => ({
   )),
   setPrefsInitialized: () => set(() => ({ arePrefsInitialized: true })),
   setRoom: (newRoom) => set(() => ({ room: newRoom })),
+  setSession: (newSession) => set(() => ({ session: newSession })),
   setTitleInputFocus: (isFocused) => set(() => ({ isTitleInputFocused: isFocused })),
 }));
 

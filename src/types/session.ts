@@ -8,7 +8,7 @@ import { Participant } from './user';
 type Session = {
   createdAt: Timestamp;
   currentIssue: string | null;
-  estimations: Estimation[];
+  estimations: { [userId: string]: Estimation };
   expiresAt: Timestamp;
   history: string[];
   issues: {
