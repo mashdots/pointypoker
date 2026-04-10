@@ -11,7 +11,6 @@ import { Outlet, useLocation } from 'react-router';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Header from '@components/Header';
-import ControlBar from '@modules/ControlBar';
 import Menu from '@modules/menu';
 import Modal from '@modules/modal';
 import usePreferenceSync from '@modules/preferences/hooks';
@@ -23,6 +22,7 @@ import { FlagName } from '@utils/flags';
 import useStore from '@utils/store';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
+import RootContainer from '@v4/modules';
 
 import '../App.css';
 
@@ -64,11 +64,13 @@ const Root: FC = () => {
     location.pathname !== JIRA_REDIRECT_PATH
   ), [location.pathname]);
 
-  // Initialization and subscription to PostHog feature flags
+  /** Initialization and subscription to PostHog feature flags */
   useEffect(() => {
     if (posthog) {
       if (!isPosthogInitialized) {
-        posthog.setPersonProperties({ deployVersion: import.meta.env.VITE_VERSION });
+        const deployVersion = import.meta.env.VITE_VERSION;
+        posthog.setPersonProperties({ deployVersion });
+        localStorage.setItem('lastRunVersion', JSON.stringify(deployVersion));
         setIsPosthogInitialized(true);
       } else {
         posthog.onFeatureFlags((_, variants) => {
@@ -84,43 +86,30 @@ const Root: FC = () => {
     setFlag,
   ]);
 
-  const menuBarComponent = useMemo(() => isInV4Experience
-    ? null
-    : (
-      <Header
-        headerRef={headerRef}
-        hideMenu={!shouldShowMenu}
-        isMenuOpen={isMenuOpen}
-        toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
-      />
-    ), [
-    isInV4Experience,
-    isMenuOpen,
-    shouldShowMenu,
-  ]);
-
-  const controlComponent = useMemo(() => isInV4Experience
-    ? <ControlBar />
-    : null, [isInV4Experience] );
-
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <Container>
-            {menuBarComponent}
+        {isV4Experience() ? <RootContainer /> : (
+          <ThemeProvider theme={theme}>
             <GlobalStyles/>
-            <Modal />
-            <Menu
-              closeMenu={() => setIsMenuOpen(false)}
-              isOpen={shouldShowMenu && isMenuOpen}
-            />
-            <ChildrenWrapper>
-              <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
-            </ChildrenWrapper>
-            {controlComponent}
-          </Container>
-        </ThemeProvider>
+            <Container>
+              <Header
+                headerRef={headerRef}
+                hideMenu={!shouldShowMenu}
+                isMenuOpen={isMenuOpen}
+                toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
+              />
+              <Modal />
+              <Menu
+                closeMenu={() => setIsMenuOpen(false)}
+                isOpen={shouldShowMenu && isMenuOpen}
+              />
+              <ChildrenWrapper>
+                <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
+              </ChildrenWrapper>
+            </Container>
+          </ThemeProvider>
+        )}
       </AuthProvider>
     </ErrorBoundary>
   );
