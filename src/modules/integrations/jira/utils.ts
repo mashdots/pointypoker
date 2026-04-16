@@ -1,4 +1,4 @@
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+import { ROUTE_PATHS } from '@routes/constants';
 
 type UrlOptions = {
   avatarId?: number;
@@ -74,7 +74,7 @@ const buildUrl = (action: URL_ACTIONS, options?: UrlOptions) => {
         audience: `${JIRA_SUBDOMAINS.API}.${ATLASSIAN_URL}`,
         client_id: import.meta.env.VITE_JIRA_CLIENT_ID,
         prompt: 'consent',
-        redirect_uri: `${window.location.origin}${JIRA_REDIRECT_PATH}`,
+        redirect_uri: `${window.location.origin}${ROUTE_PATHS.JIRA_REDIRECT}`,
         response_type: 'code',
         scope: jiraPermissionScopes.join(' '),
         state: userId,

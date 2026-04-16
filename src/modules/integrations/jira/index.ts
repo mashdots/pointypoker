@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useAuthorizedUser } from '@modules/user';
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+import { ROUTE_PATHS } from '@routes/constants';
 import createApiClient, { getJiraApiClient } from '@utils/axios';
 import { blobToBase64 } from '@utils/room';
 import useStore from '@utils/store';
@@ -112,7 +112,7 @@ const useJira = () => {
 
     if (!isRefresh) {
       (data as InitialAuth).code = authorization;
-      (data as InitialAuth).redirect_uri = `${ window.location.origin }${ JIRA_REDIRECT_PATH }`;
+      (data as InitialAuth).redirect_uri = `${ window.location.origin }${ ROUTE_PATHS.JIRA_REDIRECT }`;
     } else {
       (data as RefreshAuth).refresh_token = authorization;
     }

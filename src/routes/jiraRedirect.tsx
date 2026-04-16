@@ -15,7 +15,6 @@ import { useAuthorizedUser } from '@modules/user';
 import useStore from '@utils/store';
 import { ThemedProps } from '@utils/styles/colors/types';
 
-export const JIRA_REDIRECT_PATH = '/jira-redirect';
 
 enum STATUS {
   LOADING = 'loading',

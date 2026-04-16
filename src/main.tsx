@@ -9,14 +9,13 @@ import {
 
 import posthog from 'posthog-js';
 
-import { MantineProvider } from '@mantine/core';
+import { ROUTE_PATHS } from '@routes/constants';
 import {
   JiraRedirect,
   Privacy,
   Root,
   Switcher,
 } from '@routes/index';
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
 
 import './index.css';
 import '@mantine/core/styles.css';
@@ -30,17 +29,15 @@ posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<React.StrictMode>
   <PostHogProvider client={posthog} >
-    <MantineProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Root />}>
-            <Route index element={<Switcher />} />
-            <Route path=":roomName" element={<Switcher />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path={JIRA_REDIRECT_PATH} element={<JiraRedirect />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </MantineProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Root />}>
+          <Route index element={<Switcher />} />
+          <Route path={ROUTE_PATHS.ROOM} element={<Switcher />} />
+          <Route path={ROUTE_PATHS.PRIVACY} element={<Privacy />} />
+          <Route path={ROUTE_PATHS.JIRA_REDIRECT} element={<JiraRedirect />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </PostHogProvider>
 </React.StrictMode>);
