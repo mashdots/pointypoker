@@ -11,12 +11,13 @@ import { Outlet, useLocation } from 'react-router';
 import styled, { ThemeProvider } from 'styled-components';
 
 import Header from '@components/Header';
+import { MantineProvider } from '@mantine/core';
 import Menu from '@modules/menu';
 import Modal from '@modules/modal';
 import usePreferenceSync from '@modules/preferences/hooks';
 import { AuthProvider } from '@modules/user';
 import { usePostHog } from '@posthog/react';
-import { JIRA_REDIRECT_PATH } from '@routes/jiraRedirect';
+import { ROUTE_PATHS } from '@routes/constants';
 import { isV4Experience } from '@utils';
 import { FlagName } from '@utils/flags';
 import useStore from '@utils/store';
@@ -57,11 +58,15 @@ const Root: FC = () => {
 
   const { setFlag } = useStore(({ setFlag }) => (
     { setFlag }));
-  const { theme } = useTheme();
+  const {
+    mantineConfig,
+    theme,
+    themeMode,
+  } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const shouldShowMenu = useMemo(() => (
-    location.pathname !== JIRA_REDIRECT_PATH
+    location.pathname !== ROUTE_PATHS.JIRA_REDIRECT
   ), [location.pathname]);
 
   /** Initialization and subscription to PostHog feature flags */
@@ -89,27 +94,34 @@ const Root: FC = () => {
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <AuthProvider>
-        {isV4Experience() ? <RootContainer /> : (
-          <ThemeProvider theme={theme}>
-            <GlobalStyles/>
-            <Container>
-              <Header
-                headerRef={headerRef}
-                hideMenu={!shouldShowMenu}
-                isMenuOpen={isMenuOpen}
-                toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
-              />
-              <Modal />
-              <Menu
-                closeMenu={() => setIsMenuOpen(false)}
-                isOpen={shouldShowMenu && isMenuOpen}
-              />
-              <ChildrenWrapper>
-                <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
-              </ChildrenWrapper>
-            </Container>
-          </ThemeProvider>
-        )}
+        <MantineProvider
+          defaultColorScheme={'auto'}
+          forceColorScheme={themeMode}
+          theme={mantineConfig}
+        >
+          {isV4Experience() ? <RootContainer /> : (
+            <ThemeProvider theme={theme}>
+              <GlobalStyles/>
+              <Container>
+                <Header
+                  headerRef={headerRef}
+                  hideMenu={!shouldShowMenu}
+                  isMenuOpen={isMenuOpen}
+                  toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
+                />
+                <Modal />
+                <Menu
+                  closeMenu={() => setIsMenuOpen(false)}
+                  isOpen={shouldShowMenu && isMenuOpen}
+                />
+                <ChildrenWrapper>
+                  <Outlet context={{ refHeight: headerRef?.current?.clientHeight ?? 0 } satisfies ContextType} />
+                </ChildrenWrapper>
+              </Container>
+            </ThemeProvider>
+          )}
+        </MantineProvider>
+
       </AuthProvider>
     </ErrorBoundary>
   );
