@@ -4503,6 +4503,11 @@ resolve@^2.0.0-next.5:
     path-parse "^1.0.7"
     supports-preserve-symlinks-flag "^1.0.0"
 
+respinner@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/respinner/-/respinner-5.0.0.tgz#f24de3f8bf62f70f2639c51629b9a9a1736b65a1"
+  integrity sha512-XBc5qXyVMv8tNMpyDOPVTUVlqJKe53zJwsmPGyjSIzouoLO2M7sJkY7qyRYs+KIDxeJJ5ie25qGhvX/I3DH4lg==
+
 rollup@^4.43.0:
   version "4.60.1"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-4.60.1.tgz#b4aa2bcb3a5e1437b5fad40d43fe42d4bde7a42d"
