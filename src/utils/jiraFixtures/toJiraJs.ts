@@ -1,0 +1,149 @@
+import { AgileModels } from 'jira.js/agile';
+import { Version3Models } from 'jira.js/version3';
+
+import { JiraField } from '@modules/integrations/jira/types';
+
+import {
+  FixtureIssue,
+  FixtureSeed,
+  FixtureSprint,
+  resolveIssue,
+  resolvePointField,
+} from './scenarios';
+
+/**
+ * Adapters mapping a shape-neutral `FixtureSeed` into the `jira.js` SDK return
+ * types consumed by the v4 hook. Objects are built to be structurally faithful
+ * and cast to the SDK model types (whose deep shapes are almost entirely
+ * optional), so fixtures satisfy the same contracts as real client calls.
+ */
+
+const toSprint = (sprint: FixtureSprint): AgileModels.Sprint => ({
+  goal: sprint.goal,
+  id: sprint.id,
+  name: sprint.name,
+  originBoardId: sprint.originBoardId,
+  self: `https://api.atlassian.com/rest/agile/1.0/sprint/${sprint.id}`,
+  state: sprint.state,
+});
+
+const toIssueFields = (seed: FixtureSeed, issue: FixtureIssue) => {
+  const sprint = seed.sprints.find((s) => s.id === issue.sprintId) ?? seed.sprints[0];
+  const pointField = resolvePointField(seed);
+
+  const fields: Record<string, unknown> = {
+    issuetype: {
+      avatarId: issue.issueType.avatarId,
+      description: issue.issueType.description,
+      iconUrl: issue.issueType.iconUrl,
+      id: issue.issueType.id,
+      name: issue.issueType.name,
+      subtask: false,
+    },
+    sprint: sprint ? toSprint(sprint) : null,
+    summary: issue.summary,
+  };
+
+  if (pointField) {
+    fields[pointField.id] = issue.points;
+  }
+
+  return fields;
+};
+
+const toAgileIssue = (seed: FixtureSeed, issue: FixtureIssue) => ({
+  fields: toIssueFields(seed, issue),
+  id: issue.id,
+  key: issue.key,
+  self: `https://api.atlassian.com/rest/agile/1.0/issue/${issue.id}`,
+});
+
+export const buildJiraJsFixtures = (seed: FixtureSeed) => ({
+  getBoardConfiguration: async (boardId: number): Promise<AgileModels.GetConfiguration> => ({
+    estimation: {
+      field: {
+        displayName: resolvePointField(seed)?.name ?? 'Story Points',
+        fieldId: seed.estimationFieldId,
+      },
+      type: 'field',
+    },
+    id: Number(boardId),
+    name: seed.boards.find((b) => b.id === Number(boardId))?.name ?? 'Fixture Board',
+    self: `https://api.atlassian.com/rest/agile/1.0/board/${boardId}/configuration`,
+    type: 'scrum',
+  }),
+
+  getBoards: async (maxResults = 25, name?: string): Promise<AgileModels.GetAllBoards> => {
+    const filtered = name
+      ? seed.boards.filter((b) => b.name.toLowerCase().includes(name.toLowerCase()))
+      : seed.boards;
+    const page = filtered.slice(0, maxResults);
+
+    return {
+      isLast: true,
+      maxResults,
+      startAt: 0,
+      total: filtered.length,
+      values: page.map((board) => ({
+        id: board.id,
+        name: board.name,
+        self: `https://api.atlassian.com/rest/agile/1.0/board/${board.id}`,
+        type: 'scrum',
+      })) as AgileModels.Board[],
+    };
+  },
+
+  getIssueDetail: async (key: string): Promise<Version3Models.Issue> => {
+    const issue = resolveIssue(seed, key);
+    return {
+      fields: toIssueFields(seed, issue),
+      id: issue.id,
+      key: issue.key,
+      self: `https://api.atlassian.com/rest/api/3/issue/${issue.id}`,
+    } as unknown as Version3Models.Issue;
+  },
+
+  getIssueFields: async (): Promise<Version3Models.FieldDetails[]> =>
+    seed.fields.map((field) => ({
+      clauseNames: [field.id],
+      custom: field.custom,
+      id: field.id,
+      key: field.id,
+      name: field.name,
+      navigable: true,
+      orderable: true,
+      schema: { type: field.custom ? 'number' : 'string' },
+      searchable: true,
+    })) as Version3Models.FieldDetails[],
+
+  getIssuesForBoard: async (
+    _boardId: number,
+    pointField?: JiraField | null,
+    startAt = 0,
+  ): Promise<AgileModels.SearchResults> => {
+    const issues = pointField
+      ? seed.issues.filter((issue) => issue.points === null)
+      : seed.issues;
+
+    return {
+      expand: 'schema,names',
+      issues: issues.map((issue) => toAgileIssue(seed, issue)) as AgileModels.SearchResults['issues'],
+      maxResults: 100,
+      startAt,
+      total: issues.length,
+    };
+  },
+
+  getSprintsForBoard: async (boardId: number, startAt = 0) => {
+    const sprints = seed.sprints.filter((s) => s.originBoardId === Number(boardId));
+    return {
+      isLast: true,
+      maxResults: 50,
+      startAt,
+      total: sprints.length,
+      values: sprints.map(toSprint),
+    };
+  },
+
+  writePointValue: async (): Promise<void> => undefined,
+});

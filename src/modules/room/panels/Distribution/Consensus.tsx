@@ -53,7 +53,7 @@ const AnimatedText = styled.h1<{ isPresented: boolean }>`
   }
 `;
 
-let timeout: number;
+let timeout: ReturnType<typeof setTimeout>;
 
 const Consensus = () => {
   const [isPresented, setIsPresented] = useState(false);

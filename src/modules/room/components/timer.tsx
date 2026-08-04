@@ -34,11 +34,11 @@ const buildDurationString = ({ minutes, seconds }: DurationObject) => {
 
 const Timer = ({ startTime, endTime = null }: Props) => {
   const [time, setTime] = React.useState('');
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (startTime) {
-      clearInterval(intervalRef.current as number);
+      clearInterval(intervalRef.current ?? undefined);
 
       intervalRef.current = setInterval(() => {
         const start = DateTime.fromMillis(startTime);
@@ -53,7 +53,7 @@ const Timer = ({ startTime, endTime = null }: Props) => {
     }
 
     return () => {
-      clearInterval(intervalRef.current as number);
+      clearInterval(intervalRef.current ?? undefined);
     };
   }, [startTime, endTime]);
 

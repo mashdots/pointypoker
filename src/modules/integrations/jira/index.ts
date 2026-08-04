@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useAuthorizedUser } from '@modules/user';
 import { ROUTE_PATHS } from '@routes/constants';
 import createApiClient, { getJiraApiClient } from '@utils/axios';
+import { getLegacyFixtures } from '@utils/jiraFixtures';
 import { blobToBase64 } from '@utils/room';
 import useStore from '@utils/store';
 
@@ -45,21 +46,30 @@ const useJira = () => {
     isExpired,
     resources,
     setAccess,
+    useFixtures,
+    fixtureScenario,
   } = useStore(({ preferences, setPreference }) => {
     const {
       jiraAccess,
       jiraResources,
       jiraPreferences,
+      useJiraFixtures,
+      jiraFixtureScenario,
     } = preferences;
     return {
       access: jiraAccess,
-      isConfigured: !!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard,
-      isConnected: !!jiraAccess && !!jiraResources,
+      fixtureScenario: jiraFixtureScenario,
+      // Fixture mode takes precedence over token state without clearing tokens.
+      isConfigured: !!useJiraFixtures || (!!jiraAccess && !!jiraResources && !!jiraPreferences?.defaultBoard),
+      isConnected: !!useJiraFixtures || (!!jiraAccess && !!jiraResources),
       isExpired: Date.now() >= (preferences?.jiraAccess?.expires_at ?? 0),
       resources: jiraResources,
       setAccess: (access: JiraAuthData) => setPreference('jiraAccess', access),
+      useFixtures: !!useJiraFixtures,
     };
   });
+
+  const fixtures = useFixtures ? getLegacyFixtures(fixtureScenario) : null;
 
   const buildJiraUrl = (ticketKey: string) => `${resources?.url ?? ''}/browse/${ticketKey}`;
 
@@ -161,6 +171,10 @@ const useJira = () => {
   ]);
 
   const getAccessibleResources = useCallback(async (code?: string | null) => {
+    if (useFixtures) {
+      return getLegacyFixtures(fixtureScenario).getAccessibleResources();
+    }
+
     const finalAccessToken = code;
 
     const accessToken = await getJiraAccessToken(finalAccessToken);
@@ -179,13 +193,19 @@ const useJira = () => {
           throw new Error(error);
         });
     }
-  }, [getJiraAccessToken]);
+  }, [
+    getJiraAccessToken,
+    useFixtures,
+    fixtureScenario,
+  ]);
 
   /**
    * Query methods
   */
 
   const getBoards = async (maxResults = 25, name?: string) => {
+    if (fixtures) return fixtures.getBoards(maxResults, name);
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_BOARDS, { resourceId: resources?.id });
@@ -206,6 +226,8 @@ const useJira = () => {
   };
 
   const getBoardConfiguration = async (boardId: string | number) => {
+    if (fixtures) return fixtures.getBoardConfiguration(boardId);
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_BOARD_CONFIGURATION, {
@@ -224,6 +246,8 @@ const useJira = () => {
   };
 
   const getIssueFields = async () => {
+    if (fixtures) return fixtures.getIssueFields();
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_FIELDS, { resourceId: resources?.id });
@@ -240,6 +264,8 @@ const useJira = () => {
   };
 
   const getSprintsForBoard = async (boardId: string | number, startAt = 0) => {
+    if (fixtures) return fixtures.getSprintsForBoard(boardId, startAt);
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_SPRINTS, {
@@ -266,6 +292,12 @@ const useJira = () => {
     pointField?: JiraField | null,
     startAt = 0,
   ) => {
+    if (fixtures) return fixtures.getIssuesForBoard(
+      boardId,
+      pointField,
+      startAt,
+    );
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.GET_ISSUES_NO_JQL, {
@@ -306,6 +338,8 @@ const useJira = () => {
   };
 
   const getIssueDetail = async (key: string, pointField?: JiraField | null) => {
+    if (fixtures) return fixtures.getIssueDetail(key);
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.ISSUE, {
@@ -339,6 +373,8 @@ const useJira = () => {
   };
 
   const getAvatars = async (avatarData: { [key: string]: number }) => {
+    if (fixtures) return fixtures.getAvatars(avatarData);
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const promises = Object.entries(avatarData).map(([issueType, avatarId]) => {
@@ -396,6 +432,8 @@ const useJira = () => {
     value: number,
     fieldId: string,
   ) => {
+    if (fixtures) return fixtures.writePointValue();
+
     const accessToken = await getJiraAccessToken();
     const client = getJiraApiClient(API_URL, accessToken);
     const path = buildUrl(URL_ACTIONS.ISSUE, {

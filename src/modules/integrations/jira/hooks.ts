@@ -10,6 +10,7 @@ const useJiraScopeCheck = () => {
     storedJiraPermissionsScope,
     revokeAccess,
     openReAuthenticationModal,
+    useFixtures,
   } = useStore(({
     preferences,
     setPreference,
@@ -20,9 +21,13 @@ const useJiraScopeCheck = () => {
       setPreference('jiraAccess', null);
     },
     storedJiraPermissionsScope: preferences.jiraAccess?.scope.split(' ').sort(),
+    useFixtures: !!preferences.useJiraFixtures,
   }));
 
   useEffect(() => {
+    // Fixture mode never triggers the scope-drift revoke / reauth modal.
+    if (useFixtures) return;
+
     if (storedJiraPermissionsScope) {
       const requiredScopes = [...jiraPermissionScopes].sort();
 
@@ -35,6 +40,7 @@ const useJiraScopeCheck = () => {
     storedJiraPermissionsScope,
     revokeAccess,
     openReAuthenticationModal,
+    useFixtures,
   ]);
 };
 

@@ -145,7 +145,7 @@ const RoomSetup = () => {
       {
         createdAt: Timestamp.now(),
         currentIssue: null,
-        estimations: [],
+        estimations: {},
         expiresAt: Timestamp.fromDate(new Date(Date.now() + MONTH_IN_MS)),
         history: [],
         issues: {},

@@ -116,7 +116,7 @@ const Options = ({
   );
 };
 
-let timeout: number;
+let timeout: ReturnType<typeof setTimeout>;
 
 const OptionPicker = ({
   idPrefix,

@@ -25,3 +25,8 @@ dist-ssr
 .env
 public/
 *.cache
+
+# TypeScript build artifacts from the vite.config node project
+vite.config.d.ts
+vite.config.js
+*.tsbuildinfo

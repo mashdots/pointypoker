@@ -1,3 +1,3 @@
-import FlowContainer from '@modules/room/TicketFlow/FlowContainer';
+import FlowContainer from './FlowContainer';
 
 export default FlowContainer;

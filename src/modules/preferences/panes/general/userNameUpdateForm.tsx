@@ -11,7 +11,7 @@ import { User, RoomUpdateObject } from '@yappy/types';
 
 import { VerticalContainer } from '../common';
 
-let timeout: number;
+let timeout: ReturnType<typeof setTimeout>;
 
 const UserNameUpdateForm = () => {
   const { user } = useAuth();

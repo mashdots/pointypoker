@@ -2,16 +2,103 @@ import { useCallback } from 'react';
 
 import {
   JiraAuthData,
-  JiraField,
   JiraResourceData,
 } from '@modules/integrations/jira/types';
 import { ROUTE_PATHS } from '@routes/constants';
+import { getJiraJsFixtures } from '@utils/jiraFixtures';
 import useStore from '@utils/store';
 import { useJiraContext } from '@v4/providers/JiraProvider';
+import {
+  BoardOption,
+  ImportableIssue,
+  IssueDetail,
+  PointField,
+  SprintOption,
+} from '@v4/types/jira';
 
 import { exchangeToken } from '../providers/jira.utils';
 
 const ATLASSIAN_API_URL = 'https://api.atlassian.com';
+
+/**
+ * Minimal structural shapes for the parts of the jira.js / fixture responses we
+ * actually read. Keeps the mapping honest without importing SDK model types.
+ */
+type RawBoard = {
+  id?: number;
+  name?: string;
+};
+
+type RawSprint = {
+  id?: number;
+  name?: string;
+  state?: string;
+};
+
+type RawIssueSprint = {
+  goal?: string;
+  id?: number;
+  name?: string;
+  originBoardId?: number;
+  state?: string;
+};
+
+type RawIssueType = {
+  avatarId?: number;
+  iconUrl?: string;
+  id?: string;
+  name?: string;
+};
+
+type RawIssue = {
+  key?: string;
+  fields?: {
+    issuetype?: RawIssueType;
+    sprint?: RawIssueSprint;
+    summary?: string;
+  };
+};
+
+const toBoardOption = (board: RawBoard): BoardOption => ({
+  id: board.id ?? 0,
+  name: board.name ?? '',
+});
+
+const toSprintOption = (sprint: RawSprint): SprintOption => ({
+  id: sprint.id ?? 0,
+  name: sprint.name ?? '',
+  state: sprint.state,
+});
+
+const toIssueDetail = (issue: RawIssue, baseUrl: string): IssueDetail => {
+  const fields = issue.fields ?? {};
+  const issueType = fields.issuetype ?? {};
+  const key = issue.key ?? '';
+  const sprint = fields.sprint;
+
+  return {
+    iconUrl: issueType.iconUrl,
+    isParent: (issueType.name ?? '').toLowerCase() === 'epic',
+    key,
+    sprint: sprint
+      ? {
+        goal: sprint.goal,
+        id: sprint.id ?? 0,
+        name: sprint.name ?? '',
+        originBoardId: sprint.originBoardId,
+        state: sprint.state,
+      }
+      : undefined,
+    summary: fields.summary ?? key,
+    type: {
+      avatarId: issueType.avatarId,
+      iconUrl: issueType.iconUrl,
+      id: issueType.id ?? '',
+      name: issueType.name ?? '',
+    },
+    url: baseUrl ? `${baseUrl}/browse/${key}` : undefined,
+  };
+};
 
 const useJira = () => {
   const {
@@ -24,17 +111,20 @@ const useJira = () => {
     userId,
     setJiraAccess,
     setJiraResources,
+    useFixtures,
+    fixtureScenario,
   } = useStore(({ preferences, setPreference }) => ({
+    fixtureScenario: preferences.jiraFixtureScenario,
     jiraResources: preferences.jiraResources,
     setJiraAccess: (access: JiraAuthData | null) => setPreference('jiraAccess', access),
     setJiraResources: (resources: JiraResourceData | null) => setPreference('jiraResources', resources),
+    useFixtures: !!preferences.useJiraFixtures,
     userId: preferences.user?.id ?? null,
   }));
 
-  const buildJiraUrl = useCallback((ticketKey: string) => {
-    const base = jiraResources?.url ?? '';
-    return `${base}/browse/${ticketKey}`;
-  }, [jiraResources]);
+  const baseUrl = jiraResources?.url ?? '';
+
+  const buildJiraUrl = useCallback((ticketKey: string) => `${baseUrl}/browse/${ticketKey}`, [baseUrl]);
 
   /**
    * Auth
@@ -95,39 +185,84 @@ const useJira = () => {
   }, [setJiraAccess, setJiraResources]);
 
   /**
-   * Data fetching
+   * Internal helpers (SDK/fixture shapes stay inside the hook)
    */
 
-  const getBoards = useCallback(async (maxResults = 25, name?: string) => {
-    if (!client) throw new Error('Jira client not initialized');
-
-    return client.agile.board.getAllBoards({
-      maxResults,
-      name,
-    });
-  }, [client]);
-
   const getBoardConfiguration = useCallback(async (boardId: number) => {
+    if (useFixtures) return getJiraJsFixtures(fixtureScenario).getBoardConfiguration(boardId);
     if (!client) throw new Error('Jira client not initialized');
 
     return client.agile.board.getConfiguration({ boardId });
-  }, [client]);
+  }, [
+    client,
+    useFixtures,
+    fixtureScenario,
+  ]);
 
-  const getSprintsForBoard = useCallback(async (boardId: number, startAt = 0) => {
+  const getIssueFields = useCallback(async () => {
+    if (useFixtures) return getJiraJsFixtures(fixtureScenario).getIssueFields();
     if (!client) throw new Error('Jira client not initialized');
 
-    return client.agile.board.getAllSprints({
-      boardId,
-      startAt,
-      state: 'future',
-    });
-  }, [client]);
+    return client.v3.fields.getFields();
+  }, [
+    client,
+    useFixtures,
+    fixtureScenario,
+  ]);
+
+  /**
+   * Data fetching — returns V4 DTOs, never SDK/legacy shapes.
+   */
+
+  const getBoards = useCallback(async (maxResults = 25, name?: string): Promise<BoardOption[]> => {
+    const result = useFixtures
+      ? await getJiraJsFixtures(fixtureScenario).getBoards(maxResults, name)
+      : await (client
+        ? client.agile.board.getAllBoards({
+          maxResults,
+          name,
+        })
+        : Promise.reject(new Error('Jira client not initialized')));
+
+    return (result.values ?? []).map((board) => toBoardOption(board as RawBoard));
+  }, [
+    client,
+    useFixtures,
+    fixtureScenario,
+  ]);
+
+  const getSprintsForBoard = useCallback(async (boardId: number, startAt = 0): Promise<SprintOption[]> => {
+    const result = useFixtures
+      ? await getJiraJsFixtures(fixtureScenario).getSprintsForBoard(boardId, startAt)
+      : await (client
+        ? client.agile.board.getAllSprints({
+          boardId,
+          startAt,
+          state: 'future',
+        })
+        : Promise.reject(new Error('Jira client not initialized')));
+
+    return (result.values ?? []).map((sprint) => toSprintOption(sprint as RawSprint));
+  }, [
+    client,
+    useFixtures,
+    fixtureScenario,
+  ]);
 
   const getIssuesForBoard = useCallback(async (
     boardId: number,
-    pointField?: JiraField | null,
+    pointField?: PointField | null,
     startAt = 0,
-  ) => {
+  ): Promise<ImportableIssue[]> => {
+    if (useFixtures) {
+      const result = await getJiraJsFixtures(fixtureScenario).getIssuesForBoard(
+        boardId,
+        pointField,
+        startAt,
+      );
+      return (result.issues ?? []).map((issue) => toIssueDetail(issue as RawIssue, baseUrl));
+    }
+
     if (!client) throw new Error('Jira client not initialized');
 
     const fields = [
@@ -146,16 +281,28 @@ const useJira = () => {
       fields.push(pointField.id);
     }
 
-    return client.agile.board.getIssuesForBoard({
+    const result = await client.agile.board.getIssuesForBoard({
       boardId,
       fields,
       jql,
       maxResults: 100,
       startAt,
     });
-  }, [client]);
 
-  const getIssueDetail = useCallback(async (key: string, pointField?: JiraField | null) => {
+    return (result.issues ?? []).map((issue) => toIssueDetail(issue as RawIssue, baseUrl));
+  }, [
+    client,
+    baseUrl,
+    useFixtures,
+    fixtureScenario,
+  ]);
+
+  const getIssueDetail = useCallback(async (key: string,pointField?: PointField | null): Promise<IssueDetail> => {
+    if (useFixtures) {
+      const issue = await getJiraJsFixtures(fixtureScenario).getIssueDetail(key);
+      return toIssueDetail(issue as RawIssue, baseUrl);
+    }
+
     if (!client) throw new Error('Jira client not initialized');
 
     const fields = [
@@ -169,35 +316,31 @@ const useJira = () => {
     ];
     if (pointField) fields.push(pointField.id);
 
-    return client.v3.issues.getIssue({
+    const issue = await client.v3.issues.getIssue({
       fields,
       issueIdOrKey: key,
     });
-  }, [client]);
 
-  const getIssueFields = useCallback(async () => {
-    if (!client) throw new Error('Jira client not initialized');
+    return toIssueDetail(issue as RawIssue, baseUrl);
+  }, [
+    client,
+    baseUrl,
+    useFixtures,
+    fixtureScenario,
+  ]);
 
-    return client.v3.fields.getFields();
-  }, [client]);
-
-  const getPointFieldFromBoardId = useCallback(async (boardId: number): Promise<JiraField | undefined> => {
+  const getPointFieldFromBoardId = useCallback(async (boardId: number): Promise<PointField | undefined> => {
     const [config, fields] = await Promise.all([getBoardConfiguration(boardId), getIssueFields()]);
 
     const estimationFieldId = config.estimation?.field?.fieldId;
-    type FieldLike = {
-      id: string;
-      name: string;
-    };
-    const match = (fields as FieldLike[]).find((f) => f.id === estimationFieldId);
+    const match = (fields as PointField[]).find((field) => field.id === estimationFieldId);
 
     if (!match) return undefined;
 
-    const result: JiraField = {
+    return {
       id: match.id,
       name: match.name,
     };
-    return result;
   }, [getBoardConfiguration, getIssueFields]);
 
   /**
@@ -209,21 +352,24 @@ const useJira = () => {
     value: number,
     fieldId: string,
   ) => {
+    if (useFixtures) return getJiraJsFixtures(fixtureScenario).writePointValue();
     if (!client) throw new Error('Jira client not initialized');
 
     return client.v3.issues.editIssue({
       fields: { [fieldId]: value },
       issueIdOrKey: issueKey,
     });
-  }, [client]);
+  }, [
+    client,
+    useFixtures,
+    fixtureScenario,
+  ]);
 
   return {
     buildJiraUrl,
     connectWithCode,
-    getBoardConfiguration,
     getBoards,
     getIssueDetail,
-    getIssueFields,
     getIssuesForBoard,
     getPointFieldFromBoardId,
     getSprintsForBoard,

@@ -1,19 +1,25 @@
-import { useCallback, useMemo } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { serverTimestamp, Timestamp } from 'firebase/firestore';
 import { v4 as uuid } from 'uuid';
 
-import { JiraTicket } from '@modules/integrations/jira/types';
 import { isVoteCast } from '@modules/room/utils';
 import useStore from '@utils/store';
+import { ImportableIssue } from '@v4/types/jira';
 import { calculate, CalculationResult } from '@v4/utils/calculations';
 import Estimation from '@yappy/types/estimation';
 import Issue from '@yappy/types/issue';
+import Session from '@yappy/types/session';
 import { Participant } from '@yappy/types/user';
 
+import useData from './useData';
 import useJira from './useJira';
-import useRoom from './useRoom';
-import useStorage from './useStorage';
+import useSession from './useSession';
 
 const SESSIONS_COLLECTION = 'sessions';
 
@@ -23,9 +29,31 @@ type VoteEntry = {
   participant: Participant;
 };
 
+/**
+ * Returns the id of the participant who cast the latest vote for the given
+ * issue, or null if there are no cast votes. Ties (equal timestamps) break by
+ * higher userId so every client resolves the same winner — this is what gates
+ * the auto-reveal to a single writer.
+ */
+const getLastVoterId = (session: Session | null, issueId: string): string | null => {
+  const votes = Object.values(session?.estimations ?? {})
+    .filter((estimation) => estimation.issueID === issueId && isVoteCast(estimation.value));
+
+  if (!votes.length) return null;
+
+  return votes.reduce((latest, estimation) => {
+    const latestMs = latest.timestamp.toMillis();
+    const currentMs = estimation.timestamp.toMillis();
+
+    if (currentMs > latestMs) return estimation;
+    if (currentMs === latestMs && estimation.userId > latest.userId) return estimation;
+    return latest;
+  }).userId;
+};
+
 const useTickets = () => {
-  const storage = useStorage();
-  const { session, sessionName } = useRoom();
+  const storage = useData();
+  const { session, sessionName } = useSession();
   const { writePointValue } = useJira();
 
   const user = useStore((state) => state.preferences.user ?? null);
@@ -115,7 +143,7 @@ const useTickets = () => {
       value,
     };
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { [`estimations.${user.id}`]: estimation },
@@ -143,7 +171,7 @@ const useTickets = () => {
   const revealVotes = useCallback(async () => {
     if (!sessionName || !currentIssue) return;
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { [`issues.${currentIssue.id}.votingEndedAt`]: serverTimestamp() },
@@ -154,10 +182,30 @@ const useTickets = () => {
     storage,
   ]);
 
+  // Auto-reveal once every eligible participant has voted. Only the client that
+  // cast the last vote writes the reveal, so exactly one write happens; the ref
+  // guards against a repeat write before `votingEndedAt` propagates back.
+  const autoRevealedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!currentIssue || !user || !areAllVotesCast || shouldShowVotes) return;
+    if (autoRevealedRef.current === currentIssue.id) return;
+    if (getLastVoterId(session, currentIssue.id) !== user.id) return;
+
+    autoRevealedRef.current = currentIssue.id;
+    revealVotes();
+  }, [
+    areAllVotesCast,
+    shouldShowVotes,
+    currentIssue,
+    session,
+    user,
+    revealVotes,
+  ]);
+
   const setOverrideValue = useCallback(async (issueId: string, value: string | number) => {
     if (!sessionName) return;
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { [`issues.${issueId}.overrideValue`]: value },
@@ -186,7 +234,7 @@ const useTickets = () => {
       updates['currentIssue'] = id;
     }
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       updates,
@@ -210,7 +258,7 @@ const useTickets = () => {
       upcoming: (session.upcoming ?? []).filter((id) => id !== nextIssue?.id),
     };
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       updates,
@@ -227,7 +275,7 @@ const useTickets = () => {
   const skipIssue = useCallback(async () => {
     if (!sessionName || !currentIssue) return;
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { [`issues.${currentIssue.id}.calculatedValue`]: 'skip' },
@@ -255,7 +303,7 @@ const useTickets = () => {
 
     const newUpcoming = [...(session.upcoming ?? []), ...issues.map((i) => i.id)];
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       {
@@ -272,7 +320,7 @@ const useTickets = () => {
   const removeFromQueue = useCallback(async (issueId: string) => {
     if (!sessionName || !session) return;
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { upcoming: (session.upcoming ?? []).filter((id) => id !== issueId) },
@@ -286,7 +334,7 @@ const useTickets = () => {
   const reorderQueue = useCallback(async (orderedIds: string[]) => {
     if (!sessionName) return;
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { upcoming: orderedIds },
@@ -296,7 +344,7 @@ const useTickets = () => {
   const setCurrentIssue = useCallback(async (issueId: string) => {
     if (!sessionName) return;
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { currentIssue: issueId },
@@ -307,27 +355,21 @@ const useTickets = () => {
    * Jira bridge
    */
 
-  const importFromJira = useCallback(async (jiraTickets: JiraTicket[]) => {
+  const importFromJira = useCallback(async (importable: ImportableIssue[]) => {
     if (!user) return;
 
-    const issues: Issue[] = jiraTickets.map((ticket) => ({
+    const issues: Issue[] = importable.map((item) => ({
       createdAt: Timestamp.now(),
       creatorId: user.id,
       external: {
         persistedToRemote: false,
         source: 'jira',
-        sprint: ticket.sprint,
-        type: {
-          ...ticket.type,
-          icon: {
-            contentType: ticket.type.icon.contentType,
-            data: ticket.type.icon.blobData,
-          },
-        },
-        url: ticket.url,
+        sprint: item.sprint,
+        type: item.type,
+        url: item.url ?? '',
       },
-      id: ticket.id,
-      name: ticket.name ?? ticket.id,
+      id: item.key,
+      name: item.summary || item.key,
       votingEndedAt: null,
     }));
 
@@ -351,7 +393,7 @@ const useTickets = () => {
       fieldId,
     );
 
-    await storage.update(
+    await storage.patch(
       SESSIONS_COLLECTION,
       sessionName,
       { [`issues.${issueId}.external.persistedToRemote`]: true },

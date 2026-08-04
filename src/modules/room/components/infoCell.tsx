@@ -15,7 +15,7 @@ export type InfoCellProps = {
   label: string;
 };
 
-let timeout: number;
+let timeout: ReturnType<typeof setTimeout>;
 
 const InfoCell = ({
   icon,

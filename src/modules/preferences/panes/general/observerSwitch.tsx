@@ -8,7 +8,7 @@ import { RoomUpdateObject } from '@yappy/types';
 
 import { SettingsRow, VerticalContainer } from '../common';
 
-let timeout: number;
+let timeout: ReturnType<typeof setTimeout>;
 
 const ObserverSwitch = () => {
   const { userId } = useAuthorizedUser();

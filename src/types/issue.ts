@@ -1,32 +1,11 @@
 import { Timestamp } from 'firebase/firestore';
 
-import { JiraSprint } from '@modules/integrations/jira/types';
+import type { ExternalReference } from './external';
 
 type MessageData = {
   authorId: string;
   content: string;
   createdAt: Timestamp;
-};
-
-type IssueType = {
-  avatarId: number;
-  description: string;
-  iconUrl: string;
-  id: string;
-  name: string;
-  icon: {
-    contentType: string;
-    data: string;
-  }
-};
-
-type ExternalData = {
-  source: string;
-  sprint?: JiraSprint;
-  parent?: Issue;
-  type: IssueType;
-  url: string;
-  persistedToRemote: boolean;
 };
 
 type Issue = {
@@ -40,7 +19,7 @@ type Issue = {
   calculatedValue?: string | number;
   overrideValue?: string | number;
   messages?: MessageData[];
-  external?: ExternalData;
+  external?: ExternalReference;
 };
 
 export default Issue;

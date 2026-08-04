@@ -6,3 +6,4 @@ export { default as TextInput } from './textInput';
 export { default as Toggle } from './toggle';
 export { default as Card } from './card';
 export * from './types';
+export type { ThemedProps } from '@utils/styles/colors/types';

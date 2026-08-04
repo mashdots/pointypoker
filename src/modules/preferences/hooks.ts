@@ -17,6 +17,7 @@ import { PointScheme } from '@yappy/types/estimation';
 const PreferenceKeys = [
   'isObserver',
   'jiraAccess',
+  'jiraFixtureScenario',
   'jiraResources',
   'jiraPreferences',
   'name',
@@ -24,6 +25,7 @@ const PreferenceKeys = [
   'theme',
   'themeMode',
   'themeModeController',
+  'useJiraFixtures',
   'user',
 ];
 
@@ -42,9 +44,11 @@ type GenericPrefType = string
 export type PreferencesType = {
   isObserver?: boolean;
   jiraAccess?: JiraAuthData | null;
+  jiraFixtureScenario?: string;
   jiraResources?: JiraResourceData | null;
   jiraPreferences?: JiraPreferences | null;
   name?: string;
+  useJiraFixtures?: boolean;
   pointScheme?: PointScheme;
   theme?: THEMES;
   themeMode?: THEME_MODES;

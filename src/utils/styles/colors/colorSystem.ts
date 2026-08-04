@@ -4,9 +4,9 @@ import {
   useMemo,
 } from 'react';
 
+import { createTheme, MantineThemeOverride } from '@mantine/core';
 import * as colors from '@radix-ui/colors';
 import { isV4Experience } from '@utils';
-import flags from '@utils/flags';
 import {
   ColorCollectionType,
   Hue,
@@ -21,7 +21,10 @@ import useStore from '../../store';
 import * as themes from './constants';
 import { THEMES, THEME_COLORS } from './constants';
 
+
+
 type HookReturnType = {
+  mantineConfig: MantineThemeOverride;
   setTheme: (theme: THEMES) => void;
   theme: Theme;
   themeMode: THEME_MODES;
@@ -191,6 +194,8 @@ const useTheme = (): HookReturnType => {
     );
   }, [selectedTheme, themeMode]);
 
+
+  const mantineConfig = createTheme({ fontFamily: 'Nunito Sans, Tahoma, sans-serif' });
   const themeOptions: ThemeOption[] = useMemo(() => Object.values(THEMES).map((theme) => {
     const colors = buildTheme(themes[ theme ], themeMode);
     return {
@@ -227,6 +232,7 @@ const useTheme = (): HookReturnType => {
   }, [arePrefsInitialized, isThemeModeSetBySystem]);
 
   return {
+    mantineConfig,
     setTheme,
     theme,
     themeMode,

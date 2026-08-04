@@ -66,7 +66,7 @@ const VoteButton = styled.button<ThemedProps & { selected: boolean }>`
       disabled,
     }) => !disabled && css`
       background-color: ${ theme.primary[selected ? 'accent8' : 'accent4'] };
-      border-color: ${ theme.primary[selected ? 'transparent' : 'accent8'] };
+      border-color: ${ selected ? 'transparent' : theme.primary.accent8 };
     `}
   }
 

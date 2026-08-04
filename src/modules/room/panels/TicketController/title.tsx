@@ -74,7 +74,7 @@ const NotTheTextInput = styled.div <{ hasTitle: boolean }>`
   transition: all 200ms;
 `;
 
-let timeout: number;
+let timeout: ReturnType<typeof setTimeout>;
 
 /**
  * Two components:

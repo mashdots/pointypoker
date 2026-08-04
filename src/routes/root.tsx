@@ -93,13 +93,14 @@ const Root: FC = () => {
 
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
-      <AuthProvider>
-        <MantineProvider
-          defaultColorScheme={'auto'}
-          forceColorScheme={themeMode}
-          theme={mantineConfig}
-        >
-          {isV4Experience() ? <RootContainer /> : (
+      <MantineProvider
+        defaultColorScheme={'auto'}
+        forceColorScheme={themeMode}
+        theme={mantineConfig}
+      >
+        {isV4Experience() ? <RootContainer /> : (
+          // v3 auth is scoped to the v3 experience; v4 owns auth via its own AuthProvider.
+          <AuthProvider>
             <ThemeProvider theme={theme}>
               <GlobalStyles/>
               <Container>
@@ -119,10 +120,9 @@ const Root: FC = () => {
                 </ChildrenWrapper>
               </Container>
             </ThemeProvider>
-          )}
-        </MantineProvider>
-
-      </AuthProvider>
+          </AuthProvider>
+        )}
+      </MantineProvider>
     </ErrorBoundary>
   );
 };

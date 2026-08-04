@@ -10,6 +10,7 @@ import { Button } from '@components/common';
 import { useJira } from '@modules/integrations';
 import { Separator } from '@modules/preferences/panes/common';
 import DefaultBoardSection from '@modules/preferences/panes/integrations/jira/defaultBoardSection';
+import FixtureModeSection from '@modules/preferences/panes/integrations/jira/fixtureModeSection';
 import { useAuthorizedUser } from '@modules/user';
 import { isDev } from '@utils';
 import useStore from '@utils/store';
@@ -207,6 +208,8 @@ const JiraIntegrationCard = () => {
       title="Jira"
       subtitle="View issues and assign points"
     >
+      <FixtureModeSection />
+      <Separator key='separator-fixtures' />
       {connectInfoBlock}
       {isConnected && [
         connectSuccessBlock,
