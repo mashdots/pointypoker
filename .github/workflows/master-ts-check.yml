@@ -40,7 +40,10 @@ jobs:
         VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
         VITE_VERSION: ${{ env.VITE_VERSION }}
 
-    - name: Deploy to preview channel
+    - name: Copy robots.txt
+      run: cp robots.txt public
+
+    - name: Deploy to beta channel
       uses: FirebaseExtended/action-hosting-deploy@v0
       with:
         repoToken: "${{ secrets.GITHUB_TOKEN }}"
