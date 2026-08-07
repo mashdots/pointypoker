@@ -9,6 +9,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    environment: beta
 
     steps:
     - name: Checkout repository
