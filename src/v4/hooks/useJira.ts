@@ -140,16 +140,16 @@ const useJira = () => {
       redirect_uri: `${window.location.origin}${ROUTE_PATHS.JIRA_REDIRECT}`,
       response_type: 'code',
       scope: [
-        'offline_access',
-        'read:board-scope.admin:jira-software',
-        'read:board-scope:jira-software',
-        'read:issue:jira-software',
-        'read:issue-details:jira',
-        'read:project:jira',
-        'read:sprint:jira-software',
-        'read:jira-work',
-        'write:jira-work',
-        'manage:jira-configuration',
+        'offline_access', // Requests a refresh token with auth
+        'read:board-scope.admin:jira-software', // board config
+        'read:board-scope:jira-software', // boards, board issues
+        'read:issue:jira-software', // issue
+        'read:issue-details:jira', // board issues
+        'read:project:jira', // boards, board config, fields
+        'read:sprint:jira-software', // board sprints
+        'read:jira-work', // fields
+        'write:jira-work', // issue update
+        'manage:jira-configuration', // enables icon fetching
       ].join(' '),
       state: userId,
     });

@@ -200,6 +200,13 @@ const JiraIntegrationCard = () => {
     };
   }, []);
 
+  const fixtureModeSection = import.meta.env.DEV ? (
+    <>
+      <FixtureModeSection />
+      <Separator key='separator-fixtures' />
+    </>
+  ) : null;
+
   return (
     <IntegrationCard
       button={button}
@@ -208,8 +215,7 @@ const JiraIntegrationCard = () => {
       title="Jira"
       subtitle="View issues and assign points"
     >
-      <FixtureModeSection />
-      <Separator key='separator-fixtures' />
+      {fixtureModeSection}
       {connectInfoBlock}
       {isConnected && [
         connectSuccessBlock,
