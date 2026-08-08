@@ -6,11 +6,8 @@ on:
       - master
 
 jobs:
-  # E2E runs for signal but does NOT gate the beta deploy (beta may ship even if
-  # e2e fails). build-and-deploy-beta intentionally does not `need` this job.
-  e2e:
-    uses: ./.github/workflows/e2e.yml
-
+  # E2E is intentionally NOT run here — it only gates production (see
+  # release-deploy.yml). Merges to master and beta deploys are never blocked by it.
   build-and-deploy-beta:
 
     runs-on: ubuntu-latest

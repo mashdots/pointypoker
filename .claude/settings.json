@@ -19,7 +19,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X DELETE \"http://127.0.0.1:4001/emulator/v1/projects/demo-yappy/databases/\\(default\\)/documents\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X DELETE \"http://127.0.0.1:4002/emulator/v1/projects/demo-yappy/accounts\")",
       "Bash(lsof -nP -iTCP:5173 -sTCP:LISTEN)",
-      "Bash(python3 -c \"import yaml,sys; [yaml.safe_load\\(open\\(f\\)\\) or print\\('OK',f\\) for f in ['.github/workflows/e2e.yml','.github/workflows/release-deploy.yml','.github/workflows/master-ts-check.yml']]\")"
+      "Bash(python3 -c \"import yaml,sys; [yaml.safe_load\\(open\\(f\\)\\) or print\\('OK',f\\) for f in ['.github/workflows/e2e.yml','.github/workflows/release-deploy.yml','.github/workflows/master-ts-check.yml']]\")",
+      "Bash(node -e \"const y=require\\('js-yaml'\\);['.github/workflows/master-ts-check.yml','.github/workflows/release-deploy.yml'].forEach\\(f=>{const d=y.load\\(require\\('fs'\\).readFileSync\\(f,'utf8'\\)\\);console.log\\('OK',f,'jobs:',Object.keys\\(d.jobs\\).join\\(','\\), '| needs:', JSON.stringify\\(d.jobs['build-and-deploy']?.needs ?? d.jobs['build-and-deploy-beta']?.needs ?? null\\)\\)}\\)\")"
     ],
     "additionalDirectories": [
       "/tmp"
