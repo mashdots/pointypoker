@@ -129,6 +129,7 @@ const VotingPanel = ({ config }: GridPanelProps) => {
   const generateVoteButtons = (voteOptions: PointOptions['sequence']) => voteOptions.map((option) => (
     <ButtonWrapper key={option}>
       <VoteButton
+        data-testid={`vote-${option}`}
         selected={myVote === option}
         onClick={() => {
           if (user) {
@@ -174,7 +175,7 @@ const VotingPanel = ({ config }: GridPanelProps) => {
   return (
     <GridPanel config={config}>
       {isObserver ? (
-        <DisabledContainer><p>voting is disabled when you are observing</p></DisabledContainer>
+        <DisabledContainer data-testid='voting-disabled'><p>voting is disabled when you are observing</p></DisabledContainer>
       ) : (
         <>
           <VoteButtonsContainer>

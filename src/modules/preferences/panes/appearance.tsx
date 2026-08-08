@@ -98,7 +98,7 @@ const AppearancePreferences = () => {
         <label>
           Color mode
         </label>
-        <Control>{themeMode}&nbsp;&nbsp;<ThemeModeToggle /></Control>
+        <Control><span data-testid='color-mode-value'>{themeMode}</span>&nbsp;&nbsp;<ThemeModeToggle id='color-mode-toggle' /></Control>
       </SettingsRow>
       <SettingsRow>
         <label>

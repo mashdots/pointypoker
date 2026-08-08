@@ -393,6 +393,7 @@ const Controls = ({ triggerFocus, setSubtitle }: Props) => {
           onMouseEnter={() => setSubtitle(caption)}
         >
           <ActionButton
+            data-testid={`ticket-action-${actions.map((a) => TICKET_ACTIONS[a]).join('-')}`}
             disabled={!!disabled && !loadingIndex}
             onClick={() => handleAction(actions, index)}
           >

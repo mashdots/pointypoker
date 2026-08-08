@@ -6,7 +6,6 @@ import useTickets from '@v4/hooks/useTickets';
 
 import ControlBar from './ControlBar';
 import { RoomUIProvider, useRoomUI } from './RoomUIContext';
-import Spotlight from './Spotlight';
 import TicketCard from './TicketCard';
 import EmptyState from './TicketCard/EmptyState';
 import Timeline from './Timeline';
@@ -23,7 +22,7 @@ const LayoutWrapper = styled.div`
 
 const RoomContent = () => {
   const { currentIssue } = useTickets();
-  const { isSpotlightOpen, isTimelineOpen } = useRoomUI();
+  const { isTimelineOpen } = useRoomUI();
 
   return (
     <LayoutWrapper>
@@ -36,10 +35,6 @@ const RoomContent = () => {
       </AnimatePresence>
 
       <ControlBar />
-
-      <AnimatePresence>
-        {isSpotlightOpen && <Spotlight key="spotlight" />}
-      </AnimatePresence>
 
       <AnimatePresence>
         {isTimelineOpen && <Timeline key="timeline" />}

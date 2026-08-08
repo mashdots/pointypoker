@@ -38,7 +38,9 @@
   ],
   "exclude": [
       "node_modules",
-      "vite.config.ts"
+      "vite.config.ts",
+      "playwright.config.ts",
+      "e2e"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

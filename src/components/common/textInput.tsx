@@ -87,6 +87,7 @@ const TextInput = ({
   alignment,
   disabled = false,
   icon,
+  id,
   inputRef,
   onChange,
   value,
@@ -132,6 +133,7 @@ const TextInput = ({
         data-1pignore="true"
         autoComplete='off'
         disabled={disabled}
+        id={id}
         ref={inputRef}
         type='text'
         align={inputAlign}

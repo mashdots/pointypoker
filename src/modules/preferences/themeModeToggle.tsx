@@ -38,7 +38,7 @@ const LightMode = styled(LightModeIcon)`
   width: 1rem;
 `;
 
-export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) => {
+export const ThemeModeToggle = ({ id, position }: { id?: string; position?: 'left' | 'right' }) => {
   const { themeMode, toggleThemeMode } = useTheme();
   const colorOverrides = {
     offBg: 'info.accent9',
@@ -47,6 +47,7 @@ export const ThemeModeToggle = ({ position }: { position?: 'left' | 'right' }) =
 
   return (
     <Toggle
+      id={id}
       isOn={themeMode !== THEME_MODES.LIGHT}
       handleToggle={toggleThemeMode}
       onIcon={<DarkMode />}

@@ -1,6 +1,7 @@
 import type { Auth, Unsubscribe } from 'firebase/auth';
 import {
   browserLocalPersistence,
+  connectAuthEmulator,
   getAuth,
   onAuthStateChanged,
   setPersistence,
@@ -25,6 +26,14 @@ const getAuthClient = (): Auth => {
   const app = getApp();
 
   client = getAuth(app);
+
+  // In e2e/test mode, point the auth client at the local emulator so tests run
+  // fully offline against a `demo-` project. Gated on a dedicated flag (not
+  // `import.meta.env.DEV`) so normal `yarn start` keeps hitting real Firebase.
+  if (import.meta.env.VITE_USE_EMULATORS === 'true') {
+    connectAuthEmulator(client, 'http://127.0.0.1:4002', { disableWarnings: true });
+  }
+
   return client;
 };
 

@@ -5,7 +5,13 @@ on:
     types: [created]
 
 jobs:
+  # E2E gate: production deploy is blocked unless this passes.
+  e2e:
+    if: startsWith(github.event.release.tag_name, 'v')
+    uses: ./.github/workflows/e2e.yml
+
   build-and-deploy:
+    needs: e2e
     if: startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
 

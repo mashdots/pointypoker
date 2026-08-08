@@ -190,6 +190,7 @@ const Title = ({ shouldFocus, value }: Props) => {
   ) : (
     <>
       <NotTheTextInput
+        data-testid='ticket-title-display'
         hasTitle={!!value}
         onClick={() => setCanEdit(true)}
       >

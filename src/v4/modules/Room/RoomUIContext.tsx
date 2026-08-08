@@ -8,10 +8,10 @@ import {
   useState,
 } from 'react';
 
+import { ModalKey, useModal } from '@v4/components/Modal';
+
 type RoomUIContextValue = {
-  closeSpotlight: () => void;
   closeTimeline: () => void;
-  isSpotlightOpen: boolean;
   isTimelineOpen: boolean;
   openSpotlight: () => void;
   toggleTimeline: () => void;
@@ -30,17 +30,17 @@ const useRoomUI = (): RoomUIContextValue => {
 };
 
 const RoomUIProvider = ({ children }: { children: ReactNode }) => {
-  const [isSpotlightOpen, setSpotlightOpen] = useState(false);
+  const {
+    activeModal,
+    openModal,
+    closeModal,
+  } = useModal();
   const [isTimelineOpen, setTimelineOpen] = useState(false);
 
   const openSpotlight = useCallback(() => {
-    setSpotlightOpen(true);
+    openModal(ModalKey.SPOTLIGHT);
     setTimelineOpen(false);
-  }, []);
-
-  const closeSpotlight = useCallback(() => {
-    setSpotlightOpen(false);
-  }, []);
+  }, [openModal]);
 
   const toggleTimeline = useCallback(() => {
     setTimelineOpen((prev) => !prev);
@@ -54,26 +54,31 @@ const RoomUIProvider = ({ children }: { children: ReactNode }) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setSpotlightOpen((prev) => !prev);
+
+        if (activeModal === ModalKey.SPOTLIGHT) {
+          closeModal();
+        } else {
+          openSpotlight();
+        }
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
 
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [
+    activeModal,
+    closeModal,
+    openSpotlight,
+  ]);
 
   const value = useMemo(() => ({
-    closeSpotlight,
     closeTimeline,
-    isSpotlightOpen,
     isTimelineOpen,
     openSpotlight,
     toggleTimeline,
   }), [
-    closeSpotlight,
     closeTimeline,
-    isSpotlightOpen,
     isTimelineOpen,
     openSpotlight,
     toggleTimeline,

@@ -7,7 +7,22 @@
       "Bash(echo \"EXIT: $?\")",
       "Bash(npx eslint *)",
       "Bash(node -e \"console.log\\(require\\('./node_modules/jira.js/package.json'\\).version\\)\")",
-      "Bash(npx tsx *)"
+      "Bash(npx tsx *)",
+      "Bash(yarn tsc *)",
+      "Bash(yarn lint *)",
+      "Bash(yarn add *)",
+      "Bash(yarn playwright *)",
+      "Bash(firebase --version)",
+      "Bash(yarn test:e2e)",
+      "Bash(lsof -nP -iTCP:4001 -iTCP:4002 -iTCP:4003 -sTCP:LISTEN)",
+      "Bash(curl -s http://127.0.0.1:4401/emulators)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X DELETE \"http://127.0.0.1:4001/emulator/v1/projects/demo-yappy/databases/\\(default\\)/documents\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X DELETE \"http://127.0.0.1:4002/emulator/v1/projects/demo-yappy/accounts\")",
+      "Bash(lsof -nP -iTCP:5173 -sTCP:LISTEN)",
+      "Bash(python3 -c \"import yaml,sys; [yaml.safe_load\\(open\\(f\\)\\) or print\\('OK',f\\) for f in ['.github/workflows/e2e.yml','.github/workflows/release-deploy.yml','.github/workflows/master-ts-check.yml']]\")"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }

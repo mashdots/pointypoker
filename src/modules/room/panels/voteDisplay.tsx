@@ -41,6 +41,7 @@ export type VoteDisplayProps = {
 type VoteCellProps = {
   isLast: boolean;
   cellMode: userModes;
+  testId?: string;
   voteData: Omit<VoteDisplayProps, 'inactive' | 'consecutiveMisses' | 'isObserver'>;
 };
 
@@ -147,7 +148,7 @@ const InactiveIcon = styled(InactiveSvg)<ThemedProps>`
   }
 `;
 
-const VoteCell = ({ voteData, cellMode }: VoteCellProps) => {
+const VoteCell = ({ voteData, cellMode, testId }: VoteCellProps) => {
   const { name, vote = 0 } = voteData;
   const previousVote = usePrevious(vote ?? 0);
 
@@ -189,6 +190,8 @@ const VoteCell = ({ voteData, cellMode }: VoteCellProps) => {
 
   return (
     <StyledVoteCell
+      data-testid={testId}
+      data-vote-state={cellMode}
       isInactive={cellMode === NON_PARTICIPANT_MODES.INACTIVE}
       isIdle={cellMode === NON_PARTICIPANT_MODES.ABSENT}
     >
@@ -308,6 +311,7 @@ const VoteDisplay = ({ config }: GridPanelProps) => {
         key={i}
         cellMode={mode}
         isLast={isLast}
+        testId={`vote-row-${participantName}`}
         voteData={{
           name,
           vote,

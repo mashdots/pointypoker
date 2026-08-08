@@ -1,6 +1,7 @@
 import {
   arrayUnion,
   collection,
+  connectFirestoreEmulator,
   doc,
   DocumentData,
   Firestore,
@@ -44,6 +45,12 @@ const getDataClient = () => {
   const app = getApp();
 
   client = getFirestore(app);
+
+  // In e2e/test mode, point Firestore at the local emulator (see auth.ts).
+  if (import.meta.env.VITE_USE_EMULATORS === 'true') {
+    connectFirestoreEmulator(client, '127.0.0.1', 4001);
+  }
+
   return client;
 };
 

@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Theme } from '@radix-ui/themes';
 import { GlobalStyles } from '@utils/styles';
 import useTheme from '@utils/styles/colors';
+import { ModalProvider } from '@v4/components/Modal';
 import ServicesProvider from '@v4/providers';
 
 const Container = styled.div`
@@ -33,11 +34,13 @@ const RootContainer = () => {
       <Theme appearance={themeMode}>
         <ThemeProvider theme={theme}>
           <GlobalStyles />
-          <Container>
-            <ChildrenWrapper>
-              <Outlet />
-            </ChildrenWrapper>
-          </Container>
+          <ModalProvider>
+            <Container>
+              <ChildrenWrapper>
+                <Outlet />
+              </ChildrenWrapper>
+            </Container>
+          </ModalProvider>
         </ThemeProvider>
       </Theme>
     </ServicesProvider>

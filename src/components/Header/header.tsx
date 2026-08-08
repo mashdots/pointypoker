@@ -107,6 +107,8 @@ const Header = ({
         <UserControl />
         {!hideMenu && (
           <MenuButton
+            data-testid='menu-button'
+            aria-label='menu'
             onClick={handleMenuButtonClick}
             isopen={`${ isMenuOpen }`}
           />

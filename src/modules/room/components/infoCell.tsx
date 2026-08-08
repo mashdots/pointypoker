@@ -44,7 +44,7 @@ const InfoCell = ({
     <Wrapper>
       <ContentContainer>
         {icon}
-        <Value shouldHide={shouldHide}>{valueData}</Value>
+        <Value data-testid={`result-value-${label}`} shouldHide={shouldHide}>{valueData}</Value>
         <Label shouldHide={shouldHide}>{label}</Label>
       </ContentContainer>
     </Wrapper>

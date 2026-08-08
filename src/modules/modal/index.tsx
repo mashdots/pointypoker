@@ -218,7 +218,7 @@ const Modal = () => {
                     <Title>{modal.title}</Title>
                     {modal.subtitle ? <Subtitle>{modal.subtitle}</Subtitle> : null}
                   </TitlesWrapper>
-                  <CloseIcon onClick={closeModal} theme={theme} />
+                  <CloseIcon data-testid='modal-close' onClick={closeModal} theme={theme} />
                 </HeaderWrapper>
                 {modal.contents}
               </Card>
